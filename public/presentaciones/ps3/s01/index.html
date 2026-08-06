@@ -107,85 +107,6 @@
       object-fit: contain;
     }
 
-    /* Interacciones: aparecen solo cuando ayudan a comparar una mediación. */
-    .slide--interactive { gap: 1.6rem; }
-    .interactive-kicker {
-      font-size: clamp(0.75rem, 1.3vw, 1rem);
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: #888;
-      text-transform: uppercase;
-    }
-    .interactive-question {
-      font-size: clamp(1.45rem, 3vw, 2.4rem);
-      font-weight: 900;
-      color: #222;
-      line-height: 1.25;
-      max-width: 74%;
-    }
-    .interaction-controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.65rem;
-      max-width: 78%;
-    }
-    .interaction-button {
-      appearance: none;
-      border: 1px solid #444;
-      background: #fff;
-      color: #222;
-      font: 700 clamp(0.8rem, 1.5vw, 1rem) 'Roboto', sans-serif;
-      letter-spacing: 0.04em;
-      padding: 0.72rem 1rem;
-      cursor: pointer;
-    }
-    .interaction-button:hover,
-    .interaction-button:focus-visible,
-    .interaction-button[aria-pressed="true"] {
-      outline: none;
-      background: #eeff41;
-      border-color: #111;
-      color: #111;
-    }
-    .relation-readout {
-      width: min(720px, 82%);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: #444;
-      border: 1px solid #444;
-    }
-    .relation-cell { background: #fff; padding: 1rem 0.8rem; min-height: 105px; }
-    .relation-label {
-      display: block;
-      color: #888;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-    .relation-value { color: #222; font-size: clamp(0.85rem, 1.6vw, 1.1rem); font-weight: 700; line-height: 1.25; }
-    .map-stage { width: min(780px, 86%); height: min(360px, 42vh); border: 1px solid #444; position: relative; overflow: hidden; background: #fafafa; }
-    .map-street { position: absolute; background: #ddd; }
-    .map-street.one { width: 110%; height: 44px; transform: rotate(-13deg); top: 42%; left: -5%; }
-    .map-street.two { width: 110%; height: 36px; transform: rotate(18deg); top: 63%; left: -5%; }
-    .map-block { position: absolute; background: #222; color: #fff; padding: 0.45rem 0.6rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; }
-    .map-block.a { top: 17%; left: 14%; } .map-block.b { top: 19%; right: 16%; } .map-block.c { bottom: 16%; left: 24%; } .map-block.d { bottom: 18%; right: 24%; }
-    .map-layer { position: absolute; inset: 0; display: none; }
-    .map-stage[data-map="ruta"] .map-layer--ruta,
-    .map-stage[data-map="ruido"] .map-layer--ruido,
-    .map-stage[data-map="sombra"] .map-layer--sombra { display: block; }
-    .map-route { position: absolute; width: 72%; height: 8px; background: #eeff41; transform: rotate(-13deg); top: 51%; left: 14%; }
-    .map-route::after { content: "RUTA MÁS RÁPIDA"; position: absolute; top: -2rem; right: 0; color: #222; font: 700 0.68rem 'Roboto', sans-serif; letter-spacing: 0.06em; }
-    .noise { position: absolute; border-radius: 50%; background: rgba(238,255,65,.68); border: 1px solid #222; }
-    .noise.one { width: 140px; height: 140px; top: 17%; left: 38%; } .noise.two { width: 90px; height: 90px; bottom: 12%; right: 15%; }
-    .map-layer--ruido::after { content: "ZONAS DE MAYOR RUIDO"; position: absolute; top: 1rem; left: 1rem; color: #222; font: 700 0.68rem 'Roboto', sans-serif; letter-spacing: 0.06em; }
-    .shade { position: absolute; width: 27%; height: 100%; background: rgba(34,34,34,.74); }
-    .shade.one { left: 13%; } .shade.two { right: 21%; width: 18%; }
-    .map-layer--sombra::after { content: "SOMBRA A LAS 3:00 P. M."; position: absolute; bottom: 1rem; left: 1rem; color: #222; font: 700 0.68rem 'Roboto', sans-serif; letter-spacing: 0.06em; background:#eeff41; padding:0.25rem 0.4rem; }
-
     /* Portada SENSORIAL */
     .portada-top {
       font-size: clamp(1.2rem, 4.5vw, 2rem);
@@ -361,9 +282,6 @@
       .cita-texto { max-width: 92%; }
       .slide-image { max-width: 90%; }
       .slide--visual svg { width: 95% !important; height: 78% !important; }
-      .relation-readout { grid-template-columns: 1fr; }
-      .relation-cell { min-height: auto; }
-      .map-stage { width: 92%; }
     }
 
     /* ── Pistas táctiles: solo en dispositivos sin hover (celular/tablet) ── */
@@ -644,6 +562,10 @@
     </div>
 
     <div class="slide">
+      <img data-src="assets/mediacion-en-el-medio.png" class="slide-image" alt="Una mano y un objeto separados por una capa transparente">
+    </div>
+
+    <div class="slide">
       <p class="slide-title">En el laboratorio no encontramos el uso verdadero de los objetos.</p>
     </div>
 
@@ -753,20 +675,8 @@
       <p class="slide-title">Cada medio organiza otras presencias, otras ausencias, otros tiempos y otras obligaciones.</p>
     </div>
 
-    <div class="slide slide--interactive" id="relacion-mensajes">
-      <p class="interactive-kicker">Pruébenlo</p>
-      <p class="interactive-question">“¿Llegaste bien?”<br>¿Qué relación cambia según el medio?</p>
-      <div class="interaction-controls" aria-label="Elige un medio">
-        <button class="interaction-button" data-channel="carta" aria-pressed="false">CARTA</button>
-        <button class="interaction-button" data-channel="llamada" aria-pressed="false">LLAMADA</button>
-        <button class="interaction-button" data-channel="audio" aria-pressed="false">AUDIO</button>
-        <button class="interaction-button" data-channel="chat" aria-pressed="true">CHAT</button>
-      </div>
-      <div class="relation-readout" aria-live="polite">
-        <div class="relation-cell"><span class="relation-label">Ritmo</span><span class="relation-value" data-relation="ritmo">Inmediato o demorado</span></div>
-        <div class="relation-cell"><span class="relation-label">Presencia</span><span class="relation-value" data-relation="presencia">No coincide el cuerpo</span></div>
-        <div class="relation-cell"><span class="relation-label">Expectativa</span><span class="relation-value" data-relation="expectativa">Puede dejar una espera visible</span></div>
-      </div>
+    <div class="slide">
+      <img data-src="assets/mediacion-entre-personas.png" class="slide-image" alt="Dos personas usando sus teléfonos en espacios separados">
     </div>
 
     <div class="slide">
@@ -794,21 +704,8 @@
       <p class="slide-title">Cada uno vuelve perceptible una parte del mundo y apaga el resto.</p>
     </div>
 
-    <div class="slide slide--interactive" id="mapa-mediacion">
-      <p class="interactive-kicker">Miren la misma ciudad de tres formas</p>
-      <p class="interactive-question">El territorio no cambió. ¿Qué mundo aparece cuando cambian las capas?</p>
-      <div class="interaction-controls" aria-label="Elige una capa del mapa">
-        <button class="interaction-button" data-map="ruta" aria-pressed="true">RUTA</button>
-        <button class="interaction-button" data-map="ruido" aria-pressed="false">RUIDO</button>
-        <button class="interaction-button" data-map="sombra" aria-pressed="false">SOMBRA</button>
-      </div>
-      <div class="map-stage" data-map="ruta" aria-label="Mapa esquemático con capas de ruta, ruido y sombra">
-        <span class="map-street one"></span><span class="map-street two"></span>
-        <span class="map-block a">CASAS</span><span class="map-block b">PARQUE</span><span class="map-block c">COLEGIO</span><span class="map-block d">PLAZA</span>
-        <div class="map-layer map-layer--ruta"><span class="map-route"></span></div>
-        <div class="map-layer map-layer--ruido"><span class="noise one"></span><span class="noise two"></span></div>
-        <div class="map-layer map-layer--sombra"><span class="shade one"></span><span class="shade two"></span></div>
-      </div>
+    <div class="slide">
+      <img data-src="assets/mediacion-mapa.png" class="slide-image" alt="Manos sosteniendo un mapa con una ruta marcada">
     </div>
 
     <div class="slide">
@@ -826,6 +723,10 @@
 
     <div class="slide">
       <p class="slide-title">Una bicicleta media nuestra relación con el equilibrio.</p>
+    </div>
+
+    <div class="slide">
+      <img data-src="assets/mediacion-cuerpo-bicicleta.png" class="slide-image" alt="Persona equilibrándose en una bicicleta">
     </div>
 
     <div class="slide">
@@ -872,6 +773,10 @@
 
     <div class="slide">
       <p class="slide-title">A veces necesitamos que se sienta: un instrumento, una cámara analógica, un videojuego difícil.</p>
+    </div>
+
+    <div class="slide">
+      <img data-src="assets/reflexion-camara-analogica.png" class="slide-image" alt="Manos ajustando una cámara analógica">
     </div>
 
     <div class="slide">
@@ -1818,7 +1723,7 @@
     });
 
     document.addEventListener('click', e => {
-      if (e.target.closest('.slide--interactive, .deck-nav, a, button')) return;
+      if (e.target.closest('.deck-nav, a, button')) return;
       show(current + 1);
     });
 
@@ -1848,42 +1753,6 @@
       }
       // Si fue un toque simple, el evento click normal ya se encarga de avanzar
     }, { passive: false });
-
-    // Interacción 1: el medio transforma el ritmo, la presencia y la expectativa.
-    const mensajes = {
-      carta: { ritmo: 'Demorado', presencia: 'La voz y la respuesta llegan después', expectativa: 'La espera no se puede vigilar' },
-      llamada: { ritmo: 'Simultáneo', presencia: 'La voz coincide en tiempo real', expectativa: 'Hay que estar disponible al mismo tiempo' },
-      audio: { ritmo: 'Asincrónico', presencia: 'La voz permanece, el cuerpo no', expectativa: 'La respuesta puede demorarse sin silencio absoluto' },
-      chat: { ritmo: 'Inmediato o demorado', presencia: 'No coincide el cuerpo', expectativa: 'Puede dejar una espera visible' }
-    };
-    const mensajesSlide = document.getElementById('relacion-mensajes');
-    if (mensajesSlide) {
-      mensajesSlide.querySelectorAll('[data-channel]').forEach(button => {
-        button.addEventListener('click', e => {
-          e.stopPropagation();
-          const medio = mensajes[button.dataset.channel];
-          mensajesSlide.querySelectorAll('[data-channel]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-          Object.entries(medio).forEach(([clave, valor]) => {
-            const destino = mensajesSlide.querySelector(`[data-relation="${clave}"]`);
-            if (destino) destino.textContent = valor;
-          });
-        });
-      });
-    }
-
-    // Interacción 2: una capa del mapa vuelve visible un mundo y deja otros fuera.
-    const mapaSlide = document.getElementById('mapa-mediacion');
-    if (mapaSlide) {
-      const mapa = mapaSlide.querySelector('.map-stage');
-      mapaSlide.querySelectorAll('[data-map]').forEach(button => {
-        if (button === mapa) return;
-        button.addEventListener('click', e => {
-          e.stopPropagation();
-          mapa.dataset.map = button.dataset.map;
-          mapaSlide.querySelectorAll('.interaction-button[data-map]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-        });
-      });
-    }
 
     // Menú de secciones: se construye con los divisores reales para que nunca quede desfasado.
     const deckNav = document.querySelector('.deck-nav');

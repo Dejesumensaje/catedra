@@ -38,6 +38,10 @@ const cursos = defineCollection({
     }),
     estado: z.enum(['proximo', 'en-curso', 'archivado']),
     descripcion: z.string(),
+    // Texto largo de la página del curso ("El curso"). `descripcion` es la
+    // línea corta para tarjeta y meta; `introduccion` es la presentación en
+    // la interna. Párrafos separados por línea en blanco.
+    introduccion: z.string().optional(),
     preguntaCentral: z.string().optional(),
     propositos: z.array(z.string()).default([]),   // propósitos de formación
     escalaValoracion: z.array(z.object({

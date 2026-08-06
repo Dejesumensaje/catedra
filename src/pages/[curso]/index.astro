@@ -31,6 +31,10 @@ function fechaCorta(fecha: Date): string {
     .toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'UTC' })
     .replace('.', '');
 }
+
+const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
+  .split(/\n\n+/)
+  .map((p) => p.trim());
 ---
 
 <Base
@@ -57,8 +61,7 @@ function fechaCorta(fecha: Date): string {
 
   <section class="bloque sube sube-4">
     <span class="mono">El curso</span>
-    <p>{curso.data.descripcion}</p>
-    <p>El curso es vivo: las sesiones se publican antes de dictarse y pueden cambiar cuando lo que pasa en el salón contradice lo que decía el programa.</p>
+    {parrafosIntro.map((parrafo) => <p>{parrafo}</p>)}
   </section>
 
   <div class="separador" aria-hidden="true">↔</div>
