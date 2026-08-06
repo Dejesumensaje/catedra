@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const cursos = (await getCollection('cursos')).sort(
+  (a, b) => a.data.orden - b.data.orden,
+);
+---
+
+<Base
+  titulo="Cátedra · William Montoya"
+  descripcion="Repositorio docente: el programa de cada curso y la memoria de lo que ocurrió de verdad."
+>
+  <section class="hero">
+    <span class="mono sube sube-1">Repositorio docente</span>
+    <h1 class="sube sube-2">Lo que se <span class="hl">planea</span> y lo que <span class="hl">pasa</span>, en el mismo lugar.</h1>
+    <p class="lede sube sube-3">Cada curso se publica dos veces: antes de la clase, el programa. Después, la memoria de lo que ocurrió de verdad.</p>
+  </section>
+
+  <section class="seccion">
+    <span class="mono sube sube-3">Cursos — {String(cursos.length).padStart(2, '0')}</span>
+
+    {cursos.map((curso) => (
+      <a class="poster sube sube-4" href={`/${curso.data.ruta}`}>
+        {curso.data.version && (
+          <span class="numero-gigante" aria-hidden="true">{curso.data.version}</span>
+        )}
+        <span class="mono">{curso.data.institucion} · {curso.data.periodo.etiqueta}</span>
+        <h2>{curso.data.titulo} {curso.data.version && <span class="hl">{curso.data.version}</span>}</h2>
+        <p class="desc">{curso.data.subtitulo}. Un curso sobre lo que ocurre entre una persona y un sistema que le responde.</p>
+        <ul class="tags">
+          <li>{curso.data.intensidad.sesiones} sesiones</li>
+          <li>{curso.data.intensidad.modalidad}</li>
+          <li>{curso.data.programa}</li>
+        </ul>
+        <span class="cta">Entrar al curso <span class="flecha">→</span></span>
+      </a>
+    ))}
+  </section>
+</Base>

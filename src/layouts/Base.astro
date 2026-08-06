@@ -1,0 +1,780 @@
+---
+// Layout base: sistema visual del sitio (derivado del prototipo aprobado).
+// Roboto para títulos y datos, PT Serif para el cuerpo. Amarillo #eeff41 solo
+// con significado. Sin footer por ahora; el cabezote no menciona institución.
+interface Props {
+  titulo: string;
+  descripcion?: string;
+  volverHref?: string;
+  volverTexto?: string;
+}
+
+const { titulo, descripcion, volverHref, volverTexto } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{titulo}</title>
+    {descripcion && <meta name="description" content={descripcion} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={titulo} />
+    {descripcion && <meta property="og:description" content={descripcion} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="es_CO" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      :root {
+        --tinta: #222222;
+        --texto: #444444;
+        --secundario: #888888;
+        --papel: #ffffff;
+        --regla: #e5e5e5;
+        --amarillo: #eeff41;
+        --sans: 'Roboto', Helvetica, Arial, sans-serif;
+        --serif: 'PT Serif', Georgia, serif;
+        /* aire lateral: nada se pega a los bordes del viewport */
+        --margen: clamp(1.5rem, 6vw, 4rem);
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      html { font-size: 18px; }
+
+      body {
+        background: var(--papel);
+        color: var(--texto);
+        font-family: var(--serif);
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a { color: inherit; }
+
+      ::selection { background: var(--amarillo); color: var(--tinta); }
+
+      .contenedor {
+        max-width: 62rem;
+        margin: 0 auto;
+        padding: 0 var(--margen) 5rem;
+      }
+
+      /* ── utilidades de voz ────────────────────── */
+      .mono {
+        font-family: var(--sans);
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      /* resaltado tipo marcador */
+      .hl {
+        background: linear-gradient(to top, var(--amarillo) 38%, transparent 38%);
+        color: var(--tinta);
+        padding: 0 0.08em;
+      }
+
+      /* ── cabecera ─────────────────────────────── */
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+        padding: 1.75rem 0;
+        border-bottom: 1px solid var(--tinta);
+      }
+
+      .marca {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tinta);
+        text-decoration: none;
+      }
+
+      .marca span { color: var(--secundario); font-weight: 400; }
+
+      .volver {
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        color: var(--secundario);
+        text-decoration: none;
+        white-space: nowrap;
+        display: inline-flex;
+        gap: 0.4rem;
+        align-items: baseline;
+      }
+
+      .volver:hover { color: var(--tinta); }
+      .volver .flecha-izq { transition: transform 0.18s ease; }
+      .volver:hover .flecha-izq { transform: translateX(-3px); }
+
+      /* ── animaciones de entrada ───────────────── */
+      @keyframes sube {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .sube { animation: sube 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+      .sube-1 { animation-delay: 0.05s; }
+      .sube-2 { animation-delay: 0.15s; }
+      .sube-3 { animation-delay: 0.25s; }
+      .sube-4 { animation-delay: 0.35s; }
+
+      /* ══════════ HUB ══════════ */
+      .hero { padding: 4.5rem 0 3.5rem; }
+
+      .hero .mono { color: var(--secundario); display: block; margin-bottom: 1.5rem; }
+
+      .hero h1 {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: clamp(2.4rem, 6.5vw, 4.4rem);
+        line-height: 1.04;
+        letter-spacing: -0.03em;
+        color: var(--tinta);
+        max-width: 15ch;
+      }
+
+      .hero .lede {
+        font-style: italic;
+        font-size: 1.2rem;
+        color: var(--texto);
+        margin-top: 1.75rem;
+        max-width: 36ch;
+        line-height: 1.55;
+      }
+
+      /* ── tarjeta-póster del curso ─────────────── */
+      .seccion { padding: 2.5rem 0 3rem; }
+
+      .seccion > .mono { color: var(--secundario); display: block; margin-bottom: 1.5rem; }
+
+      .poster {
+        position: relative;
+        display: block;
+        text-decoration: none;
+        border: 2px solid var(--tinta);
+        padding: 2.5rem 2.75rem 2.25rem;
+        background: var(--papel);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+      }
+
+      .poster:hover, .poster:focus-visible {
+        transform: translateY(-4px);
+        box-shadow: 8px 8px 0 var(--amarillo), 8px 8px 0 2px var(--tinta);
+      }
+
+      .poster .numero-gigante {
+        position: absolute;
+        right: 1rem;
+        top: -1.6rem;
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: 7.5rem;
+        letter-spacing: -0.05em;
+        color: var(--amarillo);
+        -webkit-text-stroke: 2px var(--tinta);
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .poster > .mono { color: var(--secundario); display: block; margin-bottom: 1rem; }
+
+      .poster h2 {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        color: var(--tinta);
+        max-width: 16ch;
+      }
+
+      .poster .desc {
+        margin-top: 1rem;
+        font-size: 1.05rem;
+        max-width: 44ch;
+      }
+
+      .poster .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        list-style: none;
+      }
+
+      .poster .tags li {
+        font-family: var(--sans);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--texto);
+        border: 1px solid var(--regla);
+        padding: 0.3rem 0.7rem;
+      }
+
+      .poster .cta {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-top: 1.75rem;
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--tinta);
+      }
+
+      .poster .cta .flecha { transition: transform 0.18s ease; }
+      .poster:hover .cta .flecha { transform: translateX(5px); }
+
+      /* ══════════ CURSO ══════════ */
+      .hero-curso { padding: 4rem 0 3rem; position: relative; }
+
+      .hero-curso > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; max-width: 70%; }
+
+      .hero-curso h1 {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: clamp(2.6rem, 7.5vw, 4.8rem);
+        line-height: 0.98;
+        letter-spacing: -0.035em;
+        color: var(--tinta);
+      }
+
+      .hero-curso .tres {
+        display: inline-block;
+        background: var(--amarillo);
+        padding: 0 0.15em;
+        transform: rotate(-2deg);
+      }
+
+      .hero-curso .lede {
+        font-style: italic;
+        font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+        line-height: 1.55;
+        margin-top: 2rem;
+        max-width: 40ch;
+      }
+
+      /* barra del semestre */
+      .semestre {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem 0;
+        border-top: 1px solid var(--tinta);
+        border-bottom: 1px solid var(--tinta);
+      }
+
+      .semestre .mono { color: var(--tinta); white-space: nowrap; }
+
+      .semestre .pista {
+        flex: 1;
+        height: 10px;
+        border: 1px solid var(--tinta);
+        position: relative;
+      }
+
+      .semestre .relleno {
+        position: absolute;
+        inset: 0 auto 0 0;
+        background: var(--amarillo);
+        border-right: 1px solid var(--tinta);
+      }
+
+      /* bloques de contenido */
+      .bloque { padding: 3rem 0; border-bottom: 1px solid var(--regla); }
+      .bloque:last-of-type { border-bottom: none; }
+
+      .bloque > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; }
+
+      .bloque p { max-width: 56ch; margin-bottom: 1rem; }
+
+      .pill {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--tinta);
+        text-decoration: none;
+        border: 1px solid var(--tinta);
+        padding: 0.55rem 1rem;
+        margin-top: 0.5rem;
+        transition: background 0.15s ease;
+      }
+
+      .pill:hover { background: var(--amarillo); }
+      .pill .nota { color: var(--secundario); text-transform: none; letter-spacing: 0; }
+
+      /* separador ↔ */
+      .separador {
+        text-align: center;
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: 2rem;
+        color: var(--tinta);
+        padding-top: 2.5rem;
+        user-select: none;
+      }
+
+      /* ── lista de clases ──────────────────────── */
+      ol.clases { list-style: none; }
+
+      .clase-fila { border-bottom: 1px solid var(--regla); }
+      .clase-fila:first-child { border-top: 1px solid var(--regla); }
+
+      .clase {
+        display: grid;
+        grid-template-columns: 3.5rem 1fr auto;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.35rem 0.5rem;
+        width: 100%;
+        background: none;
+        border: none;
+        font: inherit;
+        color: inherit;
+        text-align: left;
+        text-decoration: none;
+        transition: transform 0.18s ease, background 0.18s ease;
+      }
+
+      a.clase { cursor: pointer; }
+      a.clase:hover, a.clase:focus-visible {
+        background: linear-gradient(to right, var(--amarillo) 0.35rem, transparent 0.35rem);
+        transform: translateX(0.35rem);
+      }
+
+      .clase .numeral {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: 2rem;
+        letter-spacing: -0.03em;
+        color: var(--tinta);
+        line-height: 1;
+      }
+
+      .clase.programada .numeral {
+        color: transparent;
+        -webkit-text-stroke: 1.5px #c8c8c8;
+      }
+
+      .clase .cuerpo .titulo-clase {
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--tinta);
+        line-height: 1.25;
+        display: block;
+      }
+
+      .clase.programada .cuerpo .titulo-clase { color: var(--secundario); font-weight: 500; }
+
+      .clase .cuerpo .tension {
+        display: inline-block;
+        margin-top: 0.4rem;
+        font-family: var(--sans);
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--secundario);
+      }
+
+      .clase .lado {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .clase .flecha {
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--tinta);
+        opacity: 0;
+        transform: translateX(-6px);
+        transition: opacity 0.18s ease, transform 0.18s ease;
+      }
+
+      a.clase:hover .flecha, a.clase:focus-visible .flecha {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* sticker rotado */
+      .sticker {
+        display: inline-block;
+        font-family: var(--sans);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        background: var(--amarillo);
+        color: var(--tinta);
+        border: 1px solid var(--tinta);
+        padding: 0.35rem 0.7rem;
+        transform: rotate(-2deg);
+        box-shadow: 2px 2px 0 var(--tinta);
+        white-space: nowrap;
+      }
+
+      .estado-gris {
+        font-family: var(--sans);
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--secundario);
+        white-space: nowrap;
+      }
+
+      .nota-curso {
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        color: var(--secundario);
+        font-style: italic;
+        max-width: 48ch;
+      }
+
+      /* ══════════ LANDING DE SESIÓN ══════════ */
+      .hero-clase { padding: 4rem 0 3rem; }
+
+      .hero-clase > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; }
+
+      .hero-clase .numeral-hero {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: clamp(4.5rem, 12vw, 8rem);
+        letter-spacing: -0.04em;
+        line-height: 0.9;
+        color: var(--amarillo);
+        -webkit-text-stroke: 2px var(--tinta);
+        display: block;
+      }
+
+      .hero-clase h1 {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: clamp(2rem, 5.5vw, 3.4rem);
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+        color: var(--tinta);
+        margin-top: 1rem;
+        max-width: 18ch;
+      }
+
+      .hero-clase .lede {
+        font-style: italic;
+        font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+        line-height: 1.55;
+        margin-top: 1.75rem;
+        max-width: 42ch;
+      }
+
+      .hero-clase .meta-fila {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.75rem;
+        align-items: center;
+      }
+
+      .tag-tinta {
+        font-family: var(--sans);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--texto);
+        border: 1px solid var(--regla);
+        padding: 0.3rem 0.7rem;
+      }
+
+      /* tarjeta de presentación */
+      .tarjeta-deck {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        border: 2px solid var(--tinta);
+        padding: 1.75rem 2rem;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+      }
+
+      .tarjeta-deck:hover {
+        transform: translateY(-3px);
+        box-shadow: 6px 6px 0 var(--amarillo), 6px 6px 0 2px var(--tinta);
+      }
+
+      .tarjeta-deck .que {
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--tinta);
+      }
+
+      .tarjeta-deck .detalle {
+        font-size: 0.92rem;
+        color: var(--secundario);
+        margin-top: 0.25rem;
+      }
+
+      .boton {
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        background: var(--tinta);
+        color: var(--papel);
+        border: 1px solid var(--tinta);
+        padding: 0.8rem 1.5rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .boton:hover { background: var(--amarillo); color: var(--tinta); }
+
+      /* momentos de la sesión */
+      .momentos { display: grid; gap: 1.25rem; }
+
+      .momento {
+        border-left: 3px solid var(--amarillo);
+        padding-left: 1.25rem;
+      }
+
+      .momento .mono { color: var(--tinta); display: block; margin-bottom: 0.4rem; }
+
+      .momento p { max-width: 56ch; font-size: 1rem; margin-bottom: 0; }
+
+      /* materiales: enlaces */
+      ul.materiales { list-style: none; }
+
+      ul.materiales li { border-bottom: 1px solid var(--regla); }
+      ul.materiales li:first-child { border-top: 1px solid var(--regla); }
+
+      ul.materiales a {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 0.25rem;
+        text-decoration: none;
+        transition: transform 0.18s ease;
+      }
+
+      ul.materiales a:hover { transform: translateX(0.35rem); }
+
+      ul.materiales .mat-titulo { color: var(--tinta); }
+
+      ul.materiales .mat-autor {
+        font-family: var(--sans);
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--secundario);
+        white-space: nowrap;
+      }
+
+      /* cuerpo MDX de la sesión (notas, referentes) */
+      .contenido-mdx p { max-width: 56ch; margin-bottom: 1rem; }
+
+      .contenido-mdx h2 {
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: var(--tinta);
+        margin: 2.5rem 0 1rem;
+      }
+
+      .contenido-mdx ul {
+        list-style: none;
+      }
+
+      .contenido-mdx li {
+        padding: 0.6rem 0;
+        font-size: 0.98rem;
+        border-bottom: 1px solid var(--regla);
+        max-width: 56ch;
+      }
+
+      .contenido-mdx li:last-child { border-bottom: none; }
+
+      .contenido-mdx em { color: var(--tinta); }
+
+      .contenido-mdx strong { color: var(--tinta); }
+
+      /* siguiente sesión */
+      .siguiente {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        border-top: 1px solid var(--tinta);
+        padding: 1.5rem 0 0;
+        margin-top: 1rem;
+      }
+
+      .siguiente .mono { color: var(--secundario); }
+      .siguiente .que-sigue { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+
+      /* ── candado ──────────────────────────────── */
+      .candado-fondo {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.94);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        z-index: 10;
+      }
+
+      .candado-fondo.abierto { display: flex; }
+
+      .candado {
+        background: var(--papel);
+        border: 2px solid var(--tinta);
+        box-shadow: 10px 10px 0 var(--amarillo), 10px 10px 0 2px var(--tinta);
+        padding: 2.75rem;
+        max-width: 26rem;
+        width: 100%;
+      }
+
+      .candado .numeral-modal {
+        font-family: var(--sans);
+        font-weight: 900;
+        font-size: 3.5rem;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        color: var(--amarillo);
+        -webkit-text-stroke: 2px var(--tinta);
+        display: block;
+      }
+
+      .candado h3 {
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--tinta);
+        margin: 0.75rem 0 0.5rem;
+      }
+
+      .candado p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+      .candado form { display: flex; gap: 0.75rem; }
+
+      .candado input {
+        flex: 1;
+        min-width: 0;
+        font-family: var(--sans);
+        font-size: 0.95rem;
+        padding: 0.7rem 0.85rem;
+        border: 1px solid var(--tinta);
+        outline: none;
+        background: var(--papel);
+      }
+
+      .candado input:focus { box-shadow: 3px 3px 0 var(--amarillo); }
+
+      .candado button {
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        background: var(--tinta);
+        color: var(--papel);
+        border: 1px solid var(--tinta);
+        padding: 0.7rem 1.4rem;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .candado button:hover { background: var(--amarillo); color: var(--tinta); }
+
+      .candado .error {
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #b3261e;
+        margin-top: 0.85rem;
+        min-height: 1.2em;
+      }
+
+      /* ── responsive ───────────────────────────── */
+      @media (max-width: 40rem) {
+        html { font-size: 16px; }
+        .hero { padding: 3.5rem 0 2.5rem; }
+        .hero-curso > .mono { max-width: 100%; }
+        .poster { padding: 1.75rem 1.5rem; }
+        .poster .numero-gigante { font-size: 4.5rem; top: -1rem; }
+        .clase { grid-template-columns: 2.5rem 1fr auto; gap: 1rem; padding: 1.1rem 0.25rem; }
+        .clase .numeral { font-size: 1.5rem; }
+        .candado { padding: 2rem 1.5rem; }
+        .tarjeta-deck { padding: 1.5rem; }
+      }
+
+      /* ── movimiento reducido ──────────────────── */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-delay: 0ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        .poster:hover, .tarjeta-deck:hover { transform: none; }
+        a.clase:hover, ul.materiales a:hover { transform: none; }
+      }
+
+      /* foco de teclado visible */
+      a:focus-visible, button:focus-visible, input:focus-visible {
+        outline: 2px solid var(--tinta);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="contenedor">
+      <header class="topbar">
+        <a class="marca" href="/">Cátedra <span>/ William Montoya</span></a>
+        {volverHref && volverTexto && (
+          <a class="volver" href={volverHref}><span class="flecha-izq">←</span> {volverTexto}</a>
+        )}
+      </header>
+      <slot />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { numeroSesion } from '../../lib/contenido';
+
+export async function getStaticPaths() {
+  const cursos = await getCollection('cursos');
+  return cursos.map((curso) => ({
+    params: { curso: curso.data.ruta },
+    props: { curso },
+  }));
+}
+
+const { curso } = Astro.props;
+
+const sesiones = (
+  await getCollection('sesiones', (s) => s.data.curso.id === curso.id)
+).sort((a, b) => a.data.numero - b.data.numero);
+
+const tensiones = await getCollection('tensiones');
+const tensionPorId = new Map(tensiones.map((t) => [t.id, t]));
+
+// Una sesión está disponible cuando tiene presentación publicada.
+const disponibles = sesiones.filter((s) => s.data.presentacion);
+const total = curso.data.intensidad.sesiones;
+const ultima = disponibles.at(-1);
+const progreso = Math.min(100, (disponibles.length / total) * 100);
+
+function fechaCorta(fecha: Date): string {
+  return fecha
+    .toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+    .replace('.', '');
+}
+---
+
+<Base
+  titulo={`${curso.data.titulo} ${curso.data.version ?? ''} · Cátedra`}
+  descripcion={curso.data.descripcion}
+  volverHref="/"
+  volverTexto="Todos los cursos"
+>
+  <section class="hero-curso">
+    <span class="mono sube sube-1">{curso.data.institucion} · {curso.data.programa} · {curso.data.periodo.etiqueta}</span>
+    <h1 class="sube sube-2">
+      {curso.data.titulo}{curso.data.version && <> <span class="tres">{curso.data.version}</span></>}
+    </h1>
+    {curso.data.preguntaCentral && (
+      <p class="lede sube sube-3">{curso.data.preguntaCentral}</p>
+    )}
+  </section>
+
+  <div class="semestre sube sube-3">
+    <span class="mono">Sesión {ultima ? numeroSesion(ultima.data.numero).toUpperCase() : 'S00'} / {total}</span>
+    <div class="pista"><div class="relleno" style={`width: ${progreso}%;`}></div></div>
+    <span class="mono">{curso.data.periodo.etiqueta}</span>
+  </div>
+
+  <section class="bloque sube sube-4">
+    <span class="mono">El curso</span>
+    <p>{curso.data.descripcion}</p>
+    <p>El curso es vivo: las sesiones se publican antes de dictarse y pueden cambiar cuando lo que pasa en el salón contradice lo que decía el programa.</p>
+  </section>
+
+  <div class="separador" aria-hidden="true">↔</div>
+
+  <section class="bloque">
+    <span class="mono">Clases — {total} sesiones, una por semana</span>
+
+    <ol class="clases">
+      {sesiones.map((sesion) => {
+        const tension = sesion.data.tension
+          ? tensionPorId.get(sesion.data.tension.id)
+          : undefined;
+        const disponible = Boolean(sesion.data.presentacion);
+        const numero = numeroSesion(sesion.data.numero).slice(1);
+
+        return (
+          <li class="clase-fila">
+            {disponible ? (
+              <a class="clase" href={`/${curso.data.ruta}/s${numero}`}>
+                <span class="numeral">{numero}</span>
+                <span class="cuerpo">
+                  <span class="titulo-clase">{sesion.data.titulo}</span>
+                  {tension && (
+                    <span class="tension">{tension.data.poloA} ↔ {tension.data.poloB}</span>
+                  )}
+                </span>
+                <span class="lado">
+                  <span class="sticker">Disponible</span>
+                  <span class="flecha" aria-hidden="true">→</span>
+                </span>
+              </a>
+            ) : (
+              <span class="clase programada">
+                <span class="numeral">{numero}</span>
+                <span class="cuerpo">
+                  <span class="titulo-clase">{sesion.data.titulo}</span>
+                  {tension && (
+                    <span class="tension">{tension.data.poloA} ↔ {tension.data.poloB}</span>
+                  )}
+                </span>
+                <span class="lado">
+                  <span class="estado-gris">{fechaCorta(sesion.data.fecha)}</span>
+                </span>
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+
+    <p class="nota-curso">Las sesiones se abren al ritmo del curso. Los títulos y fechas pueden moverse: esto es un programa en construcción, no una promesa.</p>
+  </section>
+</Base>

@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cátedra — prototipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tinta: #222222;
+    --texto: #444444;
+    --secundario: #888888;
+    --papel: #ffffff;
+    --regla: #e5e5e5;
+    --amarillo: #eeff41;
+    --sans: 'Roboto', Helvetica, Arial, sans-serif;
+    --serif: 'PT Serif', Georgia, serif;
+    /* aire lateral: nada se pega a los bordes del viewport */
+    --margen: clamp(1.5rem, 6vw, 4rem);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 18px; }
+
+  body {
+    background: var(--papel);
+    color: var(--texto);
+    font-family: var(--serif);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--amarillo); color: var(--tinta); }
+
+  .contenedor {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 0 var(--margen);
+  }
+
+  /* ── utilidades de voz ────────────────────── */
+  .mono {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* resaltado tipo marcador */
+  .hl {
+    background: linear-gradient(to top, var(--amarillo) 38%, transparent 38%);
+    color: var(--tinta);
+    padding: 0 0.08em;
+  }
+
+  /* ── cabecera ─────────────────────────────── */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--tinta);
+  }
+
+  .marca {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+
+  .marca span { color: var(--secundario); font-weight: 400; }
+
+  .firma, .volver {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--secundario);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .volver { display: inline-flex; gap: 0.4rem; align-items: baseline; }
+  .volver:hover { color: var(--tinta); }
+  .volver .flecha-izq { transition: transform 0.18s ease; }
+  .volver:hover .flecha-izq { transform: translateX(-3px); }
+
+  /* ── animaciones de entrada ───────────────── */
+  @keyframes sube {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .sube { animation: sube 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .sube-1 { animation-delay: 0.05s; }
+  .sube-2 { animation-delay: 0.15s; }
+  .sube-3 { animation-delay: 0.25s; }
+  .sube-4 { animation-delay: 0.35s; }
+
+  /* ══════════ PANTALLA 1: HUB ══════════ */
+  .hero { padding: 4.5rem 0 3.5rem; }
+
+  .hero .mono { color: var(--secundario); display: block; margin-bottom: 1.5rem; }
+
+  .hero h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2.4rem, 6.5vw, 4.4rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--tinta);
+    max-width: 15ch;
+  }
+
+  .hero .lede {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--texto);
+    margin-top: 1.75rem;
+    max-width: 36ch;
+    line-height: 1.55;
+  }
+
+  /* ── tarjeta-póster del curso ─────────────── */
+  .seccion { padding: 2.5rem 0 3rem; }
+
+  .seccion > .mono { color: var(--secundario); display: block; margin-bottom: 1.5rem; }
+
+  .poster {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border: 2px solid var(--tinta);
+    padding: 2.5rem 2.75rem 2.25rem;
+    background: var(--papel);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+  }
+
+  .poster:hover, .poster:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 8px 8px 0 var(--amarillo), 8px 8px 0 2px var(--tinta);
+  }
+
+  .poster .numero-gigante {
+    position: absolute;
+    right: 1rem;
+    top: -1.6rem;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 7.5rem;
+    letter-spacing: -0.05em;
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--tinta);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .poster > .mono { color: var(--secundario); display: block; margin-bottom: 1rem; }
+
+  .poster h2 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--tinta);
+    max-width: 16ch;
+  }
+
+  .poster .desc {
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    max-width: 44ch;
+  }
+
+  .poster .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    list-style: none;
+  }
+
+  .poster .tags li {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--texto);
+    border: 1px solid var(--regla);
+    padding: 0.3rem 0.7rem;
+  }
+
+  .poster .cta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta);
+  }
+
+  .poster .cta .flecha { transition: transform 0.18s ease; }
+  .poster:hover .cta .flecha { transform: translateX(5px); }
+
+  /* ══════════ PANTALLA 2: CURSO ══════════ */
+  .hero-curso { padding: 4rem 0 3rem; position: relative; }
+
+  .hero-curso > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; max-width: 70%; }
+
+  .hero-curso h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2.6rem, 7.5vw, 4.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: var(--tinta);
+  }
+
+  .hero-curso .tres {
+    display: inline-block;
+    background: var(--amarillo);
+    padding: 0 0.15em;
+    transform: rotate(-2deg);
+  }
+
+  .hero-curso .lede {
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+    line-height: 1.55;
+    margin-top: 2rem;
+    max-width: 40ch;
+  }
+
+  .hero-curso .inter {
+    position: absolute;
+    right: 0;
+    top: 4rem;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--tinta);
+    user-select: none;
+    pointer-events: none;
+    transform: rotate(6deg);
+  }
+
+  /* barra del semestre */
+  .semestre {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--tinta);
+    border-bottom: 1px solid var(--tinta);
+  }
+
+  .semestre .mono { color: var(--tinta); white-space: nowrap; }
+
+  .semestre .pista {
+    flex: 1;
+    height: 10px;
+    border: 1px solid var(--tinta);
+    position: relative;
+  }
+
+  .semestre .relleno {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 6.25%; /* 1 de 16 */
+    background: var(--amarillo);
+    border-right: 1px solid var(--tinta);
+  }
+
+  /* descripción + syllabus */
+  .bloque { padding: 3rem 0; border-bottom: 1px solid var(--regla); }
+  .bloque:last-of-type { border-bottom: none; }
+
+  .bloque > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; }
+
+  .bloque p { max-width: 56ch; margin-bottom: 1rem; }
+
+  .pill {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    text-decoration: none;
+    border: 1px solid var(--tinta);
+    padding: 0.55rem 1rem;
+    margin-top: 0.5rem;
+    transition: background 0.15s ease;
+  }
+
+  .pill:hover { background: var(--amarillo); }
+  .pill .nota { color: var(--secundario); text-transform: none; letter-spacing: 0; }
+
+  /* separador ↔ */
+  .separador {
+    text-align: center;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 2rem;
+    color: var(--tinta);
+    padding-top: 2.5rem;
+    user-select: none;
+  }
+
+  /* ── lista de clases ──────────────────────── */
+  ol.clases { list-style: none; }
+
+  .clase-fila { border-bottom: 1px solid var(--regla); }
+  .clase-fila:first-child { border-top: 1px solid var(--regla); }
+
+  .clase {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.35rem 0.5rem;
+    width: 100%;
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    text-decoration: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+  }
+
+  button.clase, a.clase { cursor: pointer; }
+  button.clase:hover, button.clase:focus-visible,
+  a.clase:hover, a.clase:focus-visible {
+    background: linear-gradient(to right, var(--amarillo) 0.35rem, transparent 0.35rem);
+    transform: translateX(0.35rem);
+  }
+
+  .clase .numeral {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    color: var(--tinta);
+    line-height: 1;
+  }
+
+  .clase.programada .numeral {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #c8c8c8;
+  }
+
+  .clase .cuerpo .titulo-clase {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    line-height: 1.25;
+    display: block;
+  }
+
+  .clase.programada .cuerpo .titulo-clase { color: var(--secundario); font-weight: 500; }
+
+  .clase .cuerpo .tension {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+  }
+
+  .clase .lado {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .clase .flecha {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--tinta);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  button.clase:hover .flecha, button.clase:focus-visible .flecha,
+  a.clase:hover .flecha, a.clase:focus-visible .flecha {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* sticker rotado */
+  .sticker {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--amarillo);
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.35rem 0.7rem;
+    transform: rotate(-2deg);
+    box-shadow: 2px 2px 0 var(--tinta);
+    white-space: nowrap;
+  }
+
+  .estado-gris {
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    white-space: nowrap;
+  }
+
+  .nota-curso {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--secundario);
+    font-style: italic;
+    max-width: 48ch;
+  }
+
+  /* ══════════ PANTALLA 3: LANDING DE CLASE ══════════ */
+  .hero-clase { padding: 4rem 0 3rem; }
+
+  .hero-clase > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; }
+
+  .hero-clase .numeral-hero {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(4.5rem, 12vw, 8rem);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--tinta);
+    display: block;
+  }
+
+  .hero-clase h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2rem, 5.5vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--tinta);
+    margin-top: 1rem;
+    max-width: 18ch;
+  }
+
+  .hero-clase .lede {
+    font-style: italic;
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    line-height: 1.55;
+    margin-top: 1.75rem;
+    max-width: 42ch;
+  }
+
+  .hero-clase .meta-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+    align-items: center;
+  }
+
+  .tag-tinta {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--texto);
+    border: 1px solid var(--regla);
+    padding: 0.3rem 0.7rem;
+  }
+
+  /* tarjeta de presentación */
+  .tarjeta-deck {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .tarjeta-deck:hover {
+    transform: translateY(-3px);
+    box-shadow: 6px 6px 0 var(--amarillo), 6px 6px 0 2px var(--tinta);
+  }
+
+  .tarjeta-deck .que {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--tinta);
+  }
+
+  .tarjeta-deck .detalle {
+    font-size: 0.92rem;
+    color: var(--secundario);
+    margin-top: 0.25rem;
+  }
+
+  .boton {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tinta);
+    color: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .boton:hover { background: var(--amarillo); color: var(--tinta); }
+
+  /* momentos de la sesión */
+  .momentos { display: grid; gap: 1.25rem; }
+
+  .momento {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1.25rem;
+  }
+
+  .momento .mono { color: var(--tinta); display: block; margin-bottom: 0.4rem; }
+
+  .momento p { max-width: 56ch; font-size: 1rem; margin-bottom: 0; }
+
+  /* materiales: enlaces */
+  ul.materiales { list-style: none; }
+
+  ul.materiales li { border-bottom: 1px solid var(--regla); }
+  ul.materiales li:first-child { border-top: 1px solid var(--regla); }
+
+  ul.materiales a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0.25rem;
+    text-decoration: none;
+    transition: transform 0.18s ease;
+  }
+
+  ul.materiales a:hover { transform: translateX(0.35rem); }
+
+  ul.materiales .mat-titulo { color: var(--tinta); }
+
+  ul.materiales .mat-autor {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    white-space: nowrap;
+  }
+
+  /* referentes */
+  ul.referentes { list-style: none; }
+
+  ul.referentes li {
+    padding: 0.6rem 0;
+    font-size: 0.98rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  ul.referentes li:last-child { border-bottom: none; }
+
+  ul.referentes em { color: var(--tinta); }
+
+  ul.referentes .ref-meta { color: var(--secundario); font-size: 0.88rem; }
+
+  /* siguiente sesión */
+  .siguiente {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--tinta);
+    padding: 1.5rem 0 0;
+    margin-top: 1rem;
+  }
+
+  .siguiente .mono { color: var(--secundario); }
+  .siguiente .que-sigue { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+
+  /* ── candado ──────────────────────────────── */
+  .candado-fondo {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.94);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 10;
+  }
+
+  .candado-fondo.abierto { display: flex; }
+
+  .candado {
+    background: var(--papel);
+    border: 2px solid var(--tinta);
+    box-shadow: 10px 10px 0 var(--amarillo), 10px 10px 0 2px var(--tinta);
+    padding: 2.75rem;
+    max-width: 26rem;
+    width: 100%;
+  }
+
+  .candado .numeral-modal {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 3.5rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--tinta);
+    display: block;
+  }
+
+  .candado h3 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .candado p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+  .candado form { display: flex; gap: 0.75rem; }
+
+  .candado input {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--tinta);
+    outline: none;
+    background: var(--papel);
+  }
+
+  .candado input:focus { box-shadow: 3px 3px 0 var(--amarillo); }
+
+  .candado button {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tinta);
+    color: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: 0.7rem 1.4rem;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .candado button:hover { background: var(--amarillo); color: var(--tinta); }
+
+  .candado .error {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #b3261e;
+    margin-top: 0.85rem;
+    min-height: 1.2em;
+  }
+
+  /* ── footer ───────────────────────────────── */
+  footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--tinta);
+    padding: 1.75rem 0 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  footer .mono { color: var(--secundario); }
+
+  footer .inter-footer {
+    font-family: var(--sans);
+    font-weight: 900;
+    color: var(--amarillo);
+    -webkit-text-stroke: 1.5px var(--tinta);
+    font-size: 1.4rem;
+  }
+
+  /* ── navegación del prototipo ─────────────── */
+  .pantalla { display: none; }
+  .pantalla.activa { display: block; }
+
+  /* ── responsive ───────────────────────────── */
+  @media (max-width: 40rem) {
+    html { font-size: 16px; }
+    .hero { padding: 3.5rem 0 2.5rem; }
+    .hero-curso .inter { display: none; }
+    .hero-curso > .mono { max-width: 100%; }
+    .poster { padding: 1.75rem 1.5rem; }
+    .poster .numero-gigante { font-size: 4.5rem; top: -1rem; }
+    .clase { grid-template-columns: 2.5rem 1fr auto; gap: 1rem; padding: 1.1rem 0.25rem; }
+    .clase .numeral { font-size: 1.5rem; }
+    .candado { padding: 2rem 1.5rem; }
+    .tarjeta-deck { padding: 1.5rem; }
+  }
+
+  /* ── movimiento reducido ──────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    .poster:hover, .tarjeta-deck:hover { transform: none; }
+    button.clase:hover, a.clase:hover, ul.materiales a:hover { transform: none; }
+  }
+
+  /* foco de teclado visible */
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--tinta);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PANTALLA 1: HUB ═══════════ -->
+<div class="pantalla activa" id="pantalla-hub">
+  <div class="contenedor">
+    <header class="topbar">
+      <a class="marca" href="#hub">Cátedra <span>/ William Montoya</span></a>
+      <span class="firma">UdeA · 2026</span>
+    </header>
+
+    <section class="hero">
+      <span class="mono sube sube-1">Repositorio docente</span>
+      <h1 class="sube sube-2">Lo que se <span class="hl">planea</span> y lo que <span class="hl">pasa</span>, en el mismo lugar.</h1>
+      <p class="lede sube sube-3">Cada curso se publica dos veces: antes de la clase, el programa. Después, la memoria de lo que ocurrió de verdad.</p>
+    </section>
+
+    <section class="seccion">
+      <span class="mono sube sube-3">Cursos — 01</span>
+
+      <a class="poster sube sube-4" href="#curso">
+        <span class="numero-gigante" aria-hidden="true">3.0</span>
+        <span class="mono">Universidad de Antioquia · 2026-2</span>
+        <h2>Pensamiento Sensorial <span class="hl">3.0</span></h2>
+        <p class="desc">Diseño de interacción, interfaces y experiencias. Un curso sobre lo que ocurre entre una persona y un sistema que le responde.</p>
+        <ul class="tags">
+          <li>16 sesiones</li>
+          <li>Presencial</li>
+          <li>Comunicación audiovisual y multimedial</li>
+        </ul>
+        <span class="cta">Entrar al curso <span class="flecha">→</span></span>
+      </a>
+    </section>
+
+    <footer>
+      <span class="mono">Cátedra — sitio público desde el día uno</span>
+      <span class="inter-footer" aria-hidden="true">↔</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ═══════════ PANTALLA 2: CURSO ═══════════ -->
+<div class="pantalla" id="pantalla-curso">
+  <div class="contenedor">
+    <header class="topbar">
+      <a class="marca" href="#hub">Cátedra</a>
+      <a class="volver" href="#hub"><span class="flecha-izq">←</span> Todos los cursos</a>
+    </header>
+
+    <section class="hero-curso">
+      <span class="inter" aria-hidden="true">↔</span>
+      <span class="mono sube sube-1">Universidad de Antioquia · Comunicación Audiovisual y Multimedial · 2026-2</span>
+      <h1 class="sube sube-2">Pensamiento<br>Sensorial <span class="tres">3.0</span></h1>
+      <p class="lede sube sube-3">¿Cómo diseñar sistemas que permitan a las personas comprender posibilidades, actuar sobre ellas y construir una relación significativa con aquello que responde a sus acciones?</p>
+    </section>
+
+    <div class="semestre sube sube-3">
+      <span class="mono">Sesión 01 / 16</span>
+      <div class="pista"><div class="relleno"></div></div>
+      <span class="mono">ago – nov</span>
+    </div>
+
+    <section class="bloque sube sube-4">
+      <span class="mono">El curso</span>
+      <p>La interacción como material de diseño, no como una capa que se agrega al final. Dieciséis sesiones para aprender a leer sistemas ajenos, formular una pregunta propia y poner un modelo de interacción en manos de otra persona.</p>
+      <p>El curso es vivo: las sesiones se publican antes de dictarse y pueden cambiar cuando lo que pasa en el salón contradice lo que decía el programa.</p>
+      <a class="pill" href="#">Syllabus 3.0 (PDF) <span class="nota">— pendiente de subir</span></a>
+    </section>
+
+    <div class="separador" aria-hidden="true">↔</div>
+
+    <section class="bloque">
+      <span class="mono">Clases — 16 sesiones, una por semana</span>
+
+      <ol class="clases">
+        <li class="clase-fila">
+          <a class="clase" href="#clase-01">
+            <span class="numeral">01</span>
+            <span class="cuerpo">
+              <span class="titulo-clase">¿Qué hay en el medio?</span>
+              <span class="tension">usabilidad ↔ experiencia</span>
+            </span>
+            <span class="lado">
+              <span class="sticker">Disponible</span>
+              <span class="flecha" aria-hidden="true">→</span>
+            </span>
+          </a>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">02</span>
+            <span class="cuerpo"><span class="titulo-clase">La máquina desconocida</span><span class="tension">mostrar ↔ descubrir</span></span>
+            <span class="lado"><span class="estado-gris">13 ago</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">03</span>
+            <span class="cuerpo"><span class="titulo-clase">Tú no eres el usuario</span><span class="tension">intención ↔ interpretación</span></span>
+            <span class="lado"><span class="estado-gris">20 ago</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">04</span>
+            <span class="cuerpo"><span class="titulo-clase">¿Qué crees que es esta cosa?</span><span class="tension">intención ↔ interpretación</span></span>
+            <span class="lado"><span class="estado-gris">27 ago</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">05</span>
+            <span class="cuerpo"><span class="titulo-clase">No me hagas aprender dos veces</span><span class="tension">convención ↔ ruptura</span></span>
+            <span class="lado"><span class="estado-gris">3 sep</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">06</span>
+            <span class="cuerpo"><span class="titulo-clase">De pantallas a sistemas: la identidad del proyecto</span><span class="tension">colección ↔ sistema</span></span>
+            <span class="lado"><span class="estado-gris">10 sep</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">07</span>
+            <span class="cuerpo"><span class="titulo-clase">¿Qué pasa después?</span><span class="tension">espectador ↔ participante</span></span>
+            <span class="lado"><span class="estado-gris">17 sep</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">08</span>
+            <span class="cuerpo"><span class="titulo-clase">Que se sienta</span><span class="tension">función ↔ sensación</span></span>
+            <span class="lado"><span class="estado-gris">24 sep</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">09</span>
+            <span class="cuerpo"><span class="titulo-clase">Prohibida la pantalla</span><span class="tension">pantalla ↔ cuerpo</span></span>
+            <span class="lado"><span class="estado-gris">1 oct</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">10</span>
+            <span class="cuerpo"><span class="titulo-clase">La fricción es un material</span><span class="tension">usabilidad ↔ experiencia</span></span>
+            <span class="lado"><span class="estado-gris">8 oct</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">11</span>
+            <span class="cuerpo"><span class="titulo-clase">Rompe mi sistema</span><span class="tension">guion ↔ apropiación</span></span>
+            <span class="lado"><span class="estado-gris">15 oct</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">12</span>
+            <span class="cuerpo"><span class="titulo-clase">¿Quién decide?</span><span class="tension">control ↔ agencia</span></span>
+            <span class="lado"><span class="estado-gris">22 oct</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">13</span>
+            <span class="cuerpo"><span class="titulo-clase">Cuando la interfaz no sabe</span><span class="tension">certeza ↔ incertidumbre</span></span>
+            <span class="lado"><span class="estado-gris">29 oct</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">14</span>
+            <span class="cuerpo"><span class="titulo-clase">Reglas antes que píxeles</span><span class="tension">implícito ↔ explícito</span></span>
+            <span class="lado"><span class="estado-gris">5 nov</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">15</span>
+            <span class="cuerpo"><span class="titulo-clase">En manos de otra persona</span><span class="tension">expectativa ↔ evidencia</span></span>
+            <span class="lado"><span class="estado-gris">12 nov</span></span>
+          </span>
+        </li>
+        <li class="clase-fila">
+          <span class="clase programada">
+            <span class="numeral">16</span>
+            <span class="cuerpo"><span class="titulo-clase">¿Qué creíamos que iba a pasar?</span><span class="tension">expectativa ↔ evidencia</span></span>
+            <span class="lado"><span class="estado-gris">19 nov</span></span>
+          </span>
+        </li>
+      </ol>
+
+      <p class="nota-curso">Las sesiones se abren al ritmo del curso. Los títulos y fechas pueden moverse: esto es un programa en construcción, no una promesa.</p>
+    </section>
+
+    <footer>
+      <span class="mono">Cátedra — Pensamiento Sensorial 3.0</span>
+      <span class="inter-footer" aria-hidden="true">↔</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ═══════════ PANTALLA 3: LANDING DE CLASE ═══════════ -->
+<div class="pantalla" id="pantalla-clase">
+  <div class="contenedor">
+    <header class="topbar">
+      <a class="marca" href="#hub">Cátedra</a>
+      <a class="volver" href="#curso"><span class="flecha-izq">←</span> Pensamiento Sensorial 3.0</a>
+    </header>
+
+    <section class="hero-clase">
+      <span class="mono sube sube-1">Sesión 01 · Jueves 6 de agosto de 2026</span>
+      <span class="numeral-hero sube sube-1" aria-hidden="true">01</span>
+      <h1 class="sube sube-2">¿Qué hay en el medio?</h1>
+      <p class="lede sube sube-3">¿Una interfaz es aquello que se ve, o aquello que media —y transforma— nuestra relación con los objetos, las personas, el entorno y nosotros mismos?</p>
+      <div class="meta-fila sube sube-3">
+        <span class="sticker">usabilidad ↔ experiencia</span>
+        <span class="tag-tinta">Mediación</span>
+        <span class="tag-tinta">Percepción</span>
+        <span class="tag-tinta">Acción y respuesta</span>
+      </div>
+    </section>
+
+    <section class="bloque sube sube-4">
+      <span class="mono">La presentación</span>
+      <div class="tarjeta-deck">
+        <div>
+          <p class="que">El deck de la sesión</p>
+          <p class="detalle">Se abre en una ventana nueva, listo para proyectar. Pide la contraseña en clase.</p>
+        </div>
+        <button class="boton" onclick="abrirCandado('01', '¿Qué hay en el medio?')">Abrir presentación →</button>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <span class="mono">En esta sesión</span>
+      <div class="momentos">
+        <div class="momento">
+          <span class="mono">Apertura</span>
+          <p>Cada quien presenta una máquina, objeto o sistema que le resulte especialmente satisfactorio de usar. La discusión no va a la apariencia: va a las relaciones entre percepción, acción y respuesta.</p>
+        </div>
+        <div class="momento">
+          <span class="mono">Laboratorio · Lo que las cosas quieren de ti</span>
+          <p>En grupos, observar un objeto cotidiano ajeno y preguntar qué relación propone: qué acciones parece permitir, qué exige del cuerpo, qué señales ofrece. No se trata de adivinar el uso verdadero del objeto, sino de reconocer que el uso se construye en el encuentro.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <span class="mono">Material — tres experiencias para después de clase</span>
+      <ul class="materiales">
+        <li>
+          <a href="https://wattenberger.com/thoughts/our-interfaces-have-lost-their-senses/" target="_blank" rel="noopener">
+            <span class="mat-titulo">Our Interfaces Have Lost Their Senses</span>
+            <span class="mat-autor">Amelia Wattenberger ↗</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://neal.fun/stimulation-clicker/" target="_blank" rel="noopener">
+            <span class="mat-titulo">Stimulation Clicker</span>
+            <span class="mat-autor">Neal Agarwal ↗</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://fingerspelling.xyz/" target="_blank" rel="noopener">
+            <span class="mat-titulo">Fingerspelling</span>
+            <span class="mat-autor">American Sign Language ↗</span>
+          </a>
+        </li>
+      </ul>
+      <p class="nota-curso">Un texto, un juego y un ejercicio corporal. La pregunta para la próxima sesión: qué sentidos usa cada uno, y cómo supiste qué podías hacer.</p>
+    </section>
+
+    <section class="bloque">
+      <span class="mono">Referentes</span>
+      <ul class="referentes">
+        <li>Bolter, J. D. y Gromala, D. (2003). <em>Windows and mirrors: Interaction design, digital art, and the myth of transparency</em>. <span class="ref-meta">MIT Press.</span></li>
+        <li>Dourish, P. (2001). <em>Where the action is: The foundations of embodied interaction</em>. <span class="ref-meta">MIT Press.</span></li>
+        <li>Galloway, A. R. (2012). <em>The interface effect</em>. <span class="ref-meta">Polity Press.</span></li>
+        <li>Krippendorff, K. (2005). <em>The semantic turn: A new foundation for design</em>. <span class="ref-meta">CRC Press.</span></li>
+        <li>Martín-Barbero, J. (1987). <em>De los medios a las mediaciones: comunicación, cultura y hegemonía</em>. <span class="ref-meta">Gustavo Gili.</span></li>
+      </ul>
+    </section>
+
+    <div class="siguiente">
+      <span class="mono">Siguiente — 13 de agosto</span>
+      <span class="que-sigue">S02 · La máquina desconocida</span>
+    </div>
+
+    <footer>
+      <span class="mono">Cátedra — Pensamiento Sensorial 3.0</span>
+      <span class="inter-footer" aria-hidden="true">↔</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ═══════════ CANDADO ═══════════ -->
+<div class="candado-fondo" id="candado-fondo">
+  <div class="candado" role="dialog" aria-modal="true" aria-labelledby="candado-titulo">
+    <span class="numeral-modal" id="candado-numeral">01</span>
+    <h3 id="candado-titulo">¿Qué hay en el medio?</h3>
+    <p>Esta presentación es para quienes están en el curso. Escribe la contraseña y se abre en una ventana nueva.</p>
+    <form id="candado-form">
+      <input type="password" id="candado-input" placeholder="Contraseña" autocomplete="off" aria-label="Contraseña">
+      <button type="submit">Abrir</button>
+    </form>
+    <p class="error" id="candado-error"></p>
+  </div>
+</div>
+
+<!-- ancla oculta para abrir el deck en ventana nueva (más confiable que window.open) -->
+<a id="deck-abridor" href="#" target="_blank" rel="noopener" hidden></a>
+
+<script>
+  const CLAVE = 'udea2026';
+  let deckActual = null;
+
+  function ir(pantalla) {
+    document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+    const destino = document.getElementById('pantalla-' + pantalla);
+    destino.classList.add('activa');
+    // re-dispara las animaciones de entrada
+    destino.querySelectorAll('.sube').forEach(el => {
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function desdeHash() {
+    const h = location.hash;
+    if (h === '#curso') ir('curso');
+    else if (h.startsWith('#clase-')) ir('clase');
+    else ir('hub');
+  }
+
+  window.addEventListener('hashchange', desdeHash);
+  desdeHash();
+
+  const fondo = document.getElementById('candado-fondo');
+  const input = document.getElementById('candado-input');
+  const error = document.getElementById('candado-error');
+  const abridor = document.getElementById('deck-abridor');
+
+  function abrirCandado(numero, titulo) {
+    deckActual = numero;
+    document.getElementById('candado-numeral').textContent = numero;
+    document.getElementById('candado-titulo').textContent = titulo;
+    input.value = '';
+    error.textContent = '';
+    fondo.classList.add('abierto');
+    input.focus();
+  }
+
+  function cerrarCandado() {
+    fondo.classList.remove('abierto');
+  }
+
+  fondo.addEventListener('click', e => { if (e.target === fondo) cerrarCandado(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarCandado(); });
+
+  document.getElementById('candado-form').addEventListener('submit', e => {
+    e.preventDefault();
+    if (input.value.trim().toLowerCase() === CLAVE) {
+      // En producción: /presentaciones/ps3/s01/index.html
+      abridor.href = '../public/presentaciones/ps3/s' + deckActual + '/index.html';
+      abridor.click();
+      cerrarCandado();
+    } else {
+      error.textContent = 'Esa no es. Pregunta en clase.';
+    }
+  });
+</script>
+
+</body>
+</html>
