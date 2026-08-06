@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clase 1 — ¿Qué queda en el medio? | Pensamiento Sensorial</title>
+  <title>Clase 1 — Sobre interfaces y mediaciones | Pensamiento Sensorial</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
 
@@ -141,7 +141,7 @@
       max-width: 85%;
     }
 
-    /* Tema central de la clase: la única diapositiva que invierte la paleta — se reserva para UNA idea por sesión */
+    /* Tema conceptual de la clase: paleta invertida — se reserva para los bloques de concepto */
     .tema-central {
       font-size: clamp(2.4rem, 8vw, 5.5rem);
       font-weight: 900;
@@ -150,6 +150,25 @@
       line-height: 1.1;
       max-width: 85%;
     }
+
+    /* Slide de referencias */
+    .refs-title {
+      font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+      font-weight: 900;
+      color: #444;
+      margin-bottom: 2rem;
+    }
+    .refs-list {
+      list-style: none;
+      text-align: left;
+      max-width: 60%;
+      font-size: clamp(0.95rem, 1.9vw, 1.25rem);
+      font-weight: 400;
+      color: #555;
+      line-height: 1.7;
+    }
+    .refs-list li { margin-bottom: 0.9rem; }
+    .refs-list em { font-style: italic; }
 
     /* ── Animaciones selectivas ── */
 
@@ -281,6 +300,7 @@
       .slide-title { max-width: 92%; }
       .cita-texto { max-width: 92%; }
       .slide-image { max-width: 90%; }
+      .refs-list { max-width: 92%; }
       .slide--visual svg { width: 95% !important; height: 78% !important; }
     }
 
@@ -349,7 +369,6 @@
     }
     .dm-box.dark { background: #222; color: #fff; }
     .dm-box.accent { background: #eeff41; color: #111; }
-    .dm-box.milestone { padding: 0.5rem 1rem; }
     .dm-box strong { display: block; font-size: 0.95rem; font-weight: 700; }
     .dm-box em { display: block; font-style: normal; font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
     .dm-arrow { font-size: 1.2rem; color: #444; line-height: 1; }
@@ -414,6 +433,8 @@
 <body>
   <div class="slides-container">
 
+    <!-- ══ APERTURA ══ -->
+
     <div class="slide" style="gap: 2rem;">
       <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" style="max-width: 40%; border-radius: 8px;" alt="gif de espera">
       <p class="slide-title">Gracias por la puntualidad</p>
@@ -427,65 +448,54 @@
 
     <div class="slide slide--section" style="background: #eeff41;">
       <p class="section-kicker">Clase 1</p>
-      <p class="section-theme">¿Qué queda en el medio?</p>
+      <p class="section-theme">Sobre interfaces y mediaciones</p>
     </div>
+
+    <!-- ══ PRESENTACIÓN ══ -->
 
     <div class="slide">
       <p class="slide-title">Hola. Soy William Montoya.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Estudié Periodismo aquí, en la Universidad de Antioquia, y terminé dedicándome al diseño: a entender cómo las personas interactúan con la tecnología.</p>
+      <p class="slide-title">Estudié Periodismo aquí, en la Universidad de Antioquia, y terminé dedicándome al diseño: a intentar entender qué pasa cuando las personas se encuentran con la tecnología.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Con los años algo me empezó a incomodar: hablábamos de interfaces como si solo fueran herramientas para completar tareas.</p>
+      <p class="slide-title">Durante mucho tiempo pensé que diseñar era lograr que las cosas funcionaran mejor. Que fueran más eficientes. Que tuvieran menos fricción.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Qué tipo de relación construyen esos sistemas con las personas que los usan?</p>
+      <p class="slide-title">Pero a medida que pasaron los años, me di cuenta de que esa era una forma bastante mala de entender el diseño.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Esa es la pregunta que dio origen a este curso.</p>
+      <p class="slide-title">Una cosa puede funcionar perfectamente y aun así construir <span class="hl">una relación terrible</span> con quien la usa.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Sí, este es un curso de diseño, pero no sobre diseño de pantallas, o de flujos, o de procesos.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">No me interesa que al final del semestre piensen igual que yo: me interesa que tengan <span class="hl">mejores argumentos</span> para defender cómo piensan ustedes.</p>
+      <p class="slide-title">Es un curso para diseñar <span class="hl">relaciones</span>.</p>
     </div>
+
+    <!-- ══ PREGUNTA DE APERTURA ══ -->
 
     <div class="slide">
-      <p class="slide-title">Y es que ése es el corazón de este curso. El pensamiento. La cognición. No sólo lo que ocurre en nuestra mente, sino también lo que se conoce como <span class="hl">"cognición encarnada"</span>, el famoso "Pensamiento Sensorial".</p>
-    </div>
-
-    <div class="slide slide--cita">
-      <p class="cita-texto">"El cuerpo es nuestro medio general para tener un mundo."</p>
-      <p class="cita-fuente">Maurice Merleau-Ponty — <em>Fenomenología de la percepción</em>, 1945</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Ahora quiero conocerlos. No sólo por su nombre y sus intereses, sino por algo que hayan creado.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Piensen en los semestres que llevan: ¿cuál es el proyecto del que se sienten más orgullosos?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">¿En qué consistía?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">¿Por qué fue importante para ustedes?</p>
+      <p class="slide-title">¿Cuál es el proyecto del que se sienten más orgullosos y por qué?</p>
     </div>
 
     <div class="slide">
       <p class="slide-title">¿Qué querían que sintiera, pensara o hiciera la audiencia al encontrarse con ese proyecto?</p>
     </div>
 
+    <!-- ══ LABORATORIO 1 ══ -->
+
     <div class="slide slide--section" style="background: #eeff41;">
-      <p class="slide-title" style="font-size: 3.5rem; letter-spacing: 0.03em; color: #111;">LABORATORIO 1</p>
-      <p class="slide-subtitle" style="color: #333;">Lo que las cosas quieren de ti</p>
+      <p class="section-kicker">Laboratorio 1</p>
+      <p class="section-theme">Lo que las cosas quieren de ti</p>
     </div>
 
     <div class="slide">
@@ -493,19 +503,15 @@
     </div>
 
     <div class="slide">
-      <p class="slide-title">Armemos grupos de tres o cuatro personas.</p>
+      <p class="slide-title">Formen grupos de tres o cuatro personas. Saquen un objeto cotidiano, algo que usen constantemente, e intercámbienlo con el grupo de al lado.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Saquen cualquier objeto que tengan a la mano: un celular, un cuaderno, un lapicero, una billetera, unos audífonos. Mientras más cotidiano, mejor.</p>
+      <p class="slide-title">Durante diez minutos no intenten decidir si el objeto está bien o mal diseñado.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Ahora intercámbienlo con el grupo que tienen al lado.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Durante diez minutos van a observar un objeto que no es suyo. No lo juzguen: intenten entender qué tipo de relación propone.</p>
+      <p class="slide-title">Vamos a observarlo para tratar de entender <span class="hl">qué tipo de relación nos está proponiendo</span>.</p>
     </div>
 
     <div class="slide">
@@ -513,50 +519,57 @@
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Qué les hace pensar eso? ¿Qué encontraron en el objeto que les dio esa pista?</p>
+      <p class="slide-title">¿Qué parece esperar este objeto de quien lo tiene enfrente? ¿Cuidado, rapidez, precisión, paciencia, fuerza, exploración, confianza?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Puede ser su forma, un botón, un color, un material, una textura, una etiqueta, un sonido o una ausencia.</p>
+      <p class="slide-title">¿Hay algo que parezca difícil, incómodo o prohibido hacer?</p>
+    </div>
+
+    <!-- ══ EL USO SE CONSTRUYE ══ -->
+
+    <div class="slide">
+      <p class="slide-title">Me gustaría que habláramos un poco de lo que significa usar algo.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Qué parece esperar este objeto de quien lo usa?</p>
+      <p class="slide-title">¿Qué hace que un objeto sea difícil o fácil de usar?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Pide cuidado? ¿Rapidez? ¿Precisión? ¿Paciencia? ¿Fuerza? ¿Exploración? ¿Confianza?</p>
+      <p class="slide-title">El uso no está terminado dentro del objeto.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Si tuvieran que describir con solo tres palabras la relación que este objeto propone, ¿cuáles serían?</p>
+      <p class="slide-title">No todos usamos las cosas de la misma manera, con la misma intención o con los mismos mecanismos.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Cuando terminen, devuélvanle el objeto a su dueño.</p>
+      <p class="slide-title">Incluso algo tan sencillo como escribir a mano es distinto para cada persona.</p>
+    </div>
+
+    <!-- [IMAGEN SUGERIDA] Foto de la mano de William escribiendo "al revés" (tomando el lapicero
+         como zurdo siendo diestro). Iría sola en su slide, justo después de esta oración.
+         Es evidencia personal del argumento — vale más que cualquier stock. -->
+    <div class="slide">
+      <p class="slide-title">Yo escribo al revés: tomo el lapicero como si fuera zurdo, pero soy diestro. No por nada, simplemente por mi contexto.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Quién escuchó una descripción de su propio objeto que nunca había pensado?</p>
+      <p class="slide-title">El uso se construye en el encuentro entre una forma, un cuerpo, una situación, una historia y unas expectativas.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Qué cambió entre las interpretaciones: el objeto, las personas o la situación?</p>
+      <p class="slide-title">Un objeto puede sugerir una acción, pero no puede obligar por sí solo a que esa acción tenga el mismo sentido para todos.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">El uso es una <span class="hl">relación que se construye</span>.</p>
+      <p class="slide-title">Lo que llamamos “uso” es <span class="hl">una relación que se construye</span>.</p>
     </div>
 
-    <div class="slide">
-      <p class="slide-title">Un objeto no solo sirve para algo: les pide una forma de comportarse. Esa "petición" no es natural: alguien la diseñó.</p>
-    </div>
+    <!-- ══ ¿QUÉ QUEDA EN EL MEDIO? ══ -->
 
-    <div class="slide slide--section" style="background: #eeff41;">
-      <p class="slide-title" style="font-size: 3.5rem; letter-spacing: 0.03em; color: #111; margin-bottom: 1.5rem;">RECESO</p>
-      <img data-src="assets/receso.gif" style="max-width: 55%; border-radius: 6px;" alt="">
-    </div>
-
+    <!-- Único slide con paleta invertida: el tema central de la sesión -->
     <div class="slide slide--section" style="background: #111;">
       <p class="tema-central">¿QUÉ QUEDA<br>EN EL MEDIO?</p>
     </div>
@@ -566,113 +579,80 @@
     </div>
 
     <div class="slide">
-      <p class="slide-title">En el laboratorio no encontramos el uso verdadero de los objetos.</p>
+      <p class="slide-title">Cuando una persona se encuentra con un objeto, no llega directamente a él.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Encontramos formas de relacionarnos con ellos.</p>
+      <p class="slide-title">Llega a través de su forma, sus materiales, sus señales, sus reglas, su contexto y de todo lo que ya aprendió antes.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Para describirlas tuvimos que hablar de una forma, de un cuerpo, de una situación, de una historia y de unas expectativas.</p>
+      <p class="slide-title">Y el objeto tampoco llega intacto a la persona: le llega convertido en posibilidad.</p>
     </div>
 
-    <div class="slide slide--conclusion">
-      <p class="slide-title">El uso no está terminado dentro del objeto: <span class="hl">se construye en el encuentro</span>.</p>
+    <div class="slide">
+      <p class="slide-title">“Esto se puede tocar”, “esto hay que cuidarlo”, “por aquí se empieza”, “esto no es para mí”.</p>
     </div>
 
     <div class="slide">
       <p class="slide-title">Entre una persona y aquello con lo que se relaciona siempre hay algo que organiza el encuentro.</p>
     </div>
 
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Hay una <span class="hl">mediación</span>.</p>
+    </div>
+
+    <!-- ══ ¿QUÉ ES UNA INTERFAZ? ══ -->
+
     <div class="slide">
-      <p class="slide-title">La forma, las marcas, las reglas, el ritmo de respuesta, lo que ya aprendimos y lo que el cuerpo puede hacer.</p>
+      <p class="slide-title">¿Qué es para ustedes una interfaz?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">A ese quedarse en el medio —y cambiar lo que pasa de un lado y del otro— lo vamos a llamar <span class="hl">mediación</span>.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Un mapa no nos entrega el territorio intacto: selecciona, escala, omite y orienta.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Una cámara no conserva un instante intacto: encuadra, calcula, enfoca y deja algo afuera.</p>
+      <p class="slide-title">¿Tiene interfaz una puerta, un ascensor, una máquina expendedora, un carro, un semáforo, una cafetera?</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">Mediar no es transportar una relación intacta. Es <span class="hl">darle una forma</span>.</p>
+      <p class="slide-title">La interfaz es <span class="hl">la mediación entre nosotros y un sistema</span>.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Solemos imaginar la interfaz como una pantalla: una ventana por la que miramos algo que está del otro lado.</p>
+      <p class="slide-title">A veces será una pantalla. A veces una manija. A veces una secuencia. A veces el ritmo de respuesta. A veces una regla compartida.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Alexander Galloway propone verla como una zona con su propia lógica.</p>
+      <p class="slide-title">Alexander Galloway propone no pensar la interfaz como una ventana transparente, sino como una zona con lógica propia.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">La interfaz no es solo el puente que cruzamos para llegar a otra cosa.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">La interfaz no es solo por donde pasamos para llegar a otra cosa: <span class="hl">también es un lugar donde algo nos pasa</span>.</p>
+      <p class="slide-title">La interfaz también es <span class="hl">un lugar donde algo nos pasa</span>.</p>
     </div>
 
-    <div class="slide slide--section" style="background: #eeff41;">
-      <p class="section-kicker">Primera relación</p>
-      <p class="section-theme">CON LOS OBJETOS<br>Y LOS SISTEMAS</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Un cajero no solo entrega dinero.</p>
+    <div class="slide slide--cita">
+      <p class="cita-texto">“Las interfaces no son simplemente objetos ni puntos de frontera. Son zonas autónomas de actividad. Las interfaces no son cosas, sino procesos que producen un resultado, del tipo que sea.”</p>
+      <p class="cita-fuente">Alexander Galloway — <em>The Interface Effect</em> (2012)</p>
     </div>
 
     <div class="slide">
-      <img data-src="assets/cajero.jpg" class="slide-image" alt="Cajero automático">
+      <p class="slide-title">En la definición clásica, la interfaz es una capa, una membrana entre la persona y el sistema.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Organiza una relación con el banco, la espera, el riesgo, la privacidad y la seguridad.</p>
+      <p class="slide-title">Pero las interfaces también <span class="hl">organizan la forma en que nos relacionamos</span>.</p>
     </div>
 
-    <div class="slide">
-      <p class="slide-title">Un teléfono de disco no es importante porque alguien joven no sepa usarlo.</p>
-    </div>
+    <!-- ══ EL MISMO AFECTO, OTROS MEDIOS ══ -->
 
     <div class="slide">
-      <img data-src="assets/telefono-disco.avif" class="slide-image" alt="Teléfono de disco">
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Es importante porque medió de otra manera el tiempo, la espera, el error y el cuerpo.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Jesús Martín-Barbero llamó mediaciones a los procesos por los que una tecnología adquiere sentido en una cultura.</p>
+      <p class="slide-title">No es lo mismo escribir una carta, hacer una llamada, enviar un audio o mandar un mensaje por WhatsApp.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">Ninguna interfaz llega sola: entra en una historia de usos, cuerpos y relaciones.</p>
-    </div>
-
-    <div class="slide">
-      <img data-src="assets/gif-respiro-1.gif" style="max-width: 55%; border-radius: 6px;" alt="">
-    </div>
-
-    <div class="slide slide--section" style="background: #eeff41;">
-      <p class="section-kicker">Segunda relación</p>
-      <p class="section-theme">CON OTRAS<br>PERSONAS</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Un mensaje no llega igual en una carta, una llamada, un audio o un chat.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">El afecto puede ser el mismo. La relación no llega igual.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Cada medio organiza otras presencias, otras ausencias, otros tiempos y otras obligaciones.</p>
+      <p class="slide-title">El afecto puede ser el mismo, pero <span class="hl">no se comunica igual</span>.</p>
     </div>
 
     <div class="slide">
@@ -680,28 +660,114 @@
     </div>
 
     <div class="slide">
-      <p class="slide-title">WhatsApp añadió señales diminutas: “en línea”, “escribiendo”, dos checks, hora de conexión, silencio.</p>
+      <p class="slide-title">Cada medio organiza otras presencias, otras ausencias, otros tiempos y otras obligaciones.</p>
+    </div>
+
+    <!-- Visual: tabla comparativa de medios — va después de la explicación, como síntesis -->
+    <div class="slide slide--visual">
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
+        <!-- CARTA -->
+        <rect x="90" y="46" width="220" height="72" rx="4" fill="#222"/>
+        <text x="200" y="82" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">CARTA</text>
+        <rect x="330" y="46" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="570" y="82" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Permite demora y deja huella</text>
+        <!-- LLAMADA -->
+        <rect x="90" y="134" width="220" height="72" rx="4" fill="#222"/>
+        <text x="200" y="170" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">LLAMADA</text>
+        <rect x="330" y="134" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="570" y="170" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Exige coincidencia</text>
+        <!-- AUDIO -->
+        <rect x="90" y="222" width="220" height="72" rx="4" fill="#222"/>
+        <text x="200" y="258" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">AUDIO</text>
+        <rect x="330" y="222" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="570" y="258" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Devuelve la voz sin exigir simultaneidad</text>
+        <!-- CHAT -->
+        <rect x="90" y="310" width="220" height="72" rx="4" fill="#222"/>
+        <text x="200" y="346" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">CHAT</text>
+        <rect x="330" y="310" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+        <text x="570" y="346" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Inmediatez, y la posibilidad de no contestar</text>
+      </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-pair">
+          <div class="dm-box dark"><strong>Carta</strong></div>
+          <div class="dm-box" style="border:1px solid #444;"><strong style="font-weight:400;color:#444;">Demora y huella</strong></div>
+        </div>
+        <div class="dm-pair">
+          <div class="dm-box dark"><strong>Llamada</strong></div>
+          <div class="dm-box" style="border:1px solid #444;"><strong style="font-weight:400;color:#444;">Exige coincidencia</strong></div>
+        </div>
+        <div class="dm-pair">
+          <div class="dm-box dark"><strong>Audio</strong></div>
+          <div class="dm-box" style="border:1px solid #444;"><strong style="font-weight:400;color:#444;">Voz sin simultaneidad</strong></div>
+        </div>
+        <div class="dm-pair">
+          <div class="dm-box dark"><strong>Chat</strong></div>
+          <div class="dm-box" style="border:1px solid #444;"><strong style="font-weight:400;color:#444;">Inmediatez, o no contestar</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Respiro después del bloque denso -->
+    <div class="slide">
+      <img data-src="assets/gif-respiro-1.gif" style="max-width: 55%; border-radius: 6px;" alt="">
+    </div>
+
+    <!-- ══ TALLER ══ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Taller</p>
+      <p class="section-theme">El mismo mensaje, tres épocas</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Esas señales no describen una relación que ya existía.</p>
+      <p class="slide-title">Piensen en un mensaje que le mandarían a su mamá —o a quien quieran— para avisarle que van a llegar tarde. Algo cotidiano.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Lo van a escribir <span class="hl">una sola vez</span>.</p>
+    </div>
+
+    <!-- [PENDIENTE DE GUION] El outline termina aquí las instrucciones del taller. Si la mecánica
+         es reescribir/adaptar el mensaje para tres medios de distintas épocas (carta, llamada,
+         WhatsApp), faltan 2–3 slides de instrucción. Confirmar con William antes de la clase.
+         [IMAGEN SUGERIDA] Un mismo mensaje en tres soportes: carta manuscrita, teléfono fijo,
+         pantalla de chat — sola en su slide, como disparador del ejercicio. -->
+
+    <!-- ══ DE LOS MEDIOS A LAS MEDIACIONES ══ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">De los medios a las mediaciones</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Cuando Jesús Martín-Barbero propuso mover la mirada de los medios a las mediaciones, pedía exactamente esto que acabamos de sentir.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">No preguntarnos solo qué hace una tecnología, sino cómo adquiere sentido en relaciones que ya estaban ocurriendo.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Eso nos protege de un error frecuente: imaginar que el diseño llega a un terreno vacío.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">Ayudan a producirla: le dan <span class="hl">ritmo, temperatura y obligaciones</span>.</p>
+      <p class="slide-title">Ninguna interfaz empieza desde cero. <span class="hl">Siempre entra en una historia de relaciones</span>.</p>
     </div>
+
+    <!-- ══ EL MUNDO QUE UNA INTERFAZ DEJA PASAR ══ -->
 
     <div class="slide slide--section" style="background: #eeff41;">
-      <p class="section-kicker">Tercera relación</p>
-      <p class="section-theme">CON EL<br>ENTORNO</p>
+      <p class="section-theme">El mundo que una interfaz deja pasar</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Un mapa, una foto y un termostato no nos muestran el mundo entero.</p>
+      <p class="slide-title">Hay otra relación que las interfaces organizan todo el tiempo: la que tenemos con el mundo alrededor.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Cada uno vuelve perceptible una parte del mundo y apaga el resto.</p>
+      <p class="slide-title">Un mapa convierte un territorio en orientación, distancia, ruta y frontera.</p>
     </div>
 
     <div class="slide">
@@ -709,124 +775,25 @@
     </div>
 
     <div class="slide">
-      <p class="slide-title">Una interfaz se mete en nuestro medio para tener un mundo.</p>
+      <p class="slide-title">Un termostato convierte el clima en un número que se puede subir o bajar.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Una foto convierte un momento en encuadre, memoria y prueba.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Ninguno muestra el mundo entero.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">Cambiar la interfaz cambia <span class="hl">qué mundo podemos percibir</span>.</p>
+      <p class="slide-title">Toda interfaz vuelve algo perceptible y <span class="hl">deja otra cosa fuera de campo</span>.</p>
     </div>
 
-    <div class="slide slide--section" style="background: #eeff41;">
-      <p class="section-kicker">Cuarta relación</p>
-      <p class="section-theme">CON NUESTRAS<br>CAPACIDADES</p>
-    </div>
+    <!-- ══ DOLLY ZOOM ══ -->
 
     <div class="slide">
-      <p class="slide-title">Una bicicleta media nuestra relación con el equilibrio.</p>
-    </div>
-
-    <div class="slide">
-      <img data-src="assets/mediacion-cuerpo-bicicleta.png" class="slide-image" alt="Persona equilibrándose en una bicicleta">
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Un piano media nuestra relación con el oído, el tiempo y la memoria muscular.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Una aplicación de pasos media nuestra relación con el cuerpo: lo mide, lo compara y propone una manera de juzgarlo.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Paul Dourish lo llama interacción encarnada: entendemos el mundo actuando con el cuerpo, no mirándolo de lejos.</p>
-    </div>
-
-    <div class="slide slide--conclusion">
-      <p class="slide-title">Una interfaz puede ampliar lo que somos capaces de hacer, o reducirlo. <span class="hl">Nunca nos deja iguales.</span></p>
-    </div>
-
-    <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:85%; height:85%;">
-        <defs><marker id="arrow-mediacion" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#444"/></marker></defs>
-        <line x1="450" y1="250" x2="220" y2="115" stroke="#444" stroke-width="1.5" marker-end="url(#arrow-mediacion)"/>
-        <line x1="450" y1="250" x2="680" y2="115" stroke="#444" stroke-width="1.5" marker-end="url(#arrow-mediacion)"/>
-        <line x1="450" y1="250" x2="220" y2="385" stroke="#444" stroke-width="1.5" marker-end="url(#arrow-mediacion)"/>
-        <line x1="450" y1="250" x2="680" y2="385" stroke="#444" stroke-width="1.5" marker-end="url(#arrow-mediacion)"/>
-        <rect x="330" y="220" width="240" height="62" rx="4" fill="#eeff41"/>
-        <text x="450" y="244" text-anchor="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#111">INTERFAZ</text>
-        <text x="450" y="266" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#111">media una relación con…</text>
-        <rect x="105" y="72" width="230" height="52" rx="4" fill="#222"/><text x="220" y="94" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#fff">OBJETOS Y SISTEMAS</text><text x="220" y="112" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#fff">acciones · reglas · riesgo</text>
-        <rect x="565" y="72" width="230" height="52" rx="4" fill="#222"/><text x="680" y="94" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#fff">OTRAS PERSONAS</text><text x="680" y="112" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#fff">ritmo · afecto · expectativa</text>
-        <rect x="105" y="360" width="230" height="52" rx="4" fill="#222"/><text x="220" y="382" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#fff">EL ENTORNO</text><text x="220" y="400" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#fff">percepción · escala · omisión</text>
-        <rect x="565" y="360" width="230" height="52" rx="4" fill="#222"/><text x="680" y="382" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#fff">NOSOTROS MISMOS</text><text x="680" y="400" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#fff">cuerpo · hábito · capacidad</text>
-      </svg>
-    </div>
-
-    <div class="slide slide--section" style="background: #eeff41;">
-      <p class="section-kicker">Una tensión para el semestre</p>
-      <p class="section-theme">¿DESAPARECER<br>O HACERSE NOTAR?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">A veces necesitamos que una interfaz desaparezca: una salida de emergencia, un pago urgente, una ayuda en medio de un problema.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">A veces necesitamos que se sienta: un instrumento, una cámara analógica, un videojuego difícil.</p>
-    </div>
-
-    <div class="slide">
-      <img data-src="assets/reflexion-camara-analogica.png" class="slide-image" alt="Manos ajustando una cámara analógica">
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Bolter y Gromala llaman transparencia a un polo y reflexión al otro.</p>
-    </div>
-
-    <div class="slide slide--conclusion">
-      <p class="slide-title">La pregunta no es cuál polo es mejor. Es <span class="hl">qué necesita esta relación y por qué</span>.</p>
-    </div>
-
-    <div class="slide slide--section" style="background: #eeff41;">
-      <p class="section-kicker">Un punto ciego propio</p>
-      <p class="section-theme">COLOMBIA<br>APRENDE</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Hace algunos años trabajé en el rediseño del Portal Colombia Aprende, una plataforma para docentes.</p>
-    </div>
-
-    <div class="slide">
-      <img data-src="assets/colombia-aprende.png" class="slide-image" alt="Portal Colombia Aprende">
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Yo llegué desde una relación muy particular con la tecnología: el cacharreo, la exploración, la costumbre de probar hasta entender.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Probamos la plataforma con docentes en territorio y apareció una distancia que yo no sabía ver.</p>
-    </div>
-
-    <div class="slide slide--conclusion">
-      <p class="slide-title">Mi error fue creer que mi mediación era <span class="hl">neutral</span>. Ninguna lo es.</p>
-    </div>
-
-    <div class="slide slide--cita">
-      <p class="cita-texto">“El error humano casi siempre es resultado de un mal diseño: debería llamarse error de sistema.”</p>
-      <p class="cita-fuente">Donald Norman — <em>The Design of Everyday Things</em></p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Una interfaz distribuye quién debe saber algo, quién debe esperar, quién puede equivocarse y quién paga las consecuencias.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">No toda fricción es injusta. La pregunta es quién la experimenta, para qué existe y qué pasa cuando falla.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Ustedes ya saben leer mediaciones audiovisuales.</p>
+      <p class="slide-title">Ustedes ya manejan una interfaz de mediación muy sofisticada sin llamarla así.</p>
     </div>
 
     <div class="slide">
@@ -834,331 +801,238 @@
     </div>
 
     <div class="slide">
-      <p class="slide-title">El dolly zoom no muestra el vértigo: transforma el espacio para que sintamos que el mundo dejó de ser estable.</p>
+      <p class="slide-title">En el dolly zoom, el personaje conserva su tamaño mientras el espacio se estira o se encoge.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">El recurso no “muestra” el vértigo: construye una relación entre el espectador, el espacio y la sensación de perder el suelo.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">La cámara media una experiencia que no podríamos recibir directamente desde el cuerpo del personaje.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Al principio hubo que aprender a leer ese gesto.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Hoy ocurre y sabemos algo: el mundo dejó de ser estable para quien está en pantalla.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">Este curso les suma a esa gramática la de los objetos, los sistemas y las relaciones.</p>
+      <p class="slide-title">Una mediación también puede ser <span class="hl">un lenguaje sensible que aprendemos colectivamente</span>.</p>
     </div>
+
+    <!-- ══ NINGUNA MEDIACIÓN ES NEUTRAL ══ -->
 
     <div class="slide slide--section" style="background: #eeff41;">
-      <p class="slide-title" style="font-size: 3rem; letter-spacing: 0.03em; color: #111;">Entonces, ¿qué es una interfaz?</p>
+      <p class="section-theme">Ninguna mediación es neutral</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Tiene interfaz una puerta, un ascensor, una máquina expendedora, el tablero de un carro, un semáforo, una cafetera, una regla de juego?</p>
+      <p class="slide-title">Hay mediaciones que se sienten muy presentes: una escalera demasiado alta, un juego difícil, un formulario que obliga a detenerse, un instrumento que exige meses de práctica.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title" style="color: #222;">¿Qué es para ustedes una interfaz?</p>
+      <p class="slide-title">Y hay mediaciones que se vuelven casi invisibles: un gesto que hacemos sin pensar, una convención audiovisual, la forma de entrar a una aplicación que usamos todos los días.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Todavía no tenemos una definición: solo ejemplos. Y está bien: en la universidad a veces se empieza por los problemas, no por las definiciones.</p>
+      <p class="slide-title">Cuando algo se vuelve habitual, deja de sentirse como una decisión.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Para entenderla, primero hagámonos una pregunta más simple: ¿qué pasa cuando interactuamos?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Piensen en abrir una puerta pesada: ustedes empujan, la puerta se resiste, ajustan la fuerza, la puerta cede.</p>
+      <p class="slide-title">Empieza a sentirse como el mundo.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">¿Qué acaba de pasar ahí? No fue una acción aislada. Fue una <span class="hl">conversación</span>.</p>
+      <p class="slide-title">Pero que una mediación sea familiar <span class="hl">no la vuelve natural ni neutral</span>.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Ustedes actuaron. La puerta respondió. Ustedes interpretaron esa respuesta —y respondieron de nuevo.</p>
-    </div>
-
-    <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
-        <defs>
-          <marker id="arrow4" markerWidth="8" markerHeight="8"
-                  refX="6" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
-          </marker>
-        </defs>
-
-        <rect x="370" y="80" width="160" height="48" rx="4" fill="#eeff41"/>
-        <text x="450" y="104" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#111">Acción</text>
-
-        <rect x="560" y="330" width="160" height="48" rx="4" fill="#222"/>
-        <text x="640" y="354" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">Respuesta</text>
-
-        <rect x="180" y="330" width="180" height="48" rx="4" fill="#222"/>
-        <text x="270" y="354" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">Interpretación</text>
-
-        <line x1="510" y1="128" x2="620" y2="326" stroke="#444" stroke-width="1.5" marker-end="url(#arrow4)"/>
-        <line x1="556" y1="354" x2="364" y2="354" stroke="#444" stroke-width="1.5" marker-end="url(#arrow4)"/>
-        <line x1="290" y1="326" x2="390" y2="128" stroke="#444" stroke-width="1.5" marker-end="url(#arrow4)"/>
-
-        <text x="450" y="440" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">Toda interacción tiene esa estructura, aunque no usemos palabras.</text>
-
-      </svg>
-      <div class="diagram-mobile">
-        <div class="dm-box accent"><strong>Acción</strong></div>
-        <div class="dm-arrow">↓</div>
-        <div class="dm-box dark"><strong>Respuesta</strong></div>
-        <div class="dm-arrow">↓</div>
-        <div class="dm-box dark"><strong>Interpretación</strong></div>
-        <div class="dm-arrow" style="font-size: 0.85rem;">↻ orienta la siguiente acción</div>
-        <p class="dm-caption">Toda interacción tiene esa estructura, aunque no usemos palabras.</p>
-      </div>
+      <img data-src="assets/telefono-disco.avif" class="slide-image" alt="Teléfono de disco">
     </div>
 
     <div class="slide">
-      <p class="slide-title">Interactuar es actuar sobre una situación, y dejar que esa nueva situación oriente la siguiente acción.</p>
+      <p class="slide-title">¿Alguno de ustedes interactuó con este tipo de teléfono?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Sirve para un martillo. Para un videojuego. Para un piano. Para bailar. Para conducir.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Ahora que entendemos la interacción como conversación, volvamos a la puerta.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Ustedes no necesitan entender su mecanismo interno para usarla. Necesitan algo que puedan leer: algo en el medio que haga posible ese diálogo.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Versión 1.0 — Interfaz: <span class="hl">aquello que media una relación</span>. La hace posible y, al hacerlo, la transforma.</p>
-    </div>
-
-    <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
-
-        <text x="450" y="45" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="14" font-weight="700"
-              letter-spacing="2" fill="#999">LA INTERFAZ</text>
-
-        <rect x="60" y="90" width="380" height="170" rx="4" fill="#eeff41"/>
-        <text x="250" y="130" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="19" font-weight="700"
-              fill="#111">Traduce</text>
-        <text x="250" y="168" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="13" font-weight="400"
-              fill="#333">Convierte una intención en un cambio,</text>
-        <text x="250" y="188" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="13" font-weight="400"
-              fill="#333">y el cambio en información.</text>
-
-        <rect x="460" y="90" width="380" height="170" rx="4" fill="#222"/>
-        <text x="650" y="130" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="19" font-weight="700"
-              fill="#fff">Organiza</text>
-        <text x="650" y="168" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="13" font-weight="400"
-              fill="#ccc">Estructura cómo dialogamos con eso.</text>
-
-        <rect x="60" y="290" width="380" height="170" rx="4" fill="#222"/>
-        <text x="250" y="330" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="19" font-weight="700"
-              fill="#fff">Abre posibilidades</text>
-        <text x="250" y="368" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="13" font-weight="400"
-              fill="#ccc">Muestra qué podemos hacer.</text>
-
-        <rect x="460" y="290" width="380" height="170" rx="4" fill="#222"/>
-        <text x="650" y="330" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="19" font-weight="700"
-              fill="#fff">Pone límites</text>
-        <text x="650" y="368" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="13" font-weight="400"
-              fill="#ccc">Muestra qué no podemos hacer.</text>
-
-      </svg>
-      <div class="diagram-mobile">
-        <span class="dm-label">La interfaz</span>
-        <div class="dm-pair">
-          <div class="dm-box accent"><strong>Traduce</strong><em>Convierte una intención en un cambio, y el cambio en información.</em></div>
-          <div class="dm-box dark"><strong>Organiza</strong><em>Estructura cómo dialogamos con eso.</em></div>
-        </div>
-        <div class="dm-pair">
-          <div class="dm-box dark"><strong>Abre posibilidades</strong><em>Muestra qué podemos hacer.</em></div>
-          <div class="dm-box dark"><strong>Pone límites</strong><em>Muestra qué no podemos hacer.</em></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">No sé si esta definición alcance; de hecho, estoy casi seguro de que no. Pero hoy nos sirve.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">No se trata de memorizarla sino de atacarla: cada vez que encontremos un caso que no encaje, la tachamos y la reescribimos.</p>
+      <p class="slide-title">Su interfaz trae consigo una forma de habitar el tiempo, la espera, el error y el cuerpo.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title">Sabiendo esto, volvamos a <span class="hl">dudar</span>.</p>
+      <p class="slide-title">No es una versión “primitiva” de lo que tenemos hoy, sino <span class="hl">otra forma de mediar una relación</span>.</p>
+    </div>
+
+    <!-- ══ ¿LA MEJOR INTERFAZ ES LA QUE DESAPARECE? ══ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">¿La mejor interfaz es la que desaparece?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Tiene interfaz una conversación entre dos personas? ¿Es el idioma? ¿El tono de voz? ¿El cuerpo? ¿El aire entre los dos?</p>
+      <p class="slide-title">La industria suele responder que sí: una buena interfaz sería una que no se nota, una que nos deja llegar rápido a lo que queremos.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Y un lapicero? ¿Es la forma donde apoyamos los dedos, o es la fricción de la tinta en el papel?</p>
+      <p class="slide-title">A veces tiene razón. Cuando pagamos una cuenta, buscamos una salida de emergencia o necesitamos ayuda urgente, la mediación no debería pedirnos que nos detengamos.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">¿Y un juego de mesa? ¿La interfaz son las fichas, o son las reglas?</p>
+      <p class="slide-title">Pero hay experiencias valiosas que no quieren desaparecer.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">No respondan todavía. Esta definición no está cerrada: apenas empieza a trabajar.</p>
+      <p class="slide-title">Un instrumento musical quiere sentirse. Un videojuego difícil quiere exigirnos. Una cámara analógica quiere hacernos notar el tiempo, el material y la decisión.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">El conocimiento no aparece terminado: se construye.</p>
+      <img data-src="assets/reflexion-camara-analogica.png" class="slide-image" alt="Cámara analógica">
     </div>
 
+    <div class="slide">
+      <p class="slide-title">Bolter y Gromala describen dos polos: la transparencia —miramos a través de la interfaz y la olvidamos— y la reflexión —la interfaz se hace notar y nos permite pensar la relación que estamos teniendo.</p>
+    </div>
+
+    <!-- Visual: espectro transparencia ↔ reflexión — va después de la explicación -->
     <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <defs>
-          <marker id="arrow2" markerWidth="8" markerHeight="8"
-                  refX="6" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
-          </marker>
-          <marker id="arrow2-back" markerWidth="8" markerHeight="8"
-                  refX="2" refY="3" orient="auto">
+          <marker id="arrowL" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M8,0 L8,6 L0,3 z" fill="#444"/>
           </marker>
+          <marker id="arrowR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
         </defs>
-
-        <rect x="80" y="226" width="180" height="48" rx="4" fill="#222"/>
-        <text x="170" y="250" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">Persona</text>
-
-        <rect x="360" y="226" width="180" height="48" rx="4" fill="#eeff41"/>
-        <text x="450" y="250" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#111">Interfaz</text>
-
-        <rect x="640" y="226" width="180" height="48" rx="4" fill="#222"/>
-        <text x="730" y="250" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">Sistema</text>
-
-        <line x1="264" y1="240" x2="356" y2="240" stroke="#444" stroke-width="1.5" marker-end="url(#arrow2)"/>
-        <line x1="356" y1="262" x2="264" y2="262" stroke="#444" stroke-width="1.5" marker-end="url(#arrow2)"/>
-        <line x1="544" y1="240" x2="636" y2="240" stroke="#444" stroke-width="1.5" marker-end="url(#arrow2)"/>
-        <line x1="636" y1="262" x2="544" y2="262" stroke="#444" stroke-width="1.5" marker-end="url(#arrow2)"/>
-
-        <text x="310" y="215" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">acción</text>
-        <text x="310" y="290" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">respuesta</text>
-        <text x="590" y="215" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">acción</text>
-        <text x="590" y="290" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">respuesta</text>
-
+        <!-- Polo izquierdo: transparencia -->
+        <rect x="80" y="190" width="240" height="90" rx="4" fill="#eeff41"/>
+        <text x="200" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#111">TRANSPARENCIA</text>
+        <text x="200" y="255" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#111">miramos a través y la olvidamos</text>
+        <!-- Polo derecho: reflexión -->
+        <rect x="580" y="190" width="240" height="90" rx="4" fill="#222"/>
+        <text x="700" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#fff">REFLEXIÓN</text>
+        <text x="700" y="255" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#fff">se hace notar y nos hace pensar</text>
+        <!-- Doble flecha entre polos -->
+        <line x1="340" y1="235" x2="560" y2="235" stroke="#444" stroke-width="1.5" marker-start="url(#arrowL)" marker-end="url(#arrowR)"/>
+        <!-- Caption -->
+        <text x="450" y="340" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888">No es una escala de bueno a malo: son dos polos que se necesitan.</text>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box accent"><strong>Transparencia</strong><em>Miramos a través y la olvidamos</em></div>
+        <div class="dm-arrow">↕</div>
+        <div class="dm-box dark"><strong>Reflexión</strong><em>Se hace notar y nos hace pensar</em></div>
+        <p class="dm-caption">No es una escala de bueno a malo: son dos polos que se necesitan.</p>
+      </div>
+    </div>
+
+    <!-- ══ ENTONCES, ¿QUÉ ES UNA INTERFAZ? ══ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Entonces, ¿qué es una interfaz?</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Tenemos ejemplos, tensiones y preguntas. Todavía no tenemos una definición. Eso está bien.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">En la universidad, a veces la definición llega después de que el problema ya empezó a incomodar.</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Intentemos una, pero escribámosla con fecha de vencimiento.</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Versión 1.0 — Una interfaz es aquello que <span class="hl">media una relación</span>: la hace posible y, al hacerlo, la organiza, la traduce y la transforma.</p>
+    </div>
+
+    <!-- Visual: la definición como diagrama — va después de enunciarla -->
+    <div class="slide slide--visual">
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
+        <defs>
+          <marker id="arrL2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M8,0 L8,6 L0,3 z" fill="#444"/>
+          </marker>
+          <marker id="arrR2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <!-- Nodo: persona -->
+        <rect x="60" y="200" width="170" height="70" rx="4" fill="#222"/>
+        <text x="145" y="235" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">PERSONA</text>
+        <!-- Nodo: interfaz -->
+        <rect x="310" y="180" width="280" height="110" rx="4" fill="#eeff41"/>
+        <text x="450" y="218" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#111">INTERFAZ</text>
+        <text x="450" y="252" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#111">materiales · señales · reglas · ritmo · respuesta</text>
+        <!-- Nodo: mundo -->
+        <rect x="670" y="185" width="190" height="100" rx="4" fill="#222"/>
+        <text x="765" y="218" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff">MUNDO</text>
+        <text x="765" y="250" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">sistema · otra persona · capacidad propia</text>
+        <!-- Flechas dobles -->
+        <line x1="240" y1="235" x2="300" y2="235" stroke="#444" stroke-width="1.5" marker-start="url(#arrL2)" marker-end="url(#arrR2)"/>
+        <line x1="600" y1="235" x2="660" y2="235" stroke="#444" stroke-width="1.5" marker-start="url(#arrL2)" marker-end="url(#arrR2)"/>
+        <!-- Caption -->
+        <text x="450" y="360" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888">La hace posible y, al hacerlo, la organiza, la traduce y la transforma.</text>
+      </svg>
+      <!-- Versión móvil del diagrama -->
       <div class="diagram-mobile">
         <div class="dm-box dark"><strong>Persona</strong></div>
         <div class="dm-arrow">↕</div>
-        <span class="dm-label" style="margin-top:-0.35rem;">acción / respuesta</span>
-        <div class="dm-box accent"><strong>Interfaz</strong></div>
+        <div class="dm-box accent"><strong>Interfaz</strong><em>Materiales · señales · reglas · ritmo · respuesta</em></div>
         <div class="dm-arrow">↕</div>
-        <span class="dm-label" style="margin-top:-0.35rem;">acción / respuesta</span>
-        <div class="dm-box dark"><strong>Sistema</strong></div>
-        <p class="dm-caption">Versión 1.0 — la interfaz media una relación y no la entrega intacta.</p>
+        <div class="dm-box dark"><strong>Mundo</strong><em>Sistema · otra persona · capacidad propia</em></div>
+        <p class="dm-caption">La hace posible y, al hacerlo, la organiza, la traduce y la transforma.</p>
       </div>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Volvamos al laboratorio: cuando describieron los objetos no hablaron del plástico ni del aluminio.</p>
+      <p class="slide-title">Esa definición explica por qué una puerta, un cajero, un juego, un mapa, un chat y un instrumento pueden entrar a esta conversación.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Hablaron de posibilidades, de acciones, de expectativas.</p>
+      <p class="slide-title">También tiene problemas.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Los objetos comunican. Las interfaces comunican posibilidades de acción.</p>
+      <p class="slide-title">¿Dónde termina la interfaz de una conversación? ¿En las palabras, el tono, el cuerpo, el aire, la historia compartida?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Y proponen algo más difícil de nombrar: qué tipo de relación quieren construir con quien las usa.</p>
+      <p class="slide-title">¿La interfaz de un lapicero es la forma de agarrarlo, la tinta, el papel o la convención de escribir?</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Un cajero no solo permite sacar dinero: propone seguridad. Su diseño físico, su configuración, su programación —todo está pensado para hacernos sentir "seguros".</p>
+      <p class="slide-title">¿La interfaz de un juego de mesa está en las fichas o en las reglas que hacen que una ficha importe?</p>
+    </div>
+
+    <!-- ══ CIERRE ══ -->
+
+    <div class="slide">
+      <p class="slide-title">Si una interfaz media una relación, quien la diseña no controla por completo esa relación.</p>
     </div>
 
     <div class="slide">
-      <img data-src="assets/cajero.jpg" class="slide-image" alt="Cajero automático">
+      <p class="slide-title">Las personas interpretan, resisten, inventan, se apropian y usan de maneras que no estaban previstas.</p>
     </div>
 
     <div class="slide">
-      <p class="slide-title">Un Tamagotchi no solo permite alimentar una mascota digital: propone conexión, la sensación de que algo vive contigo, y por eso reclama atención incluso cuando no lo estás usando.</p>
+      <p class="slide-title">Diseñar es <span class="hl">intervenir las condiciones desde las que una relación puede ocurrir</span>.</p>
     </div>
 
     <div class="slide">
-      <img data-src="assets/tamagotchi.gif" class="slide-image" alt="Tamagotchi">
+      <p class="slide-title">Esa intervención tiene responsabilidad, aunque no tenga control total.</p>
     </div>
 
     <div class="slide slide--conclusion">
-      <p class="slide-title" style="font-size: clamp(2.2rem, 5vw, 4rem); color: #222;">Las interfaces proponen <span class="hl">relaciones</span>.</p>
+      <p class="slide-title">¿Qué relación quieren mediar entre las personas y aquello que diseñan?</p>
     </div>
 
-    <div class="slide">
-      <p class="slide-title">Diseñar una interfaz no es organizar botones: es decidir qué relación queremos construir entre una persona y un sistema.</p>
-    </div>
-
-    <div class="slide slide--cita">
-      <p class="cita-texto">"Diseñar es hacer que las cosas tengan sentido."</p>
-      <p class="cita-fuente">Klaus Krippendorff — <em>Design is Making Sense (of Things)</em>, 1989</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Ése es el curso. Eso es lo que quiero poner sobre la mesa.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">¿Dudas? ¿Preguntas?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">A mí me quedan dos preguntas para ustedes. No las respondan ahora: guárdenlas.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">¿Qué <span class="hl">relación</span> quieren que las personas tengan con aquello que diseñan?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Espero que la respuesta que tendrían hoy les parezca ingenua cuando lleguemos a noviembre.</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Si una interfaz es lo que hace posible una interacción, ¿qué tanta responsabilidad tiene quien la diseña sobre lo que esa interacción permite y lo que impide? ¿Toda? ¿Una parte? ¿Ninguna?</p>
-    </div>
-
-    <div class="slide">
-      <p class="slide-title">Tampoco hace falta responderla hoy: vamos a volver a ella durante todo el semestre.</p>
-    </div>
+    <!-- ══ CÓMO VA A FUNCIONAR ESTE CURSO ══ -->
 
     <div class="slide">
       <p class="slide-title">Para empezar a responderla durante los próximos cuatro meses, necesitamos ponernos de acuerdo en cómo vamos a trabajar.</p>
@@ -1189,34 +1063,21 @@
     </div>
 
     <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <defs>
-          <marker id="arrow3" markerWidth="8" markerHeight="8"
-                  refX="6" refY="3" orient="auto">
+          <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
           </marker>
         </defs>
-
         <rect x="370" y="80" width="160" height="48" rx="4" fill="#eeff41"/>
-        <text x="450" y="104" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#111">Observar</text>
-
+        <text x="450" y="104" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#111">Observar</text>
         <rect x="560" y="330" width="160" height="48" rx="4" fill="#222"/>
-        <text x="640" y="354" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">Construir</text>
-
+        <text x="640" y="354" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">Construir</text>
         <rect x="180" y="330" width="160" height="48" rx="4" fill="#222"/>
-        <text x="260" y="354" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">Discutir</text>
-
+        <text x="260" y="354" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">Discutir</text>
         <line x1="510" y1="128" x2="620" y2="326" stroke="#444" stroke-width="1.5" marker-end="url(#arrow3)"/>
         <line x1="556" y1="354" x2="344" y2="354" stroke="#444" stroke-width="1.5" marker-end="url(#arrow3)"/>
         <line x1="280" y1="326" x2="390" y2="128" stroke="#444" stroke-width="1.5" marker-end="url(#arrow3)"/>
-
       </svg>
       <div class="diagram-mobile">
         <div class="dm-box accent"><strong>Observar</strong></div>
@@ -1254,51 +1115,24 @@
     </div>
 
     <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
-
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <rect x="40" y="230" width="256" height="56" rx="4" fill="#222"/>
-        <text x="168" y="252" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="16" font-weight="700"
-              fill="#fff">Aprender a leer</text>
-        <text x="168" y="272" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#fff">sesiones 1–5</text>
-
+        <text x="168" y="252" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff">Aprender a leer</text>
+        <text x="168" y="272" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">sesiones 1–5</text>
         <rect x="296" y="230" width="52" height="56" rx="4" fill="#eeff41"/>
         <line x1="322" y1="290" x2="322" y2="316" stroke="#444" stroke-width="1.5"/>
-        <text x="322" y="336" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="14" font-weight="700"
-              fill="#111">Territorio y pregunta</text>
-        <text x="322" y="356" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesión 6</text>
-
+        <text x="322" y="336" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#111">Territorio y pregunta</text>
+        <text x="322" y="356" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesión 6</text>
         <rect x="348" y="230" width="256" height="56" rx="4" fill="#222"/>
-        <text x="476" y="252" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="16" font-weight="700"
-              fill="#fff">Las dimensiones</text>
-        <text x="476" y="272" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#fff">sesiones 7–11</text>
-
+        <text x="476" y="252" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff">Las dimensiones</text>
+        <text x="476" y="272" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">sesiones 7–11</text>
         <rect x="604" y="230" width="205" height="56" rx="4" fill="#222"/>
-        <text x="706" y="252" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="16" font-weight="700"
-              fill="#fff">El modelo</text>
-        <text x="706" y="272" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#fff">sesiones 12–15</text>
-
+        <text x="706" y="252" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff">El modelo</text>
+        <text x="706" y="272" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">sesiones 12–15</text>
         <rect x="809" y="230" width="51" height="56" rx="4" fill="#eeff41"/>
         <line x1="834" y1="198" x2="834" y2="226" stroke="#444" stroke-width="1.5"/>
-        <text x="834" y="158" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="14" font-weight="700"
-              fill="#111">La defensa</text>
-        <text x="834" y="178" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesión 16</text>
-
+        <text x="834" y="158" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#111">La defensa</text>
+        <text x="834" y="178" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesión 16</text>
       </svg>
       <div class="diagram-mobile">
         <div class="dm-box dark"><strong>Aprender a leer</strong><em>sesiones 1–5</em></div>
@@ -1351,74 +1185,32 @@
     </div>
 
     <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
-
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <rect x="20" y="90" width="160" height="76" rx="4" fill="#222"/>
-        <text x="100" y="118" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#fff">Laboratorios I</text>
-        <text x="100" y="144" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">15%</text>
-        <text x="100" y="190" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesiones 2–5</text>
-
+        <text x="100" y="118" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">Laboratorios I</text>
+        <text x="100" y="144" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">15%</text>
+        <text x="100" y="190" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesiones 2–5</text>
         <rect x="200" y="90" width="160" height="76" rx="4" fill="#eeff41"/>
-        <text x="280" y="118" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#111">Territorio y pregunta</text>
-        <text x="280" y="144" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#111">25%</text>
-        <text x="280" y="190" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesión 6</text>
-
+        <text x="280" y="118" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#111">Territorio y pregunta</text>
+        <text x="280" y="144" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#111">25%</text>
+        <text x="280" y="190" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesión 6</text>
         <rect x="380" y="90" width="160" height="76" rx="4" fill="#222"/>
-        <text x="460" y="118" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#fff">Laboratorios II</text>
-        <text x="460" y="144" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">15%</text>
-        <text x="460" y="190" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesiones 7–11</text>
-
+        <text x="460" y="118" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">Laboratorios II</text>
+        <text x="460" y="144" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">15%</text>
+        <text x="460" y="190" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesiones 7–11</text>
         <rect x="560" y="90" width="160" height="76" rx="4" fill="#eeff41"/>
-        <text x="640" y="118" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#111">Modelo de interacción</text>
-        <text x="640" y="144" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#111">25%</text>
-        <text x="640" y="190" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesiones 12–15</text>
-
+        <text x="640" y="118" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#111">Modelo de interacción</text>
+        <text x="640" y="144" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#111">25%</text>
+        <text x="640" y="190" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesiones 12–15</text>
         <rect x="740" y="90" width="140" height="76" rx="4" fill="#222"/>
-        <text x="810" y="118" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#fff">Defensa</text>
-        <text x="810" y="144" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="18" font-weight="700"
-              fill="#fff">20%</text>
-        <text x="810" y="190" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">sesión 16</text>
-
+        <text x="810" y="118" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#fff">Defensa</text>
+        <text x="810" y="144" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">20%</text>
+        <text x="810" y="190" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">sesión 16</text>
         <rect x="20" y="320" width="860" height="28" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
         <rect x="20" y="320" width="344" height="28" rx="4" fill="#eeff41"/>
         <line x1="364" y1="312" x2="364" y2="356" stroke="#444" stroke-width="1.5"/>
-        <text x="374" y="376" text-anchor="start" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="14" font-weight="700"
-              fill="#111">40% hacia la sesión 6</text>
-        <text x="880" y="376" text-anchor="end" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="12" font-weight="400"
-              fill="#888">100% · sesión 16</text>
-
+        <text x="374" y="376" text-anchor="start" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#111">40% hacia la sesión 6</text>
+        <text x="880" y="376" text-anchor="end" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="400" fill="#888">100% · sesión 16</text>
       </svg>
       <div class="diagram-mobile">
         <div class="dm-pair">
@@ -1441,50 +1233,21 @@
     </div>
 
     <div class="slide slide--visual">
-      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg"
-           style="width: 85%; height: 85%;">
-
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <rect x="130" y="70" width="280" height="48" rx="4" fill="#222"/>
-        <text x="270" y="94" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="16" font-weight="700"
-              fill="#fff">NO EVALÚO</text>
-
+        <text x="270" y="94" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff">NO EVALÚO</text>
         <rect x="490" y="70" width="280" height="48" rx="4" fill="#eeff41"/>
-        <text x="630" y="94" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="16" font-weight="700"
-              fill="#111">SÍ EVALÚO</text>
-
-        <text x="270" y="160" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="400"
-              fill="#888" text-decoration="line-through">El acabado visual</text>
-        <text x="270" y="205" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="400"
-              fill="#888" text-decoration="line-through">La complejidad técnica</text>
-        <text x="270" y="250" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="400"
-              fill="#888" text-decoration="line-through">La herramienta utilizada</text>
-        <text x="270" y="295" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="400"
-              fill="#888" text-decoration="line-through">La cantidad de pantallas</text>
-        <text x="270" y="340" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="400"
-              fill="#888" text-decoration="line-through">El tamaño del proyecto</text>
-
-        <text x="630" y="160" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="700"
-              fill="#222">La capacidad de observar</text>
-        <text x="630" y="205" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="700"
-              fill="#222">La calidad de las preguntas</text>
-        <text x="630" y="250" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="700"
-              fill="#222">La experimentación</text>
-        <text x="630" y="295" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="700"
-              fill="#222">El uso de evidencia</text>
-        <text x="630" y="340" text-anchor="middle" dominant-baseline="middle"
-              font-family="Roboto, sans-serif" font-size="15" font-weight="700"
-              fill="#222">La iteración</text>
+        <text x="630" y="94" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#111">SÍ EVALÚO</text>
+        <text x="270" y="160" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">El acabado visual</text>
+        <text x="270" y="205" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">La complejidad técnica</text>
+        <text x="270" y="250" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">La herramienta utilizada</text>
+        <text x="270" y="295" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">La cantidad de pantallas</text>
+        <text x="270" y="340" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">El tamaño del proyecto</text>
+        <text x="630" y="160" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#222">La capacidad de observar</text>
+        <text x="630" y="205" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#222">La calidad de las preguntas</text>
+        <text x="630" y="250" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#222">La experimentación</text>
+        <text x="630" y="295" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#222">El uso de evidencia</text>
+        <text x="630" y="340" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#222">La iteración</text>
       </svg>
       <div class="diagram-mobile">
         <div class="dm-list no">
@@ -1530,6 +1293,8 @@
     <div class="slide">
       <p class="slide-title">Les propongo un trato: yo preparo clases que valga la pena discutir, y ustedes no se conforman con la primera respuesta. Si lo logramos dieciséis semanas, el curso habrá valido la pena.</p>
     </div>
+
+    <!-- ══ BITÁCORA 1 ══ -->
 
     <div class="slide slide--section" style="background: #eeff41;">
       <p class="section-kicker">Bitácora 1</p>
@@ -1592,6 +1357,8 @@
     <div class="slide slide--conclusion">
       <p class="slide-title">Traigan las tres bitácoras <span class="hl">listas y escritas</span> a la próxima sesión: no las vamos a resolver en clase.</p>
     </div>
+
+    <!-- ══ PARA LA PRÓXIMA SEMANA ══ -->
 
     <div class="slide">
       <p class="slide-title">Además de la bitácora, lleguen la próxima semana con tres experiencias: cada una hace una pregunta distinta sobre las interfaces.</p>
@@ -1660,6 +1427,20 @@
       <p class="slide-title">¿Qué puede llegar a ser una <span class="hl">interfaz</span> cuando dejamos de pensar únicamente en pantallas, botones y texto?</p>
     </div>
 
+    <!-- ══ REFERENCIAS ══ -->
+
+    <div class="slide">
+      <p class="refs-title">Referencias</p>
+      <ul class="refs-list">
+        <li>Merleau-Ponty, M. <em>Fenomenología de la percepción</em> (1945).</li>
+        <li>Galloway, A. R. <em>The Interface Effect</em>. Polity Press (2012).</li>
+        <li>Martín-Barbero, J. <em>De los medios a las mediaciones</em> (1987).</li>
+        <li>Dourish, P. <em>Where the Action Is</em> (2001).</li>
+        <li>Norman, D. A. <em>The Design of Everyday Things</em> (ed. rev., 2013).</li>
+        <li>Bolter, J. D. &amp; Gromala, D. <em>Windows and Mirrors</em> (2003).</li>
+      </ul>
+    </div>
+
   </div>
   <div class="nav-hint">← →</div>
   <div class="nav-hint-touch" id="navHintTouch">desliza o toca para continuar</div>
@@ -1667,6 +1448,7 @@
     <button class="deck-nav-toggle" aria-expanded="false">SECCIONES ↑</button>
     <ul class="deck-nav-menu"></ul>
   </nav>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
   <script>
     let current = 0;
@@ -1707,9 +1489,8 @@
       }
       next.classList.add('active');
 
-      // Pista táctil: se adapta si el slide es un diagrama
-      if (navHintTouch) {
-        navHintTouch.textContent = 'desliza o toca para continuar';
+      if (progressFill) {
+        progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
       }
 
       // Carga la imagen de este slide y precarga la del siguiente
