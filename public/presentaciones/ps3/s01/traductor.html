@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La máquina traductora — Clase 1 | Pensamiento Sensorial</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=PT+Serif:ital@0;1&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #ffffff;
+      color: #444;
+      min-height: 100vh;
+      padding: 2.5rem 3rem 3rem;
+    }
+
+    /* ── Cabecera y entrada ── */
+    header {
+      max-width: 1100px;
+      margin: 0 auto 1.5rem;
+    }
+    .kicker {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #888;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+      font-weight: 900;
+      color: #222;
+      margin-top: 0.4rem;
+    }
+    .instruccion {
+      font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+      color: #888;
+      margin-top: 0.4rem;
+    }
+
+    .entrada {
+      max-width: 1100px;
+      margin: 0 auto 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .entrada textarea {
+      flex: 1;
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1.05rem, 1.9vw, 1.35rem);
+      color: #222;
+      padding: 1rem 1.2rem;
+      border: 2px solid #222;
+      border-radius: 0;
+      resize: none;
+      min-height: 4.5rem;
+      outline: none;
+    }
+    .entrada textarea:focus { border-color: #000; box-shadow: 4px 4px 0 #eeff41; }
+
+    /* ── Rejilla de medios ── */
+    .medios {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 800px) {
+      body { padding: 1.5rem; }
+      .medios { grid-template-columns: 1fr; }
+      .entrada { flex-direction: column; }
+    }
+
+    .medio {
+      border: 1px solid #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      min-height: 16rem;
+    }
+    .medio-head {
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .medio-nombre {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #222;
+    }
+    .medio-regla {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 0.2rem;
+    }
+    .medio-escena {
+      flex: 1;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .vacio {
+      font-size: 0.95rem;
+      color: #bbb;
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* ── WhatsApp ── */
+    .escena-whatsapp { background: #e5ddd5; }
+    .wa-burbuja {
+      background: #d9fdd3;
+      max-width: 85%;
+      align-self: flex-end;
+      padding: 0.7rem 0.9rem 0.5rem;
+      border-radius: 8px;
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      color: #111;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .wa-meta {
+      text-align: right;
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 0.3rem;
+    }
+    .wa-checks { color: #53bdeb; font-weight: 700; }
+
+    /* ── Bíper ── */
+    .escena-biper { background: #1a1a1a; }
+    .biper-pantalla {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: clamp(1rem, 1.9vw, 1.3rem);
+      letter-spacing: 0.08em;
+      color: #7dff8a;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    .biper-meta {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #4a7a50;
+      margin-top: 0.8rem;
+      text-align: right;
+    }
+
+    /* ── Telégrafo ── */
+    .escena-telegrafo { background: #f4f4f4; }
+    .tel-cinta {
+      background: #f8f1dc;
+      border-top: 2px dashed #ccc;
+      border-bottom: 2px dashed #ccc;
+      padding: 1rem 1.2rem;
+      font-family: 'Courier New', monospace;
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      letter-spacing: 0.18em;
+      color: #333;
+      line-height: 1.7;
+      word-wrap: break-word;
+    }
+    .tel-meta {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 0.8rem;
+      text-align: right;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Carta ── */
+    .escena-carta { background: #f6efdb; }
+    .carta-hoja {
+      font-family: 'PT Serif', serif;
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      color: #3a3226;
+      line-height: 1.65;
+    }
+    .carta-fecha { text-align: right; margin-bottom: 1.2rem; }
+    .carta-saludo { margin-bottom: 0.8rem; }
+    .carta-cuerpo { word-wrap: break-word; }
+    .carta-despedida { margin-top: 1.2rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="kicker">Pensamiento Sensorial · Clase 1 · Taller</p>
+    <h1>La máquina traductora</h1>
+    <p class="instruccion">Un mismo mensaje, cuatro interfaces. Lo que cambia no es el texto: es la relación.</p>
+  </header>
+
+  <div class="entrada">
+    <textarea id="mensaje" rows="3" placeholder="Escribe aquí el mensaje, una sola vez…" autofocus></textarea>
+  </div>
+
+  <div class="medios">
+
+    <section class="medio">
+      <div class="medio-head">
+        <p class="medio-nombre">WhatsApp · hoy</p>
+        <p class="medio-regla">Inmediato. Instala señales: hora, checks, "en línea".</p>
+      </div>
+      <div class="medio-escena escena-whatsapp">
+        <div id="out-whatsapp"><p class="vacio">El mensaje aparecerá aquí</p></div>
+      </div>
+    </section>
+
+    <section class="medio">
+      <div class="medio-head">
+        <p class="medio-nombre">Bíper · años 90</p>
+        <p class="medio-regla">80 caracteres. Lo que no cabe, no llega.</p>
+      </div>
+      <div class="medio-escena escena-biper">
+        <div id="out-biper"><p class="vacio">El mensaje aparecerá aquí</p></div>
+      </div>
+    </section>
+
+    <section class="medio">
+      <div class="medio-head">
+        <p class="medio-nombre">Telégrafo · 1844–</p>
+        <p class="medio-regla">Mayúsculas, sin puntuación. Se cobra por palabra.</p>
+      </div>
+      <div class="medio-escena escena-telegrafo">
+        <div id="out-telegrafo"><p class="vacio">El mensaje aparecerá aquí</p></div>
+      </div>
+    </section>
+
+    <section class="medio">
+      <div class="medio-head">
+        <p class="medio-nombre">Carta · siglos</p>
+        <p class="medio-regla">Tarda días. Exige ritual: fecha, saludo, firma.</p>
+      </div>
+      <div class="medio-escena escena-carta">
+        <div id="out-carta"><p class="vacio">El mensaje aparecerá aquí</p></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const entrada = document.getElementById('mensaje');
+    const VACIO = '<p class="vacio">El mensaje aparecerá aquí</p>';
+
+    const escapeHtml = s => s
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    const sinAcentos = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    const soloAscii = s => sinAcentos(s).replace(/[^\x20-\x7E\n]/g, '');
+
+    function renderWhatsApp(msg) {
+      const hora = new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+      return `<div class="wa-burbuja">${escapeHtml(msg).replace(/\n/g, '<br>')}
+        <div class="wa-meta">${hora} <span class="wa-checks">✓✓</span></div>
+      </div>`;
+    }
+
+    function renderBiper(msg) {
+      const limpio = soloAscii(msg).replace(/\s+/g, ' ').trim().toUpperCase();
+      const cortado = limpio.slice(0, 80);
+      const perdio = limpio.length > 80;
+      return `<p class="biper-pantalla">${escapeHtml(cortado)}${perdio ? '▓' : ''}</p>
+        <p class="biper-meta">${Math.min(limpio.length, 80)}/80${perdio ? ' · MENSAJE INCOMPLETO' : ''}</p>`;
+    }
+
+    function renderTelegrafo(msg) {
+      const limpio = soloAscii(msg).toUpperCase()
+        .replace(/[.,;:]/g, m => m === '.' ? ' STOP ' : ' ')
+        .replace(/[¿?¡!()«»""'']/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const palabras = limpio ? limpio.split(' ').length : 0;
+      return `<div class="tel-cinta">${escapeHtml(limpio)}</div>
+        <p class="tel-meta">${palabras} palabras · tarifa por palabra</p>`;
+    }
+
+    function renderCarta(msg) {
+      const fecha = new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+      return `<div class="carta-hoja">
+        <p class="carta-fecha">Medellín, ${fecha}</p>
+        <p class="carta-saludo">Querida mamá:</p>
+        <p class="carta-cuerpo">${escapeHtml(msg).replace(/\n/g, '<br>')}</p>
+        <p class="carta-despedida">Con cariño,<br>tu hijo</p>
+      </div>`;
+    }
+
+    function traducir() {
+      const msg = entrada.value.trim();
+      document.getElementById('out-whatsapp').innerHTML = msg ? renderWhatsApp(msg) : VACIO;
+      document.getElementById('out-biper').innerHTML    = msg ? renderBiper(msg) : VACIO;
+      document.getElementById('out-telegrafo').innerHTML = msg ? renderTelegrafo(msg) : VACIO;
+      document.getElementById('out-carta').innerHTML    = msg ? renderCarta(msg) : VACIO;
+    }
+
+    entrada.addEventListener('input', traducir);
+  </script>
+</body>
+</html>
