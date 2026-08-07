@@ -26,7 +26,12 @@ const cursos = (await getCollection('cursos')).sort(
           <span class="numero-gigante" aria-hidden="true">{curso.data.version}</span>
         )}
         <span class="mono">{curso.data.institucion} · {curso.data.periodo.etiqueta}</span>
-        <h2>{curso.data.titulo} {curso.data.version && <span class="hl">{curso.data.version}</span>}</h2>
+        {/* La versión se ve una sola vez: como el número grande de la tarjeta.
+            Ese número es decorativo para asistencia técnica (`aria-hidden`), así
+            que la edición se queda en el encabezado sin verse. Sin esto, dos
+            ediciones del mismo curso suenan idénticas en un lector de pantalla
+            y el enlace no dice a cuál de las dos entra. */}
+        <h2>{curso.data.titulo}{curso.data.version && <span class="sr-solo"> {curso.data.version}</span>}</h2>
         <p class="desc">{curso.data.descripcion}</p>
         <ul class="tags" role="list">
           <li>{curso.data.intensidad.sesiones} sesiones</li>
