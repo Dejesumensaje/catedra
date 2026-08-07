@@ -84,6 +84,7 @@ todo el curso sin abrir un solo deck.
 /pensamiento-sensorial/tensiones
 /pensamiento-sensorial/referentes
 /politica-de-uso               consentimiento y créditos
+/licencia                      CC BY-NC-ND 4.0 para el material; código con derechos reservados
 ```
 
 ---

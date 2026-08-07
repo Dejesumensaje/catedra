@@ -1,7 +1,7 @@
 ---
 // Layout base: sistema visual del sitio (derivado del prototipo aprobado).
 // Roboto para títulos y datos, PT Serif para el cuerpo. Amarillo #eeff41 solo
-// con significado. Sin footer por ahora; el cabezote no menciona institución.
+// con significado. El pie declara la licencia del material (ver /licencia).
 interface Props {
   titulo: string;
   descripcion?: string;
@@ -30,6 +30,8 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta property="og:locale" content="es_CO" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" />
+    <meta name="copyright" content="William Montoya" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -735,6 +737,16 @@ const ogImage = new URL('/og.png', Astro.site);
         min-height: 1.2em;
       }
 
+      /* ── pie: licencia ──────────────────────── */
+      .pie {
+        border-top: 1px solid var(--regla);
+        padding: 1.5rem 0 0;
+        color: var(--secundario);
+      }
+
+      .pie a { color: var(--texto); text-decoration-color: var(--regla); }
+      .pie a:hover { color: var(--tinta); text-decoration-color: var(--tinta); }
+
       /* ── responsive ───────────────────────────── */
       @media (max-width: 40rem) {
         html { font-size: 16px; }
@@ -775,6 +787,11 @@ const ogImage = new URL('/og.png', Astro.site);
         )}
       </header>
       <slot />
+      <footer class="pie mono">
+        © 2026 William Montoya — Material docente bajo licencia
+        {' '}<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">CC BY-NC-ND 4.0</a>
+        {' '}· <a href="/licencia">Detalles</a>
+      </footer>
     </div>
   </body>
 </html>

@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  titulo="Licencia · Cátedra"
+  descripcion="Cómo se puede usar el material publicado en este sitio."
+  volverHref="/"
+  volverTexto="Cátedra"
+>
+  <section class="hero">
+    <span class="mono sube sube-1">Uso del material</span>
+    <h1 class="sube sube-2">Licencia</h1>
+    <p class="lede sube sube-3">El material se puede consultar y compartir. La autoría se reconoce y las condiciones son claras.</p>
+  </section>
+
+  <section class="bloque sube sube-4">
+    <span class="mono">Material docente</span>
+    <p>
+      Los contenidos originales publicados en este sitio —textos, diagramas, ejercicios,
+      presentaciones y demás materiales docentes— son propiedad intelectual de William Montoya.
+    </p>
+    <p>
+      Salvo que se indique lo contrario, este material se distribuye bajo la{' '}
+      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">licencia Creative Commons
+      Atribución-NoComercial-SinDerivadas 4.0 Internacional (CC BY-NC-ND 4.0)</a>.
+    </p>
+    <p>Esto significa que puedes compartir el material, citarlo y enlazarlo, siempre que:</p>
+    <ul class="materiales">
+      <li><span class="mat-titulo">Reconozcas la autoría.</span></li>
+      <li><span class="mat-titulo">No lo uses con fines comerciales.</span></li>
+      <li><span class="mat-titulo">No lo modifiques ni distribuyas versiones adaptadas.</span></li>
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <span class="mono">Software y simulaciones</span>
+    <p>
+      El código, las simulaciones interactivas y las herramientas desarrolladas para el curso
+      se publican con <strong>todos los derechos reservados</strong>. No están cubiertos por la
+      licencia Creative Commons.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <span class="mono">Otros usos</span>
+    <p>
+      Si deseas utilizar este material en un curso, publicación, taller o proyecto diferente,
+      puedes escribirme para solicitar autorización.
+    </p>
+    <a class="pill" href="mailto:wyesid.montoya@udea.edu.co">wyesid.montoya@udea.edu.co</a>
+  </section>
+</Base>
+
+<style>
+  /* ul.materiales asume enlaces con padding propio; aquí son ítems de texto */
+  ul.materiales li { padding: 1rem 0.25rem; }
+</style>
