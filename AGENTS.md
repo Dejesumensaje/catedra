@@ -239,4 +239,8 @@ refactoriza aquí. Este es el único momento planeado para refactorizar.
 **Después de sesión 6:** capa de memoria, vista de referentes, lo que haga falta.
 
 **No construir hasta que el ritual lleve 6 semanas funcionando:** buscador, modo oscuro,
-analytics, RSS, comentarios, vista de bitácora estudiantil.
+RSS, comentarios, vista de bitácora estudiantil.
+
+**Analytics:** ya resuelto con Cloudflare Web Analytics, activado desde el panel de Pages
+(Settings → Web Analytics). La inyección es automática en el edge: **no agregar ningún
+snippet de analítica al código**, ni GA, ni ningún otro.
