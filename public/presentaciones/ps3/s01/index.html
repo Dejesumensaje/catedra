@@ -120,6 +120,7 @@
       font-weight: 900;
       color: #111;
       letter-spacing: 0.01em;
+      text-transform: uppercase;
       line-height: 1;
       margin-top: 0.2rem;
     }
@@ -142,11 +143,15 @@
     }
 
     /* Tema conceptual de la clase: paleta invertida — se reserva para los bloques de concepto */
+    /* rótulos de los diagramas SVG: mayúsculas por estilo, no por texto fuente */
+    .slide--visual svg text.caps { text-transform: uppercase; }
+
     .tema-central {
       font-size: clamp(2.4rem, 8vw, 5.5rem);
       font-weight: 900;
       color: #eeff41;
       letter-spacing: 0.02em;
+      text-transform: uppercase;
       line-height: 1.1;
       max-width: 85%;
     }
@@ -246,6 +251,7 @@
       cursor: pointer;
       padding: 0.25rem 0;
       letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
     .deck-nav-toggle:hover,
     .deck-nav.open .deck-nav-toggle { color: #888; }
@@ -409,6 +415,7 @@
       font-family: 'Roboto', sans-serif;
       font-size: 0.75rem;
       font-weight: 700;
+      text-transform: uppercase;
       padding: 0.4rem 0.7rem;
       border-radius: 4px;
       margin-bottom: 0.35rem;
@@ -443,7 +450,7 @@
 
     <div class="slide slide--section" style="background: #eeff41;">
       <p class="portada-top" style="color: #333;">Pensamiento</p>
-      <p class="portada-bottom" style="color: #111;">SENSORIAL</p>
+      <p class="portada-bottom" style="color: #111;">Sensorial</p>
     </div>
 
     <div class="slide slide--section" style="background: #eeff41;">
@@ -571,7 +578,7 @@
 
     <!-- Único slide con paleta invertida: el tema central de la sesión -->
     <div class="slide slide--section" style="background: #111;">
-      <p class="tema-central">¿QUÉ QUEDA<br>EN EL MEDIO?</p>
+      <p class="tema-central">¿Qué queda<br>en el medio?</p>
     </div>
 
     <div class="slide">
@@ -668,22 +675,22 @@
       <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <!-- CARTA -->
         <rect x="90" y="46" width="220" height="72" rx="4" fill="#222"/>
-        <text x="200" y="82" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">CARTA</text>
+        <text x="200" y="82" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff" class="caps">Carta</text>
         <rect x="330" y="46" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
         <text x="570" y="82" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Permite demora y deja huella</text>
         <!-- LLAMADA -->
         <rect x="90" y="134" width="220" height="72" rx="4" fill="#222"/>
-        <text x="200" y="170" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">LLAMADA</text>
+        <text x="200" y="170" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff" class="caps">Llamada</text>
         <rect x="330" y="134" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
         <text x="570" y="170" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Exige coincidencia</text>
         <!-- AUDIO -->
         <rect x="90" y="222" width="220" height="72" rx="4" fill="#222"/>
-        <text x="200" y="258" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">AUDIO</text>
+        <text x="200" y="258" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff" class="caps">Audio</text>
         <rect x="330" y="222" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
         <text x="570" y="258" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Devuelve la voz sin exigir simultaneidad</text>
         <!-- CHAT -->
         <rect x="90" y="310" width="220" height="72" rx="4" fill="#222"/>
-        <text x="200" y="346" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">CHAT</text>
+        <text x="200" y="346" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff" class="caps">Chat</text>
         <rect x="330" y="310" width="480" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
         <text x="570" y="346" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="400" fill="#444">Inmediatez, y la posibilidad de no contestar</text>
       </svg>
@@ -712,6 +719,7 @@
 
     <div class="slide slide--section" style="background: #eeff41;">
       <p class="section-kicker">Taller</p>
+      <p class="section-theme">El mismo mensaje, cuatro tecnologías</p>
     </div>
 
     <div class="slide">
@@ -904,11 +912,11 @@
         </defs>
         <!-- Polo izquierdo: transparencia -->
         <rect x="80" y="190" width="240" height="90" rx="4" fill="#eeff41"/>
-        <text x="200" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#111">TRANSPARENCIA</text>
+        <text x="200" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#111" class="caps">Transparencia</text>
         <text x="200" y="255" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#111">miramos a través y la olvidamos</text>
         <!-- Polo derecho: reflexión -->
         <rect x="580" y="190" width="240" height="90" rx="4" fill="#222"/>
-        <text x="700" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#fff">REFLEXIÓN</text>
+        <text x="700" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="700" fill="#fff" class="caps">Reflexión</text>
         <text x="700" y="255" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#fff">se hace notar y nos hace pensar</text>
         <!-- Doble flecha entre polos -->
         <line x1="340" y1="235" x2="560" y2="235" stroke="#444" stroke-width="1.5" marker-start="url(#arrowL)" marker-end="url(#arrowR)"/>
@@ -950,7 +958,7 @@
     <div class="slide slide--visual">
       <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <!-- Etiqueta -->
-        <text x="450" y="62" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" letter-spacing="4" fill="#999">LA INTERFAZ</text>
+        <text x="450" y="62" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" letter-spacing="4" fill="#999" class="caps">La interfaz</text>
         <!-- Traduce (acento) -->
         <rect x="70" y="100" width="370" height="160" rx="6" fill="#eeff41"/>
         <text x="255" y="152" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="24" font-weight="700" fill="#111">Traduce</text>
@@ -1029,7 +1037,7 @@
     </div>
 
     <div class="slide slide--section" style="background: #eeff41;">
-      <p class="slide-title" style="font-size: 3rem; letter-spacing: 0.03em; color: #111;">CÓMO VA A FUNCIONAR ESTE CURSO</p>
+      <p class="slide-title" style="font-size: 3rem; letter-spacing: 0.03em; text-transform: uppercase; color: #111;">Cómo va a funcionar este curso</p>
     </div>
 
     <div class="slide">
@@ -1143,7 +1151,7 @@
     </div>
 
     <div class="slide slide--section" style="background: #eeff41;">
-      <p class="slide-title" style="font-size: 3.5rem; letter-spacing: 0.03em; color: #111;">EVALUACIÓN</p>
+      <p class="slide-title" style="font-size: clamp(2.2rem, 10vw, 3.5rem); letter-spacing: 0.03em; text-transform: uppercase; color: #111;">Evaluación</p>
     </div>
 
     <div class="slide">
@@ -1225,9 +1233,9 @@
     <div class="slide slide--visual">
       <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width: 85%; height: 85%;">
         <rect x="130" y="70" width="280" height="48" rx="4" fill="#222"/>
-        <text x="270" y="94" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff">NO EVALÚO</text>
+        <text x="270" y="94" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff" class="caps">No evalúo</text>
         <rect x="490" y="70" width="280" height="48" rx="4" fill="#eeff41"/>
-        <text x="630" y="94" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#111">SÍ EVALÚO</text>
+        <text x="630" y="94" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#111" class="caps">Sí evalúo</text>
         <text x="270" y="160" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">El acabado visual</text>
         <text x="270" y="205" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">La complejidad técnica</text>
         <text x="270" y="250" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="400" fill="#888" text-decoration="line-through">La herramienta utilizada</text>
@@ -1241,7 +1249,7 @@
       </svg>
       <div class="diagram-mobile">
         <div class="dm-list no">
-          <p class="dm-list-title dark">NO EVALÚO</p>
+          <p class="dm-list-title dark">No evalúo</p>
           <ul>
             <li>El acabado visual</li>
             <li>La complejidad técnica</li>
@@ -1251,7 +1259,7 @@
           </ul>
         </div>
         <div class="dm-list si">
-          <p class="dm-list-title accent">SÍ EVALÚO</p>
+          <p class="dm-list-title accent">Sí evalúo</p>
           <ul>
             <li>La capacidad de observar</li>
             <li>La calidad de las preguntas</li>
@@ -1435,7 +1443,7 @@
   <div class="nav-hint">← →</div>
   <div class="nav-hint-touch" id="navHintTouch">desliza o toca para continuar</div>
   <nav class="deck-nav" aria-label="Navegación de la presentación">
-    <button class="deck-nav-toggle" aria-expanded="false">SECCIONES ↑</button>
+    <button class="deck-nav-toggle" aria-expanded="false">Secciones ↑</button>
     <ul class="deck-nav-menu"></ul>
   </nav>
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -1531,12 +1539,16 @@
     const navMenu = document.querySelector('.deck-nav-menu');
 
     slides.forEach((slide, index) => {
-      const label = slide.querySelector('.section-theme, .tema-central');
+      const label = slide.querySelector('.section-theme, .tema-central, .slide--section .slide-title');
       if (!label || !navMenu) return;
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.dataset.goto = String(index);
-      button.textContent = label.textContent.replace(/\s+/g, ' ').trim();
+      // Los <br> (tema central) deben dejar espacio en la etiqueta; los slides ocultos
+      // no tienen layout, así que innerText no sirve: se clona y se reemplazan los <br>
+      const clone = label.cloneNode(true);
+      clone.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+      button.textContent = clone.textContent.replace(/\s+/g, ' ').trim();
       item.appendChild(button);
       navMenu.appendChild(item);
     });
