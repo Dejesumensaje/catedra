@@ -11,15 +11,14 @@ const cursos = (await getCollection('cursos')).sort(
   titulo="Cátedra · William Montoya"
   descripcion="Repositorio docente: el programa de cada curso y la memoria de lo que ocurrió de verdad."
 >
-  <section class="hero">
-    <span class="mono sube sube-1">Repositorio docente</span>
-    <h1 class="sube sube-2">Cátedra.</h1>
-    <p class="lede sube sube-3">Diseño cursos como quien diseña un producto: con intención, iteración y evidencia.</p>
-    <p class="sube sube-3" style="margin-top: 1.25rem; max-width: 46ch;">Aquí está cada edición que he dictado, con el programa y el registro de lo que ocurrió. Cada sesión se publica dos veces: el programa antes de la clase y, después, lo que realmente pasó.</p>
+  <section class="hero hero-indice">
+    <span class="mono sube sube-1">Hola, bienvenidos a mi repositorio</span>
+    <h1 class="sube sube-2">Soy William Montoya, periodista, diseñador UX y docente en temas de transformación digital, cultura y diseño.</h1>
+    <p class="intro sube sube-3">Aquí está cada edición de los cursos que he dictado, con el programa y el registro de lo que ocurrió. Cada sesión se publica dos veces: el programa antes de la clase y, después, lo que realmente pasó.</p>
   </section>
 
   <section class="seccion" id="cursos">
-    <span class="mono">El curso</span>
+    <span class="mono">Los cursos</span>
 
     {cursos.map((curso) => (
       <a class="poster" href={`/${curso.data.ruta}`}>

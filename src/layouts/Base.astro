@@ -228,6 +228,27 @@ const ogImage = new URL('/og.png', Astro.site);
         line-height: 1.55;
       }
 
+      /* El hub es un índice, no una portada. Quien llega ya sabe de quién es
+         el sitio: viene del portafolio, de Classroom o de un enlace dado en
+         clase. Así que el hero orienta y se quita del camino para que el
+         póster del curso entre en la primera pantalla. El titular de display
+         sigue vivo donde sí hay algo que anunciar: 404, /licencia, curso y
+         sesión. Va después de `.hero h1` a propósito: misma especificidad,
+         decide el orden. */
+      .hero-indice { padding: 2.75rem 0 2.25rem; }
+
+      .hero-indice .mono { margin-bottom: 1rem; }
+
+      .hero-indice h1 {
+        font-weight: 700;
+        font-size: 1.35rem;
+        line-height: 1.35;
+        letter-spacing: -0.005em;
+        max-width: 34ch;
+      }
+
+      .hero-indice .intro { margin-top: 1.1rem; max-width: 46ch; }
+
       /* ── tarjeta-póster del curso ─────────────── */
       .seccion { padding: 2.5rem 0 3rem; }
 
@@ -896,6 +917,7 @@ const ogImage = new URL('/og.png', Astro.site);
       @media (max-width: 40rem) {
         html { font-size: 100%; }
         .hero { padding: 3.5rem 0 2.5rem; }
+        .hero-indice { padding: 2.25rem 0 1.75rem; }
         .poster { padding: 1.75rem 1.5rem; }
         .poster .numero-gigante { font-size: 4.5rem; top: -1rem; }
         .clase { grid-template-columns: 2.5rem 1fr auto; gap: 1rem; padding: 1.1rem 0.25rem; }
