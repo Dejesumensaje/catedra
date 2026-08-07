@@ -2,6 +2,22 @@
 // Layout base: sistema visual del sitio (derivado del prototipo aprobado).
 // Roboto para títulos y datos, PT Serif para el cuerpo. Amarillo #eeff41 solo
 // con significado. El pie declara la licencia del material (ver /licencia).
+
+// Fuentes autoalojadas: sin petición a Google, sin salto tipográfico y sin
+// enviar la IP de quien lee a un tercero. Solo el subconjunto latino y solo
+// los pesos que el sistema usa de verdad (el sans nunca va en cursiva).
+import '@fontsource/roboto/latin-400.css';
+import '@fontsource/roboto/latin-500.css';
+import '@fontsource/roboto/latin-700.css';
+import '@fontsource/roboto/latin-900.css';
+import '@fontsource/pt-serif/latin-400.css';
+import '@fontsource/pt-serif/latin-700.css';
+import '@fontsource/pt-serif/latin-400-italic.css';
+
+// Las dos que pintan el primer viewport: el cuerpo y el titular.
+import ptSerifRegular from '@fontsource/pt-serif/files/pt-serif-latin-400-normal.woff2';
+import robotoBlack from '@fontsource/roboto/files/roboto-latin-900-normal.woff2';
+
 interface Props {
   titulo: string;
   descripcion?: string;
@@ -23,26 +39,28 @@ const ogImage = new URL('/og.png', Astro.site);
     <title>{titulo}</title>
     {descripcion && <meta name="description" content={descripcion} />}
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cátedra · William Montoya" />
     <meta property="og:title" content={titulo} />
     {descripcion && <meta property="og:description" content={descripcion} />}
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Cátedra — repositorio docente de William Montoya" />
     <meta property="og:locale" content="es_CO" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="generator" content={Astro.generator} />
     <link rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" />
     <meta name="copyright" content="William Montoya" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href={ptSerifRegular} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={robotoBlack} as="font" type="font/woff2" crossorigin />
     <style is:global>
       :root {
         --tinta: #222222;
         --texto: #444444;
-        --secundario: #888888;
+        /* #888888 daba 3.54:1 sobre papel y no pasaba AA. #6f6f6f da 5.02:1
+           y sostiene el mismo lugar en la jerarquía. */
+        --secundario: #6f6f6f;
         --papel: #ffffff;
         --regla: #e5e5e5;
         --amarillo: #eeff41;
@@ -50,11 +68,16 @@ const ogImage = new URL('/og.png', Astro.site);
         --serif: 'PT Serif', Georgia, serif;
         /* aire lateral: nada se pega a los bordes del viewport */
         --margen: clamp(1.5rem, 6vw, 4rem);
+        /* el sitio es claro por decisión: que el navegador no pinte los
+           controles en oscuro cuando el sistema lo está. */
+        color-scheme: light;
       }
 
       * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      html { font-size: 18px; }
+      /* 112.5% = 18px con el ajuste por defecto, pero respeta a quien subió
+         el tamaño base de fuente en su navegador. */
+      html { font-size: 112.5%; }
 
       body {
         background: var(--papel);
@@ -74,6 +97,42 @@ const ogImage = new URL('/og.png', Astro.site);
         padding: 0 var(--margen) 5rem;
       }
 
+      /* ── utilidades ───────────────────────────── */
+
+      /* Solo para lectores de pantalla. El `margin: -1px` importa: sin él la
+         caja de 1px alarga el scroll horizontal en pantallas estrechas. */
+      .sr-solo {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
+      /* salto al contenido: aparece únicamente con teclado */
+      .salto {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 20;
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: var(--amarillo);
+        color: var(--tinta);
+        border: 1px solid var(--tinta);
+        padding: 0.7rem 1.2rem;
+        text-decoration: none;
+      }
+
+      .salto:focus { left: 0.5rem; top: 0.5rem; }
+
       /* ── utilidades de voz ────────────────────── */
       .mono {
         font-family: var(--sans);
@@ -82,6 +141,10 @@ const ogImage = new URL('/og.png', Astro.site);
         letter-spacing: 0.16em;
         text-transform: uppercase;
       }
+
+      /* los rótulos de sección son encabezados reales; el navegador les
+         impone tamaño y peso propios y hay que devolverlos a `.mono`. */
+      h2.mono, h3.mono { font-size: 0.72rem; font-weight: 500; }
 
       /* resaltado tipo marcador */
       .hl {
@@ -256,7 +319,7 @@ const ogImage = new URL('/og.png', Astro.site);
       /* ══════════ CURSO ══════════ */
       .hero-curso { padding: 4rem 0 3rem; position: relative; }
 
-      .hero-curso > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; max-width: 70%; }
+      .hero-curso > .mono { color: var(--secundario); display: block; margin-bottom: 1.25rem; max-width: 52ch; }
 
       .hero-curso h1 {
         font-family: var(--sans);
@@ -336,6 +399,9 @@ const ogImage = new URL('/og.png', Astro.site);
       .pill:hover { background: var(--amarillo); }
       .pill .nota { color: var(--secundario); text-transform: none; letter-spacing: 0; }
 
+      /* un correo en mayúsculas no se lee ni se copia bien */
+      .pill.tal-cual { text-transform: none; letter-spacing: 0.02em; }
+
       /* separador ↔ */
       .separador {
         text-align: center;
@@ -384,10 +450,8 @@ const ogImage = new URL('/og.png', Astro.site);
         line-height: 1;
       }
 
-      .clase.programada .numeral {
-        color: transparent;
-        -webkit-text-stroke: 1.5px #c8c8c8;
-      }
+      /* el número de sesión es dato de orientación, no ornamento: se lee. */
+      .clase.programada .numeral { color: var(--secundario); }
 
       .clase .cuerpo .titulo-clase {
         font-family: var(--sans);
@@ -510,6 +574,14 @@ const ogImage = new URL('/og.png', Astro.site);
         align-items: center;
       }
 
+      /* la pregunta que abre la tensión de la sesión */
+      .pregunta-tension {
+        font-style: italic;
+        color: var(--secundario);
+        margin-top: 1rem;
+        max-width: 46ch;
+      }
+
       .tag-tinta {
         font-family: var(--sans);
         font-size: 0.7rem;
@@ -522,33 +594,30 @@ const ogImage = new URL('/og.png', Astro.site);
       }
 
       /* tarjeta de presentación */
+      /* La tarjeta no se eleva al pasar el mouse: no es clicable, solo lo es
+         su botón. Prometer una superficie que no responde es exactamente lo
+         que este curso enseña a no hacer.
+         Sin título propio: el rótulo de la sección ya nombró el objeto, y un
+         encabezado aquí solo puede repetirlo. Queda la condición y la acción.
+         Se ciñe a la medida de lectura para que el botón no acabe a media
+         pantalla de la frase que lo explica. */
       .tarjeta-deck {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 1.5rem;
+        gap: 1.5rem 2rem;
         flex-wrap: wrap;
+        max-width: 38rem;
         border: 2px solid var(--tinta);
         padding: 1.75rem 2rem;
-        transition: box-shadow 0.2s ease, transform 0.2s ease;
-      }
-
-      .tarjeta-deck:hover {
-        transform: translateY(-3px);
-        box-shadow: 6px 6px 0 var(--amarillo), 6px 6px 0 2px var(--tinta);
-      }
-
-      .tarjeta-deck .que {
-        font-family: var(--sans);
-        font-weight: 700;
-        font-size: 1.15rem;
-        color: var(--tinta);
       }
 
       .tarjeta-deck .detalle {
-        font-size: 0.92rem;
-        color: var(--secundario);
-        margin-top: 0.25rem;
+        flex: 1 1 18ch;
+        max-width: 34ch;
+        font-size: 0.95rem;
+        color: var(--texto);
+        margin-bottom: 0;
       }
 
       .boton {
@@ -638,20 +707,72 @@ const ogImage = new URL('/og.png', Astro.site);
 
       .contenido-mdx strong { color: var(--tinta); }
 
-      /* siguiente sesión */
-      .siguiente {
+      /* `a { color: inherit }` es global: sin esta regla, un enlace escrito
+         en el cuerpo de una sesión sería indistinguible del texto. */
+      .contenido-mdx a {
+        color: var(--tinta);
+        text-decoration: underline;
+        text-decoration-color: var(--regla);
+        text-underline-offset: 0.15em;
+      }
+
+      .contenido-mdx a:hover { text-decoration-color: var(--tinta); }
+
+      /* condiciones de la licencia: frases, no enlaces */
+      ul.condiciones { list-style: none; }
+
+      ul.condiciones li {
+        border-bottom: 1px solid var(--regla);
+        padding: 1rem 0.25rem;
+        color: var(--tinta);
+        max-width: 56ch;
+      }
+
+      ul.condiciones li:first-child { border-top: 1px solid var(--regla); }
+
+      /* ── navegación entre sesiones ────────────── */
+      /* El aire de abajo importa: sin él el botón se pega al filo del pie.
+         3rem es el mismo respiro que usa `.bloque`. */
+      .nav-sesiones {
         display: flex;
-        align-items: baseline;
+        align-items: stretch;
         justify-content: space-between;
         gap: 1rem;
         flex-wrap: wrap;
         border-top: 1px solid var(--tinta);
-        padding: 1.5rem 0 0;
+        padding: 1.5rem 0 3rem;
         margin-top: 1rem;
       }
 
-      .siguiente .mono { color: var(--secundario); }
-      .siguiente .que-sigue { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+      .salto-sesion {
+        display: block;
+        flex: 1 1 14rem;
+        text-decoration: none;
+        padding: 0.35rem 0;
+        transition: transform 0.18s ease;
+      }
+
+      .salto-sesion.hacia-atras:hover, .salto-sesion.hacia-atras:focus-visible {
+        transform: translateX(-0.35rem);
+      }
+
+      .salto-sesion.hacia-adelante {
+        text-align: right;
+      }
+
+      .salto-sesion.hacia-adelante:hover, .salto-sesion.hacia-adelante:focus-visible {
+        transform: translateX(0.35rem);
+      }
+
+      .salto-sesion .mono { color: var(--secundario); display: block; margin-bottom: 0.35rem; }
+      .salto-sesion .que-sigue { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+      .salto-sesion:hover .mono { color: var(--tinta); }
+
+      .volver-curso {
+        flex: 1 1 100%;
+        text-align: center;
+        margin-top: 1.25rem;
+      }
 
       /* ── candado ──────────────────────────────── */
       .candado-fondo {
@@ -668,6 +789,7 @@ const ogImage = new URL('/og.png', Astro.site);
       .candado-fondo.abierto { display: flex; }
 
       .candado {
+        position: relative;
         background: var(--papel);
         border: 2px solid var(--tinta);
         box-shadow: 10px 10px 0 var(--amarillo), 10px 10px 0 2px var(--tinta);
@@ -675,6 +797,24 @@ const ogImage = new URL('/og.png', Astro.site);
         max-width: 26rem;
         width: 100%;
       }
+
+      /* Sin este botón, la única salida sin teclado es tocar fuera del
+         diálogo, y nada lo indica. */
+      .candado .cerrar {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-family: var(--sans);
+        font-size: 1.4rem;
+        line-height: 1;
+        background: none;
+        border: 1px solid transparent;
+        color: var(--secundario);
+        padding: 0.4rem 0.6rem;
+        cursor: pointer;
+      }
+
+      .candado .cerrar:hover { color: var(--tinta); }
 
       .candado .numeral-modal {
         font-family: var(--sans);
@@ -738,10 +878,15 @@ const ogImage = new URL('/og.png', Astro.site);
       }
 
       /* ── pie: licencia ──────────────────────── */
+      /* Es una frase con información legal, no una etiqueta: sans y legible,
+         pero sin mayúsculas ni tracking de rótulo. */
       .pie {
         border-top: 1px solid var(--regla);
         padding: 1.5rem 0 0;
         color: var(--secundario);
+        font-family: var(--sans);
+        font-size: 0.8rem;
+        line-height: 1.6;
       }
 
       .pie a { color: var(--texto); text-decoration-color: var(--regla); }
@@ -749,15 +894,30 @@ const ogImage = new URL('/og.png', Astro.site);
 
       /* ── responsive ───────────────────────────── */
       @media (max-width: 40rem) {
-        html { font-size: 16px; }
+        html { font-size: 100%; }
         .hero { padding: 3.5rem 0 2.5rem; }
-        .hero-curso > .mono { max-width: 100%; }
         .poster { padding: 1.75rem 1.5rem; }
         .poster .numero-gigante { font-size: 4.5rem; top: -1rem; }
         .clase { grid-template-columns: 2.5rem 1fr auto; gap: 1rem; padding: 1.1rem 0.25rem; }
         .clase .numeral { font-size: 1.5rem; }
         .candado { padding: 2rem 1.5rem; }
         .tarjeta-deck { padding: 1.5rem; }
+      }
+
+      /* En pantallas estrechas el estado deja de competir por el ancho con
+         el título y baja a su propia línea. */
+      @media (max-width: 30rem) {
+        .clase {
+          grid-template-columns: 2.5rem 1fr;
+          column-gap: 0.85rem;
+          row-gap: 0.6rem;
+        }
+        .clase .lado { grid-column: 2; }
+        .clase .flecha { display: none; }
+        .salto-sesion.hacia-adelante { text-align: left; }
+        /* el autor de un material puede ser más ancho que la pantalla */
+        ul.materiales a { flex-wrap: wrap; }
+        ul.materiales .mat-autor { white-space: normal; }
       }
 
       /* ── movimiento reducido ──────────────────── */
@@ -767,8 +927,8 @@ const ogImage = new URL('/og.png', Astro.site);
           animation-delay: 0ms !important;
           transition-duration: 0.01ms !important;
         }
-        .poster:hover, .tarjeta-deck:hover { transform: none; }
-        a.clase:hover, ul.materiales a:hover { transform: none; }
+        .poster:hover { transform: none; }
+        a.clase:hover, ul.materiales a:hover, .salto-sesion:hover { transform: none; }
       }
 
       /* foco de teclado visible */
@@ -779,18 +939,21 @@ const ogImage = new URL('/og.png', Astro.site);
     </style>
   </head>
   <body>
+    <a class="salto" href="#contenido">Saltar al contenido</a>
     <div class="contenedor">
       <header class="topbar">
         <a class="marca" href="/">Cátedra <span>/ William Montoya</span></a>
         {volverHref && volverTexto && (
-          <a class="volver" href={volverHref}><span class="flecha-izq">←</span> {volverTexto}</a>
+          <a class="volver" href={volverHref}><span class="flecha-izq" aria-hidden="true">←</span> {volverTexto}</a>
         )}
       </header>
-      <slot />
-      <footer class="pie mono">
+      <main id="contenido">
+        <slot />
+      </main>
+      <footer class="pie">
         © 2026 William Montoya — Material docente bajo licencia
         {' '}<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">CC BY-NC-ND 4.0</a>
-        {' '}· <a href="/licencia">Detalles</a>
+        {' '}· <a href="/licencia">Licencia y usos</a>
       </footer>
     </div>
   </body>

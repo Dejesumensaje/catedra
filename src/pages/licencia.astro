@@ -14,8 +14,8 @@ import Base from '../layouts/Base.astro';
     <p class="lede sube sube-3">El material se puede consultar y compartir. La autoría se reconoce y las condiciones son claras.</p>
   </section>
 
-  <section class="bloque sube sube-4">
-    <span class="mono">Material docente</span>
+  <section class="bloque">
+    <h2 class="mono">Material docente</h2>
     <p>
       Los contenidos originales publicados en este sitio —textos, diagramas, ejercicios,
       presentaciones y demás materiales docentes— son propiedad intelectual de William Montoya.
@@ -26,33 +26,34 @@ import Base from '../layouts/Base.astro';
       Atribución-NoComercial-SinDerivadas 4.0 Internacional (CC BY-NC-ND 4.0)</a>.
     </p>
     <p>Esto significa que puedes compartir el material, citarlo y enlazarlo, siempre que:</p>
-    <ul class="materiales">
-      <li><span class="mat-titulo">Reconozcas la autoría.</span></li>
-      <li><span class="mat-titulo">No lo uses con fines comerciales.</span></li>
-      <li><span class="mat-titulo">No lo modifiques ni distribuyas versiones adaptadas.</span></li>
+    <ul class="condiciones" role="list">
+      <li>Reconozcas la autoría.</li>
+      <li>No lo uses con fines comerciales.</li>
+      <li>No lo modifiques ni distribuyas versiones adaptadas.</li>
     </ul>
   </section>
 
   <section class="bloque">
-    <span class="mono">Software y simulaciones</span>
+    <h2 class="mono">Software y simulaciones</h2>
     <p>
       El código, las simulaciones interactivas y las herramientas desarrolladas para el curso
       se publican con <strong>todos los derechos reservados</strong>. No están cubiertos por la
       licencia Creative Commons.
     </p>
+    <p>
+      Puedes usarlos y estudiarlos tal como están publicados en este sitio. No puedes copiarlos,
+      redistribuirlos ni derivar trabajos de ellos sin autorización escrita.
+    </p>
   </section>
 
   <section class="bloque">
-    <span class="mono">Otros usos</span>
+    <h2 class="mono">Otros usos</h2>
     <p>
       Si deseas utilizar este material en un curso, publicación, taller o proyecto diferente,
       puedes escribirme para solicitar autorización.
     </p>
-    <a class="pill" href="mailto:wyesid.montoya@udea.edu.co">wyesid.montoya@udea.edu.co</a>
+    <a class="pill tal-cual" href="mailto:wyesid.montoya@udea.edu.co?subject=Permiso%20de%20uso%20del%20material%20de%20C%C3%A1tedra">
+      Escribir a wyesid.montoya@udea.edu.co
+    </a>
   </section>
 </Base>
-
-<style>
-  /* ul.materiales asume enlaces con padding propio; aquí son ítems de texto */
-  ul.materiales li { padding: 1rem 0.25rem; }
-</style>

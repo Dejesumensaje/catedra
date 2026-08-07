@@ -207,9 +207,22 @@ sitio. Las tensiones son la columna vertebral del programa 3.0; el sitio las usa
 sistema de navegación transversal, no como una página más. Una sesión se puede alcanzar
 por número o por la tensión que trabaja.
 
-**Restricciones:** sin gradientes, sin sombras, sin border-radius decorativo, sin iconos
-genéricos. El amarillo aparece poco; cuando aparece, significa algo. Responsive real,
-foco de teclado visible, `prefers-reduced-motion` respetado.
+**Restricciones:** sin border-radius decorativo, sin iconos genéricos. El amarillo aparece
+poco; cuando aparece, significa algo. Responsive real, foco de teclado visible,
+`prefers-reduced-motion` respetado.
+
+- **Sin sombras suaves.** La única sombra permitida es dura y desplazada, sin desenfoque
+  (`box-shadow: 8px 8px 0 …`): es un segundo contorno, no profundidad.
+- **Sin degradados.** El `linear-gradient` solo se usa con parada dura, como marcador o
+  como filo de color (`.hl`, el hover de la lista de sesiones).
+- **Contraste AA como piso.** Ningún texto por debajo de 4.5:1 sobre papel. Por eso
+  `--secundario` es `#6f6f6f` y no un gris más claro.
+- **Nada comunica solo por color.** Un estado que se ve (una sesión con presentación,
+  una sesión programada) también se escribe.
+- **Todo rótulo de sección es un encabezado real.** `.mono` es una voz tipográfica, no un
+  sustituto de `<h2>`.
+- **Una superficie que se mueve al pasar el mouse tiene que ser clicable.** Es lo que este
+  curso enseña; el sitio no puede contradecirlo.
 
 ---
 

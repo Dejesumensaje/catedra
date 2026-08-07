@@ -15,18 +15,18 @@ export async function getStaticPaths() {
       );
     }
 
-    const siguiente = sesiones.find(
-      (s) => s.data.curso.id === curso.id && s.data.numero === sesion.data.numero + 1,
+    const vecina = (offset: number) => sesiones.find(
+      (s) => s.data.curso.id === curso.id && s.data.numero === sesion.data.numero + offset,
     );
 
     return {
       params: { curso: curso.data.ruta, numero: numeroSesion(sesion.data.numero).slice(1) },
-      props: { sesion, curso, siguiente },
+      props: { sesion, curso, anterior: vecina(-1), siguiente: vecina(1) },
     };
   });
 }
 
-const { sesion, curso, siguiente } = Astro.props;
+const { sesion, curso, anterior, siguiente } = Astro.props;
 const { Content } = await render(sesion);
 
 const tension = sesion.data.tension ? await getEntry(sesion.data.tension) : undefined;
@@ -41,11 +41,11 @@ const fecha = sesion.data.fecha.toLocaleDateString('es-CO', {
   timeZone: 'UTC',
 });
 
-const fechaSiguiente = siguiente?.data.fecha.toLocaleDateString('es-CO', {
-  day: 'numeric',
-  month: 'long',
-  timeZone: 'UTC',
-});
+const fechaCorta = (f: Date) =>
+  f.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+
+const rutaSesion = (s: typeof sesion) =>
+  `/${curso.data.ruta}/s${numeroSesion(s.data.numero).slice(1)}`;
 
 // Los materiales se escriben "Título — Autor"; se separan para mostrarlos en dos niveles.
 function partirMaterial(titulo: string): [string, string | undefined] {
@@ -62,7 +62,7 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
   titulo={`S${numero} · ${sesion.data.titulo} · ${curso.data.titulo}`}
   descripcion={sesion.data.preguntaCentral}
   volverHref={`/${curso.data.ruta}`}
-  volverTexto={`${curso.data.titulo} ${curso.data.version ?? ''}`}
+  volverTexto={[curso.data.titulo, curso.data.version].filter(Boolean).join(' ')}
 >
   <section class="hero-clase">
     <span class="mono sube sube-1">Sesión {numero} · {fecha}</span>
@@ -77,28 +77,31 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
         <span class="tag-tinta">{concepto}</span>
       ))}
     </div>
+    {tension && <p class="pregunta-tension sube sube-3">{tension.data.pregunta}</p>}
   </section>
 
   {sesion.data.presentacion && (
-    <section class="bloque sube sube-4">
-      <span class="mono">La presentación</span>
+    <section class="bloque">
+      <h2 class="mono">La presentación</h2>
       <div class="tarjeta-deck">
-        <div>
-          <p class="que">El deck de la sesión</p>
-          <p class="detalle">Se abre en una ventana nueva, listo para proyectar. Pide la contraseña en clase.</p>
-        </div>
-        <button class="boton" id="abrir-deck" type="button">Abrir presentación →</button>
+        <p class="detalle">
+          Se abre en una ventana nueva, lista para proyectar.
+          Pide la contraseña en clase.
+        </p>
+        <button class="boton" id="abrir-deck" type="button">
+          Abrir<span class="sr-solo"> la presentación</span> <span aria-hidden="true">→</span>
+        </button>
       </div>
     </section>
   )}
 
   {sesion.data.momentos.length > 0 && (
     <section class="bloque">
-      <span class="mono">En esta sesión</span>
+      <h2 class="mono">En esta sesión</h2>
       <div class="momentos">
         {sesion.data.momentos.map((momento) => (
           <div class="momento">
-            <span class="mono">{momento.titulo}</span>
+            <h3 class="mono">{momento.titulo}</h3>
             <p>{momento.cuerpo}</p>
           </div>
         ))}
@@ -108,15 +111,18 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
 
   {sesion.data.materiales.length > 0 && (
     <section class="bloque">
-      <span class="mono">Material</span>
-      <ul class="materiales">
+      <h2 class="mono">Material de la semana</h2>
+      <ul class="materiales" role="list">
         {sesion.data.materiales.map((material) => {
           const [titulo, autor] = partirMaterial(material.titulo);
           return (
             <li>
               <a href={material.url} target="_blank" rel="noopener">
                 <span class="mat-titulo">{titulo}</span>
-                <span class="mat-autor">{autor ? `${autor} ↗` : '↗'}</span>
+                <span class="mat-autor">
+                  {autor}{autor && ' '}<span aria-hidden="true">↗</span>
+                  <span class="sr-solo"> (abre en otra pestaña)</span>
+                </span>
               </a>
             </li>
           );
@@ -131,25 +137,44 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
     </section>
   )}
 
-  {siguiente && (
-    <div class="siguiente">
-      <span class="mono">Siguiente — {fechaSiguiente}</span>
-      <span class="que-sigue">S{numeroSesion(siguiente.data.numero).slice(1)} · {siguiente.data.titulo}</span>
+  <nav class="nav-sesiones" aria-label="Sesiones">
+    {anterior && (
+      <a class="salto-sesion hacia-atras" href={rutaSesion(anterior)}>
+        <span class="mono">← Anterior — {fechaCorta(anterior.data.fecha)}</span>
+        <span class="que-sigue">S{numeroSesion(anterior.data.numero).slice(1)} · {anterior.data.titulo}</span>
+      </a>
+    )}
+    {siguiente && (
+      <a class="salto-sesion hacia-adelante" href={rutaSesion(siguiente)}>
+        <span class="mono">Siguiente — {fechaCorta(siguiente.data.fecha)} →</span>
+        <span class="que-sigue">S{numeroSesion(siguiente.data.numero).slice(1)} · {siguiente.data.titulo}</span>
+      </a>
+    )}
+    <div class="volver-curso">
+      <a class="pill" href={`/${curso.data.ruta}`}>Todas las sesiones</a>
     </div>
-  )}
+  </nav>
 
   {sesion.data.presentacion && (
     <>
       <div class="candado-fondo" id="candado-fondo">
         <div class="candado" role="dialog" aria-modal="true" aria-labelledby="candado-titulo">
-          <span class="numeral-modal">{numero}</span>
+          <button class="cerrar" id="candado-cerrar" type="button" aria-label="Cerrar">×</button>
+          <span class="numeral-modal" aria-hidden="true">{numero}</span>
           <h3 id="candado-titulo">{sesion.data.titulo}</h3>
-          <p>Esta presentación es para quienes están en el curso. Escribe la contraseña y se abre en una ventana nueva.</p>
+          <p>Es para quienes están en el curso. La contraseña se dice en clase.</p>
           <form id="candado-form">
-            <input type="password" id="candado-input" placeholder="Contraseña" autocomplete="off" aria-label="Contraseña" />
+            <label class="sr-solo" for="candado-input">Contraseña</label>
+            <input
+              type="password"
+              id="candado-input"
+              placeholder="Contraseña"
+              autocomplete="off"
+              aria-describedby="candado-error"
+            />
             <button type="submit">Abrir</button>
           </form>
-          <p class="error" id="candado-error"></p>
+          <p class="error" id="candado-error" role="status" aria-live="polite"></p>
         </div>
       </div>
 
@@ -161,10 +186,13 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
           var CLAVE = 'udea2026';
           var MARCA = 'catedra-clave-ok';
           var fondo = document.getElementById('candado-fondo');
+          var dialogo = fondo.querySelector('.candado');
           var input = document.getElementById('candado-input');
           var error = document.getElementById('candado-error');
           var abridor = document.getElementById('deck-abridor');
           var boton = document.getElementById('abrir-deck');
+          var cerrar = document.getElementById('candado-cerrar');
+          var focoPrevio = null;
 
           function claveRecordada() {
             try { return sessionStorage.getItem(MARCA) === '1'; } catch (e) { return false; }
@@ -174,25 +202,50 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
             try { sessionStorage.setItem(MARCA, '1'); } catch (e) {}
           }
 
+          function enfocables() {
+            return dialogo.querySelectorAll('button, input');
+          }
+
           function abrirCandado() {
             // Si ya la escribió bien en esta visita, no se la pedimos otra vez.
             if (claveRecordada()) { abridor.click(); return; }
+            focoPrevio = document.activeElement;
             input.value = '';
+            input.removeAttribute('aria-invalid');
             error.textContent = '';
             fondo.classList.add('abierto');
             input.focus();
           }
 
           function cerrarCandado() {
+            if (!fondo.classList.contains('abierto')) return;
             fondo.classList.remove('abierto');
+            // El foco vuelve al botón que abrió el diálogo, no al principio.
+            if (focoPrevio && focoPrevio.focus) focoPrevio.focus();
+            focoPrevio = null;
           }
 
           boton.addEventListener('click', abrirCandado);
+          cerrar.addEventListener('click', cerrarCandado);
           fondo.addEventListener('click', function (e) {
             if (e.target === fondo) cerrarCandado();
           });
+
           document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') cerrarCandado();
+            if (!fondo.classList.contains('abierto')) return;
+            if (e.key === 'Escape') { cerrarCandado(); return; }
+            if (e.key !== 'Tab') return;
+            // El foco no se sale del diálogo mientras está abierto.
+            var items = enfocables();
+            var primero = items[0];
+            var ultimo = items[items.length - 1];
+            if (e.shiftKey && document.activeElement === primero) {
+              e.preventDefault();
+              ultimo.focus();
+            } else if (!e.shiftKey && document.activeElement === ultimo) {
+              e.preventDefault();
+              primero.focus();
+            }
           });
 
           document.getElementById('candado-form').addEventListener('submit', function (e) {
@@ -202,7 +255,9 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
               abridor.click();
               cerrarCandado();
             } else {
+              input.setAttribute('aria-invalid', 'true');
               error.textContent = 'Esa no es. Pregunta en clase.';
+              input.focus();
             }
           });
         })();

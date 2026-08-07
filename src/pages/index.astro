@@ -15,27 +15,26 @@ const cursos = (await getCollection('cursos')).sort(
     <span class="mono sube sube-1">Repositorio docente</span>
     <h1 class="sube sube-2">Cátedra.</h1>
     <p class="lede sube sube-3">Diseño cursos como quien diseña un producto: con intención, iteración y evidencia.</p>
-    <p class="sube sube-3" style="margin-top: 1.25rem; max-width: 46ch;">Este repositorio reúne cada edición, desde el programa inicial hasta la documentación del semestre. Cada curso se publica dos veces: primero el programa y, al terminar el semestre, el registro de lo que realmente ocurrió.</p>
-    <a class="pill sube sube-4" href="#cursos">Abrir el repositorio →</a>
+    <p class="sube sube-3" style="margin-top: 1.25rem; max-width: 46ch;">Aquí está cada edición que he dictado, con el programa y el registro de lo que ocurrió. Cada sesión se publica dos veces: el programa antes de la clase y, después, lo que realmente pasó.</p>
   </section>
 
   <section class="seccion" id="cursos">
-    <span class="mono sube sube-3">Cursos disponibles</span>
+    <span class="mono">El curso</span>
 
     {cursos.map((curso) => (
-      <a class="poster sube sube-4" href={`/${curso.data.ruta}`}>
+      <a class="poster" href={`/${curso.data.ruta}`}>
         {curso.data.version && (
           <span class="numero-gigante" aria-hidden="true">{curso.data.version}</span>
         )}
         <span class="mono">{curso.data.institucion} · {curso.data.periodo.etiqueta}</span>
         <h2>{curso.data.titulo} {curso.data.version && <span class="hl">{curso.data.version}</span>}</h2>
         <p class="desc">{curso.data.descripcion}</p>
-        <ul class="tags">
+        <ul class="tags" role="list">
           <li>{curso.data.intensidad.sesiones} sesiones</li>
           <li>{curso.data.intensidad.modalidad}</li>
           <li>{curso.data.programa}</li>
         </ul>
-        <span class="cta">Entrar al curso <span class="flecha">→</span></span>
+        <span class="cta">Entrar al curso <span class="flecha" aria-hidden="true">→</span></span>
       </a>
     ))}
   </section>

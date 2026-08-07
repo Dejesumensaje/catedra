@@ -38,7 +38,7 @@ const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
 ---
 
 <Base
-  titulo={`${curso.data.titulo} ${curso.data.version ?? ''} · Cátedra`}
+  titulo={`${[curso.data.titulo, curso.data.version].filter(Boolean).join(' ')} · Cátedra`}
   descripcion={curso.data.descripcion}
   volverHref="/"
   volverTexto="Todos los cursos"
@@ -55,21 +55,28 @@ const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
 
   <div class="semestre sube sube-3">
     <span class="mono">Sesión {ultima ? numeroSesion(ultima.data.numero).toUpperCase() : 'S00'} / {total}</span>
-    <div class="pista"><div class="relleno" style={`width: ${progreso}%;`}></div></div>
+    <div
+      class="pista"
+      role="progressbar"
+      aria-label="Sesiones publicadas"
+      aria-valuemin="0"
+      aria-valuemax={total}
+      aria-valuenow={disponibles.length}
+    ><div class="relleno" style={`width: ${progreso}%;`}></div></div>
     <span class="mono">{curso.data.periodo.etiqueta}</span>
   </div>
 
-  <section class="bloque sube sube-4">
-    <span class="mono">El curso</span>
+  <section class="bloque">
+    <h2 class="mono">El curso</h2>
     {parrafosIntro.map((parrafo) => <p>{parrafo}</p>)}
   </section>
 
   <div class="separador" aria-hidden="true">↔</div>
 
   <section class="bloque">
-    <span class="mono">Clases — {total} sesiones, una por semana</span>
+    <h2 class="mono">Sesiones — {total}, una por semana</h2>
 
-    <ol class="clases">
+    <ol class="clases" role="list">
       {sesiones.map((sesion) => {
         const tension = sesion.data.tension
           ? tensionPorId.get(sesion.data.tension.id)
@@ -79,39 +86,28 @@ const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
 
         return (
           <li class="clase-fila">
-            {disponible ? (
-              <a class="clase" href={`/${curso.data.ruta}/s${numero}`}>
-                <span class="numeral">{numero}</span>
-                <span class="cuerpo">
-                  <span class="titulo-clase">{sesion.data.titulo}</span>
-                  {tension && (
-                    <span class="tension">{tension.data.poloA} ↔ {tension.data.poloB}</span>
-                  )}
-                </span>
-                <span class="lado">
-                  <span class="sticker">Disponible</span>
-                  <span class="flecha" aria-hidden="true">→</span>
-                </span>
-              </a>
-            ) : (
-              <span class="clase programada">
-                <span class="numeral">{numero}</span>
-                <span class="cuerpo">
-                  <span class="titulo-clase">{sesion.data.titulo}</span>
-                  {tension && (
-                    <span class="tension">{tension.data.poloA} ↔ {tension.data.poloB}</span>
-                  )}
-                </span>
-                <span class="lado">
-                  <span class="estado-gris">{fechaCorta(sesion.data.fecha)}</span>
-                </span>
+            <a class={disponible ? 'clase' : 'clase programada'} href={`/${curso.data.ruta}/s${numero}`}>
+              <span class="numeral">{numero}</span>
+              <span class="cuerpo">
+                <span class="titulo-clase">{sesion.data.titulo}</span>
+                {tension && (
+                  <span class="tension">{tension.data.poloA} ↔ {tension.data.poloB}</span>
+                )}
               </span>
-            )}
+              <span class="lado">
+                {disponible ? (
+                  <span class="sticker">Con presentación</span>
+                ) : (
+                  <span class="estado-gris">Programada · {fechaCorta(sesion.data.fecha)}</span>
+                )}
+                <span class="flecha" aria-hidden="true">→</span>
+              </span>
+            </a>
           </li>
         );
       })}
     </ol>
 
-    <p class="nota-curso">Las sesiones se abren al ritmo del curso. Los títulos y fechas pueden moverse: esto es un programa en construcción, no una promesa.</p>
+    <p class="nota-curso">El programa de las 16 sesiones está publicado desde el primer día. La presentación de cada una se abre el día de la clase. Los títulos y fechas pueden moverse: esto es un programa en construcción, no una promesa.</p>
   </section>
 </Base>
