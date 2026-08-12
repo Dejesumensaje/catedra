@@ -1,0 +1,318 @@
+---
+// Instructivo del laboratorio de UNO (sesión 2). Se proyecta como QR desde el
+// deck y queda enlazado en los materiales de la sesión.
+import Base from '../../layouts/Base.astro';
+
+// `src` null = todavía no hay foto de la carta; se muestra el placeholder.
+const cartas = [
+  { nombre: 'Roba 2', simbolo: '+2', src: '/img/uno/roba-2.jpg' },
+  { nombre: 'Roba 4', simbolo: '+4', src: '/img/uno/roba-4.jpg' },
+  { nombre: 'Salta', simbolo: '⊘', src: null },
+  { nombre: 'Reversa', simbolo: '↻', src: '/img/uno/reversa.jpg' },
+  { nombre: 'Comodín', simbolo: '★', src: '/img/uno/comodin.jpg' },
+];
+
+const pistas = [
+  { carta: 'Roba 2', hace: 'añade 2', pregunta: '¿2 qué?' },
+  { carta: 'Roba 4', hace: 'añade 4', pregunta: '¿4 qué?' },
+  { carta: 'Salta', hace: 'deja a un jugador por fuera de un turno', pregunta: '¿qué más puede quedar fuera?' },
+  { carta: 'Reversa', hace: 'invierte el orden de los turnos', pregunta: '¿qué más puede invertirse?' },
+  { carta: 'Comodín', hace: 'deja que el jugador decida el color', pregunta: '¿qué más podría decidir?' },
+];
+
+const pasos = [
+  {
+    numero: '01',
+    titulo: 'Inventen',
+    cuerpo: 'Diseñen una nueva relación con una o varias cartas. Escríbanla en una frase, y anoten qué pregunta deja sin respuesta y contra quién.',
+  },
+  {
+    numero: '02',
+    titulo: 'Jueguen',
+    cuerpo: 'Jueguen una partida con su regla. Observen qué decisiones y qué estrategias aparecen.',
+  },
+  {
+    numero: '03',
+    titulo: 'Háganlo peor',
+    cuerpo: 'Modifiquen su regla para hacer el juego más competitivo y más cruel.',
+  },
+];
+
+// Las preguntas son literalmente las del deck: el estudiante tiene que leer lo
+// mismo en el proyector, en el sitio y en su entrega.
+const conceptos = [
+  { nombre: 'Affordance', pregunta: '¿Qué puedo hacer?' },
+  { nombre: 'Significante', pregunta: '¿Cómo sé que puedo hacerlo?' },
+  { nombre: 'Restricción', pregunta: '¿Qué no puedo hacer?' },
+  { nombre: 'Mapping', pregunta: '¿Cuál de todos, y con qué resultado?' },
+  { nombre: 'Feedforward', pregunta: '¿Qué va a pasar si lo hago?' },
+  { nombre: 'Feedback', pregunta: '¿Qué pasó?' },
+];
+---
+
+<Base
+  titulo="UNO resignificado · Laboratorio · Pensamiento Sensorial 3.0"
+  descripcion="Instructivo del laboratorio de la sesión 2: intervenir las cartas de UNO para hacerlo más competitivo sin cambiar su objetivo."
+  volverHref="/pensamiento-sensorial/s02"
+  volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Laboratorio · Sesión 2 · En grupos de cuatro</span>
+    <h1 class="sube sube-2">UNO resignificado</h1>
+    <p class="lede sube-3">El mismo juego. Nuevas relaciones.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="premisa">
+      <p>
+        <strong>El objetivo no cambia.</strong> Sigue ganando quien se queda sin cartas.
+        Las cartas siguen siendo las mismas. Lo que vamos a cambiar es <strong>la relación que tenemos con ellas</strong>.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Las cartas que van a intervenir</h2>
+    <ul class="cartas" role="list">
+      {cartas.map((carta) => (
+        <li>
+          {carta.src ? (
+            <img
+              class="carta-img"
+              src={carta.src}
+              alt={`Carta ${carta.nombre} de UNO`}
+              loading="lazy"
+            />
+          ) : (
+            <div class="carta-placeholder" aria-hidden="true">
+              <span class="carta-simbolo">{carta.simbolo}</span>
+              <span class="carta-nota mono">imagen pendiente</span>
+            </div>
+          )}
+          <span class="carta-nombre">{carta.nombre}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El reto</h2>
+    <p class="reto">
+      Usen <strong>una o varias</strong> de estas cartas para hacer que UNO sea <strong>más competitivo</strong>.
+    </p>
+    <p class="reto">
+      Partan de algo que la carta ya hace. No inventen una regla desconectada de ella.
+    </p>
+
+    <ul class="pistas" role="list">
+      {pistas.map((pista) => (
+        <li class="pista">
+          <span class="pista-carta mono">{pista.carta}</span>
+          <span class="pista-texto">{pista.hace} → <strong>{pista.pregunta}</strong></span>
+        </li>
+      ))}
+    </ul>
+
+    <ol class="pasos" role="list">
+      {pasos.map((paso) => (
+        <li class="paso">
+          <span class="mono">{paso.numero}</span>
+          <h3>{paso.titulo}</h3>
+          <p>{paso.cuerpo}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="cruel">
+      <p class="cruel-titulo">Háganlo particularmente cruel</p>
+      <p>
+        No cambien el objetivo de UNO: lleven su nueva relación hasta sus últimas
+        consecuencias. Al final, cada grupo juega una mano con las reglas del grupo
+        de al lado. Ahí se siente el costo.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Las seis preguntas con que trabajan</h2>
+    <ul class="conceptos-lab" role="list">
+      {conceptos.map((concepto) => (
+        <li>
+          <strong>{concepto.nombre}</strong>
+          <span>{concepto.pregunta}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .premisa {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 38rem;
+  }
+
+  .premisa p {
+    max-width: none;
+    margin-bottom: 0;
+    font-size: 1.1rem;
+  }
+
+  .premisa strong { color: var(--tinta); }
+
+  /* ── cartas ───────────────────────────────────── */
+  .cartas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+  }
+
+  .cartas li { text-align: center; }
+
+  /* Misma caja que el placeholder: la foto tiene borde blanco propio, así que
+     `contain` sobre papel la deja continuar la caja sin recortar la carta. */
+  .carta-img {
+    width: 100%;
+    aspect-ratio: 5 / 7;
+    object-fit: contain;
+    background: var(--papel);
+    border: 1px solid var(--regla);
+    display: block;
+  }
+
+  .carta-placeholder {
+    aspect-ratio: 5 / 7;
+    border: 2px dashed var(--secundario);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .carta-simbolo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 2.2rem;
+    color: var(--tinta);
+  }
+
+  .carta-nota { color: var(--secundario); }
+
+  .carta-nombre {
+    display: block;
+    margin-top: 0.6rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--tinta);
+  }
+
+  /* ── el reto ──────────────────────────────────── */
+  .reto { font-size: 1.1rem; }
+
+  .reto strong { color: var(--tinta); }
+
+  .pistas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 1.25rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  .pista {
+    border: 1px solid var(--regla);
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+  }
+
+  .pista-carta {
+    color: var(--tinta);
+    min-width: 4.5rem;
+  }
+
+  .pista-texto { font-size: 0.95rem; }
+  .pista-texto strong { color: var(--tinta); }
+
+  /* ── pasos ────────────────────────────────────── */
+  .pasos {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .paso {
+    border: 1px solid var(--regla);
+    border-top: 3px solid var(--tinta);
+    padding: 1.25rem;
+  }
+
+  .paso .mono { color: var(--secundario); display: block; margin-bottom: 0.5rem; }
+
+  .paso h3 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    margin-bottom: 0.4rem;
+  }
+
+  .paso p { font-size: 0.95rem; margin-bottom: 0; }
+
+  /* ── banda cruel ──────────────────────────────── */
+  .cruel {
+    margin-top: 1.5rem;
+    background: var(--tinta);
+    color: var(--papel);
+    padding: 1.75rem 2rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+  }
+
+  .cruel-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .cruel p:last-child { font-size: 0.98rem; color: #e5e5e5; margin-bottom: 0; }
+
+  /* ── conceptos ────────────────────────────────── */
+  .conceptos-lab {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem 1rem;
+  }
+
+  .conceptos-lab li {
+    border-top: 3px solid var(--tinta);
+    padding-top: 0.6rem;
+  }
+
+  .conceptos-lab strong {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--tinta);
+  }
+
+  .conceptos-lab span {
+    font-size: 0.85rem;
+    color: var(--secundario);
+  }
+
+  @media (max-width: 40rem) {
+    .cartas { grid-template-columns: repeat(3, 1fr); }
+    .pistas { grid-template-columns: 1fr; }
+    .pasos { grid-template-columns: 1fr; }
+    .conceptos-lab { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

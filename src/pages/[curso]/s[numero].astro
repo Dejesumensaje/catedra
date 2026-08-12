@@ -115,14 +115,22 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
       <ul class="materiales" role="list">
         {sesion.data.materiales.map((material) => {
           const [titulo, autor] = partirMaterial(material.titulo);
+          const externo = !material.url.startsWith('/');
           return (
             <li>
-              <a href={material.url} target="_blank" rel="noopener">
+              <a href={material.url} {...(externo ? { target: '_blank', rel: 'noopener' } : {})}>
                 <span class="mat-titulo">{titulo}</span>
-                <span class="mat-autor">
-                  {autor}{autor && ' '}<span aria-hidden="true">↗</span>
-                  <span class="sr-solo"> (abre en otra pestaña)</span>
-                </span>
+                {(autor || externo) && (
+                  <span class="mat-autor">
+                    {autor}{autor && externo && ' '}
+                    {externo && (
+                      <>
+                        <span aria-hidden="true">↗</span>
+                        <span class="sr-solo"> (abre en otra pestaña)</span>
+                      </>
+                    )}
+                  </span>
+                )}
               </a>
             </li>
           );
