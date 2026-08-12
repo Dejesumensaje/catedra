@@ -24,6 +24,15 @@ no improvisar ni añadir elementos que no estén en estas instrucciones.
 Nunca dos ideas en el mismo slide. Si hay dos pensamientos, son dos slides. La narrativa
 avanza como si cada slide fuera una oración de un párrafo que se va revelando.
 
+**La excepción, que es una sola:** cuando la idea *es* la comparación entre varias partes
+—cuatro clases de restricción, tres momentos de una interacción, dos casos que solo se
+entienden como diferencia—, partirla en slides la destruye. Distinguir exige ver junto. Para
+eso están los **layouts compuestos** (ver §Layouts compuestos). Siguen siendo una idea por
+slide: la idea es la comparación.
+
+No confundir esto con un permiso general. Para narrar, argumentar o preguntar sigue siendo
+una oración por slide, siempre.
+
 ---
 
 ## Estructura fija de cada presentación
@@ -107,7 +116,15 @@ William, no para las clases.
 ## Reglas de color y fondo
 
 - Fondo predeterminado: **blanco puro `#ffffff`**
-- Color de texto: **gris oscuro `#444`** (títulos) y **`#888`** (subtítulos)
+- Color de texto: **gris oscuro `#444`** (títulos) y **`#6f6f6f`** (subtítulos, fuentes,
+  rótulos y texto de apoyo)
+
+> **Corrección, deck s02 en adelante.** Este documento decía `#888` para el texto secundario.
+> Sobre blanco eso queda en 3.5:1 y no llega al piso AA que fija `AGENTS.md` §9 — proyectado,
+> al fondo del salón, se pierde. El secundario es `#6f6f6f` (5:1), el mismo del sitio.
+> `#888` solo puede quedar en el cromo que no es contenido: la pista `← →` y el menú de
+> secciones. Los decks anteriores conservan `#888`; no hay que volver atrás a corregirlos,
+> pero ningún deck nuevo lo usa para texto que se lee.
 - Acento principal: **`#eeff41`** (amarillo eléctrico) — tiene dos usos precisos:
 
 ### Uso 1 — Énfasis dentro del slide
@@ -302,6 +319,20 @@ stroke `#444`, intersección con fill `#eeff41` al 30% de opacidad.
 **5. Árbol / jerarquía** — un concepto que se descompone en subcategorías. Raíz en
 `#eeff41`, hijos en `#222`, nietos en nodo neutro.
 
+### SVG o layout: la regla que evita decir lo mismo dos veces
+
+Antes de dibujar un SVG, decidir cuál de los dos es:
+
+> **SVG cuando hay flechas** — relación, dirección, proceso, algo que fluye entre nodos.
+> **Layout compuesto cuando hay celdas** — partes paralelas que se comparan entre sí.
+
+Un SVG que dibuja una tabla o una rejilla de cajas está haciendo a mano, en coordenadas
+absolutas y sin responsive, algo que el HTML hace mejor. Si el diagrama no tiene ni una
+flecha ni una línea de relación, no es un diagrama: es una rejilla, y va como layout.
+
+Y nunca las dos: si un bloque ya tiene su rejilla, no lleva además un SVG que repita las
+mismas celdas. Ese es el error más común al ampliar un deck.
+
 ### Posición del slide visual en la narrativa
 
 El visual nunca reemplaza la explicación — va después de que las oraciones ya
@@ -347,6 +378,300 @@ Nunca poner el visual primero. La narrativa textual siempre precede al visual.
 
 ---
 
+## Layouts compuestos
+
+Cinco layouts que ponen varias celdas en un slide. Estrenados en el deck de la sesión 2
+(`public/presentaciones/ps3/s02/index.html`), que es la referencia viva: si algo de esta
+sección no se entiende, mirar cómo está resuelto ahí.
+
+**Cuándo usarlos.** Solo cuando la idea es la comparación entre las celdas. La prueba: si
+uno pudiera leer las celdas en cualquier orden y la idea sobrevive, es una rejilla; si tienen
+que ir en un orden, es narrativa y van como oraciones sueltas.
+
+**Cuándo NO usarlos.** Para resumir un argumento que ya se contó bien en oraciones. Para
+meter más contenido en menos slides. Para hacer una agenda. Ninguna de esas es una razón.
+
+### Reglas comunes
+
+- Roboto sobre blanco, como todo lo demás. Reglas de 1px `#e5e5e5` para separar.
+- **Sin bordes redondeados, sin sombras, sin degradados, sin tarjetas.** Las celdas se separan
+  con filetes y aire, nunca con un contorno cerrado.
+- Texto alineado a la izquierda dentro de las celdas.
+- **El amarillo marca una sola celda por slide, como máximo, y solo si el texto dice por qué
+  esa celda es distinta.** Si las partes son equivalentes, ninguna lleva acento. Un amarillo
+  que alterna para "dar ritmo" es decoración, y está prohibido.
+- Máximo cuatro celdas. Con cinco, el slide dejó de ser legible a distancia.
+- Todo layout compuesto colapsa a una columna en pantallas angostas. Como son CSS grid, basta
+  cambiar `grid-template-columns`: no hace falta duplicar el markup.
+
+### 1 · `slide--ficha` — la ficha de concepto
+
+Un concepto entero en un slide, con las mismas ranuras siempre: número, término, definición,
+fuente, y una o dos celdas abajo. Cuando un bloque presenta varios conceptos hermanos, la
+repetición exacta de la estructura es lo que vuelve visible que son cosas del mismo orden.
+
+El rótulo de la segunda celda es variable y es donde se juega la enseñanza: «Cuidado», «La
+distinción bisagra», «Cuando falla», «Por qué importa». La primera es casi siempre «El ejemplo».
+
+```html
+<div class="slide slide--ficha">
+  <div class="ficha">
+    <p class="rotulo ficha-num">Concepto 1 de 5</p>
+    <p class="ficha-termino">Affordance</p>
+    <p class="ficha-def">Lo que un objeto <em>permite hacer</em>, por la relación entre sus
+      propiedades y el cuerpo de quien lo enfrenta.</p>
+    <p class="ficha-fuente">Gibson, 1979 · Norman, 1988 / 1999</p>
+    <div class="ficha-celdas">          <!-- añadir .una si solo va una celda -->
+      <div class="ficha-celda">
+        <span class="rotulo">El ejemplo</span>
+        <p>Una manija plana y horizontal afforda empujar…</p>
+      </div>
+      <div class="ficha-celda">
+        <span class="rotulo">Cuidado</span>
+        <p>La affordance existe aunque nadie la perciba…</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+El `<em>` dentro de `.ficha-def` pinta el amarillo sobre la palabra clave de la definición.
+Uno por ficha.
+
+### 2 · `slide--rejilla` — trío y 2×2
+
+Tres columnas (`.rejilla--3`) o cuadro de cuatro (`.rejilla--2x2`). Cada celda: filete
+superior, rótulo, titular corto, cuerpo de dos o tres líneas. Admite `.compuesto-titulo`
+arriba —la pregunta que el conjunto responde— y `.compuesto-pie` abajo —la nota que lo cierra.
+
+```html
+<div class="slide slide--rejilla">
+  <p class="compuesto-titulo">Las cuatro, al mismo tiempo</p>
+  <div class="rejilla rejilla--2x2">
+    <div class="celda acento">        <!-- .acento solo en la celda que el texto justifica -->
+      <span class="rotulo">Física</span>
+      <p class="celda-titulo">La forma impide la acción equivocada</p>
+      <p class="celda-cuerpo">La SIM que solo entra por un lado…</p>
+    </div>
+    <div class="celda">…</div>
+    <div class="celda">…</div>
+    <div class="celda">…</div>
+  </div>
+  <p class="compuesto-pie">Los cuatro pueden fallar, pero no fallan igual.</p>
+</div>
+```
+
+### 3 · `slide--par` — el contraste
+
+Dos columnas enfrentadas con encabezado a sangre: la izquierda amarilla, la derecha oscura.
+Es el mismo par que usan las tablas comparativas en SVG. Para ideas que solo existen como
+diferencia: escondida ↔ falsa, dice la verdad ↔ miente, antes ↔ después.
+
+```html
+<div class="slide slide--par">
+  <p class="compuesto-titulo">De ahí salen los dos casos que más nos van a interesar</p>
+  <div class="par">
+    <div class="par-col a">
+      <p class="par-encabezado">Escondida — existe y nadie la ve</p>
+      <p class="par-cuerpo">La acción <strong>es posible</strong>, pero nada lo anuncia…</p>
+    </div>
+    <div class="par-col b">
+      <p class="par-encabezado">Falsa — no existe y todo el mundo la ve</p>
+      <p class="par-cuerpo">Parece que se puede y <strong>no se puede</strong>…</p>
+    </div>
+  </div>
+</div>
+```
+
+### 4 · `slide--pauta` — la lista operativa
+
+Consignas de laboratorio y listas de entregables. **Es la única excepción a la prohibición de
+listas**, y tiene una razón concreta: mientras los estudiantes copian una consigna, necesitan
+verla completa; repartida en seis slides los obliga a pedir que uno devuelva.
+
+Nunca usarla para argumentar. Si los ítems son ideas y no instrucciones, son oraciones sueltas.
+
+```html
+<div class="slide slide--pauta">
+  <p class="pauta-titulo">Las reglas del laboratorio</p>
+  <ol class="pauta">
+    <li><span class="n">01</span><span>El objetivo del juego sigue igual…</span></li>
+    <li><span class="n">02</span><span>Dejan el <strong>significante intacto</strong>…
+      <span class="nota">Aclaración secundaria, si hace falta.</span></span></li>
+  </ol>
+</div>
+```
+
+### 5 · `slide--mapa` — dónde vamos
+
+El índice de un bloque largo: los nombres apilados, `#444` los que faltan, `#6f6f6f` los ya
+vistos, `#111` y marcado el actual. Va una vez al abrir el bloque y una vez al cerrarlo — no
+antes de cada concepto, que se vuelve un tic.
+
+Dos reglas que no se pueden relajar aquí:
+
+- **Los tres estados cumplen AA sobre blanco.** La tentación es poner los pendientes en un
+  gris muy claro; proyectado eso no se lee y el slide de apertura —donde todo está pendiente—
+  queda en blanco. La diferencia entre estados es sutil a propósito.
+- **El estado no se comunica solo por color:** el ítem actual lleva además fondo amarillo y
+  una flecha, puesta por CSS.
+
+```html
+<div class="slide slide--mapa">
+  <div class="mapa">
+    <p class="mapa-item visto">Affordance</p>
+    <p class="mapa-item actual"><span>Significante</span></p>
+    <p class="mapa-item">Restricción</p>
+    <p class="mapa-pie">Cada uno responde una pregunta distinta. Vamos en orden.</p>
+  </div>
+</div>
+```
+
+### CSS de los layouts compuestos
+
+Se copia tal cual al bloque `<style>` del deck.
+
+```css
+.slide--ficha, .slide--rejilla, .slide--par,
+.slide--pauta, .slide--mapa {
+  align-items: stretch; justify-content: center;
+  text-align: left; padding: 4rem 6rem;
+}
+.rotulo {
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #6f6f6f;
+}
+.compuesto-titulo {
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 900; color: #444;
+  max-width: 60ch; margin: 0 auto 2rem; text-align: center; line-height: 1.35;
+}
+.compuesto-pie {
+  font-size: clamp(0.88rem, 1.3vw, 1rem); color: #6f6f6f;
+  max-width: 66ch; margin: 2rem auto 0; text-align: center; line-height: 1.5;
+}
+
+/* Ficha */
+.ficha { width: 100%; max-width: 62rem; margin: 0 auto; }
+.ficha-num { margin-bottom: 1.6rem; }
+.ficha-termino {
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem); font-weight: 900; color: #111;
+  letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.1;
+}
+.ficha-def {
+  font-size: clamp(1.35rem, 2.8vw, 2rem); font-weight: 900; color: #444;
+  line-height: 1.28; margin-top: 0.9rem; max-width: 40ch;
+}
+.ficha-def em { font-style: normal; background: #eeff41; padding: 0 0.15em; }
+.ficha-fuente { font-size: 0.82rem; color: #6f6f6f; margin-top: 1rem; letter-spacing: 0.03em; }
+.ficha-celdas {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem;
+  margin-top: 2.4rem; padding-top: 2.2rem; border-top: 1px solid #e5e5e5;
+}
+.ficha-celdas.una { grid-template-columns: 1fr; max-width: 46ch; }
+.ficha-celda .rotulo { display: block; margin-bottom: 0.7rem; }
+.ficha-celda p { font-size: clamp(0.98rem, 1.5vw, 1.1rem); color: #555; line-height: 1.6; }
+.ficha-celda + .ficha-celda { border-left: 1px solid #e5e5e5; padding-left: 3rem; }
+
+/* Rejilla */
+.rejilla { display: grid; gap: 2.2rem; width: 100%; max-width: 66rem; margin: 0 auto; }
+.rejilla--3 { grid-template-columns: repeat(3, 1fr); }
+.rejilla--2x2 { grid-template-columns: 1fr 1fr; }
+.celda { border-top: 4px solid #444; padding-top: 1.1rem; }
+.celda.acento { border-top-color: #eeff41; }
+.celda .rotulo { display: block; margin-bottom: 0.7rem; }
+.celda-titulo {
+  font-size: clamp(1.1rem, 2.1vw, 1.45rem); font-weight: 900; color: #111;
+  line-height: 1.2; margin-bottom: 0.7rem;
+}
+.celda-cuerpo { font-size: clamp(0.92rem, 1.4vw, 1.05rem); color: #555; line-height: 1.55; }
+.celda-cuerpo .src { color: #6f6f6f; }
+
+/* Par */
+.par { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+       width: 100%; max-width: 62rem; margin: 0 auto; }
+.par-encabezado {
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem); font-weight: 900;
+  letter-spacing: 0.03em; padding: 0.8rem 1.1rem; line-height: 1.25;
+}
+.par-col.a .par-encabezado { background: #eeff41; color: #111; }
+.par-col.b .par-encabezado { background: #222; color: #fff; }
+.par-cuerpo { font-size: clamp(0.98rem, 1.5vw, 1.12rem); color: #555;
+              line-height: 1.6; padding: 1.3rem 1.1rem 0; }
+.par-cuerpo strong { color: #222; font-weight: 700; }
+
+/* Pauta */
+.pauta { list-style: none; width: 100%; max-width: 52rem; margin: 0 auto; }
+.pauta-titulo {
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 900; color: #111;
+  margin: 0 auto 1.8rem; max-width: 52rem; width: 100%;
+  line-height: 1.25; text-align: left;
+}
+.pauta li {
+  display: flex; gap: 1.4rem; align-items: baseline; padding: 1rem 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: clamp(1rem, 1.7vw, 1.25rem); color: #444; line-height: 1.45;
+}
+.pauta li:last-child { border-bottom: none; }
+.pauta .n { font-size: 0.8rem; font-weight: 700; color: #6f6f6f;
+            letter-spacing: 0.06em; flex: 0 0 1.8rem; }
+.pauta li strong { color: #111; font-weight: 900; }
+.pauta li .nota { display: block; font-size: 0.86em; color: #6f6f6f; margin-top: 0.25rem; }
+
+/* Mapa */
+.mapa { width: 100%; max-width: 44rem; margin: 0 auto; }
+.mapa-item {
+  font-size: clamp(1.3rem, 3.2vw, 2.2rem); font-weight: 900; letter-spacing: 0.03em;
+  text-transform: uppercase; color: #444; padding: 0.55rem 0; line-height: 1.15;
+}
+.mapa-item.visto { color: #6f6f6f; }
+.mapa-item.actual { color: #111; }
+.mapa-item.actual span { background: #eeff41; padding: 0 0.2em; }
+.mapa-item.actual::after { content: " ←"; color: #111; }
+.mapa-pie { font-size: 0.9rem; color: #6f6f6f; margin-top: 1.6rem;
+            padding-top: 1.2rem; border-top: 1px solid #e5e5e5; }
+
+/* Entrada escalonada de las celdas, igual que los nodos de un SVG */
+.slide.active .ficha-celda, .slide.active .celda, .slide.active .par-col,
+.slide.active .pauta li, .slide.active .mapa-item {
+  opacity: 0; animation: drawIn 0.18s ease-out forwards;
+}
+.ficha-celda:nth-child(1), .celda:nth-child(1), .par-col:nth-child(1),
+.pauta li:nth-child(1), .mapa-item:nth-child(1) { animation-delay: 0.04s; }
+.ficha-celda:nth-child(2), .celda:nth-child(2), .par-col:nth-child(2),
+.pauta li:nth-child(2), .mapa-item:nth-child(2) { animation-delay: 0.08s; }
+.celda:nth-child(3), .pauta li:nth-child(3), .mapa-item:nth-child(3) { animation-delay: 0.12s; }
+.celda:nth-child(4), .pauta li:nth-child(4), .mapa-item:nth-child(4) { animation-delay: 0.16s; }
+.pauta li:nth-child(5), .mapa-item:nth-child(5) { animation-delay: 0.20s; }
+.pauta li:nth-child(n+6) { animation-delay: 0.24s; }
+
+/* Una columna. Al ser grid, no hace falta markup duplicado. */
+@media (max-width: 900px) {
+  .slide--ficha, .slide--rejilla, .slide--par,
+  .slide--pauta, .slide--mapa { padding: 2.5rem 3rem; }
+  .rejilla { gap: 1.6rem; }
+  .ficha-celdas { gap: 0 2rem; }
+  .ficha-celda + .ficha-celda { padding-left: 2rem; }
+}
+@media (max-width: 700px) {
+  .rejilla--3, .rejilla--2x2, .par { grid-template-columns: 1fr; gap: 1.6rem; }
+  .ficha-celdas { grid-template-columns: 1fr; gap: 1.6rem; }
+  .ficha-celda + .ficha-celda {
+    border-left: none; padding-left: 0;
+    border-top: 1px solid #e5e5e5; padding-top: 1.6rem;
+  }
+  .ficha-def { max-width: none; }
+}
+@media (max-width: 600px) {
+  .slide--ficha, .slide--rejilla, .slide--par,
+  .slide--pauta, .slide--mapa { padding: 1.5rem 1.5rem 3rem; overflow-y: auto; }
+  .pauta li { gap: 0.9rem; }
+}
+```
+
+Añadir también los cinco selectores al bloque de `prefers-reduced-motion`, junto a los demás.
+
+---
+
 ## Clases de animación: cuándo aplicar cada una
 
 Cada slide lleva una clase adicional según su función. El CSS ya define la animación
@@ -358,6 +683,11 @@ correspondiente — solo hay que aplicar la clase correcta.
 | `slide--section` | scaleIn 400ms | Slides de título de bloque (`#eeff41`), portada, "ACTIVIDAD", "POSTMORTEM" |
 | `slide--conclusion` | riseIn 450ms | El slide que cierra un argumento o un bloque temático. Máx. 1 por bloque. |
 | `slide--visual` | drawIn stagger | Todo slide con SVG — los nodos aparecen uno a uno |
+| `slide--ficha` | drawIn stagger | Ficha de concepto — las celdas entran una tras otra |
+| `slide--rejilla` | drawIn stagger | Trío o 2×2 |
+| `slide--par` | drawIn stagger | Dos columnas en contraste |
+| `slide--pauta` | drawIn stagger | Lista operativa — los ítems entran en orden |
+| `slide--mapa` | drawIn stagger | Índice de un bloque |
 
 ```html
 <!-- Ejemplo de cada clase -->
@@ -713,7 +1043,14 @@ dijo. Si se puede saltar un slide y la narrativa sigue teniendo sentido, ese sli
 - [ ] Slides con SVG llevan `slide--visual` (drawIn stagger)
 - [ ] Editorial pass aplicado: sin reformulaciones, sin puentes vacíos, sin listas innecesarias
 - [ ] Cada slide tiene máximo UNA idea
-- [ ] No hay bullet points en ningún slide
+- [ ] No hay bullet points en ningún slide, salvo en un `slide--pauta`, que es una consigna
+      para copiar y no un argumento
+- [ ] Ningún bloque tiene a la vez su rejilla y un SVG que repite las mismas celdas
+- [ ] Todo SVG tiene al menos una flecha o línea de relación; si no, debía ser una rejilla
+- [ ] En cada layout compuesto, el amarillo marca una sola celda como máximo, y el texto de
+      esa celda dice por qué es distinta
+- [ ] Ningún layout compuesto pasa de cuatro celdas
+- [ ] Las rejillas colapsan a una columna en pantallas angostas, sin markup duplicado
 - [ ] Las frases suenan como monólogo continuo al leerse en voz alta
 - [ ] Las imágenes van solas, sin texto
 - [ ] El archivo HTML funciona solo con click o flechas de teclado
