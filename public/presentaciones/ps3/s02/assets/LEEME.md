@@ -64,15 +64,19 @@ una consigna que ya está publicada.
 - `qr-uno.svg` → `/pensamiento-sensorial/uno`
 - `qr-cajero.svg` → `/pensamiento-sensorial/cajero` (laboratorio 2, parte 1)
 - `qr-cajero-para-todos.svg` → `/pensamiento-sensorial/cajero-para-todos` (la tarea)
-- `qr-bitacora.svg` → `/pensamiento-sensorial/bitacora` (slide 12, al llegar)
+- `qr-bitacora.svg` → `/pensamiento-sensorial/bitacora` (al llegar)
 - `qr-bitacora-otra-vez.svg` → `/pensamiento-sensorial/bitacora-otra-vez`
-  (slide 97, al cerrar la teoría y **antes** del bloque del error)
+  (cerrado el bloque de los seis conceptos, antes de User Inyerface)
 
-**Los dos slides no se pueden mover sin pensarlo.** El del cierre va antes del
-bloque del error a propósito: los cinco slides siguientes argumentan que la
-culpa es del sistema, y preguntar «¿de quién fue la culpa?» justo después mide
-obediencia y no aprendizaje. Y el de la mañana no puede insinuar que habrá una
-segunda vuelta: si se sabe, la comparación del final no mide nada.
+**Los dos slides no se pueden mover sin pensarlo.**
+
+El de la mañana no puede insinuar que habrá una segunda vuelta. Si se sabe, la
+gente escribe para el examen y la comparación del final no mide nada.
+
+El del cierre tiene que ir **antes de User Inyerface**, que es la primera
+experiencia nueva de la clase. Después, se clasifica con esa experiencia fresca
+encima y ya no es la misma que contaron en la mañana: el tablero compararía dos
+cosas distintas y el «antes y después» dejaría de significar algo.
 
 Se generaron con la librería `qrcode` de Python, `SvgPathImage`, `box_size=12`
 y `border=2`. Con esos parámetros salen todos con el mismo formato; el tamaño en
