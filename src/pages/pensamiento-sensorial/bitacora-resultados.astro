@@ -16,9 +16,13 @@
 //
 // Sobre los gráficos: son barras de una sola serie. No hay codificación por
 // color —el valor va escrito en cada barra— y el amarillo aparece una sola
-// vez, en la gráfica de la culpa, porque ahí es donde está el hallazgo.
+// vez, en la lámina de la atribución, porque ahí es donde está el hallazgo.
+//
+// Esa lámina son DOS gráficas y no una: una de las tres experiencias salió
+// bien, así que «del diseño» significa mérito en unas filas y culpa en otras.
+// Sumarlas en una sola barra borraría exactamente lo que se quiere mostrar.
 import Base from '../../layouts/Base.astro';
-import { SESION, CATEGORIAS, CUANDOS, CULPAS } from '../../lib/bitacora';
+import { SESION, TIPOS, CATEGORIAS, CUANDOS, ATRIBUCIONES } from '../../lib/bitacora';
 import analisis from '../../data/analisis-bitacora-s02.json';
 
 const hayAnalisis =
@@ -86,21 +90,34 @@ const fechaAnalisis = analisis.generado
     </section>
 
     <section class="bloque lamina" id="lamina-categorias">
-      <h2 class="mono">Después · Qué concepto apareció</h2>
+      <h2 class="mono">Después · Qué concepto lo explica</h2>
       <p class="lamina-pregunta">Las mismas experiencias, ya con las palabras.</p>
       <ul class="barras" id="categorias" role="list"></ul>
     </section>
 
     <section class="bloque lamina" id="lamina-cuando">
-      <h2 class="mono">Después · Cuándo se rompió</h2>
+      <h2 class="mono">Después · En qué momento se jugó</h2>
       <p class="lamina-pregunta">Antes de actuar, durante, o después.</p>
       <ul class="barras" id="cuando" role="list"></ul>
     </section>
 
-    <section class="bloque lamina destacada" id="lamina-culpa">
-      <h2 class="mono">Después · De quién fue la culpa</h2>
+    <section class="bloque lamina destacada" id="lamina-atribucion">
+      <h2 class="mono">Después · A quién se lo atribuyen</h2>
       <p class="lamina-pregunta">La pregunta del día. Con el vocabulario encima.</p>
-      <ul class="barras barras-clave" id="culpa" role="list"></ul>
+
+      {/* Dos gráficas y no una: sumar «del diseño» cuando funcionó con «del
+          diseño» cuando falló mezcla un mérito con una culpa, que son cosas
+          distintas. Separadas, la asimetría entre las dos es el hallazgo. */}
+      <div class="pareja">
+        <div>
+          <h3 class="sub-lamina mono">Cuando funcionó · de quién fue el mérito</h3>
+          <ul class="barras barras-clave" id="atribucion-bien" role="list"></ul>
+        </div>
+        <div>
+          <h3 class="sub-lamina mono">Cuando falló · de quién fue la culpa</h3>
+          <ul class="barras barras-clave" id="atribucion-mal" role="list"></ul>
+        </div>
+      </div>
     </section>
 
     <section class="bloque lamina" id="lamina-pares">
@@ -175,7 +192,8 @@ const fechaAnalisis = analisis.generado
     SESION,
     CATEGORIAS: CATEGORIAS.map((c) => ({ id: c.id, nombre: c.nombre })),
     CUANDOS: CUANDOS.map((c) => ({ id: c.id, nombre: c.nombre })),
-    CULPAS: CULPAS.map((c) => ({ id: c.id, nombre: c.nombre })),
+    ATRIBUCIONES: ATRIBUCIONES.map((c) => ({ id: c.id, nombre: c.nombre })),
+    TIPOS_BIEN: TIPOS.filter((t) => t.salioBien).map((t) => t.id),
   }}
 >
   (function () {
@@ -203,12 +221,24 @@ const fechaAnalisis = analisis.generado
       }, []);
     }
 
+    /** Las experiencias que salieron bien, o las que no. La atribución se
+     *  cuenta por separado: «del diseño» significa mérito en unas y culpa en
+     *  las otras, y sumarlas borraría justo lo que se quiere mostrar. */
+    function porValencia(entradas, salioBien) {
+      return entradas.filter(function (e) {
+        return TIPOS_BIEN.indexOf(e.tipo) !== -1 === salioBien;
+      });
+    }
+
     /** Dibuja una barra por opción, en el orden del vocabulario (no por
      *  tamaño): así el eje no se reordena entre una clase y la siguiente y la
      *  comparación con la corrida del año que viene sigue siendo posible. */
-    function barras(destino, opciones, mapa) {
+    /** `escala` fuerza un máximo común. Dos gráficas que se leen juntas tienen
+     *  que compartir la escala: si cada una se normaliza a su propio máximo, la
+     *  barra más larga mide lo mismo en las dos y la comparación miente. */
+    function barras(destino, opciones, mapa, escala) {
       var total = opciones.reduce(function (s, o) { return s + (mapa[o.id] || 0); }, 0);
-      var maximo = opciones.reduce(function (m, o) {
+      var maximo = escala || opciones.reduce(function (m, o) {
         return Math.max(m, mapa[o.id] || 0);
       }, 0);
       if (!total) {
@@ -289,7 +319,10 @@ const fechaAnalisis = analisis.generado
         (r1.entradas || []).forEach(function (e1) {
           var e2 = (r2.entradas || []).filter(function (x) { return x.tipo === e1.tipo; })[0];
           if (!e2) return;
-          filas.push({ etiqueta: e1.etiqueta, emocion: e1.emocion, categoria: e2.categoria, culpa: e2.culpa });
+          filas.push({
+            etiqueta: e1.etiqueta, emocion: e1.emocion, tipo: e1.tipo,
+            categoria: e2.categoria, atribucion: e2.atribucion,
+          });
         });
       });
 
@@ -308,7 +341,8 @@ const fechaAnalisis = analisis.generado
         flecha.setAttribute('aria-hidden', 'true');
         li.appendChild(flecha);
         var despues = conTexto('span', 'par-despues', nombreDe(CATEGORIAS, f.categoria));
-        despues.appendChild(conTexto('span', 'par-culpa mono', 'culpa: ' + nombreDe(CULPAS, f.culpa)));
+        var rotulo = (TIPOS_BIEN.indexOf(f.tipo) !== -1 ? 'mérito: ' : 'culpa: ');
+        despues.appendChild(conTexto('span', 'par-culpa mono', rotulo + nombreDe(ATRIBUCIONES, f.atribucion)));
         li.appendChild(despues);
         destino.appendChild(li);
       });
@@ -347,7 +381,13 @@ const fechaAnalisis = analisis.generado
       nubeEmociones(document.getElementById('emociones'), contar(e1, 'emocion'));
       barras(document.getElementById('categorias'), CATEGORIAS, contar(e2, 'categoria'));
       barras(document.getElementById('cuando'), CUANDOS, contar(e2, 'cuando'));
-      barras(document.getElementById('culpa'), CULPAS, contar(e2, 'culpa'));
+      var atribBien = contar(porValencia(e2, true), 'atribucion');
+      var atribMal = contar(porValencia(e2, false), 'atribucion');
+      var tope = ATRIBUCIONES.reduce(function (m, o) {
+        return Math.max(m, atribBien[o.id] || 0, atribMal[o.id] || 0);
+      }, 0);
+      barras(document.getElementById('atribucion-bien'), ATRIBUCIONES, atribBien, tope);
+      barras(document.getElementById('atribucion-mal'), ATRIBUCIONES, atribMal, tope);
       pares(document.getElementById('pares'), m1, m2);
 
       tablero.hidden = false;

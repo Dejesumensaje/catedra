@@ -17,12 +17,16 @@
 // Como en el momento 1, cada bloque va con `role="group"` y no con
 // `<fieldset>`: el `<legend>` no deja dibujar la regla por encima del título.
 // Cada terna de radios lleva su propio `role="group"` con `aria-labelledby`,
-// para que «Qué falló, sobre todo» sea el nombre del grupo y no una frase
-// suelta encima de cinco opciones sin dueño.
+// para que el rótulo sea el nombre del grupo y no una frase suelta encima de
+// cinco opciones sin dueño.
+//
+// Los rótulos cambian según el tipo: la experiencia que dio confianza no falló
+// ni se rompió, así que se le pregunta qué hizo que funcionara y de quién fue
+// el mérito. Se guarda en los mismos tres campos.
 import Base from '../../layouts/Base.astro';
 import { ESTUDIANTES, SIN_LISTA } from '../../data/estudiantes-ps3';
 import {
-  SESION, TIPOS, CATEGORIAS, CUANDOS, CULPAS,
+  SESION, TIPOS, CATEGORIAS, CUANDOS, ATRIBUCIONES,
   CLAVE_CLASE, MARCA_LOCAL, llaveEstudiante,
 } from '../../lib/bitacora';
 
@@ -75,7 +79,7 @@ const opciones = ESTUDIANTES.map((nombre) => ({
           </div>
 
           <div class="pregunta" role="group" aria-labelledby={`categoria-rot-${tipo.id}`}>
-            <p class="pregunta-titulo mono" id={`categoria-rot-${tipo.id}`}>Qué falló, sobre todo</p>
+            <p class="pregunta-titulo mono" id={`categoria-rot-${tipo.id}`}>{tipo.preguntas.categoria}</p>
             <ul class="opciones" role="list">
               {CATEGORIAS.map((c) => (
                 <li>
@@ -92,7 +96,7 @@ const opciones = ESTUDIANTES.map((nombre) => ({
           </div>
 
           <div class="pregunta" role="group" aria-labelledby={`cuando-rot-${tipo.id}`}>
-            <p class="pregunta-titulo mono" id={`cuando-rot-${tipo.id}`}>Cuándo se rompió</p>
+            <p class="pregunta-titulo mono" id={`cuando-rot-${tipo.id}`}>{tipo.preguntas.cuando}</p>
             <ul class="opciones" role="list">
               {CUANDOS.map((c) => (
                 <li>
@@ -100,7 +104,7 @@ const opciones = ESTUDIANTES.map((nombre) => ({
                     <input type="radio" name={`cuando-${tipo.id}`} value={c.id} data-campo="cuando" />
                     <span class="opcion-cuerpo">
                       <span class="opcion-nombre">{c.nombre}</span>
-                      <span class="opcion-glosa">{c.glosa}</span>
+                      <span class="opcion-glosa">{tipo.salioBien ? c.bien : c.mal}</span>
                     </span>
                   </label>
                 </li>
@@ -108,13 +112,13 @@ const opciones = ESTUDIANTES.map((nombre) => ({
             </ul>
           </div>
 
-          <div class="pregunta" role="group" aria-labelledby={`culpa-rot-${tipo.id}`}>
-            <p class="pregunta-titulo mono" id={`culpa-rot-${tipo.id}`}>De quién fue la culpa</p>
+          <div class="pregunta" role="group" aria-labelledby={`atribucion-rot-${tipo.id}`}>
+            <p class="pregunta-titulo mono" id={`atribucion-rot-${tipo.id}`}>{tipo.preguntas.atribucion}</p>
             <ul class="opciones opciones-cortas" role="list">
-              {CULPAS.map((c) => (
+              {ATRIBUCIONES.map((c) => (
                 <li>
                   <label class="opcion">
-                    <input type="radio" name={`culpa-${tipo.id}`} value={c.id} data-campo="culpa" />
+                    <input type="radio" name={`atribucion-${tipo.id}`} value={c.id} data-campo="atribucion" />
                     <span class="opcion-cuerpo">
                       <span class="opcion-nombre">{c.nombre}</span>
                     </span>
@@ -278,7 +282,7 @@ const opciones = ESTUDIANTES.map((nombre) => ({
           etiqueta: c.querySelector('[data-campo="etiqueta"]').value.trim(),
           categoria: marcado('categoria'),
           cuando: marcado('cuando'),
-          culpa: marcado('culpa'),
+          atribucion: marcado('atribucion'),
         };
       });
     }
@@ -288,7 +292,7 @@ const opciones = ESTUDIANTES.map((nombre) => ({
 
       var entradas = leerEntradas();
       var incompleta = entradas.findIndex(function (x) {
-        return !x.etiqueta || !x.categoria || !x.cuando || !x.culpa;
+        return !x.etiqueta || !x.categoria || !x.cuando || !x.atribucion;
       });
       if (incompleta !== -1) {
         estado.textContent = 'Falta responder algo en la experiencia ' + (incompleta + 1) + '.';

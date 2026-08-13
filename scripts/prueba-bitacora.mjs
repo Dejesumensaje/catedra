@@ -36,7 +36,7 @@ p.on('pageerror', e => mal.push('error de JS: ' + e.message));
 // ── 1. momento 1 ──────────────────────────────────────────────
 await p.goto(BASE + '/pensamiento-sensorial/bitacora');
 check(!(await p.content()).match(/affordance|significante|mapping/i), 'm1 sin vocabulario técnico');
-await p.selectOption('#estudiante', 'ana-m');
+await p.selectOption('#estudiante', 'sofia-j');
 
 const experiencias = [
   ['confianza',   'el torniquete del metro', 'Puse la tarjeta y abrió de una. Ni lo pensé.', 'tranquila'],
@@ -64,7 +64,7 @@ await p.screenshot({ path: `${OUT}/2-m1-confirmado.png` });
 // ── 2. momento 2, mismo teléfono ──────────────────────────────
 await p.goto(BASE + '/pensamiento-sensorial/bitacora-otra-vez');
 await p.waitForSelector('#form-bitacora:not([hidden])', { timeout: 5000 });
-check(await p.inputValue('#estudiante') === 'ana-m', 'm2 recuerda el nombre elegido');
+check(await p.inputValue('#estudiante') === 'sofia-j', 'm2 recuerda el nombre elegido');
 
 const precargadas = await p.$$eval('.experiencia-titulo', e => e.map(x => x.textContent.trim()));
 const esperadas = experiencias.map(e => e[1]);
@@ -75,11 +75,28 @@ const manualesOcultos = await p.$$eval('[data-campo="etiqueta-manual"]', e => e.
 check(manualesOcultos, 'm2 no pide reescribir la etiqueta cuando la precargó');
 await p.screenshot({ path: `${OUT}/3-m2-precargado.png`, fullPage: true });
 
+// La que salió bien se responde como lo que es: mérito, no culpa.
+const respuestas = {
+  confianza:   ['affordance',        'antes',   'diseno'],
+  duda:        ['significante',      'durante', 'mia'],
+  frustracion: ['retroalimentacion', 'despues', 'diseno'],
+};
 for (const [tipo] of experiencias) {
-  await p.check(`input[name="categoria-${tipo}"][value="retroalimentacion"]`);
-  await p.check(`input[name="cuando-${tipo}"][value="despues"]`);
-  await p.check(`input[name="culpa-${tipo}"][value="diseno"]`);
+  const [cat, cua, atr] = respuestas[tipo];
+  await p.check(`input[name="categoria-${tipo}"][value="${cat}"]`);
+  await p.check(`input[name="cuando-${tipo}"][value="${cua}"]`);
+  await p.check(`input[name="atribucion-${tipo}"][value="${atr}"]`);
 }
+
+// las preguntas tienen que cambiar de signo según el tipo
+const rotulos = await p.$$eval('.pregunta-titulo', e => e.map(x => x.textContent.trim()));
+check(rotulos[0] === 'Qué hizo que funcionara' && rotulos[2] === 'De quién fue el mérito',
+      'a la experiencia buena se le pregunta por el mérito, no por la culpa');
+check(rotulos[6] === 'Qué falló, sobre todo' && rotulos[8] === 'De quién fue la culpa',
+      'a la frustrante sí se le pregunta qué falló y de quién fue la culpa');
+const glosaBuena = await p.$$eval('[data-tipo="confianza"] .opcion-glosa', e => e.map(x => x.textContent));
+check(glosaBuena.some(g => g.includes('Supe qué iba a pasar')),
+      'y las glosas del «cuándo» también cambian de signo');
 await p.screenshot({ path: `${OUT}/4-m2-marcado.png`, fullPage: true });
 await p.click('#enviar');
 await p.waitForSelector('#gracias:not([hidden])', { timeout: 5000 });
@@ -89,13 +106,13 @@ check(true, 'm2 confirma el envío');
 const otro = await navegador.newContext({ viewport: { width: 390, height: 844 } });
 const q = await otro.newPage();
 await q.goto(BASE + '/pensamiento-sensorial/bitacora-otra-vez');
-await q.selectOption('#estudiante', 'valentina-l');
+await q.selectOption('#estudiante', 'david-g');
 await q.waitForSelector('#form-bitacora:not([hidden])', { timeout: 5000 });
 const desdeApi = await q.$$eval('.experiencia-titulo', e => e.map(x => x.textContent.trim()));
 check(desdeApi.filter(Boolean).length === 3, 'm2 en otro teléfono precarga desde la API: ' + JSON.stringify(desdeApi));
 
 // deja marcada una respuesta antes de cambiar de nombre
-await q.check('input[name="culpa-confianza"][value="mia"]');
+await q.check('input[name="atribucion-confianza"][value="mia"]');
 await q.selectOption('#estudiante', 'no-estoy-en-la-lista');
 await q.waitForTimeout(600);
 const manuales = await q.$$eval('[data-campo="etiqueta-manual"]', e => e.filter(x => !x.hidden).length);

@@ -33,7 +33,7 @@ const LIMITES = {
 const TIPOS = ['confianza', 'duda', 'frustracion'];
 const CATEGORIAS = ['affordance', 'significante', 'restriccion', 'mapping', 'retroalimentacion'];
 const CUANDOS = ['antes', 'durante', 'despues'];
-const CULPAS = ['mia', 'diseno', 'no-se'];
+const ATRIBUCIONES = ['mia', 'diseno', 'no-se'];
 
 const json = (datos, status = 200) =>
   new Response(JSON.stringify(datos), {
@@ -101,7 +101,7 @@ export async function onRequestPost({ request, env }) {
       ...base,
       categoria: CATEGORIAS.includes(e?.categoria) ? e.categoria : null,
       cuando: CUANDOS.includes(e?.cuando) ? e.cuando : null,
-      culpa: CULPAS.includes(e?.culpa) ? e.culpa : null,
+      atribucion: ATRIBUCIONES.includes(e?.atribucion) ? e.atribucion : null,
     };
   });
 

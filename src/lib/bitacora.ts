@@ -27,25 +27,54 @@ export function llaveEstudiante(nombre: string): string {
 }
 
 /**
- * Los tres tipos de experiencia que se pidieron en la bitácora.
+ * Los tres tipos de experiencia que se pidieron en la bitácora, cada uno con
+ * su propia redacción para el momento 2.
+ *
  * El orden importa: es el orden en que aparecen en los dos formularios, y el
  * m2 precarga las etiquetas asumiendo que el m1 las guardó en este orden.
+ *
+ * Una de las tres experiencias salió bien: no falló, no se rompió y no hay a
+ * quién culpar. Preguntarle «¿qué falló?» a la experiencia que dio confianza
+ * no tiene respuesta posible, y forzarla ensucia un tercio de los datos.
+ *
+ * Se pregunta distinto y se guarda igual: los tres campos son los mismos, así
+ * que los conteos y el emparejamiento no cambian. Y la asimetría que aparece
+ * —a quién se le atribuye el acierto frente a quién carga con la falla— es más
+ * interesante que preguntar solo por la culpa.
  */
 export const TIPOS = [
   {
     id: 'confianza',
     titulo: 'La que te dio confianza',
     pista: 'Algo que usaste y supiste qué hacer de una, sin dudar.',
+    salioBien: true,
+    preguntas: {
+      categoria: 'Qué hizo que funcionara',
+      cuando: 'Cuándo supiste qué hacer',
+      atribucion: 'De quién fue el mérito',
+    },
   },
   {
     id: 'duda',
     titulo: 'La que te hizo dudar',
     pista: 'Algo donde te detuviste a pensar, o probaste a ver qué pasaba.',
+    salioBien: false,
+    preguntas: {
+      categoria: 'Qué faltó, sobre todo',
+      cuando: 'Cuándo te quedaste sin saber',
+      atribucion: 'De quién fue la duda',
+    },
   },
   {
     id: 'frustracion',
     titulo: 'La que te frustró',
     pista: 'Algo que no salió, o salió mal, o te tocó repetir.',
+    salioBien: false,
+    preguntas: {
+      categoria: 'Qué falló, sobre todo',
+      cuando: 'Cuándo se rompió',
+      atribucion: 'De quién fue la culpa',
+    },
   },
 ] as const;
 
@@ -56,24 +85,41 @@ export const TIPOS = [
  *
  * La glosa no es decorativa. El estudiante acaba de aprender la palabra hace
  * dos horas: sin la frase corta al lado, clasifica al azar y el dato no sirve.
+ * Van en neutro —qué mira cada concepto, no si salió bien o mal— para que la
+ * misma lista sirva para las tres experiencias.
  */
 export const CATEGORIAS = [
   { id: 'affordance', nombre: 'Affordance', glosa: 'Lo que el objeto permitía hacer.' },
-  { id: 'significante', nombre: 'Significante', glosa: 'La señal que lo decía (o que faltaba).' },
+  { id: 'significante', nombre: 'Significante', glosa: 'La señal que lo decía.' },
   { id: 'restriccion', nombre: 'Restricción', glosa: 'Lo que el objeto impedía hacer.' },
   { id: 'mapping', nombre: 'Mapping', glosa: 'Qué control correspondía con qué efecto.' },
-  { id: 'retroalimentacion', nombre: 'Retroalimentación', glosa: 'Lo que el objeto respondió, o no respondió.' },
+  { id: 'retroalimentacion', nombre: 'Retroalimentación', glosa: 'Lo que el objeto respondió.' },
 ] as const;
 
-/** Cuándo se rompió: es la forma concreta de los dos golfos de Norman. */
+/** En qué momento se jugó: es la forma concreta de los dos golfos de Norman.
+ *  La glosa cambia de signo según la experiencia haya salido bien o mal. */
 export const CUANDOS = [
-  { id: 'antes', nombre: 'Antes de actuar', glosa: 'No sabía qué iba a pasar.' },
-  { id: 'durante', nombre: 'Mientras actuaba', glosa: 'Se rompió en el camino.' },
-  { id: 'despues', nombre: 'Después de actuar', glosa: 'No supe qué había pasado.' },
+  {
+    id: 'antes', nombre: 'Antes de actuar',
+    bien: 'Supe qué iba a pasar antes de tocar nada.',
+    mal: 'No sabía qué iba a pasar.',
+  },
+  {
+    id: 'durante', nombre: 'Mientras actuaba',
+    bien: 'Me fue guiando sobre la marcha.',
+    mal: 'Se rompió en el camino.',
+  },
+  {
+    id: 'despues', nombre: 'Después de actuar',
+    bien: 'Supe enseguida que había funcionado.',
+    mal: 'No supe qué había pasado.',
+  },
 ] as const;
 
-/** La pregunta que importa: a quién se le atribuye el error. */
-export const CULPAS = [
+/** A quién se le atribuye lo que pasó: el mérito si salió bien, la culpa si
+ *  salió mal. Es la pregunta del ejercicio, y la asimetría entre las dos es
+ *  justo lo que se proyecta. */
+export const ATRIBUCIONES = [
   { id: 'mia', nombre: 'Mía' },
   { id: 'diseno', nombre: 'Del diseño' },
   { id: 'no-se', nombre: 'No sé' },
@@ -82,7 +128,7 @@ export const CULPAS = [
 export type TipoId = (typeof TIPOS)[number]['id'];
 export type CategoriaId = (typeof CATEGORIAS)[number]['id'];
 export type CuandoId = (typeof CUANDOS)[number]['id'];
-export type CulpaId = (typeof CULPAS)[number]['id'];
+export type AtribucionId = (typeof ATRIBUCIONES)[number]['id'];
 
 /** La misma clave del deck. El candado es social, no criptográfico. */
 export const CLAVE_CLASE = 'udea2026';
