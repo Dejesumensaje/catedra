@@ -1,0 +1,744 @@
+---
+// Consigna del laboratorio 2 (sesión 2), parte 2: la tarea. Se entrega en clase
+// al cerrar la retro de la parte 1 y queda enlazada en los materiales.
+// Aquí va SOLO la consigna: la guía de facilitación es de uso docente y no se
+// publica.
+// Nota de vocabulario: aquí no se dice «romper» ni «Propuesta B». El encargo se
+// enuncia en positivo —un cajero para todos— porque el marco negativo empuja a
+// los estudiantes a la caricatura: si el ejercicio es «romper», la entrega
+// tiende a ser una excentricidad y no un rediseño.
+import Base from '../../layouts/Base.astro';
+
+// Rasgos de interacción, no diagnósticos: «se sobrecarga con decisiones», no
+// «es autista». Eso los hace diseñables y bloquea el estereotipo.
+const rasgos = [
+  {
+    grupo: 'Grupo 1',
+    titulo: 'Se sobrecarga con decisiones simultáneas',
+    cuerpo: 'Una pantalla con varias opciones a la vez lo bloquea.',
+    encargo: 'Diseñen para que nunca enfrente más de una decisión por momento.',
+  },
+  {
+    grupo: 'Grupo 2',
+    titulo: 'El tiempo límite lo desarma',
+    cuerpo: 'Las operaciones del cajero caducan. Saber que hay un plazo corriendo le genera ansiedad: se equivoca, o abandona.',
+    encargo: 'Diseñen una interacción que no castigue la lentitud.',
+  },
+  {
+    grupo: 'Grupo 3',
+    titulo: 'Necesita saber qué va a pasar',
+    cuerpo: 'La incertidumbre lo detiene. Una sorpresa lo saca del flujo.',
+    encargo: 'Diseñen para que siempre sepa qué viene antes de que ocurra.',
+  },
+  {
+    grupo: 'Grupo 4',
+    titulo: 'Pierde el hilo si lo interrumpen',
+    cuerpo: 'Un ruido, alguien que le habla, y ya olvidó en qué paso iba.',
+    encargo: 'Diseñen para que pueda retomar sin empezar de cero.',
+  },
+  {
+    grupo: 'Grupo 5',
+    titulo: 'Procesa el texto con dificultad',
+    cuerpo: 'Leer instrucciones bajo presión no es una opción realista.',
+    encargo: 'Diseñen una interacción que funcione casi sin texto.',
+  },
+];
+
+const noEsEsto = [
+  {
+    que: 'Un «modo simple» con letra gigante y colores suaves.',
+    porque: 'Neurodivergente no quiere decir con menos capacidad. Infantilizar no es diseñar.',
+  },
+  {
+    que: 'Una versión aparte «para ellos».',
+    porque: 'Un modo especial y separado es exclusión con otro nombre. El buen diseño sirve a más gente; no la aparta.',
+  },
+  {
+    que: 'Asumir que menos siempre es mejor.',
+    porque: 'A veces la respuesta es más información visible, no menos. Quien pierde el hilo necesita ver dónde iba. Depende del rasgo, no de una regla.',
+  },
+  {
+    que: 'Diseñar para «el autista» o «el del TDAH» como si fueran un personaje.',
+    porque: 'No están diseñando para una etiqueta, sino para un rasgo de interacción concreto: el suyo.',
+  },
+];
+
+const pueden = [
+  'Cambiar dónde ocurre la interacción y con qué la hace la persona. En clase no podían mover la máquina; aquí sí.',
+  'Repartir de otra manera el trabajo entre la persona y el sistema.',
+  'Cambiar el ritmo: cuánto dura cada paso, qué se puede pausar, qué se puede deshacer.',
+  'Cambiar qué información aparece y en qué momento.',
+];
+
+const noPueden = [
+  'Quitar la identificación y la autorización del banco.',
+  'Resolver el reto agregando solo un canal adicional.',
+  'Hacer una versión aparte para su rasgo.',
+];
+
+const modelo = [
+  '¿Dónde ocurre la interacción, y qué usa la persona?',
+  '¿Qué hace la persona y qué hace el sistema en cada momento?',
+  '¿Qué información aparece, y cuándo? Antes, durante y después de cada acción.',
+  '¿Cómo sabe la persona qué puede hacer, y cómo sabe que funcionó?',
+  '¿Cómo se sostiene la confianza y la seguridad dentro del modelo nuevo?',
+];
+
+const principios = [
+  { nombre: 'Una decisión a la vez', cuerpo: 'Partir una pantalla llena en pasos únicos baja la carga sin quitarle poder a nadie.' },
+  { nombre: 'Estado visible', cuerpo: 'Que en todo momento se vea dónde va, qué falta y qué sigue.' },
+  { nombre: 'Sin castigo por el tiempo', cuerpo: 'Un límite que expulsa puede ser un aviso que espera. O puede no existir.' },
+  { nombre: 'Deshacer y volver', cuerpo: 'Un error no debería costar empezar de cero.' },
+  { nombre: 'Anticipar, no sorprender', cuerpo: 'Decir qué va a pasar antes de que pase baja la ansiedad.' },
+  { nombre: 'Más de un canal', cuerpo: 'La misma información por más de una vía: no solo texto, no solo color.' },
+];
+
+const entrega = [
+  { letra: 'A', titulo: 'El punto de choque', detalle: 'Una o dos frases: qué del cajero actual deja fuera a su rasgo. Se escribe primero, antes de diseñar nada.' },
+  { letra: 'B', titulo: 'El modelo nuevo', detalle: 'La respuesta a las cinco preguntas de arriba. Es el centro de la tarea.' },
+  { letra: 'C', titulo: 'La interfaz', detalle: 'Los momentos clave, para verlos. En papel, en Canva, en diapositivas: lo que les quede fácil. Lo que importa es que se vean las decisiones de interfaz, no el acabado.' },
+  { letra: 'D', titulo: 'Tres decisiones', detalle: 'Tres decisiones de su diseño, cada una con el principio al que responde.' },
+  { letra: 'E', titulo: 'Quién más se beneficia', detalle: 'A qué otras personas —no solo su rasgo— les sirve lo que diseñaron.' },
+  { letra: 'F', titulo: 'La distancia', detalle: 'Qué les dice la diferencia entre lo que hicieron en clase y esto, sobre para quién estaba diseñado el cajero «normal».' },
+];
+
+const listo = [
+  'Lo que diseñaron es el cajero, no un modo aparte para algunas personas.',
+  'Pueden nombrar su rasgo y señalar exactamente qué del modelo viejo lo dejaba fuera.',
+  'Alguien puede mirar su interfaz y decir qué cambió y por qué, sin que ustedes se lo expliquen.',
+  'La identificación y la autorización del banco siguen ahí.',
+];
+
+// Referencias verificadas una por una. Si se agrega otra, hay que comprobar el
+// enlace antes de publicarla: en este repo no se citan fuentes sin confirmar.
+const lecturas = [
+  {
+    grupo: 'Guías y estándares',
+    items: [
+      {
+        titulo: 'Making Content Usable for People with Cognitive and Learning Disabilities',
+        autor: 'W3C · Cognitive and Learning Disabilities Accessibility Task Force',
+        url: 'https://www.w3.org/TR/coga-usable/',
+        nota: 'El documento de referencia. Patrones y criterios concretos para bajar la carga cognitiva de un flujo. Empiecen por aquí.',
+      },
+      {
+        titulo: 'Inclusive Design for Cognition Guidebook',
+        autor: 'Microsoft Inclusive Design',
+        url: 'https://inclusive.microsoft.design/tools-and-activities/InclusiveDesignForCognitionGuidebook.pdf',
+        nota: 'De dónde sale el principio de esta tarea: resolver para uno y extender a muchos. PDF.',
+      },
+      {
+        titulo: 'Dos and don’ts on designing for accessibility',
+        autor: 'UK Home Office',
+        url: 'https://ukhomeoffice.github.io/accessibility-posters/',
+        nota: 'Carteles de qué hacer y qué no, por condición: espectro autista, dislexia, ansiedad. Media hora de lectura y sirven todo el semestre.',
+      },
+    ],
+  },
+  {
+    grupo: 'Artículos de UX',
+    items: [
+      {
+        titulo: 'Neurodiversity and UX: Essential Resources for Cognitive Accessibility',
+        autor: 'Stéphanie Walter',
+        url: 'https://stephaniewalter.design/blog/neurodiversity-and-ux-essential-resources-for-cognitive-accessibility/',
+        nota: 'Recopilación comentada: métodos, listas de verificación y herramientas.',
+      },
+      {
+        titulo: 'How to design for ADHD and neurodiversity in UX',
+        autor: 'Welcoming Web',
+        url: 'https://welcomingweb.com/learn/designing-for-neurodiversity-adhd-ux',
+        nota: 'Atención, prevención del error y navegación, apoyado en WCAG 2.2.',
+      },
+    ],
+  },
+  {
+    grupo: 'En español',
+    items: [
+      {
+        titulo: 'Diseñando experiencias inclusivas para personas neurodivergentes',
+        autor: 'Blog IDA',
+        url: 'https://blog.ida.cl/diseno/disenando-experiencias-inclusivas-personas-neurodivergentes/',
+        nota: 'Sobrecarga de estímulos, personalización y por qué hay que incluir a personas neurodivergentes en las pruebas.',
+      },
+      {
+        titulo: 'UX en accesibilidad cognitiva: diseñando para neurodiversidad',
+        autor: 'Aguayo',
+        url: 'https://aguayo.co/es/blog-aguayo-experiencia-usuario/ux-accesible-neurodiversidad/',
+        nota: 'Recomendaciones por condición, con ejemplos de interfaz.',
+      },
+    ],
+  },
+  {
+    grupo: 'Si quieren ir más lejos',
+    items: [
+      {
+        titulo: 'Designing Neuroinclusive Workplaces',
+        autor: 'Kay Sargent · HOK · Wiley, 2025',
+        url: 'https://www.hok.com/ideas/publications/neuroinclusive-design-guide-by-hoks-kay-sargent/',
+        nota: 'Un libro, no una lectura de esta semana: es de pago y el enlace lleva al resumen. Va aquí porque trata el procesamiento sensorial en el espacio físico, no en pantallas, y por eso abre la cabeza.',
+      },
+    ],
+  },
+];
+---
+
+<Base
+  titulo="Un cajero para todos · Laboratorio · Pensamiento Sensorial 3.0"
+  descripcion="Parte 2 del laboratorio 2: rediseñar la experiencia de sacar dinero para mentes neurodivergentes, sin tocar la confianza ni la seguridad."
+  volverHref="/pensamiento-sensorial/s02"
+  volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Laboratorio 2 · Parte 2 · Tarea · En grupos</span>
+    <h1 class="sube sube-2">Un cajero para todos</h1>
+    <p class="lede sube-3">Diseñar para un cerebro que procesa distinto.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="encargo">
+      <p class="encargo-frase">
+        Rediseñen la experiencia de sacar dinero
+        para <strong>mentes neurodivergentes</strong>.
+      </p>
+      <p class="encargo-nota">
+        El cajero actual no cayó del cielo: es el resultado de un proceso y de un contexto
+        específicos, y quedó calibrado para un tipo de mente. En clase lo mejoraron dentro de
+        ese contexto; ahora van a construir una interfaz nueva para uno distinto. Lo que no se
+        mueve es la relación de confianza y de seguridad: eso se mantiene entero.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué quiere decir neurodivergente</h2>
+    <p>
+      Ser <strong>neurodivergente</strong> significa tener un cerebro que procesa la
+      información, aprende y se comporta de manera distinta a lo que se considera «típico» o
+      esperado por la mayoría de la sociedad. El término no describe una enfermedad ni un
+      defecto, sino variaciones naturales en el funcionamiento neurológico humano.
+    </p>
+    <p>
+      El término es amplio y sus bordes se discuten —hay quien incluye los cuadros de ansiedad
+      y quien no—, y el espectro es tan grande que llega a contradecirse: lo que le sirve a una
+      persona puede estorbarle a otra.
+    </p>
+    <p class="remate">
+      Por eso nadie diseña para «la neurodivergencia» en abstracto. Se diseña para un rasgo de
+      interacción concreto.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El principio que gobierna la tarea</h2>
+    <div class="principio">
+      <p class="principio-titulo">Nadie procesa bien el caos.</p>
+      <p>
+        Cuando uno diseña pensando en alguien cuyo cerebro tiene poca tolerancia al ruido, a
+        la ambigüedad o a la sobrecarga, termina creando algo más claro y más manejable para
+        todos. Solo que algunas personas toleran menos el caos, y esa menor tolerancia es una
+        brújula excelente hacia el buen diseño.
+      </p>
+      <p>
+        La neurodivergencia no es un caso límite raro que haya que «acomodar». Es la versión
+        permanente de estados que todos habitamos: cansancio, saturación, prisa, ansiedad.
+      </p>
+      <p class="principio-cola">
+        Diseñar para el cerebro que menos tolera el ruido cognitivo produce productos más
+        claros, más calmados y más humanos para cualquiera.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Lo que esto no es</h2>
+    <p>Si su propuesta se parece a alguna de estas cuatro cosas, vuelvan a empezar.</p>
+    <ul class="anti" role="list">
+      {noEsEsto.map((item) => (
+        <li>
+          <span class="anti-que">{item.que}</span>
+          <span class="anti-porque">{item.porque}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Su rasgo</h2>
+    <p>
+      Cada grupo recibe uno en clase. Los otros cuatro quedan acá para que sepan qué van a ver
+      en las presentaciones de los demás.
+    </p>
+    <ul class="rasgos" role="list">
+      {rasgos.map((r) => (
+        <li>
+          <span class="rasgo-grupo mono">{r.grupo}</span>
+          <h3 class="rasgo-titulo">{r.titulo}</h3>
+          <p class="rasgo-cuerpo">{r.cuerpo}</p>
+          <p class="rasgo-encargo">{r.encargo}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="rasgos-nota">
+      Ninguno se resuelve poniéndole otro canal encima. Los cinco piden repensar
+      el <strong>ritmo, la carga y la predictibilidad</strong> — no la superficie.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Hasta dónde pueden llegar</h2>
+    <div class="alcance">
+      <div class="alcance-col si">
+        <p class="alcance-encabezado">Pueden</p>
+        <ul role="list">
+          {pueden.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+      <div class="alcance-col no">
+        <p class="alcance-encabezado">No pueden</p>
+        <ul role="list">
+          {noPueden.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Cómo lo hacen</h2>
+
+    <h3 class="paso-titulo">Primero, el punto de choque</h3>
+    <p>
+      Antes de abrir cualquier herramienta, respondan a mano una sola pregunta:
+      <strong>¿qué del cajero actual choca con su rasgo?</strong> Todavía no cómo lo van a
+      arreglar — qué es lo que, tal como está, deja fuera a esa persona. Una o dos frases.
+      Eso orienta todo lo demás.
+    </p>
+
+    <h3 class="paso-titulo">Después, el modelo nuevo</h3>
+    <p>
+      Aquí está el centro de la tarea. No basta con rediseñar la pantalla:
+      expliquen <strong>otra manera de relacionarse</strong> con el sistema de retiro. Su
+      propuesta tiene que responder cinco preguntas.
+    </p>
+    <ol class="modelo" role="list">
+      {modelo.map((p) => <li>{p}</li>)}
+    </ol>
+
+    <h3 class="paso-titulo">Al final, la justificación</h3>
+    <p>
+      Estos seis principios <strong>no son una lista para marcar antes de empezar</strong>.
+      Son para afinar y defender lo que ya decidieron. Escojan tres decisiones de su diseño y
+      digan a qué principio responde cada una.
+    </p>
+    <ul class="principios" role="list">
+      {principios.map((p) => (
+        <li>
+          <strong>{p.nombre}</strong>
+          <span>{p.cuerpo}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué entregan</h2>
+    <div class="entregable">
+      <p class="entregable-titulo">Seis cosas, y se presenta la próxima clase.</p>
+      <ol class="entrega" role="list">
+        {entrega.map((item) => (
+          <li>
+            <span class="entrega-letra mono" aria-hidden="true">{item.letra}</span>
+            <span class="entrega-texto">
+              <strong>{item.titulo}.</strong>{' '}
+              <span class="entrega-detalle">{item.detalle}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="entregable-nota">
+        El formato es libre mientras las seis cosas estén y se entiendan sin que ustedes hablen
+        encima. De la interfaz queremos poder leer las decisiones que tomaron: qué permite,
+        qué lo comunica, qué lo impide, qué corresponde con qué, qué anticipa y qué confirma.
+      </p>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Lecturas</h2>
+    <p>
+      Léanlas <strong>antes</strong> de diseñar. No diseñen desde lo que imaginan que necesita
+      una persona: diseñen desde lo que dice quien ya investigó el asunto.
+    </p>
+    {lecturas.map((seccion) => (
+      <div class="lecturas-grupo">
+        <h3 class="mono">{seccion.grupo}</h3>
+        <ul role="list">
+          {seccion.items.map((item) => (
+            <li>
+              <a href={item.url} target="_blank" rel="noopener">
+                {item.titulo}<span class="sr-solo"> (abre en otra pestaña)</span>
+                <span class="lectura-flecha" aria-hidden="true">↗</span>
+              </a>
+              <span class="lectura-autor">{item.autor}</span>
+              <span class="lectura-nota">{item.nota}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </section>
+</Base>
+
+<style>
+  /* ── el encargo ───────────────────────────────── */
+  .encargo {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 42rem;
+  }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota {
+    max-width: none;
+    margin-bottom: 0;
+    font-size: 0.98rem;
+    color: var(--secundario);
+  }
+
+  .remate {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--tinta);
+  }
+
+  /* ── el principio ─────────────────────────────── */
+  /* Único bloque de paleta invertida de la página: es la idea que sostiene
+     toda la tarea, y la que más fácil se pierde. */
+  .principio {
+    background: var(--tinta);
+    color: #e5e5e5;
+    padding: 2rem 2.25rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 46rem;
+  }
+
+  .principio p { max-width: none; margin-bottom: 1rem; }
+  .principio p:last-child { margin-bottom: 0; }
+  .principio strong { color: var(--papel); }
+
+  .principio-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--papel);
+    margin-bottom: 0.75rem !important;
+  }
+
+  .principio-cola {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--amarillo);
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+  }
+
+  /* ── lo que esto no es ────────────────────────── */
+  .anti { list-style: none; max-width: 52rem; margin-top: 1.25rem; }
+
+  .anti li {
+    position: relative;
+    padding: 0.9rem 0 0.9rem 2rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .anti li:last-child { border-bottom: none; }
+
+  .anti li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    top: 0.95rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--tinta);
+  }
+
+  .anti-que {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--tinta);
+    margin-bottom: 0.25rem;
+  }
+
+  .anti-porque { display: block; font-size: 0.98rem; color: var(--secundario); }
+
+  /* ── los cinco rasgos ─────────────────────────── */
+  .rasgos {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .rasgos li { border-top: 3px solid var(--tinta); padding-top: 0.8rem; }
+
+  .rasgo-grupo { display: block; color: var(--secundario); margin-bottom: 0.5rem; }
+
+  .rasgo-titulo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
+  }
+
+  .rasgo-cuerpo { font-size: 0.95rem; margin-bottom: 0.5rem; max-width: none; }
+
+  .rasgo-encargo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--tinta);
+    margin-bottom: 0;
+    max-width: none;
+  }
+
+  .rasgos-nota { font-size: 0.95rem; color: var(--secundario); max-width: 56ch; }
+  .rasgos-nota strong { color: var(--tinta); }
+
+  /* ── alcance ──────────────────────────────────── */
+  .alcance {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 56rem;
+    margin-top: 1.25rem;
+  }
+
+  .alcance-encabezado {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1rem;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .alcance-col.si .alcance-encabezado { background: var(--amarillo); color: var(--tinta); }
+  .alcance-col.no .alcance-encabezado { background: var(--tinta); color: var(--papel); }
+
+  .alcance-col ul { list-style: none; }
+
+  .alcance-col li {
+    padding: 0.55rem 0;
+    font-size: 0.98rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .alcance-col li:last-child { border-bottom: none; }
+
+  /* ── cómo lo hacen ────────────────────────────── */
+  .paso-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--tinta);
+    margin: 2rem 0 0.75rem;
+  }
+
+  .bloque > .paso-titulo:first-of-type { margin-top: 1rem; }
+
+  .modelo {
+    list-style: none;
+    counter-reset: m;
+    max-width: 52rem;
+    margin: 1.25rem 0;
+  }
+
+  .modelo li {
+    counter-increment: m;
+    position: relative;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    font-size: 1.02rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .modelo li:last-child { border-bottom: none; }
+
+  .modelo li::before {
+    content: counter(m);
+    position: absolute;
+    left: 0;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--secundario);
+  }
+
+  .principios {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .principios li { border-top: 1px solid var(--regla); padding-top: 0.7rem; }
+
+  .principios strong {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.98rem;
+    color: var(--tinta);
+    margin-bottom: 0.2rem;
+  }
+
+  .principios span { font-size: 0.92rem; color: var(--secundario); }
+
+  /* ── el entregable ────────────────────────────── */
+  .entregable {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 52rem;
+  }
+
+  .entregable-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .entrega { list-style: none; }
+
+  .entrega li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .entrega li:last-child { border-bottom: none; }
+
+  .entrega-letra { flex: 0 0 1.4rem; font-weight: 700; color: var(--secundario); }
+
+  .entrega-texto strong {
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--tinta);
+  }
+
+  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .entregable-nota {
+    margin: 1.25rem 0 0;
+    max-width: none;
+    font-size: 0.95rem;
+    color: var(--secundario);
+  }
+
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  /* ── lecturas ─────────────────────────────────── */
+  .lecturas-grupo { margin-top: 2rem; }
+
+  .lecturas-grupo h3 {
+    color: var(--secundario);
+    font-weight: 400;
+    margin-bottom: 0.9rem;
+  }
+
+  .lecturas-grupo ul { list-style: none; max-width: 52rem; }
+
+  .lecturas-grupo li {
+    border-left: 2px solid var(--regla);
+    padding: 0.3rem 0 0.9rem 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .lecturas-grupo li:last-child { margin-bottom: 0; }
+
+  .lecturas-grupo a {
+    display: inline-block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--tinta);
+    line-height: 1.3;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .lecturas-grupo a:hover { background: var(--amarillo); }
+
+  .lectura-flecha { color: var(--secundario); margin-left: 0.2em; }
+
+  .lectura-autor {
+    display: block;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--secundario);
+    margin-top: 0.2rem;
+  }
+
+  .lectura-nota {
+    display: block;
+    font-size: 0.95rem;
+    margin-top: 0.35rem;
+  }
+
+  @media (max-width: 760px) {
+    .rasgos, .alcance, .principios { grid-template-columns: 1fr; }
+    .alcance { gap: 1.5rem; }
+  }
+
+  @media (max-width: 700px) {
+    .principio { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+    .encargo, .entregable { padding: 1.25rem; }
+  }
+</style>
