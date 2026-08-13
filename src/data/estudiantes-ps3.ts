@@ -21,15 +21,29 @@
  * emparejarse. Corregir antes de clase o después, nunca en la mitad.
  */
 
+// Grupo 1, semestre 2026-2. Los dos «Miguel Ángel» llevan dos letras del
+// apellido porque con una sola serían la misma persona para el sistema.
 export const ESTUDIANTES: string[] = [
-  // ── Reemplazar estas líneas con la lista real del curso ──
-  'Ana M.',
-  'Camilo R.',
-  'Daniela P.',
-  'Esteban G.',
-  'Juliana V.',
-  'Mateo S.',
-  'Valentina L.',
+  'Camilo Andrés O.',
+  'Daniela V.',
+  'David G.',
+  'David O.',
+  'Dayana R.',
+  'Emmanuel M.',
+  'Jean Paul S.',
+  'Jerónimo G.',
+  'Juan Martín C.',
+  'Juan Pablo O.',
+  'Juan Pablo R.',
+  'Laura Alejandra L.',
+  'Laura Natalia N.',
+  'María Camila E.',
+  'María Paula M.',
+  'Mario Fernando G.',
+  'Miguel Ángel Be.',
+  'Miguel Ángel Bo.',
+  'Sebastián C.',
+  'Sofía J.',
 ];
 
 /**
