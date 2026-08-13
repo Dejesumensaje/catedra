@@ -147,7 +147,7 @@ console.log(`Consultando a ${MODELO}…`);
 
 const mensaje = await cliente.messages.create({
   model: MODELO,
-  max_tokens: 8000,
+  max_tokens: 16000,
   thinking: { type: 'adaptive' },
   output_config: { effort: 'high', format: { type: 'json_schema', schema: esquema } },
   system: sistema,
@@ -159,6 +159,13 @@ if (mensaje.stop_reason === 'refusal') {
   process.exit(1);
 }
 
+// Sin esto, una respuesta cortada llega como JSON inválido y el error que se ve
+// es un `JSON.parse` incomprensible en vez de la causa real.
+if (mensaje.stop_reason === 'max_tokens') {
+  console.error('La respuesta se cortó por longitud. Sube `max_tokens` y vuelve a correrlo.');
+  process.exit(1);
+}
+
 const texto = mensaje.content.find((b) => b.type === 'text')?.text;
 if (!texto) {
   console.error('El modelo no devolvió texto.');
@@ -166,7 +173,13 @@ if (!texto) {
 }
 
 // ── 3. escribir para revisar ───────────────────────────────────────────────
-const analisis = JSON.parse(texto);
+let analisis;
+try {
+  analisis = JSON.parse(texto);
+} catch {
+  console.error('El modelo no devolvió JSON válido. Respuesta cruda:\n', texto.slice(0, 800));
+  process.exit(1);
+}
 
 const salida = {
   sesion: SESION,
