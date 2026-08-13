@@ -1,0 +1,367 @@
+---
+// Momento 1 del ejercicio de bitácoras (sesión 2). Se llena AL LLEGAR, antes
+// de cualquier teoría.
+//
+// Regla pedagógica que gobierna toda esta página: aquí no aparece una sola
+// palabra del vocabulario del curso —ni affordance, ni significante, ni
+// retroalimentación—, y en ningún lado se anuncia que habrá un segundo
+// formulario. El contraste del final de la clase solo funciona si esta captura
+// es inocente. Cualquier edición futura tiene que respetarlo.
+//
+// Cada experiencia se agrupa con `role="group"` y no con `<fieldset>`: el
+// navegador saca al `<legend>` de la caja del fieldset, y entonces la regla
+// que abre cada bloque no se puede dibujar por encima del título sin trucos.
+// Para un lector de pantalla agrupa igual, y maqueta como un bloque normal.
+import Base from '../../layouts/Base.astro';
+import { ESTUDIANTES, SIN_LISTA } from '../../data/estudiantes-ps3';
+import {
+  SESION, TIPOS, CLAVE_CLASE, MARCA_LOCAL, llaveEstudiante,
+} from '../../lib/bitacora';
+
+const opciones = ESTUDIANTES.map((nombre) => ({
+  valor: llaveEstudiante(nombre),
+  nombre,
+}));
+---
+
+<Base
+  titulo="Tu bitácora · Pensamiento Sensorial 3.0"
+  descripcion="Registro de las tres experiencias de la bitácora de la semana."
+  volverHref="/pensamiento-sensorial/s02"
+  volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
+  noindex
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Sesión 2 · Bitácora de la semana</span>
+    <h1 class="sube sube-2">Tu bitácora</h1>
+    <p class="lede sube-3">Las tres experiencias que trajiste, en tus palabras.</p>
+  </section>
+
+  <section class="bloque">
+    <p class="entrada-nota">
+      Escribe lo que traes tal como se lo contarías a alguien. No hay una forma
+      correcta de decirlo. Son cinco minutos.
+    </p>
+
+    <form id="form-bitacora" novalidate>
+      <div class="campo-quien">
+        <label class="rotulo mono" for="estudiante">Quién eres</label>
+        <select id="estudiante" name="estudiante" required>
+          <option value="">Elige tu nombre…</option>
+          {opciones.map((o) => <option value={o.valor}>{o.nombre}</option>)}
+          <option value={SIN_LISTA}>No estoy en la lista</option>
+        </select>
+      </div>
+
+      {TIPOS.map((tipo, i) => (
+        <div class="experiencia" data-tipo={tipo.id} role="group" aria-labelledby={`titulo-${tipo.id}`}>
+          <p class="experiencia-numero mono" aria-hidden="true">{i + 1} de 3</p>
+          <h2 class="experiencia-titulo" id={`titulo-${tipo.id}`}>{tipo.titulo}</h2>
+          <p class="experiencia-pista">{tipo.pista}</p>
+
+          <label class="rotulo mono" for={`etiqueta-${tipo.id}`}>Ponle un nombre corto</label>
+          <input
+            type="text"
+            id={`etiqueta-${tipo.id}`}
+            data-campo="etiqueta"
+            maxlength="80"
+            autocomplete="off"
+            placeholder="el torniquete del metro"
+            required
+          />
+          <p class="ayuda">Dos o tres palabras para reconocerla.</p>
+
+          <label class="rotulo mono" for={`relato-${tipo.id}`}>Qué pasó</label>
+          <textarea
+            id={`relato-${tipo.id}`}
+            data-campo="relato"
+            maxlength="2000"
+            rows="5"
+            required
+          ></textarea>
+          <p class="ayuda">Qué querías hacer, qué hiciste, y qué pasó.</p>
+
+          <label class="rotulo mono" for={`emocion-${tipo.id}`}>Una palabra para lo que sentiste</label>
+          <input
+            type="text"
+            id={`emocion-${tipo.id}`}
+            data-campo="emocion"
+            maxlength="40"
+            autocomplete="off"
+            required
+          />
+          <p class="ayuda">Una sola palabra.</p>
+        </div>
+      ))}
+
+      <div class="envio">
+        <button class="boton" type="submit" id="enviar">Enviar</button>
+        <p class="estado" id="estado" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="gracias" id="gracias" tabindex="-1" hidden>
+      <p class="gracias-titulo">Listo. Quedó registrado.</p>
+      <p>Puedes cerrar esta página.</p>
+    </div>
+  </section>
+</Base>
+
+<script
+  is:inline
+  define:vars={{ SESION, CLAVE_CLASE, MARCA_LOCAL, SIN_LISTA, TIPOS: TIPOS.map((t) => t.id) }}
+>
+  (function () {
+    var form = document.getElementById('form-bitacora');
+    var boton = document.getElementById('enviar');
+    var estado = document.getElementById('estado');
+    var gracias = document.getElementById('gracias');
+    var selector = document.getElementById('estudiante');
+
+    function leerEntradas() {
+      return TIPOS.map(function (tipo) {
+        var caja = form.querySelector('[data-tipo="' + tipo + '"]');
+        var valor = function (campo) {
+          return caja.querySelector('[data-campo="' + campo + '"]').value.trim();
+        };
+        return {
+          tipo: tipo,
+          etiqueta: valor('etiqueta'),
+          relato: valor('relato'),
+          emocion: valor('emocion'),
+        };
+      });
+    }
+
+    function primerVacio() {
+      var campos = form.querySelectorAll('select, input, textarea');
+      for (var i = 0; i < campos.length; i++) {
+        if (!campos[i].value.trim()) return campos[i];
+      }
+      return null;
+    }
+
+    // Se guarda en el teléfono antes de intentar la red. Si el wifi del salón
+    // falla, la respuesta no se pierde y el botón puede reintentar.
+    // (Esta página se lee con «ver código fuente»: nada de lo que se escriba
+    //  aquí puede adelantar lo que pasa al final de la clase.)
+    function guardarLocal(datos, seleccion) {
+      try {
+        localStorage.setItem(MARCA_LOCAL + ':m1', JSON.stringify(datos));
+        localStorage.setItem(MARCA_LOCAL + ':seleccion', seleccion);
+      } catch (e) {}
+    }
+
+    /** «No estoy en la lista» lo puede elegir más de una persona, y todas
+     *  escribirían sobre la misma llave. Se le cuelga un sufijo al azar que
+     *  queda guardado en este teléfono, para que cada quien tenga la suya. */
+    function identidad(valor) {
+      if (valor !== SIN_LISTA) return valor;
+      try {
+        var guardado = localStorage.getItem(MARCA_LOCAL + ':anonimo');
+        if (guardado) return guardado;
+        var nuevo = SIN_LISTA + '-' + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem(MARCA_LOCAL + ':anonimo', nuevo);
+        return nuevo;
+      } catch (e) {
+        return SIN_LISTA + '-' + Math.random().toString(36).slice(2, 8);
+      }
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var faltante = primerVacio();
+      if (faltante) {
+        estado.textContent = 'Falta algo por escribir.';
+        faltante.focus();
+        return;
+      }
+
+      var datos = {
+        clave: CLAVE_CLASE,
+        sesion: SESION,
+        momento: 1,
+        estudiante: identidad(selector.value),
+        entradas: leerEntradas(),
+      };
+
+      guardarLocal(datos, selector.value);
+
+      boton.disabled = true;
+      estado.textContent = 'Enviando…';
+
+      fetch('/api/bitacora', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(datos),
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error(String(r.status));
+          form.hidden = true;
+          gracias.hidden = false;
+          gracias.focus();
+        })
+        .catch(function () {
+          // No se pierde nada: ya está en el teléfono. Se dice así, sin drama,
+          // y el botón vuelve a quedar disponible.
+          boton.disabled = false;
+          boton.textContent = 'Reintentar';
+          estado.textContent =
+            'No se pudo enviar. Tu respuesta quedó guardada en este teléfono; vuelve a intentar.';
+        });
+    });
+  })();
+</script>
+
+<style>
+  .entrada-nota {
+    max-width: 46ch;
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+  }
+
+  /* ── quién eres ───────────────────────────────── */
+  .campo-quien {
+    border: 2px solid var(--tinta);
+    padding: 1.25rem 1.5rem;
+    max-width: 34rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .rotulo {
+    display: block;
+    color: var(--secundario);
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── campos ───────────────────────────────────── */
+  select,
+  input[type='text'],
+  textarea {
+    display: block;
+    width: 100%;
+    max-width: 34rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--tinta);
+    background: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: 0.7rem 0.85rem;
+  }
+
+  textarea {
+    font-family: var(--serif);
+    font-size: 1.02rem;
+    line-height: 1.55;
+    resize: vertical;
+  }
+
+  select:focus,
+  input:focus,
+  textarea:focus {
+    outline: none;
+    box-shadow: 4px 4px 0 var(--amarillo);
+  }
+
+  .ayuda {
+    margin: 0.45rem 0 1.75rem;
+    font-size: 0.88rem;
+    color: var(--secundario);
+    max-width: 44ch;
+  }
+
+  /* ── cada experiencia ─────────────────────────── */
+  /* La regla va en un pseudo-elemento y no en el borde del fieldset: el
+     `legend` le abre una muesca al borde propio y deja un muñón de línea
+     flotando al lado del título, que se lee como un error de maquetación. */
+  .experiencia {
+    position: relative;
+    border: none;
+    padding: 1.5rem 0 0.5rem;
+    margin-bottom: 2.75rem;
+    max-width: 34rem;
+  }
+
+  .experiencia::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-top: 3px solid var(--tinta);
+  }
+
+  .experiencia-numero {
+    display: block;
+    color: var(--secundario);
+    margin-bottom: 0.35rem;
+  }
+
+  .experiencia-titulo {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.3rem, 3.4vw, 1.6rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--tinta);
+    margin-bottom: 0.6rem;
+  }
+
+  .experiencia-pista {
+    font-size: 0.98rem;
+    color: var(--texto);
+    margin-bottom: 1.5rem;
+    max-width: 44ch;
+  }
+
+  /* ── envío ────────────────────────────────────── */
+  .envio {
+    border-top: 1px solid var(--regla);
+    padding-top: 1.75rem;
+    max-width: 34rem;
+  }
+
+  .boton:disabled {
+    background: var(--secundario);
+    border-color: var(--secundario);
+    cursor: default;
+  }
+
+  .estado {
+    margin: 1rem 0 0;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--tinta);
+    min-height: 1.4em;
+    max-width: 44ch;
+  }
+
+  /* ── confirmación ─────────────────────────────── */
+  .gracias {
+    border: 2px solid var(--tinta);
+    box-shadow: 8px 8px 0 var(--amarillo);
+    padding: 2rem 2.25rem;
+    max-width: 34rem;
+  }
+
+  .gracias-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: var(--tinta);
+    margin-bottom: 0.5rem;
+  }
+
+  .gracias p:last-child {
+    margin-bottom: 0;
+    color: var(--secundario);
+  }
+
+  @media (max-width: 700px) {
+    .campo-quien { padding: 1rem 1.1rem; }
+    .gracias { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+  }
+</style>

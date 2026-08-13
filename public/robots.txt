@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
 
+# Páginas de uso interno de una clase: formularios que se llenan en el salón y
+# el tablero que se proyecta. No son material publicado.
+Disallow: /pensamiento-sensorial/bitacora
+Disallow: /pensamiento-sensorial/bitacora-otra-vez
+Disallow: /pensamiento-sensorial/bitacora-resultados
+Disallow: /api/
+
 Sitemap: https://catedra.dejesumensaje.com/sitemap-index.xml

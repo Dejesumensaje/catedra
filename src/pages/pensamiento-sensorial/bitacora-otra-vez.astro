@@ -1,0 +1,536 @@
+---
+// Momento 2 del ejercicio de bitácoras (sesión 2). Se llena AL FINAL de la
+// clase, justo antes de User Inyerface.
+//
+// Las mismas tres experiencias, ahora con el vocabulario encima. La página no
+// pide volver a contarlas: precarga las etiquetas del momento 1 y solo pide
+// clasificar. Ese es todo el dispositivo — si el estudiante tuviera que
+// escribir de nuevo, escribiría otra cosa y no habría comparación posible.
+//
+// La precarga tiene tres fuentes, en este orden:
+//   1. localStorage del propio teléfono (instantáneo, sobrevive a la red)
+//   2. la API (por si respondió el m1 en otro dispositivo)
+//   3. escribir las etiquetas a mano (por si nada de lo anterior funcionó)
+// La tercera no es un adorno defensivo: es lo que evita que un estudiante se
+// quede por fuera del ejercicio en los últimos diez minutos de clase.
+//
+// Como en el momento 1, cada bloque va con `role="group"` y no con
+// `<fieldset>`: el `<legend>` no deja dibujar la regla por encima del título.
+// Cada terna de radios lleva su propio `role="group"` con `aria-labelledby`,
+// para que «Qué falló, sobre todo» sea el nombre del grupo y no una frase
+// suelta encima de cinco opciones sin dueño.
+import Base from '../../layouts/Base.astro';
+import { ESTUDIANTES, SIN_LISTA } from '../../data/estudiantes-ps3';
+import {
+  SESION, TIPOS, CATEGORIAS, CUANDOS, CULPAS,
+  CLAVE_CLASE, MARCA_LOCAL, llaveEstudiante,
+} from '../../lib/bitacora';
+
+const opciones = ESTUDIANTES.map((nombre) => ({
+  valor: llaveEstudiante(nombre),
+  nombre,
+}));
+---
+
+<Base
+  titulo="Tu bitácora, otra vez · Pensamiento Sensorial 3.0"
+  descripcion="Las mismas tres experiencias, ahora con el vocabulario de la sesión."
+  volverHref="/pensamiento-sensorial/s02"
+  volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
+  noindex
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Sesión 2 · Después de la teoría</span>
+    <h1 class="sube sube-2">Las mismas tres, otra vez</h1>
+    <p class="lede sube-3">Nada nuevo que contar. Solo ponerle nombre a lo que ya contaste.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="campo-quien">
+      <label class="rotulo mono" for="estudiante">Quién eres</label>
+      <select id="estudiante" name="estudiante" required>
+        <option value="">Elige tu nombre…</option>
+        {opciones.map((o) => <option value={o.valor}>{o.nombre}</option>)}
+        <option value={SIN_LISTA}>No estoy en la lista</option>
+      </select>
+      <p class="ayuda" id="aviso-carga" role="status" aria-live="polite"></p>
+    </div>
+
+    <form id="form-bitacora" hidden>
+      {TIPOS.map((tipo, i) => (
+        <div class="experiencia" data-tipo={tipo.id} role="group" aria-labelledby={`rotulo-${tipo.id}`}>
+          <p class="experiencia-numero mono" id={`rotulo-${tipo.id}`}>{i + 1} de 3 · {tipo.titulo}</p>
+          <h2 class="experiencia-titulo" data-campo="etiqueta-vista"></h2>
+
+          {/* Solo se ve cuando no hubo precarga. Guarda la etiqueta escrita a mano. */}
+          <div class="etiqueta-manual" data-campo="etiqueta-manual" hidden>
+            <label class="rotulo mono" for={`etiqueta-${tipo.id}`}>Nombre corto que le pusiste</label>
+            <input
+              type="text"
+              id={`etiqueta-${tipo.id}`}
+              data-campo="etiqueta"
+              maxlength="80"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="pregunta" role="group" aria-labelledby={`categoria-rot-${tipo.id}`}>
+            <p class="pregunta-titulo mono" id={`categoria-rot-${tipo.id}`}>Qué falló, sobre todo</p>
+            <ul class="opciones" role="list">
+              {CATEGORIAS.map((c) => (
+                <li>
+                  <label class="opcion">
+                    <input type="radio" name={`categoria-${tipo.id}`} value={c.id} data-campo="categoria" />
+                    <span class="opcion-cuerpo">
+                      <span class="opcion-nombre">{c.nombre}</span>
+                      <span class="opcion-glosa">{c.glosa}</span>
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pregunta" role="group" aria-labelledby={`cuando-rot-${tipo.id}`}>
+            <p class="pregunta-titulo mono" id={`cuando-rot-${tipo.id}`}>Cuándo se rompió</p>
+            <ul class="opciones" role="list">
+              {CUANDOS.map((c) => (
+                <li>
+                  <label class="opcion">
+                    <input type="radio" name={`cuando-${tipo.id}`} value={c.id} data-campo="cuando" />
+                    <span class="opcion-cuerpo">
+                      <span class="opcion-nombre">{c.nombre}</span>
+                      <span class="opcion-glosa">{c.glosa}</span>
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pregunta" role="group" aria-labelledby={`culpa-rot-${tipo.id}`}>
+            <p class="pregunta-titulo mono" id={`culpa-rot-${tipo.id}`}>De quién fue la culpa</p>
+            <ul class="opciones opciones-cortas" role="list">
+              {CULPAS.map((c) => (
+                <li>
+                  <label class="opcion">
+                    <input type="radio" name={`culpa-${tipo.id}`} value={c.id} data-campo="culpa" />
+                    <span class="opcion-cuerpo">
+                      <span class="opcion-nombre">{c.nombre}</span>
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+
+      <div class="envio">
+        <button class="boton" type="submit" id="enviar">Enviar</button>
+        <p class="estado" id="estado" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="gracias" id="gracias" tabindex="-1" hidden>
+      <p class="gracias-titulo">Listo.</p>
+      <p>Lo vemos juntos la próxima clase.</p>
+    </div>
+  </section>
+</Base>
+
+<script
+  is:inline
+  define:vars={{ SESION, CLAVE_CLASE, MARCA_LOCAL, SIN_LISTA, TIPOS: TIPOS.map((t) => t.id) }}
+>
+  (function () {
+    var selector = document.getElementById('estudiante');
+    var aviso = document.getElementById('aviso-carga');
+    var form = document.getElementById('form-bitacora');
+    var boton = document.getElementById('enviar');
+    var estado = document.getElementById('estado');
+    var gracias = document.getElementById('gracias');
+
+    function caja(tipo) {
+      return form.querySelector('[data-tipo="' + tipo + '"]');
+    }
+
+    function local(sufijo) {
+      try {
+        return localStorage.getItem(MARCA_LOCAL + sufijo);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /** Igual que en el momento 1: «No estoy en la lista» no puede ser una sola
+     *  llave para varias personas. El sufijo quedó guardado en este teléfono
+     *  cuando respondió la primera vez, así que aquí se recupera el mismo. */
+    function identidad(valor) {
+      if (valor !== SIN_LISTA) return valor;
+      try {
+        var guardado = localStorage.getItem(MARCA_LOCAL + ':anonimo');
+        if (guardado) return guardado;
+        var nuevo = SIN_LISTA + '-' + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem(MARCA_LOCAL + ':anonimo', nuevo);
+        return nuevo;
+      } catch (e) {
+        return SIN_LISTA + '-' + Math.random().toString(36).slice(2, 8);
+      }
+    }
+
+    /** Etiquetas del m1 guardadas en este teléfono, indexadas por tipo. */
+    function etiquetasLocales(estudiante) {
+      var crudo = local(':m1');
+      if (!crudo) return null;
+      try {
+        var datos = JSON.parse(crudo);
+        if (datos.estudiante !== estudiante) return null;
+        var mapa = {};
+        (datos.entradas || []).forEach(function (e) {
+          if (e.tipo) mapa[e.tipo] = e.etiqueta;
+        });
+        return mapa;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function etiquetasRemotas(estudiante) {
+      var url =
+        '/api/bitacora?sesion=' + encodeURIComponent(SESION) +
+        '&momento=1&estudiante=' + encodeURIComponent(estudiante) +
+        '&clave=' + encodeURIComponent(CLAVE_CLASE);
+      return fetch(url)
+        .then(function (r) { return r.ok ? r.json() : { entradas: [] }; })
+        .then(function (d) {
+          var mapa = {};
+          (d.entradas || []).forEach(function (e) {
+            if (e.tipo && e.etiqueta) mapa[e.tipo] = e.etiqueta;
+          });
+          return mapa;
+        })
+        .catch(function () { return {}; });
+    }
+
+    /** Repinta el formulario para la persona que está seleccionada ahora.
+     *  Lo que estuviera escrito o marcado por la selección anterior se borra:
+     *  si alguien se equivoca de nombre y lo corrige, no puede terminar
+     *  enviando las etiquetas ni las respuestas de otro. */
+    function pintar(mapa) {
+      var precargadas = 0;
+      TIPOS.forEach(function (tipo) {
+        var c = caja(tipo);
+        var vista = c.querySelector('[data-campo="etiqueta-vista"]');
+        var manual = c.querySelector('[data-campo="etiqueta-manual"]');
+        var input = c.querySelector('[data-campo="etiqueta"]');
+
+        input.value = mapa[tipo] || '';
+        vista.textContent = mapa[tipo] || '';
+        manual.hidden = Boolean(mapa[tipo]);
+        if (mapa[tipo]) precargadas++;
+
+        var marcados = c.querySelectorAll('input[type="radio"]:checked');
+        for (var i = 0; i < marcados.length; i++) marcados[i].checked = false;
+      });
+      estado.textContent = '';
+      return precargadas;
+    }
+
+    selector.addEventListener('change', function () {
+      if (!selector.value) {
+        form.hidden = true;
+        aviso.textContent = '';
+        return;
+      }
+      var estudiante = identidad(selector.value);
+
+      aviso.textContent = 'Buscando lo que escribiste…';
+
+      // El teléfono primero: es instantáneo y no depende de que KV ya haya
+      // propagado la escritura de hace dos horas.
+      var mapaLocal = etiquetasLocales(estudiante);
+      if (mapaLocal && Object.keys(mapaLocal).length) {
+        mostrar(mapaLocal);
+        return;
+      }
+
+      etiquetasRemotas(estudiante).then(mostrar);
+    });
+
+    function mostrar(mapa) {
+      var precargadas = pintar(mapa || {});
+      form.hidden = false;
+      aviso.textContent = precargadas
+        ? 'Estas son las tuyas.'
+        : 'No encontré las tuyas. Escribe el nombre corto de cada una y sigue.';
+    }
+
+    function leerEntradas() {
+      return TIPOS.map(function (tipo) {
+        var c = caja(tipo);
+        var marcado = function (campo) {
+          var el = c.querySelector('[data-campo="' + campo + '"]:checked');
+          return el ? el.value : '';
+        };
+        return {
+          tipo: tipo,
+          etiqueta: c.querySelector('[data-campo="etiqueta"]').value.trim(),
+          categoria: marcado('categoria'),
+          cuando: marcado('cuando'),
+          culpa: marcado('culpa'),
+        };
+      });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var entradas = leerEntradas();
+      var incompleta = entradas.findIndex(function (x) {
+        return !x.etiqueta || !x.categoria || !x.cuando || !x.culpa;
+      });
+      if (incompleta !== -1) {
+        estado.textContent = 'Falta responder algo en la experiencia ' + (incompleta + 1) + '.';
+        caja(TIPOS[incompleta]).scrollIntoView({ block: 'start' });
+        return;
+      }
+
+      var datos = {
+        clave: CLAVE_CLASE,
+        sesion: SESION,
+        momento: 2,
+        estudiante: identidad(selector.value),
+        entradas: entradas,
+      };
+
+      try {
+        localStorage.setItem(MARCA_LOCAL + ':m2', JSON.stringify(datos));
+      } catch (err) {}
+
+      boton.disabled = true;
+      estado.textContent = 'Enviando…';
+
+      fetch('/api/bitacora', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(datos),
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error(String(r.status));
+          form.hidden = true;
+          document.querySelector('.campo-quien').hidden = true;
+          gracias.hidden = false;
+          gracias.focus();
+        })
+        .catch(function () {
+          boton.disabled = false;
+          boton.textContent = 'Reintentar';
+          estado.textContent =
+            'No se pudo enviar. Tu respuesta quedó guardada en este teléfono; vuelve a intentar.';
+        });
+    });
+
+    // Si respondió el momento 1 en este mismo teléfono, el nombre ya está
+    // elegido: cada toque que se ahorra cuenta. Se guarda lo que se eligió en
+    // el desplegable, no la llave: son distintos cuando es «no estoy en la
+    // lista», y aquí lo que hay que volver a marcar es la opción.
+    var recordado = local(':seleccion');
+    if (recordado) {
+      selector.value = recordado;
+      if (selector.value === recordado) {
+        selector.dispatchEvent(new Event('change'));
+      }
+    }
+  })();
+</script>
+
+<style>
+  /* ── quién eres ───────────────────────────────── */
+  .campo-quien {
+    border: 2px solid var(--tinta);
+    padding: 1.25rem 1.5rem;
+    max-width: 34rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .rotulo {
+    display: block;
+    color: var(--secundario);
+    margin-bottom: 0.5rem;
+  }
+
+  select,
+  input[type='text'] {
+    display: block;
+    width: 100%;
+    max-width: 32rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--tinta);
+    background: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: 0.7rem 0.85rem;
+  }
+
+  select:focus,
+  input:focus {
+    outline: none;
+    box-shadow: 4px 4px 0 var(--amarillo);
+  }
+
+  .ayuda {
+    margin: 0.6rem 0 0;
+    font-size: 0.88rem;
+    color: var(--secundario);
+    max-width: 44ch;
+    min-height: 1.3em;
+  }
+
+  /* ── cada experiencia ─────────────────────────── */
+  /* Igual que en el momento 1: la regla no puede ser el borde del fieldset,
+     porque el `legend` se la muerde y deja un muñón junto al título. */
+  .experiencia {
+    position: relative;
+    border: none;
+    padding: 1.5rem 0 0.5rem;
+    margin-bottom: 3rem;
+    max-width: 40rem;
+  }
+
+  .experiencia::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-top: 3px solid var(--tinta);
+  }
+
+
+  .experiencia-numero {
+    display: block;
+    color: var(--secundario);
+    margin-bottom: 0.35rem;
+  }
+
+  /* La etiqueta que el propio estudiante escribió hace dos horas, en grande.
+     Es el ancla: si no reconoce de inmediato cuál experiencia es, clasifica
+     otra cosa distinta de la que contó. */
+  .experiencia-titulo {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.3rem, 3.4vw, 1.7rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--tinta);
+    margin-bottom: 1.5rem;
+  }
+
+  .experiencia-titulo:empty { display: none; }
+
+  .etiqueta-manual { margin-bottom: 1.75rem; }
+
+  /* ── preguntas ────────────────────────────────── */
+  .pregunta { margin-bottom: 1.75rem; }
+
+  .pregunta-titulo {
+    color: var(--secundario);
+    margin-bottom: 0.75rem;
+  }
+
+  .opciones { list-style: none; }
+
+  .opciones li { border-bottom: 1px solid var(--regla); }
+  .opciones li:first-child { border-top: 1px solid var(--regla); }
+
+  /* Área de toque generosa: esto se llena de pie, con el pulgar, con prisa. */
+  .opcion {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.85rem 0.5rem;
+    cursor: pointer;
+  }
+
+  .opcion input {
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    accent-color: var(--tinta);
+  }
+
+  .opcion-cuerpo { min-width: 0; }
+
+  .opcion-nombre {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--tinta);
+  }
+
+  .opcion-glosa {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--secundario);
+    margin-top: 0.1rem;
+  }
+
+  /* El amarillo aquí significa «esta elegiste», que es exactamente el tipo de
+     estado que el sistema visual permite marcar. */
+  .opcion:has(input:checked) {
+    background: linear-gradient(to right, var(--amarillo) 0.3rem, transparent 0.3rem);
+  }
+
+  .opcion:has(input:checked) .opcion-nombre { text-decoration: underline; }
+
+  .opciones-cortas .opcion { padding: 0.75rem 0.5rem; }
+
+  /* ── envío ────────────────────────────────────── */
+  .envio {
+    border-top: 1px solid var(--regla);
+    padding-top: 1.75rem;
+    max-width: 34rem;
+  }
+
+  .boton:disabled {
+    background: var(--secundario);
+    border-color: var(--secundario);
+    cursor: default;
+  }
+
+  .estado {
+    margin: 1rem 0 0;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--tinta);
+    min-height: 1.4em;
+    max-width: 44ch;
+  }
+
+  /* ── confirmación ─────────────────────────────── */
+  .gracias {
+    border: 2px solid var(--tinta);
+    box-shadow: 8px 8px 0 var(--amarillo);
+    padding: 2rem 2.25rem;
+    max-width: 34rem;
+  }
+
+  .gracias-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: var(--tinta);
+    margin-bottom: 0.5rem;
+  }
+
+  .gracias p:last-child { margin-bottom: 0; color: var(--secundario); }
+
+  @media (max-width: 700px) {
+    .campo-quien { padding: 1rem 1.1rem; }
+    .gracias { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+  }
+</style>

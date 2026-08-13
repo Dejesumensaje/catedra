@@ -56,7 +56,43 @@ Van como archivos locales para no depender de IDs de Giphy sin verificar. El
 - `gif-receso.gif` — pausa de quince minutos.
   Búsqueda sugerida: `coffee break`, `cat coffee`.
 
-## Otros
+## Los cinco QR — ya están
 
-- `qr-uno.svg` — ya está. Apunta a `/pensamiento-sensorial/uno`, donde vive el
-  laboratorio de UNO completo. El deck ya no repite esas reglas.
+Las consignas viven en el sitio y el deck solo las apunta. Ningún deck repite
+una consigna que ya está publicada.
+
+- `qr-uno.svg` → `/pensamiento-sensorial/uno`
+- `qr-cajero.svg` → `/pensamiento-sensorial/cajero` (laboratorio 2, parte 1)
+- `qr-cajero-para-todos.svg` → `/pensamiento-sensorial/cajero-para-todos` (la tarea)
+- `qr-bitacora.svg` → `/pensamiento-sensorial/bitacora` (slide 12, al llegar)
+- `qr-bitacora-otra-vez.svg` → `/pensamiento-sensorial/bitacora-otra-vez`
+  (slide 97, al cerrar la teoría y **antes** del bloque del error)
+
+**Los dos slides no se pueden mover sin pensarlo.** El del cierre va antes del
+bloque del error a propósito: los cinco slides siguientes argumentan que la
+culpa es del sistema, y preguntar «¿de quién fue la culpa?» justo después mide
+obediencia y no aprendizaje. Y el de la mañana no puede insinuar que habrá una
+segunda vuelta: si se sabe, la comparación del final no mide nada.
+
+Se generaron con la librería `qrcode` de Python, `SvgPathImage`, `box_size=12`
+y `border=2`. Con esos parámetros salen todos con el mismo formato; el tamaño en
+módulos depende del largo de la URL. Para rehacer uno:
+
+```python
+import qrcode, qrcode.image.svg
+q = qrcode.QRCode(box_size=12, border=2,
+                  image_factory=qrcode.image.svg.SvgPathImage)
+q.add_data('https://catedra.dejesumensaje.com/pensamiento-sensorial/cajero')
+q.make(fit=True)
+q.make_image().save('qr-cajero.svg')
+```
+
+Los dos de la bitácora salieron con `error_correction=ERROR_CORRECT_Q` y no con
+el nivel M por defecto. La razón es concreta: la versión en nivel M de
+`/pensamiento-sensorial/bitacora` no la decodificaba el detector con el que se
+probó, y las de nivel Q sí. Un nivel más alto también aguanta mejor una
+proyección lavada. Si se rehacen, hay que conservar el nivel Q.
+
+Si se cambia una URL hay que regenerar el QR **y decodificarlo** antes de
+proyectar. Un QR que no resuelve es peor que no tener QR: treinta personas
+apuntando el teléfono a una pared.

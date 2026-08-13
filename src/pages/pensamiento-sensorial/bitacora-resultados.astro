@@ -1,0 +1,696 @@
+---
+// Tablero de proyección del ejercicio de bitácoras. Se abre en clase y se
+// proyecta: tipografía grande, una idea por lámina, legible desde el fondo.
+//
+// Cómo se reparte el trabajo:
+//   - Los CONTEOS salen en vivo de KV, con la clave docente. Refrescar el
+//     navegador los actualiza: por eso se puede proyectar el mismo día.
+//   - El ANÁLISIS —agrupar los relatos, redactar las tensiones— sale del
+//     archivo `src/data/analisis-bitacora-s02.json`, que escribe
+//     `scripts/analizar-bitacora.mjs` una sola vez y que William revisa y
+//     edita a mano antes de proyectar. El modelo no corre en cada refresco.
+//
+// Por qué los relatos no se commitean: el repositorio es público y §7 de
+// AGENTS.md no admite trabajo estudiantil sin consentimiento. Lo que queda
+// versionado es el análisis curado y los conteos, ambos sin texto de nadie.
+//
+// Sobre los gráficos: son barras de una sola serie. No hay codificación por
+// color —el valor va escrito en cada barra— y el amarillo aparece una sola
+// vez, en la gráfica de la culpa, porque ahí es donde está el hallazgo.
+import Base from '../../layouts/Base.astro';
+import { SESION, CATEGORIAS, CUANDOS, CULPAS } from '../../lib/bitacora';
+import analisis from '../../data/analisis-bitacora-s02.json';
+
+const hayAnalisis =
+  Boolean(analisis.generado) &&
+  ((analisis.temas?.length ?? 0) > 0 || (analisis.tensiones?.length ?? 0) > 0);
+
+const fechaAnalisis = analisis.generado
+  ? new Date(analisis.generado).toLocaleDateString('es-CO', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+  : null;
+---
+
+<Base
+  titulo="Bitácoras · Antes y después · Pensamiento Sensorial 3.0"
+  descripcion="Tablero de proyección del ejercicio de bitácoras de la sesión 2."
+  volverHref="/pensamiento-sensorial/s02"
+  volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
+  noindex
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Sesión 2 · Sus bitácoras</span>
+    <h1 class="sube sube-2">Antes y después</h1>
+    <p class="lede sube-3">
+      Las mismas experiencias, contadas dos veces: al llegar y al salir.
+    </p>
+  </section>
+
+  {/* ── llave ─────────────────────────────────────────────── */}
+  <section class="bloque" id="puerta">
+    <h2 class="mono">Datos</h2>
+    <form id="form-llave" class="llave">
+      <label class="sr-solo" for="clave">Clave docente</label>
+      <input type="password" id="clave" placeholder="Clave docente" autocomplete="off" />
+      <button class="boton" type="submit">Cargar</button>
+    </form>
+    <p class="estado" id="estado" role="status" aria-live="polite"></p>
+  </section>
+
+  {/* ── todo lo que depende de los datos ──────────────────── */}
+  <div id="tablero" hidden>
+    <section class="bloque lamina">
+      <h2 class="mono">Cuántos respondieron</h2>
+      <ul class="cifras" role="list">
+        <li>
+          <span class="cifra" id="n-m1">—</span>
+          <span class="cifra-rotulo">al llegar</span>
+        </li>
+        <li>
+          <span class="cifra" id="n-m2">—</span>
+          <span class="cifra-rotulo">al salir</span>
+        </li>
+        <li>
+          <span class="cifra" id="n-par">—</span>
+          <span class="cifra-rotulo">las dos veces</span>
+        </li>
+      </ul>
+      <p class="lamina-nota" id="nota-cobertura"></p>
+    </section>
+
+    <section class="bloque lamina" id="lamina-emociones">
+      <h2 class="mono">Antes · Con qué palabra lo dijeron</h2>
+      <p class="lamina-pregunta">Lo que trajeron, sin vocabulario técnico.</p>
+      <ul class="emociones" id="emociones" role="list"></ul>
+    </section>
+
+    <section class="bloque lamina" id="lamina-categorias">
+      <h2 class="mono">Después · Qué concepto apareció</h2>
+      <p class="lamina-pregunta">Las mismas experiencias, ya con las palabras.</p>
+      <ul class="barras" id="categorias" role="list"></ul>
+    </section>
+
+    <section class="bloque lamina" id="lamina-cuando">
+      <h2 class="mono">Después · Cuándo se rompió</h2>
+      <p class="lamina-pregunta">Antes de actuar, durante, o después.</p>
+      <ul class="barras" id="cuando" role="list"></ul>
+    </section>
+
+    <section class="bloque lamina destacada" id="lamina-culpa">
+      <h2 class="mono">Después · De quién fue la culpa</h2>
+      <p class="lamina-pregunta">La pregunta del día. Con el vocabulario encima.</p>
+      <ul class="barras barras-clave" id="culpa" role="list"></ul>
+    </section>
+
+    <section class="bloque lamina" id="lamina-pares">
+      <h2 class="mono">La misma experiencia, dos veces</h2>
+      <p class="lamina-pregunta">
+        A la izquierda lo que dijeron al llegar. A la derecha, lo que dijeron al salir.
+      </p>
+      <ul class="pares" id="pares" role="list"></ul>
+      <p class="lamina-nota">Sin nombres. Cada fila es una experiencia, no una persona.</p>
+    </section>
+  </div>
+
+  {/* ── análisis curado (estático, del repositorio) ────────── */}
+  <section class="bloque lamina">
+    <h2 class="mono">Lo que no se puede contar</h2>
+    {hayAnalisis ? (
+      <>
+        <p class="lamina-pregunta">
+          Agrupación de los relatos del momento 1 y tensiones para discutir.
+        </p>
+
+        {analisis.temas?.length > 0 && (
+          <ol class="temas" role="list">
+            {analisis.temas.map((tema: any, i: number) => (
+              <li>
+                <span class="tema-numero mono" aria-hidden="true">{i + 1}</span>
+                <div class="tema-cuerpo">
+                  <h3 class="tema-titulo">{tema.titulo}</h3>
+                  <p>{tema.cuerpo}</p>
+                  {tema.cuantas && (
+                    <p class="tema-cuantas mono">{tema.cuantas} experiencias</p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {analisis.tensiones?.length > 0 && (
+          <>
+            <h3 class="sub mono">Para discutir</h3>
+            <ul class="tensiones" role="list">
+              {analisis.tensiones.map((t: any) => (
+                <li>
+                  <p class="tension-titulo">{t.titulo}</p>
+                  <p>{t.cuerpo}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        <p class="lamina-nota">
+          Generado el {fechaAnalisis}
+          {analisis.revisado ? ' y revisado antes de proyectar.' : '. Sin revisar todavía.'}
+        </p>
+      </>
+    ) : (
+      <p class="lamina-nota vacio">
+        Todavía no se ha corrido el análisis. Se genera con
+        <code>node scripts/analizar-bitacora.mjs</code>, se revisa a mano en
+        <code>src/data/analisis-bitacora-s02.json</code> y se publica con el
+        despliegue.
+      </p>
+    )}
+  </section>
+</Base>
+
+<script
+  is:inline
+  define:vars={{
+    SESION,
+    CATEGORIAS: CATEGORIAS.map((c) => ({ id: c.id, nombre: c.nombre })),
+    CUANDOS: CUANDOS.map((c) => ({ id: c.id, nombre: c.nombre })),
+    CULPAS: CULPAS.map((c) => ({ id: c.id, nombre: c.nombre })),
+  }}
+>
+  (function () {
+    var MARCA = 'catedra-clave-docente';
+    var form = document.getElementById('form-llave');
+    var input = document.getElementById('clave');
+    var estado = document.getElementById('estado');
+    var tablero = document.getElementById('tablero');
+    var puerta = document.getElementById('puerta');
+
+    // ── conteos ────────────────────────────────────────────
+    function contar(items, campo) {
+      var mapa = {};
+      items.forEach(function (x) {
+        var v = x[campo];
+        if (!v) return;
+        mapa[v] = (mapa[v] || 0) + 1;
+      });
+      return mapa;
+    }
+
+    function entradasDe(registros) {
+      return registros.reduce(function (acc, r) {
+        return acc.concat(r.entradas || []);
+      }, []);
+    }
+
+    /** Dibuja una barra por opción, en el orden del vocabulario (no por
+     *  tamaño): así el eje no se reordena entre una clase y la siguiente y la
+     *  comparación con la corrida del año que viene sigue siendo posible. */
+    function barras(destino, opciones, mapa) {
+      var total = opciones.reduce(function (s, o) { return s + (mapa[o.id] || 0); }, 0);
+      var maximo = opciones.reduce(function (m, o) {
+        return Math.max(m, mapa[o.id] || 0);
+      }, 0);
+      if (!total) {
+        sinDato(destino, 'Sin respuestas todavía.');
+        return;
+      }
+
+      destino.innerHTML = '';
+      opciones.forEach(function (o) {
+        var n = mapa[o.id] || 0;
+        var pct = maximo ? Math.round((n / maximo) * 100) : 0;
+        var li = document.createElement('li');
+        li.className = 'barra';
+        li.appendChild(conTexto('span', 'barra-nombre', o.nombre));
+        var pista = document.createElement('span');
+        pista.className = 'barra-pista';
+        pista.appendChild(conTexto('span', 'barra-relleno', '', 'width:' + pct + '%'));
+        li.appendChild(pista);
+        li.appendChild(conTexto('span', 'barra-valor', n));
+        destino.appendChild(li);
+      });
+    }
+
+    /** Crea un elemento con texto. Todo lo que viene de un estudiante pasa por
+     *  aquí y nunca por innerHTML: son cadenas que ellos escribieron, y esto
+     *  se proyecta. Una etiqueta con `<img onerror=…>` no puede convertirse en
+     *  markup por el camino. */
+    function conTexto(etiqueta, clase, texto, estilo) {
+      var el = document.createElement(etiqueta);
+      if (clase) el.className = clase;
+      if (estilo) el.setAttribute('style', estilo);
+      el.textContent = texto == null ? '' : String(texto);
+      return el;
+    }
+
+    function sinDato(destino, mensaje) {
+      destino.innerHTML = '';
+      destino.appendChild(conTexto('li', 'sin-dato', mensaje));
+    }
+
+    /** Las emociones son texto libre: no hay lista cerrada que ordenar, así
+     *  que aquí sí manda la frecuencia. El tamaño acompaña al número, que
+     *  siempre va escrito al lado. */
+    function nubeEmociones(destino, mapa) {
+      var pares = Object.keys(mapa).map(function (k) { return [k, mapa[k]]; });
+      pares.sort(function (a, b) { return b[1] - a[1] || a[0].localeCompare(b[0]); });
+
+      if (!pares.length) {
+        sinDato(destino, 'Sin respuestas todavía.');
+        return;
+      }
+
+      destino.innerHTML = '';
+      var maximo = pares[0][1];
+      pares.slice(0, 24).forEach(function (p) {
+        var escala = 1 + (p[1] / maximo) * 1.4;
+        var li = document.createElement('li');
+        li.appendChild(conTexto('span', 'emocion', p[0], 'font-size:' + escala.toFixed(2) + 'rem'));
+        if (p[1] > 1) li.appendChild(conTexto('span', 'emocion-n mono', p[1]));
+        destino.appendChild(li);
+      });
+    }
+
+    // ── el emparejamiento ──────────────────────────────────
+    function nombreDe(lista, id) {
+      for (var i = 0; i < lista.length; i++) if (lista[i].id === id) return lista[i].nombre;
+      return '—';
+    }
+
+    function pares(destino, m1, m2) {
+      var porEstudiante = {};
+      m2.forEach(function (r) { porEstudiante[r.estudiante] = r; });
+
+      var filas = [];
+      m1.forEach(function (r1) {
+        var r2 = porEstudiante[r1.estudiante];
+        if (!r2) return;
+        (r1.entradas || []).forEach(function (e1) {
+          var e2 = (r2.entradas || []).filter(function (x) { return x.tipo === e1.tipo; })[0];
+          if (!e2) return;
+          filas.push({ etiqueta: e1.etiqueta, emocion: e1.emocion, categoria: e2.categoria, culpa: e2.culpa });
+        });
+      });
+
+      if (!filas.length) {
+        sinDato(destino, 'Todavía no hay nadie que haya respondido las dos veces.');
+        return;
+      }
+
+      destino.innerHTML = '';
+      filas.forEach(function (f) {
+        var li = document.createElement('li');
+        li.className = 'par';
+        li.appendChild(conTexto('span', 'par-etiqueta', f.etiqueta));
+        li.appendChild(conTexto('span', 'par-antes', f.emocion || '—'));
+        var flecha = conTexto('span', 'par-flecha', '→');
+        flecha.setAttribute('aria-hidden', 'true');
+        li.appendChild(flecha);
+        var despues = conTexto('span', 'par-despues', nombreDe(CATEGORIAS, f.categoria));
+        despues.appendChild(conTexto('span', 'par-culpa mono', 'culpa: ' + nombreDe(CULPAS, f.culpa)));
+        li.appendChild(despues);
+        destino.appendChild(li);
+      });
+    }
+
+    // ── pintar todo ────────────────────────────────────────
+    function pintar(datos) {
+      var m1 = datos.m1 || [];
+      var m2 = datos.m2 || [];
+
+      var conM2 = {};
+      m2.forEach(function (r) { conM2[r.estudiante] = true; });
+      var emparejados = m1.filter(function (r) { return conM2[r.estudiante]; }).length;
+
+      document.getElementById('n-m1').textContent = m1.length;
+      document.getElementById('n-m2').textContent = m2.length;
+      document.getElementById('n-par').textContent = emparejados;
+
+      var nota = document.getElementById('nota-cobertura');
+      if (!m2.length) {
+        nota.textContent =
+          'Todavía no hay respuestas del cierre: por ahora solo se puede ver la mitad de antes.';
+      } else if (emparejados < m1.length) {
+        var faltan = m1.length - emparejados;
+        nota.textContent = faltan === 1
+          ? 'Una persona respondió al llegar pero no al salir. El emparejamiento usa solo a quienes hicieron las dos.'
+          : faltan + ' personas respondieron al llegar pero no al salir. ' +
+            'El emparejamiento usa solo a quienes hicieron las dos.';
+      } else {
+        nota.textContent = '';
+      }
+
+      var e1 = entradasDe(m1);
+      var e2 = entradasDe(m2);
+
+      nubeEmociones(document.getElementById('emociones'), contar(e1, 'emocion'));
+      barras(document.getElementById('categorias'), CATEGORIAS, contar(e2, 'categoria'));
+      barras(document.getElementById('cuando'), CUANDOS, contar(e2, 'cuando'));
+      barras(document.getElementById('culpa'), CULPAS, contar(e2, 'culpa'));
+      pares(document.getElementById('pares'), m1, m2);
+
+      tablero.hidden = false;
+    }
+
+    // ── carga ──────────────────────────────────────────────
+    function cargar(clave) {
+      estado.textContent = 'Cargando…';
+      var url = '/api/bitacora?sesion=' + encodeURIComponent(SESION) +
+        '&todo=1&clave=' + encodeURIComponent(clave);
+      return fetch(url)
+        .then(function (r) {
+          if (r.status === 401) throw new Error('clave');
+          if (!r.ok) throw new Error('servidor');
+          return r.json();
+        })
+        .then(function (datos) {
+          try { sessionStorage.setItem(MARCA, clave); } catch (e) {}
+          estado.textContent = '';
+          puerta.hidden = true;
+          pintar(datos);
+        })
+        .catch(function (err) {
+          estado.textContent = err.message === 'clave'
+            ? 'Esa no es la clave.'
+            : 'No se pudieron cargar los datos. Revisa que el binding KV esté configurado.';
+          puerta.hidden = false;
+        });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var clave = input.value.trim();
+      if (clave) cargar(clave);
+    });
+
+    // Ya la escribió en esta visita: refrescar el navegador vuelve a traer los
+    // datos sin pedirla otra vez, que es como se usa esto proyectando.
+    var recordada = null;
+    try { recordada = sessionStorage.getItem(MARCA); } catch (e) {}
+    if (recordada) cargar(recordada);
+  })();
+</script>
+
+<style>
+  /* Todo aquí se proyecta: los tamaños son deliberadamente grandes y la
+     medida de línea corta. Lo que no se lee desde la última fila no sirve. */
+
+  .llave { display: flex; gap: 0.75rem; max-width: 26rem; }
+
+  .llave input {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--tinta);
+    background: var(--papel);
+  }
+
+  .llave input:focus { outline: none; box-shadow: 3px 3px 0 var(--amarillo); }
+
+  .estado {
+    margin-top: 0.85rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--tinta);
+    min-height: 1.3em;
+  }
+
+  /* ── láminas ──────────────────────────────────── */
+  .lamina { padding: 3.5rem 0; }
+
+  .lamina-pregunta {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--tinta);
+    max-width: 24ch;
+    margin-bottom: 2rem;
+  }
+
+  .lamina-nota {
+    margin-top: 1.75rem;
+    font-size: 0.98rem;
+    color: var(--secundario);
+    max-width: 56ch;
+  }
+
+  .lamina-nota:empty { display: none; }
+
+  .lamina-nota code {
+    font-family: var(--sans);
+    font-size: 0.9em;
+    color: var(--tinta);
+    background: var(--regla);
+    padding: 0.05em 0.35em;
+    margin: 0 0.15em;
+  }
+
+  .vacio { font-style: italic; }
+
+  /* ── contador ─────────────────────────────────── */
+  .cifras {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+  }
+
+  .cifra {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--tinta);
+  }
+
+  .cifra-rotulo {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+  }
+
+  /* ── barras, nube y emparejamiento ────────────── */
+  /* OJO: todo lo que hay de aquí en adelante lo crea el JavaScript en tiempo
+     de ejecución, y Astro aísla el CSS marcando los elementos del template con
+     un atributo propio. Un elemento creado con `createElement` no lleva esa
+     marca, así que un selector aislado no lo alcanza y la lámina se pinta como
+     texto plano. Por eso van dentro de `:global()`, colgados de un ancestro que
+     sí está en el template para que no se escapen al resto del sitio. */
+
+  /* Una sola serie, sin leyenda: el título de la lámina la nombra. El valor
+     va escrito en cada fila, así que nada se comunica solo por la longitud. */
+  .barras { list-style: none; max-width: 52rem; }
+
+  .barras :global(.barra) {
+    display: grid;
+    grid-template-columns: minmax(9rem, 14rem) 1fr 3.5rem;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.6rem 0;
+  }
+
+  .barras :global(.barra-nombre) {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--tinta);
+  }
+
+  .barras :global(.barra-pista) {
+    display: block;
+    height: 1.5rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .barras :global(.barra-relleno) {
+    display: block;
+    height: 100%;
+    background: var(--tinta);
+    min-width: 2px;
+  }
+
+  .barras :global(.barra-valor) {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+    color: var(--tinta);
+    text-align: right;
+  }
+
+  /* La gráfica de la culpa es la única en amarillo. No codifica una
+     categoría: marca cuál de las seis láminas es el hallazgo de la clase. */
+  .destacada { border-left: 4px solid var(--amarillo); padding-left: 1.75rem; }
+  .barras-clave :global(.barra-relleno) { background: var(--amarillo); border: 1px solid var(--tinta); }
+  .barras-clave :global(.barra) { padding: 0.85rem 0; }
+  .barras-clave :global(.barra-pista) { height: 2.25rem; }
+
+  #tablero :global(.sin-dato) {
+    font-style: italic;
+    color: var(--secundario);
+    padding: 1rem 0;
+  }
+
+  /* ── emociones ────────────────────────────────── */
+  .emociones {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.5rem;
+    max-width: 54rem;
+  }
+
+  .emociones :global(li) {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+  }
+
+  .emociones :global(.emocion) {
+    font-family: var(--sans);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--tinta);
+  }
+
+  .emociones :global(.emocion-n) {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--secundario);
+  }
+
+  /* ── pares ────────────────────────────────────── */
+  .pares { list-style: none; max-width: 58rem; }
+
+  .pares :global(.par) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) 2rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .pares :global(.par:first-child) { border-top: 1px solid var(--tinta); }
+
+  .pares :global(.par-etiqueta) {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--tinta);
+  }
+
+  .pares :global(.par-antes) {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--texto);
+  }
+
+  .pares :global(.par-flecha) { font-family: var(--sans); color: var(--tinta); }
+
+  .pares :global(.par-despues) {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--tinta);
+  }
+
+  .pares :global(.par-culpa) {
+    display: block;
+    font-weight: 500;
+    color: var(--secundario);
+    margin-top: 0.15rem;
+  }
+
+  /* ── análisis curado ──────────────────────────── */
+  .sub { display: block; color: var(--secundario); margin: 2.75rem 0 1.25rem; }
+
+  .temas { list-style: none; max-width: 54rem; }
+
+  .temas li {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .tema-numero {
+    flex: 0 0 auto;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--amarillo);
+    -webkit-text-stroke: 1.5px var(--tinta);
+  }
+
+  .tema-cuerpo { min-width: 0; }
+
+  .tema-titulo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    color: var(--tinta);
+    margin-bottom: 0.5rem;
+  }
+
+  .tema-cuerpo p { max-width: 52ch; margin-bottom: 0; font-size: 1.05rem; }
+
+  .tema-cuantas { display: block; margin-top: 0.6rem; color: var(--secundario); }
+
+  .tensiones { list-style: none; max-width: 54rem; }
+
+  .tensiones li {
+    border-left: 3px solid var(--amarillo);
+    padding: 0.25rem 0 0.25rem 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .tension-titulo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--tinta);
+    margin-bottom: 0.4rem;
+  }
+
+  .tensiones p { max-width: 52ch; margin-bottom: 0; }
+
+  @media (max-width: 760px) {
+    .cifras { gap: 2rem; }
+    .destacada { padding-left: 1rem; }
+    .barras :global(.barra) {
+      grid-template-columns: 1fr 3rem;
+      grid-template-areas: 'nombre valor' 'pista pista';
+      gap: 0.4rem 1rem;
+    }
+    .barras :global(.barra-nombre) { grid-area: nombre; }
+    .barras :global(.barra-valor) { grid-area: valor; }
+    .barras :global(.barra-pista) { grid-area: pista; }
+    .pares :global(.par) {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+    .pares :global(.par-flecha) { display: none; }
+    .pares :global(.par-despues)::before {
+      content: '→ ';
+      color: var(--secundario);
+    }
+  }
+</style>

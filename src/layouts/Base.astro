@@ -23,9 +23,13 @@ interface Props {
   descripcion?: string;
   volverHref?: string;
   volverTexto?: string;
+  // Páginas de uso interno de una clase (formularios, tableros de proyección).
+  // No son secretas —el sitio no tiene login— pero no son parte del material
+  // publicado y no deben aparecer en buscadores ni en el sitemap.
+  noindex?: boolean;
 }
 
-const { titulo, descripcion, volverHref, volverTexto } = Astro.props;
+const { titulo, descripcion, volverHref, volverTexto, noindex } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
@@ -38,6 +42,7 @@ const ogImage = new URL('/og.png', Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{titulo}</title>
     {descripcion && <meta name="description" content={descripcion} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Cátedra · William Montoya" />
     <meta property="og:title" content={titulo} />
