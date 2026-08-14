@@ -56,13 +56,16 @@ Van como archivos locales para no depender de IDs de Giphy sin verificar. El
 - `gif-receso.gif` — pausa de quince minutos.
   Búsqueda sugerida: `coffee break`, `cat coffee`.
 
-## Los cinco QR — ya están
+## Los QR — cuatro en el deck
 
 Las consignas viven en el sitio y el deck solo las apunta. Ningún deck repite
 una consigna que ya está publicada.
 
 - `qr-uno.svg` → `/pensamiento-sensorial/uno`
-- `qr-cajero.svg` → `/pensamiento-sensorial/cajero` (laboratorio 2, parte 1)
+- `qr-cajero.svg` → `/pensamiento-sensorial/cajero`. **Ya no tiene slide**: el
+  laboratorio del cajero no se alcanzó a hacer y su divisor salió del deck. El archivo se
+  conserva porque la página sigue viva —ahora es el flujo del cajero, lectura de la tarea—
+  y sirve si alguna vez hay que proyectarla.
 - `qr-cajero-para-todos.svg` → `/pensamiento-sensorial/cajero-para-todos` (la tarea)
 - `qr-bitacora.svg` → `/pensamiento-sensorial/bitacora` (al llegar)
 - `qr-bitacora-otra-vez.svg` → `/pensamiento-sensorial/bitacora-otra-vez`
