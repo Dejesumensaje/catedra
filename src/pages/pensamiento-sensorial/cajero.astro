@@ -86,9 +86,15 @@ const tiempos = [
   volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
 >
   <section class="hero-clase">
-    <span class="mono sube sube-1">Laboratorio 2 · Parte 1 · Sesión 2 · En grupos</span>
+    <span class="mono sube sube-1">Sesión 2 · Primera mitad de la tarea · En grupos</span>
     <h1 class="sube sube-2">Rediseñar el cajero</h1>
     <p class="lede sube-3">Primero el problema. Después la solución.</p>
+    <p class="aviso-cambio">
+      Esto estaba planeado como taller de clase y no alcanzó el tiempo, así que
+      se hace en casa: es la primera mitad de <a href="/pensamiento-sensorial/cajero-para-todos">la
+      tarea</a>. El flujo de diez pasos de más abajo es el punto de partida, y es
+      contra él que se compara el rediseño al final.
+    </p>
   </section>
 
   <section class="bloque">
@@ -143,7 +149,7 @@ const tiempos = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Treinta minutos</h2>
+    <h2 class="mono">Cómo repartirlo</h2>
     <ol class="pasos" role="list">
       {tiempos.map((paso) => (
         <li class="paso">
@@ -260,6 +266,20 @@ const tiempos = [
 </Base>
 
 <style>
+  /* Aviso de que el plan cambió. Va con el filete amarillo porque marca un
+     estado —esto se movió—, que es exactamente para lo que sirve el amarillo. */
+  .aviso-cambio {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    margin-top: 1.75rem;
+    max-width: 46ch;
+    font-size: 0.98rem;
+    color: var(--texto);
+  }
+
+  .aviso-cambio a { color: var(--tinta); text-decoration-color: var(--regla); }
+  .aviso-cambio a:hover { text-decoration-color: var(--tinta); }
+
   /* ── el encargo, en una frase ─────────────────── */
   .encargo {
     border: 2px solid var(--tinta);
