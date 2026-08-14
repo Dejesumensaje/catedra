@@ -56,6 +56,14 @@ function partirMaterial(titulo: string): [string, string | undefined] {
 }
 
 const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
+
+const memoria = sesion.data.memoria;
+
+// Con año, a diferencia del resto de fechas de la página: la memoria se queda
+// publicada y su distancia con el día de la clase es parte de lo que dice.
+const escritaEl = memoria?.escritaEl.toLocaleDateString('es-CO', {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+});
 ---
 
 <Base
@@ -92,6 +100,49 @@ const tieneCuerpo = (sesion.body ?? '').trim().length > 0;
           Abrir<span class="sr-solo"> la presentación</span> <span aria-hidden="true">→</span>
         </button>
       </div>
+    </section>
+  )}
+
+  {memoria && (
+    <section class="bloque">
+      <div class="memoria-cabecera">
+        <h2 class="mono">La memoria</h2>
+        <span class="mono escrita-el">Escrita el {escritaEl}</span>
+      </div>
+
+      <div class="memoria-par">
+        <div class="lado esperaba">
+          <h3 class="mono">Lo que esperaba</h3>
+          <p>{memoria.esperado}</p>
+        </div>
+        <div class="lado paso">
+          <h3 class="mono">Lo que pasó</h3>
+          <p>{memoria.observado}</p>
+        </div>
+      </div>
+
+      {memoria.evidencia.length > 0 && (
+        <div class="memoria-evidencia">
+          <h3 class="mono">Evidencia</h3>
+          <ul role="list">
+            {memoria.evidencia.map((hecho) => <li>{hecho}</li>)}
+          </ul>
+        </div>
+      )}
+
+      {memoria.sorpresa && (
+        <div class="memoria-sorpresa">
+          <h3 class="mono">La sorpresa</h3>
+          <p>{memoria.sorpresa}</p>
+        </div>
+      )}
+
+      {memoria.cambio && (
+        <div class="memoria-cambio">
+          <h3 class="mono">La próxima vez</h3>
+          <p>{memoria.cambio}</p>
+        </div>
+      )}
     </section>
   )}
 

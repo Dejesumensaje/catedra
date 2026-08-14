@@ -82,6 +82,11 @@ const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
           ? tensionPorId.get(sesion.data.tension.id)
           : undefined;
         const disponible = Boolean(sesion.data.presentacion);
+        // Una sesión con memoria tiene todo lo que tiene una dictada, y además
+        // el registro de en qué se desvió. La etiqueta lo dice: si las dos
+        // dijeran «con presentación», el estado más completo del curso sería
+        // el único que no se ve desde aquí.
+        const conMemoria = sesion.data.estado === 'con-memoria';
         const numero = numeroSesion(sesion.data.numero).slice(1);
 
         return (
@@ -96,7 +101,7 @@ const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
               </span>
               <span class="lado">
                 {disponible ? (
-                  <span class="sticker">Con presentación</span>
+                  <span class="sticker">{conMemoria ? 'Con memoria' : 'Con presentación'}</span>
                 ) : (
                   <span class="estado-gris">Programada · {fechaCorta(sesion.data.fecha)}</span>
                 )}

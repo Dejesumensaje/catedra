@@ -706,6 +706,92 @@ const ogImage = new URL('/og.png', Astro.site);
 
       .momento p { max-width: 56ch; font-size: 1rem; margin-bottom: 0; }
 
+      /* ── la memoria de la sesión ────────────────────────────────────
+         Una memoria es una distancia, así que la pieza central es un par:
+         lo que se esperaba y lo que pasó, uno al lado del otro. El plan
+         lleva filete gris y lo ocurrido lo lleva amarillo —la misma regla
+         que separa `.momento` del resto: el amarillo marca lo vivo.
+         El único relleno amarillo de la página es la sorpresa. Es el campo
+         que más cuesta escribir y el que más vale leer; si compitiera con
+         otro bloque por la atención, dejaría de ser el remate. */
+      .memoria-cabecera {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.75rem;
+      }
+
+      .memoria-cabecera > .mono { color: var(--secundario); }
+      .memoria-cabecera .escrita-el { color: var(--secundario); }
+
+      .memoria-par {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem 2.5rem;
+        align-items: start;
+      }
+
+      .memoria-par .lado { padding-left: 1.25rem; }
+      .memoria-par .esperaba { border-left: 3px solid var(--regla); }
+      .memoria-par .paso { border-left: 3px solid var(--amarillo); }
+
+      .memoria-par h3.mono { display: block; margin-bottom: 0.5rem; }
+      .memoria-par .esperaba h3.mono { color: var(--secundario); }
+      .memoria-par .paso h3.mono { color: var(--tinta); }
+
+      /* En el par, la medida la fija la columna: 56ch dejaría la de la
+         izquierda más angosta que la de la derecha por puro azar del texto. */
+      .memoria-par p { max-width: none; font-size: 1rem; margin-bottom: 0; }
+
+      .memoria-evidencia { margin-top: 2.5rem; }
+      .memoria-evidencia h3.mono { color: var(--secundario); display: block; margin-bottom: 1rem; }
+
+      .memoria-evidencia ul { list-style: none; max-width: 60ch; }
+
+      .memoria-evidencia li {
+        border-top: 1px solid var(--regla);
+        padding: 0.85rem 0;
+        font-size: 0.95rem;
+        color: var(--texto);
+      }
+
+      .memoria-evidencia li:last-child { border-bottom: 1px solid var(--regla); }
+
+      .memoria-sorpresa {
+        margin-top: 2.5rem;
+        max-width: 46rem;
+        background: var(--amarillo);
+        border: 2px solid var(--tinta);
+        box-shadow: 4px 4px 0 var(--tinta);
+        padding: 1.75rem 2rem;
+      }
+
+      .memoria-sorpresa h3.mono { color: var(--tinta); display: block; margin-bottom: 0.6rem; }
+
+      /* Sin medida propia: la caja ya la fija. Con `max-width` en ch, el texto
+         se detenía a dos tercios del amarillo y sobraba un vacío a la derecha
+         que hacía ver la caja rota en vez de amplia. */
+      .memoria-sorpresa p {
+        color: var(--tinta);
+        max-width: none;
+        margin-bottom: 0;
+      }
+
+      /* El cambio es la consecuencia de la sorpresa, no un apéndice: va pegado
+         a ella y cerrado por una regla gruesa, la única de la página, para que
+         no se lea como texto que sobró después del bloque amarillo. */
+      .memoria-cambio {
+        margin-top: 2rem;
+        border-top: 2px solid var(--tinta);
+        padding-top: 1.25rem;
+        max-width: 46rem;
+      }
+
+      .memoria-cambio h3.mono { color: var(--secundario); display: block; margin-bottom: 0.5rem; }
+      .memoria-cambio p { max-width: 56ch; margin-bottom: 0; }
+
       /* materiales: enlaces */
       ul.materiales { list-style: none; }
 
@@ -977,6 +1063,11 @@ const ogImage = new URL('/og.png', Astro.site);
 
         .hero { padding: 3.5rem 0 2.5rem; }
         .hero-indice { padding: 2.25rem 0 1.75rem; }
+
+        /* El par de la memoria se apila. Sigue leyéndose como par porque el
+           filete de color no cambia: gris el plan, amarillo lo que pasó. */
+        .memoria-par { grid-template-columns: 1fr; gap: 1.75rem; }
+        .memoria-sorpresa { padding: 1.5rem; box-shadow: 3px 3px 0 var(--tinta); }
         .poster { padding: 1.75rem 1.5rem; --canal-numero: 6rem; }
         .poster .numero-gigante { font-size: 4.5rem; top: -1rem; }
 
