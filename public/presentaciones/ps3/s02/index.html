@@ -164,6 +164,11 @@
     }
     .slide-concept-body .src { color: #6f6f6f; font-size: 0.95em; }
 
+    /* Slide de texto largo alineado a la izquierda («Quién es», «La lectura»).
+       El padding amplio es de escritorio; en pantallas angostas lo corrigen
+       las media queries de abajo, como en los layouts compuestos. */
+    .slide--parrafo { align-items: flex-start; padding: 6rem 10rem; }
+
     /* Slide de referencias */
     .refs-title {
       font-size: clamp(1.6rem, 3.4vw, 2.4rem);
@@ -497,6 +502,19 @@
     .pauta li:nth-child(5), .mapa-item:nth-child(5) { animation-delay: 0.20s; }
     .pauta li:nth-child(n+6), .mapa-item:nth-child(n+6) { animation-delay: 0.24s; }
 
+    /* Las variantes móviles de los diagramas entran con el mismo stagger
+       que los nodos del SVG que reemplazan */
+    .slide.active .diagram-mobile > * {
+      opacity: 0;
+      animation: drawIn 0.18s ease-out forwards;
+    }
+    .diagram-mobile > *:nth-child(1) { animation-delay: 0.04s; }
+    .diagram-mobile > *:nth-child(2) { animation-delay: 0.08s; }
+    .diagram-mobile > *:nth-child(3) { animation-delay: 0.12s; }
+    .diagram-mobile > *:nth-child(4) { animation-delay: 0.16s; }
+    .diagram-mobile > *:nth-child(5) { animation-delay: 0.20s; }
+    .diagram-mobile > *:nth-child(n+6) { animation-delay: 0.24s; }
+
     /* Navegación rápida: si el clic siguiente llega antes de que termine la animación, se salta */
     .no-anim, .no-anim * {
       animation: none !important;
@@ -589,9 +607,10 @@
     /* Imagen rota: la reemplaza el marcador .ph (ver script) */
     img.img-broken { display: none; }
 
-    /* ── Diagrama «La interfaz» (importado de la clase 1): versión móvil ──
-       Reemplaza el SVG cuando el texto sería ilegible. Acotado a .slide--cuatro
-       para no ocultar los demás SVG del deck. */
+    /* ── Versiones móviles de los diagramas ──
+       Reemplazan al SVG cuando su texto sería ilegible (ver el media query
+       de 700px). Misma traducción de niveles: acento #eeff41, oscuro #222,
+       neutro con borde. */
     .diagram-mobile {
       display: none;
       flex-direction: column;
@@ -617,8 +636,22 @@
     }
     .dm-box.dark { background: #222; color: #fff; }
     .dm-box.accent { background: #eeff41; color: #111; }
+    /* Nodo neutro: el fill="none" stroke="#444" del sistema SVG, en caja */
+    .dm-box.neutral { background: #fff; color: #444; border: 1.5px solid #444; }
     .dm-box strong { display: block; font-size: 0.95rem; font-weight: 700; }
     .dm-box em { display: block; font-style: normal; font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
+    /* Dirección del flujo cuando el SVG tenía flechas: la pila vertical ES el flujo */
+    .dm-arrow { color: #444; font-size: 0.9rem; line-height: 0.6; }
+    /* Sentencia de cierre del diagrama (la que el SVG pone al pie, en #6f6f6f) */
+    .dm-note {
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.78rem;
+      color: #6f6f6f;
+      text-align: center;
+      line-height: 1.45;
+      max-width: 36ch;
+      margin-top: 0.35rem;
+    }
 
     /* Accesibilidad */
     @media (prefers-reduced-motion: reduce) {
@@ -630,7 +663,8 @@
       .slide.active .celda,
       .slide.active .par-col,
       .slide.active .pauta li,
-      .slide.active .mapa-item {
+      .slide.active .mapa-item,
+      .slide.active .diagram-mobile > * {
         animation: none;
         opacity: 1;
         transform: none;
@@ -641,6 +675,7 @@
     /* ── Responsive: pantallas medianas (tablet) ── */
     @media (max-width: 900px) {
       .slide { padding: 2.5rem; }
+      .slide--parrafo { padding: 2.5rem 3rem; }
       .slide--ficha, .slide--rejilla, .slide--par,
       .slide--pauta, .slide--mapa { padding: 2.5rem 3rem; }
       .rejilla { gap: 1.6rem; }
@@ -660,14 +695,24 @@
         padding-top: 1.6rem;
       }
       .ficha-def { max-width: none; }
-      .slide--visual svg { width: 95% !important; height: 78% !important; }
-      .slide--cuatro svg { display: none; }
-      .slide--cuatro .diagram-mobile { display: flex; }
+      /* Todo slide--visual lleva variante .diagram-mobile: en pantalla angosta
+         el SVG se esconde porque su texto sería ilegible */
+      .slide--visual svg { display: none; }
+      .slide--visual .diagram-mobile { display: flex; }
     }
 
     /* ── Responsive: celular ── */
     @media (max-width: 600px) {
       .slide { padding: 1.5rem; }
+      .slide--parrafo {
+        padding: 1.5rem 1.5rem 3rem;
+        overflow-y: auto;
+        justify-content: flex-start; /* con scroll, center cortaría el inicio */
+      }
+      /* Que la rejilla 2×2 más cargada quepa sin depender del scroll */
+      .rejilla { gap: 1.4rem; }
+      .compuesto-titulo { margin-bottom: 1.4rem; }
+      .compuesto-pie { margin-top: 1.4rem; }
       .slide--ficha, .slide--rejilla, .slide--par,
       .slide--pauta, .slide--mapa { padding: 1.5rem 1.5rem 3rem; overflow-y: auto; }
       .slide-title { max-width: 92%; }
@@ -815,6 +860,18 @@
           <line x1="520" y1="395" x2="470" y2="300" stroke="#444" stroke-width="1.5"/>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box dark"><strong>Persona</strong></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Interfaz</strong></div>
+        <span class="dm-arrow">↑</span>
+        <div class="dm-box dark"><strong>Sistema</strong></div>
+        <div class="dm-box neutral"><strong>Traduce</strong></div>
+        <div class="dm-box neutral"><strong>Organiza</strong></div>
+        <div class="dm-box neutral"><strong>Abre posibilidades</strong></div>
+        <div class="dm-box neutral"><strong>Pone límites</strong></div>
+      </div>
     </div>
 
     <!-- ══════════ ACTIVIDAD 1 · BITÁCORA ══════════ -->
@@ -914,7 +971,7 @@
       <img data-src="assets/norman-retrato.jpg" class="slide-image" alt="Retrato ilustrado de Don Norman sosteniendo la tetera imposible de la portada de su libro">
     </div>
 
-    <div class="slide" style="align-items: flex-start; padding: 6rem 10rem;">
+    <div class="slide slide--parrafo">
       <p class="slide-concept-title">Quién es</p>
       <p class="slide-concept-body">
         Psicólogo cognitivo, no diseñador de formación. Trabajó en la investigación del accidente
@@ -1036,6 +1093,15 @@
           <text x="726" y="440" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#6f6f6f">Dispensador de billetes</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box neutral"><strong>Pantalla</strong></div>
+        <div class="dm-box neutral"><strong>Botones</strong></div>
+        <div class="dm-box neutral"><strong>Teclado</strong></div>
+        <div class="dm-box neutral"><strong>Ranura de la tarjeta</strong></div>
+        <div class="dm-box neutral"><strong>Recibo</strong></div>
+        <div class="dm-box neutral"><strong>Dispensador de billetes</strong></div>
+      </div>
     </div>
 
     <!-- ── PRIMERA PARTE · UNA SOLA COSA ── -->
@@ -1119,6 +1185,15 @@
           <text x="726" y="440" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#6f6f6f">Dispensador de billetes</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box neutral"><strong>Pantalla</strong></div>
+        <div class="dm-box neutral"><strong>Botones</strong></div>
+        <div class="dm-box neutral"><strong>Teclado</strong></div>
+        <div class="dm-box accent"><strong>Ranura de la tarjeta</strong></div>
+        <div class="dm-box neutral"><strong>Recibo</strong></div>
+        <div class="dm-box neutral"><strong>Dispensador de billetes</strong></div>
+      </div>
     </div>
 
     <div class="slide slide--section" style="background: #eeff41;">
@@ -1370,6 +1445,15 @@
           <text x="726" y="440" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#6f6f6f">Dispensador de billetes</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box neutral"><strong>Pantalla</strong></div>
+        <div class="dm-box accent"><strong>Botones</strong></div>
+        <div class="dm-box neutral"><strong>Teclado</strong></div>
+        <div class="dm-box neutral"><strong>Ranura de la tarjeta</strong></div>
+        <div class="dm-box neutral"><strong>Recibo</strong></div>
+        <div class="dm-box neutral"><strong>Dispensador de billetes</strong></div>
+      </div>
     </div>
 
     <div class="slide slide--section" style="background: #eeff41;">
@@ -1445,6 +1529,12 @@
           <text x="450" y="490" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Norman llama natural a la correspondencia que usa el espacio o una analogía del cuerpo.</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box neutral"><strong>Controles en fila</strong><em>Hay que aprenderse cuál es cuál.</em></div>
+        <div class="dm-box accent"><strong>Controles como los quemadores</strong><em>No hace falta ni una línea ni un número.</em></div>
+        <p class="dm-note">Norman llama natural a la correspondencia que usa el espacio o una analogía del cuerpo.</p>
+      </div>
     </div>
 
     <!-- ── TERCERA PARTE · EL TIEMPO ── -->
@@ -1497,6 +1587,16 @@
           <text x="450" y="335" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" fill="#6f6f6f">¿qué fue lo que acaba de pasar?</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box dark"><strong>Persona</strong><em>intención · interpretación</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Golfo de la ejecución</strong><em>¿cómo hago lo que quiero hacer?</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box dark"><strong>Sistema</strong><em>acción · estado</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Golfo de la evaluación</strong><em>¿qué fue lo que acaba de pasar?</em></div>
+      </div>
     </div>
 
     <div class="slide slide--section" style="background: #eeff41;">
@@ -1578,6 +1678,15 @@
           <text x="726" y="440" font-family="Roboto, sans-serif" font-size="13" font-weight="400" fill="#6f6f6f">Dispensador de billetes</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box accent"><strong>Pantalla</strong></div>
+        <div class="dm-box neutral"><strong>Botones</strong></div>
+        <div class="dm-box neutral"><strong>Teclado</strong></div>
+        <div class="dm-box neutral"><strong>Ranura de la tarjeta</strong></div>
+        <div class="dm-box neutral"><strong>Recibo</strong></div>
+        <div class="dm-box neutral"><strong>Dispensador de billetes</strong></div>
+      </div>
     </div>
 
     <div class="slide slide--ficha">
@@ -1696,6 +1805,15 @@
           <text x="726" y="440" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#111">Dispensador de billetes</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box neutral"><strong>Pantalla</strong></div>
+        <div class="dm-box neutral"><strong>Botones</strong></div>
+        <div class="dm-box neutral"><strong>Teclado</strong></div>
+        <div class="dm-box neutral"><strong>Ranura de la tarjeta</strong></div>
+        <div class="dm-box neutral"><strong>Recibo</strong></div>
+        <div class="dm-box accent"><strong>Dispensador de billetes</strong></div>
+      </div>
     </div>
 
     <div class="slide slide--ficha">
@@ -1816,6 +1934,16 @@
           <text x="410" y="494" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#444">Seis preguntas, cuatro piezas, una sola máquina.</text>
         </g>
       </svg>
+      <!-- Versión móvil del diagrama -->
+      <div class="diagram-mobile">
+        <div class="dm-box neutral"><strong>Pantalla</strong><em>¿Qué va a pasar?</em></div>
+        <div class="dm-box neutral"><strong>Botones</strong><em>¿Cuál de todos?</em></div>
+        <div class="dm-box neutral"><strong>Teclado</strong></div>
+        <div class="dm-box neutral"><strong>Ranura de la tarjeta</strong><em>¿Qué puedo? ¿Cómo lo sé? ¿Qué no puedo?</em></div>
+        <div class="dm-box neutral"><strong>Recibo</strong></div>
+        <div class="dm-box neutral"><strong>Dispensador de billetes</strong><em>¿Qué pasó?</em></div>
+        <p class="dm-note">Seis preguntas, cuatro piezas, una sola máquina.</p>
+      </div>
     </div>
 
     <div class="slide slide--mapa">
@@ -1910,7 +2038,7 @@
       <p class="section-theme">Para la próxima clase</p>
     </div>
 
-    <div class="slide" style="align-items: flex-start; padding: 6rem 10rem;">
+    <div class="slide slide--parrafo">
       <p class="slide-concept-title">La lectura</p>
       <p class="slide-concept-body">
         Norman, <em>The Design of Everyday Things</em> (edición revisada, 2013), capítulo 1:

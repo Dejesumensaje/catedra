@@ -376,6 +376,91 @@ Nunca poner el visual primero. La narrativa textual siempre precede al visual.
 </div>
 ```
 
+### Variante móvil obligatoria: `.diagram-mobile`
+
+Todo slide `slide--visual` lleva, además del SVG, una variante móvil en HTML. A 390px de
+ancho, las etiquetas de un viewBox de 900×500 quedan en ~5px: ilegibles. Subir la fuente
+por CSS no es opción — desborda los nodos de tamaño fijo del viewBox. La solución no es
+escalar el SVG sino **reemplazarlo** en pantalla angosta.
+
+La regla: **ningún `slide--visual` se entrega sin su `.diagram-mobile`**. Estrenada en el
+deck s02 (primero en el slide `slide--cuatro`, luego generalizada a sus diez visuales),
+que es la referencia viva del patrón.
+
+**Cómo se traduce el diagrama.** La variante repite el texto del SVG, sin reescribirlo,
+en una pila vertical de cajas:
+
+- Nodo `#eeff41` → `.dm-box.accent`; nodo `#222` → `.dm-box.dark`; nodo neutro
+  (`fill="none" stroke="#444"`) → `.dm-box.neutral`.
+- Etiqueta principal del nodo → `<strong>`; texto de apoyo → `<em>`.
+- Etiqueta superior del diagrama → `.dm-label`.
+- Si el SVG tiene flechas, la pila vertical ES el flujo: los nodos van en orden y cada
+  flecha se traduce a `<span class="dm-arrow">↓</span>` (o `↑` cuando el ciclo devuelve).
+- La sentencia de cierre que el SVG pone al pie → `.dm-note`.
+
+Mapas radiales y jerarquías: nodo central primero, luego las ramas apiladas.
+
+**Markup:**
+
+```html
+<div class="slide slide--visual">
+  <svg viewBox="0 0 900 500" ...>…</svg>
+  <div class="diagram-mobile">
+    <p class="dm-label">Los dos golfos</p>
+    <div class="dm-box dark"><strong>Persona</strong><em>intención · interpretación</em></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box accent"><strong>Golfo de la ejecución</strong><em>¿cómo hago lo que quiero hacer?</em></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box dark"><strong>Sistema</strong><em>acción · estado</em></div>
+  </div>
+</div>
+```
+
+**El toggle** vive en el media query de 700px, junto al colapso de los layouts compuestos:
+
+```css
+@media (max-width: 700px) {
+  .slide--visual svg { display: none; }
+  .slide--visual .diagram-mobile { display: flex; }
+}
+```
+
+**CSS del sistema.** Se copia tal cual al `<style>` del deck. Las cajas heredan el
+`border-radius: 6px` del `rx="4"` de los nodos SVG — es la traducción del nodo, no
+decoración.
+
+```css
+.diagram-mobile {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 380px;
+}
+.dm-label {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+  color: #999; text-transform: uppercase;
+}
+.dm-box {
+  width: 100%; border-radius: 6px; padding: 0.85rem 1rem; text-align: center;
+}
+.dm-box.dark { background: #222; color: #fff; }
+.dm-box.accent { background: #eeff41; color: #111; }
+.dm-box.neutral { background: #fff; color: #444; border: 1.5px solid #444; }
+.dm-box strong { display: block; font-size: 0.95rem; font-weight: 700; }
+.dm-box em { display: block; font-style: normal; font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
+.dm-arrow { color: #444; font-size: 0.9rem; line-height: 0.6; }
+.dm-note {
+  font-size: 0.78rem; color: #6f6f6f; text-align: center;
+  line-height: 1.45; max-width: 36ch; margin-top: 0.35rem;
+}
+```
+
+Las cajas entran con el mismo stagger `drawIn` que los nodos del SVG que reemplazan:
+añadir `.slide.active .diagram-mobile > *` a las reglas de stagger y al bloque de
+`prefers-reduced-motion`, junto a los selectores ya existentes.
+
 ---
 
 ## Layouts compuestos
