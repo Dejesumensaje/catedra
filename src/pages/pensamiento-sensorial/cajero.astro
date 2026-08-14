@@ -1,10 +1,12 @@
 ---
-// Consigna del laboratorio 2 (sesión 2), parte 1. Se proyecta como QR desde el
-// deck y queda enlazada en los materiales de la sesión.
-// Aquí va SOLO la consigna: la guía de facilitación es de uso docente y no se
-// publica. La parte 2 se entrega en clase al cerrar la retro.
-import Base from '../../layouts/Base.astro';
-
+// El cajero tal como funciona hoy: solo el flujo, paso a paso.
+//
+// Esto era el laboratorio 2 parte 1 —encontrar una fricción y quitarla en
+// treinta minutos, en grupos—. En la sesión 2 el tiempo se fue en UNO y en
+// User Inyerface y el taller no se hizo, así que la página se quedó con lo
+// único que sigue haciendo falta: que se entienda la máquina antes de
+// rediseñarla. La consigna de qué hay que hacer vive en la tarea.
+//
 // El flujo va escrito como user flow —qué hace la persona, qué responde la
 // máquina— y no como lista de nombres de pantalla. Es la única forma de que se
 // pueda analizar con el vocabulario de la clase.
@@ -13,6 +15,8 @@ import Base from '../../layouts/Base.astro';
 // Ojo con los pasos 3 a 6: la respuesta de la máquina es literalmente la
 // misma cuatro veces. La repetición está a propósito y no se comenta — que la
 // encuentren ellos es media clase.
+import Base from '../../layouts/Base.astro';
+
 const flujo = [
   { n: '1', persona: 'Inserta la tarjeta y la suelta.', maquina: 'La traga, lee el chip y la retiene.', fijo: true },
   { n: '2', persona: 'Marca cuatro dígitos, tapando el teclado con la otra mano.', maquina: 'Muestra un asterisco por cada dígito.', fijo: true },
@@ -25,147 +29,26 @@ const flujo = [
   { n: '9', persona: 'Saca la tarjeta.', maquina: 'La devuelve y pita hasta que la retiren.', fijo: false },
   { n: '10', persona: 'Decide si quiere recibo y lo recoge.', maquina: 'Lo imprime.', fijo: false },
 ];
-
-const pistas = [
-  '¿Qué pasos podrían desaparecer, o volverse uno solo?',
-  '¿Qué decisiones podría tomar la máquina por la persona?',
-  '¿Hay información que llega demasiado pronto? ¿O demasiado tarde?',
-  '¿Dónde tiene la persona que detenerse a pensar?',
-  '¿Qué acción necesita demasiadas instrucciones?',
-  '¿Qué podría comunicarse por la forma de la interacción, sin texto?',
-];
-
-const gente = [
-  { quien: 'La señora mayor', que: 'No usa mucho la tecnología. Cada pantalla nueva la obliga a leer todo otra vez antes de tocar nada.' },
-  { quien: 'El del afán', que: 'Llega tarde al trabajo. Va tan rápido que se salta lo que dice la pantalla, y se equivoca.' },
-  { quien: 'El repartidor', que: 'Hace esto diez veces al día, siempre lo mismo. La máquina lo trata como si fuera la primera vez.' },
-];
-
-const pueden = [
-  'Cambiar el orden de los pasos.',
-  'Juntar dos o más pasos en uno.',
-  'Quitar un paso.',
-  'Cambiar qué se ve y qué se puede tocar en cada momento.',
-  'Cambiar lo que la máquina da por sentado si nadie le dice otra cosa.',
-  'Cambiar qué le dice la máquina a la persona, y cuándo se lo dice.',
-];
-
-const noPueden = [
-  'Quitar la tarjeta, el PIN o la autorización del banco: los pasos 1, 2 y 7 se quedan.',
-  'Bajar la seguridad para ganar tiempo.',
-  'Poner más cajeros, más personal, ni una fila preferencial.',
-  'Mandar el problema a una app o al celular. Sigue siendo esta máquina, parada en esta calle.',
-];
-
-const entrega = [
-  { letra: 'A', titulo: 'El problema', detalle: 'Una frase: qué fricción encontraron y en qué paso está.' },
-  { letra: 'B', titulo: 'El flujo nuevo', detalle: 'Los mismos diez pasos, tachando, juntando o reordenando. Se vale marcar encima.' },
-  { letra: 'C', titulo: 'Las pantallas', detalle: 'Dibujadas a mano, solo las que cambian. No hace falta dibujar las diez.' },
-  { letra: 'D', titulo: 'Tres decisiones', detalle: 'Qué cambiaron y por qué. La razón importa más que el cambio.' },
-  { letra: 'E', titulo: 'Una restricción', detalle: 'Algo que quisieron cambiar y no pudieron, y por qué no.' },
-  { letra: 'F', titulo: 'Una eliminación', detalle: 'Qué quitaron. Quitar suele ser más difícil que agregar.' },
-];
-
-const listo = [
-  'Alguien de otro grupo mira sus dibujos y puede decir qué cambió y por qué, sin que ustedes se lo expliquen.',
-  'Pueden estimar cuántos segundos le quitaron al retiro, y decir de dónde salieron.',
-  'Su propuesta todavía tiene tarjeta, PIN y autorización.',
-];
-
-const tiempos = [
-  { titulo: 'Analizan', minutos: '10 minutos', cuerpo: 'Recorren el flujo y eligen una sola fricción. Una, no tres.' },
-  { titulo: 'Diseñan', minutos: '15 minutos', cuerpo: 'Arman el flujo nuevo y dibujan las pantallas que cambian.' },
-  { titulo: 'Preparan', minutos: '5 minutos', cuerpo: 'Dejan lista la hoja y quién va a presentar.' },
-];
 ---
 
 <Base
-  titulo="Rediseñar el cajero · Laboratorio · Pensamiento Sensorial 3.0"
-  descripcion="Consigna del laboratorio 2 de la sesión 2: encontrar una fricción en el retiro de dinero y quitarla sin tocar la seguridad."
+  titulo="El cajero, paso a paso · Pensamiento Sensorial 3.0"
+  descripcion="El flujo completo de un retiro de dinero, tal como funciona hoy: qué hace la persona y qué responde la máquina."
   volverHref="/pensamiento-sensorial/s02"
   volverTexto="Sesión 2 · El lenguaje secreto de las cosas"
 >
   <section class="hero-clase">
-    <span class="mono sube sube-1">Sesión 2 · Primera mitad de la tarea · En grupos</span>
-    <h1 class="sube sube-2">Rediseñar el cajero</h1>
-    <p class="lede sube-3">Primero el problema. Después la solución.</p>
-    <p class="aviso-cambio">
-      Esto estaba planeado como taller de clase y no alcanzó el tiempo, así que
-      se hace en casa: es la primera mitad de <a href="/pensamiento-sensorial/cajero-para-todos">la
-      tarea</a>. El flujo de diez pasos de más abajo es el punto de partida, y es
-      contra él que se compara el rediseño al final.
-    </p>
+    <span class="mono sube sube-1">Sesión 2 · La máquina de la que se parte</span>
+    <h1 class="sube sube-2">El cajero, paso a paso</h1>
+    <p class="lede sube-3">Cómo funciona hoy, antes de tocarlo.</p>
   </section>
 
   <section class="bloque">
-    <div class="encargo">
-      <p class="encargo-frase">
-        Encuentren <strong>una</strong> fricción en el retiro de dinero y quítenla, sin tocar
-        la seguridad.
-      </p>
-      <p class="encargo-nota">
-        Una fricción es un punto donde la persona se demora, duda, se equivoca o tiene que
-        pensar de más. No buscamos un cajero más bonito: buscamos separar qué parte de la
-        experiencia resuelve el diseño de interacción y qué parte la determinan las
-        restricciones del sistema.
-      </p>
-    </div>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">El escenario</h2>
-    <div class="escenario">
-      <p class="escenario-titulo">Es quincena.</p>
-      <p>
-        El cajero del barrio es el único cerca y hay <strong>cuarenta personas</strong> en
-        fila. Cada una tarda unos <strong>noventa segundos</strong> frente a la pantalla.
-        Cuarenta por noventa segundos es exactamente <strong>una hora</strong>: eso es lo que
-        espera el último de la fila.
-      </p>
-      <p>
-        No pueden poner otro cajero. Pero si le quitan <strong>quince segundos</strong> a cada
-        interacción, esa misma persona entra <strong>diez minutos antes</strong>.
-      </p>
-      <p class="escenario-cola">
-        Cada segundo que le quiten al retiro se multiplica por cuarenta.
-      </p>
-    </div>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">Los noventa segundos no son iguales para todos</h2>
-    <ul class="gente" role="list">
-      {gente.map((p) => (
-        <li>
-          <strong>{p.quien}</strong>
-          <span>{p.que}</span>
-        </li>
-      ))}
-    </ul>
-    <p class="gente-nota">
-      Los tres están en la misma fila y tropiezan en puntos distintos del flujo. Parte del
-      trabajo es encontrar dónde.
-    </p>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">Cómo repartirlo</h2>
-    <ol class="pasos" role="list">
-      {tiempos.map((paso) => (
-        <li class="paso">
-          <span class="mono">{paso.minutos}</span>
-          <h3>{paso.titulo}</h3>
-          <p>{paso.cuerpo}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">El flujo actual</h2>
-    <p>
-      Así retira plata alguien hoy, paso por paso. Cada paso tiene dos partes: lo que hace la
-      persona y lo que contesta el cajero.
+    <p class="entrada">
+      Así retira plata alguien hoy. Cada paso tiene dos partes: lo que hace la
+      persona y lo que contesta el cajero. Léanlo entero antes de rediseñar
+      nada — <a href="/pensamiento-sensorial/cajero-para-todos">la tarea</a> se
+      compara contra este flujo.
     </p>
 
     <div class="uf-carriles" aria-hidden="true">
@@ -199,177 +82,30 @@ const tiempos = [
       Los tres pasos marcados <strong>fijo</strong> están condicionados por la seguridad o por
       la validación del banco. Esos no se tocan. Todo lo demás está sobre la mesa.
     </p>
-  </section>
 
-  <section class="bloque">
-    <h2 class="mono">Encuentren la fricción</h2>
-    <ul class="pistas" role="list">
-      {pistas.map((p) => <li>{p}</li>)}
-    </ul>
-    <p class="remate">No busquen todavía una solución. Primero encuentren un problema.</p>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">Rediseñen</h2>
-    <p>
-      Quiten la fricción que encontraron. El objetivo: que retirar plata sea <strong>más
-      directo, más fácil de entender y menos dependiente de que alguien lea instrucciones</strong>.
-    </p>
-    <p class="alcance-intro">Hasta dónde pueden llegar:</p>
-    <div class="alcance">
-      <div class="alcance-col si">
-        <p class="alcance-encabezado">Pueden</p>
-        <ul role="list">
-          {pueden.map((p) => <li>{p}</li>)}
-        </ul>
-      </div>
-      <div class="alcance-col no">
-        <p class="alcance-encabezado">No pueden</p>
-        <ul role="list">
-          {noPueden.map((p) => <li>{p}</li>)}
-        </ul>
-      </div>
-    </div>
-    <p class="alcance-nota">
-      La regla de fondo: mejoren este cajero sin convertirlo en otra cosa. Si su propuesta
-      solo funciona cambiando la máquina por un celular, se salieron del ejercicio.
-    </p>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">Qué entregan</h2>
-    <div class="entregable">
-      <p class="entregable-titulo">Una hoja, y dos minutos para presentarla.</p>
-      <ol class="entrega" role="list">
-        {entrega.map((item) => (
-          <li>
-            <span class="entrega-letra mono" aria-hidden="true">{item.letra}</span>
-            <span class="entrega-texto">
-              <strong>{item.titulo}.</strong>{' '}
-              <span class="entrega-detalle">{item.detalle}</span>
-            </span>
-          </li>
-        ))}
-      </ol>
-    </div>
-
-    <h3 class="listo-titulo mono">Está listo cuando…</h3>
-    <ul class="listo" role="list">
-      {listo.map((l) => <li>{l}</li>)}
-    </ul>
-
-    <p class="cierre-nota">
-      Todos los grupos parten del mismo flujo, así que van a salir lecturas distintas de la
-      misma máquina. Eso es lo que vamos a comparar.
+    <p class="flujo-leyenda">
+      Los tres pasos marcados <strong>fijo</strong> están condicionados por la
+      seguridad o por la validación del banco. Esos no se tocan, ni aquí ni en
+      la tarea. Todo lo demás está sobre la mesa.
     </p>
   </section>
 </Base>
 
 <style>
-  /* Aviso de que el plan cambió. Va con el filete amarillo porque marca un
-     estado —esto se movió—, que es exactamente para lo que sirve el amarillo. */
-  .aviso-cambio {
-    border-left: 3px solid var(--amarillo);
-    padding-left: 1rem;
-    margin-top: 1.75rem;
-    max-width: 46ch;
-    font-size: 0.98rem;
-    color: var(--texto);
+  .entrada {
+    max-width: 52ch;
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
   }
 
-  .aviso-cambio a { color: var(--tinta); text-decoration-color: var(--regla); }
-  .aviso-cambio a:hover { text-decoration-color: var(--tinta); }
-
-  /* ── el encargo, en una frase ─────────────────── */
-  .encargo {
-    border: 2px solid var(--tinta);
-    padding: 1.75rem 2rem;
-    max-width: 42rem;
-  }
-
-  .encargo-frase {
-    font-family: var(--sans);
-    font-weight: 900;
-    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
-    line-height: 1.25;
+  .entrada a {
     color: var(--tinta);
-    max-width: none;
-    margin-bottom: 1rem;
+    text-decoration: underline;
+    text-decoration-color: var(--regla);
+    text-underline-offset: 0.15em;
   }
 
-  .encargo-frase strong {
-    background: var(--amarillo);
-    padding: 0 0.15em;
-  }
-
-  .encargo-nota {
-    max-width: none;
-    margin-bottom: 0;
-    font-size: 0.98rem;
-    color: var(--secundario);
-  }
-
-  /* ── escenario ────────────────────────────────── */
-  /* El único bloque que invierte la paleta: es el que pone la presión. La
-     sombra dura es la del sistema — contorno, no profundidad. */
-  .escenario {
-    background: var(--tinta);
-    color: #e5e5e5;
-    padding: 2rem 2.25rem;
-    box-shadow: 8px 8px 0 var(--amarillo);
-    max-width: 46rem;
-  }
-
-  .escenario p { max-width: none; margin-bottom: 1rem; }
-  .escenario p:last-child { margin-bottom: 0; }
-  .escenario strong { color: var(--papel); }
-
-  .escenario-titulo {
-    font-family: var(--sans);
-    font-weight: 900;
-    font-size: 1.5rem;
-    letter-spacing: -0.01em;
-    color: var(--papel);
-    margin-bottom: 0.75rem !important;
-  }
-
-  .escenario-cola {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--amarillo);
-    padding-top: 1rem;
-    border-top: 1px solid #444;
-  }
-
-  /* ── los tres de la fila ──────────────────────── */
-  .gente {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-  }
-
-  .gente li {
-    border-top: 3px solid var(--tinta);
-    padding-top: 0.7rem;
-  }
-
-  .gente strong {
-    display: block;
-    font-family: var(--sans);
-    font-size: 1rem;
-    color: var(--tinta);
-    margin-bottom: 0.3rem;
-  }
-
-  .gente span { font-size: 0.95rem; }
-
-  .gente-nota {
-    margin-top: 1.25rem;
-    font-size: 0.95rem;
-    color: var(--secundario);
-  }
+  .entrada a:hover { text-decoration-color: var(--tinta); }
 
   /* ── el flujo, como user flow de dos carriles ─── */
   /* Cajas y flechas, como un user flow de UX, pero en HTML y no en imagen: el
@@ -494,202 +230,11 @@ const tiempos = [
 
   .flujo-leyenda strong { color: var(--tinta); }
 
-  /* ── las preguntas para destapar la fricción ──── */
-  .pistas {
-    list-style: none;
-    max-width: 52rem;
-    margin: 1.5rem 0;
-  }
-
-  .pistas li {
-    position: relative;
-    padding: 0.5rem 0 0.5rem 1.75rem;
-    font-size: 0.98rem;
-  }
-
-  .pistas li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--tinta);
-    font-family: var(--sans);
-  }
-
-  .remate {
-    border-left: 3px solid var(--amarillo);
-    padding-left: 1rem;
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--tinta);
-  }
-
-  /* ── alcance ──────────────────────────────────── */
-  .alcance-intro {
-    font-size: 0.98rem;
-    color: var(--secundario);
-    margin-bottom: 1rem;
-  }
-
-  .alcance {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    max-width: 56rem;
-  }
-
-  .alcance-encabezado {
-    font-family: var(--sans);
-    font-weight: 900;
-    font-size: 1rem;
-    padding: 0.7rem 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .alcance-col.si .alcance-encabezado { background: var(--amarillo); color: var(--tinta); }
-  .alcance-col.no .alcance-encabezado { background: var(--tinta); color: var(--papel); }
-
-  .alcance-col ul { list-style: none; }
-
-  .alcance-col li {
-    padding: 0.55rem 0;
-    font-size: 0.98rem;
-    border-bottom: 1px solid var(--regla);
-  }
-
-  .alcance-col li:last-child { border-bottom: none; }
-
-  .alcance-nota {
-    margin-top: 1.5rem;
+  .flujo-leyenda {
     font-size: 0.95rem;
     color: var(--secundario);
-    max-width: 56ch;
+    max-width: 52ch;
   }
 
-  /* ── tiempos ──────────────────────────────────── */
-  .pasos {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
-
-  .paso {
-    border: 1px solid var(--regla);
-    border-top: 3px solid var(--tinta);
-    padding: 1.25rem;
-  }
-
-  .paso .mono { color: var(--secundario); display: block; margin-bottom: 0.5rem; }
-
-  .paso h3 {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--tinta);
-    margin-bottom: 0.4rem;
-  }
-
-  .paso p { font-size: 0.95rem; margin-bottom: 0; }
-
-  /* ── el entregable ────────────────────────────── */
-  /* Es lo último que leen y lo que se llevan: por eso va enmarcado. */
-  .entregable {
-    border: 2px solid var(--tinta);
-    padding: 1.75rem 2rem;
-    max-width: 52rem;
-  }
-
-  .entregable-titulo {
-    font-family: var(--sans);
-    font-weight: 900;
-    font-size: 1.3rem;
-    color: var(--tinta);
-    max-width: none;
-    margin-bottom: 1.25rem;
-  }
-
-  .entrega { list-style: none; }
-
-  .entrega li {
-    display: flex;
-    gap: 1rem;
-    align-items: baseline;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid var(--regla);
-  }
-
-  .entrega li:last-child { border-bottom: none; }
-
-  .entrega-letra {
-    flex: 0 0 1.4rem;
-    font-weight: 700;
-    color: var(--secundario);
-  }
-
-  .entrega-texto strong {
-    font-family: var(--sans);
-    font-size: 1rem;
-    color: var(--tinta);
-  }
-
-  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
-
-  .listo-titulo {
-    display: block;
-    color: var(--secundario);
-    margin: 2.5rem 0 1rem;
-  }
-
-  .listo { list-style: none; max-width: 52rem; }
-
-  .listo li {
-    position: relative;
-    padding: 0.6rem 0 0.6rem 1.9rem;
-    font-size: 1rem;
-    border-bottom: 1px solid var(--regla);
-  }
-
-  .listo li:last-child { border-bottom: none; }
-
-  .listo li::before {
-    content: '□';
-    position: absolute;
-    left: 0;
-    top: 0.55rem;
-    font-family: var(--sans);
-    color: var(--tinta);
-  }
-
-  .cierre-nota {
-    margin-top: 2rem;
-    font-size: 0.95rem;
-    color: var(--secundario);
-    max-width: 56ch;
-  }
-
-  @media (max-width: 760px) {
-    .gente, .pasos, .alcance { grid-template-columns: 1fr; }
-    .alcance { gap: 1.5rem; }
-  }
-
-  @media (max-width: 700px) {
-    .escenario { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
-    .encargo, .entregable { padding: 1.25rem; }
-    .uf-carriles { display: none; }
-    .uf-paso {
-      grid-template-columns: 1fr;
-      gap: 0.4rem;
-      margin-bottom: 1.8rem;
-    }
-    .uf-paso:not(:last-child)::after { bottom: -1.8rem; height: 1.8rem; }
-    .uf-paso:not(:last-child)::before { bottom: calc(-1.8rem + 1px); }
-    /* Apilado, la flecha horizontal rotada estorba más de lo que aclara: el
-       orden lo dan los rótulos, y la sangría muestra que la respuesta del
-       cajero cuelga de la acción de arriba. */
-    .uf-flecha { display: none; }
-    .uf-maquina { margin-left: 1.5rem; }
-    .uf-rotulo { display: block; font-size: 0.62rem; letter-spacing: 0.12em;
-                 text-transform: uppercase; margin-bottom: 0.3rem; }
-    .uf-marca { justify-self: start; margin: 0.1rem 0 0 1.5rem; }
-  }
+  .flujo-leyenda strong { color: var(--tinta); }
 </style>

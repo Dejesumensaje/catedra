@@ -64,7 +64,7 @@ const noEsEsto = [
 ];
 
 const pueden = [
-  'Cambiar dónde ocurre la interacción y con qué la hace la persona. En la consigna anterior no podían mover la máquina; aquí sí.',
+  'Cambiar dónde ocurre la interacción y con qué la hace la persona. El cajero de hoy no se puede mover de la pared; aquí sí.',
   'Repartir de otra manera el trabajo entre la persona y el sistema.',
   'Cambiar el ritmo: cuánto dura cada paso, qué se puede pausar, qué se puede deshacer.',
   'Cambiar qué información aparece y en qué momento.',
@@ -99,7 +99,7 @@ const entrega = [
   { letra: 'C', titulo: 'La interfaz', detalle: 'Los momentos clave, para verlos. En papel, en Canva, en diapositivas: lo que les quede fácil. Lo que importa es que se vean las decisiones de interfaz, no el acabado.' },
   { letra: 'D', titulo: 'Tres decisiones', detalle: 'Tres decisiones de su diseño, cada una con el principio al que responde.' },
   { letra: 'E', titulo: 'Quién más se beneficia', detalle: 'A qué otras personas —no solo su rasgo— les sirve lo que diseñaron.' },
-  { letra: 'F', titulo: 'La distancia', detalle: 'Qué les dice la diferencia entre el flujo de diez pasos de la consigna anterior y el suyo, sobre para quién estaba diseñado el cajero «normal».' },
+  { letra: 'F', titulo: 'La distancia', detalle: 'Qué les dice la diferencia entre el flujo de diez pasos del cajero de hoy y el suyo, sobre para quién estaba diseñado el cajero «normal».' },
 ];
 
 const listo = [
@@ -203,10 +203,10 @@ const lecturas = [
       </p>
       <p class="encargo-nota">
         El cajero actual no cayó del cielo: es el resultado de un proceso y de un contexto
-        específicos, y quedó calibrado para un tipo de mente. El flujo de diez pasos de la
-        consigna anterior es ese cajero, mejorado dentro de su propio contexto; aquí van a
-        construir una interfaz nueva para un contexto distinto. Lo que no se mueve es la
-        relación de confianza y de seguridad: eso se mantiene entero.
+        específicos, y quedó calibrado para un tipo de mente. El
+        <a href="/pensamiento-sensorial/cajero">flujo de diez pasos</a> es ese cajero tal como
+        funciona hoy; aquí van a construir una interfaz nueva para un contexto distinto. Lo que
+        no se mueve es la relación de confianza y de seguridad: eso se mantiene entero.
       </p>
     </div>
   </section>
@@ -414,6 +414,9 @@ const lecturas = [
   }
 
   .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota a { color: var(--tinta); text-decoration-color: var(--regla); }
+  .encargo-nota a:hover { text-decoration-color: var(--tinta); }
 
   .encargo-nota {
     max-width: none;
