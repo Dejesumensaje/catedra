@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Clase 3 — ¿Qué es esta cosa? | Pensamiento Sensorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Reset y base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    .slides-container { width: 100%; height: 100vh; height: 100dvh; }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      background: #fff;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 4rem;
+      text-align: center;
+    }
+    .slide.active { display: flex; }
+
+    /* Tipografía principal — Roboto Black */
+    .slide-title {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 900;
+      color: #444;
+      line-height: 1.3;
+      max-width: 75%;
+    }
+    .slide-subtitle {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 400;
+      color: #6f6f6f;
+      margin-top: 0.75rem;
+    }
+
+    /* Highlight amarillo — énfasis dentro del slide (máx. una frase) */
+    .hl { background-color: #eeff41; padding: 0 0.15em; }
+
+    /* Links */
+    .slide a { color: #1a9e9e; text-decoration: none; border-bottom: 2px solid #1a9e9e; }
+    .slide-link {
+      font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      /* Subrayado en vez de borde: al partirse en dos líneas, el borde del
+         enlace se estiraba hasta el ancho del slide. */
+      border-bottom: none;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+
+    /* Slide de cita */
+    .slide--cita { background: #f4f3ee; }
+    .cita-texto {
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 4.2vw, 2.5rem);
+      color: #222;
+      max-width: 70%;
+      line-height: 1.45;
+    }
+    .cita-fuente {
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #6f6f6f;
+      margin-top: 1.6rem;
+    }
+    .cita-fuente em { font-style: italic; text-transform: none; }
+
+    .slide-image { max-width: 65%; max-height: 60vh; object-fit: contain; }
+
+    /* Portada */
+    .portada-top {
+      font-size: clamp(1.2rem, 4.5vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      line-height: 1;
+    }
+    .portada-bottom {
+      font-size: clamp(3rem, 15vw, 7.5rem);
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+
+    /* Divisores */
+    .section-kicker {
+      font-size: clamp(0.95rem, 3vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #555;
+      max-width: 90%;
+    }
+    .section-theme {
+      font-size: clamp(1.9rem, 6.5vw, 4.2rem);
+      font-weight: 900;
+      color: #111;
+      line-height: 1.15;
+      margin-top: 0.5rem;
+      max-width: 85%;
+    }
+
+    /* Tema central: paleta invertida */
+    .tema-central {
+      font-size: clamp(2rem, 7.5vw, 5.5rem);
+      font-weight: 900;
+      color: #eeff41;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      max-width: 90%;
+    }
+    /* Registro conceptual bajo el tema evocador: apagado para no competir con el amarillo */
+    .tema-sub {
+      font-size: clamp(0.95rem, 2vw, 1.35rem);
+      font-weight: 400;
+      color: #bdbdbd;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+      max-width: 42ch;
+      margin-top: 1.6rem;
+    }
+
+    .slide--visual svg text.caps { text-transform: uppercase; }
+
+    /* Concepto con párrafo */
+    .slide-concept-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 900;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+    .slide-concept-body {
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      color: #555;
+      max-width: 60ch;
+      line-height: 1.75;
+      text-align: left;
+    }
+    .slide-concept-body .src { color: #6f6f6f; font-size: 0.95em; }
+    .slide--parrafo { align-items: flex-start; padding: 6rem 10rem; }
+
+    /* Referencias */
+    .refs-title { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 900; color: #444; margin-bottom: 2rem; }
+    .refs-list {
+      list-style: none; text-align: left; max-width: 60ch;
+      font-size: clamp(0.95rem, 1.9vw, 1.2rem); font-weight: 400; color: #555; line-height: 1.7;
+    }
+    .refs-list li { margin-bottom: 0.9rem; }
+    .refs-list em { font-style: italic; }
+    .refs-list li .nota { display: block; font-size: 0.86em; color: #6f6f6f; }
+    .refs-list li.src { color: #6f6f6f; font-size: 0.92em; margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid #e5e5e5; }
+
+    /* Marcador de material pendiente */
+    .ph { border: 2px dashed #e5e5e5; padding: 3.5rem 4rem; color: #999; font-size: 1.1rem; font-weight: 400; max-width: 62%; line-height: 1.6; }
+
+    /* ══ LAYOUTS COMPUESTOS ══ */
+    .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa {
+      align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem;
+    }
+    .rotulo { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6f6f6f; }
+    .compuesto-titulo {
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 900; color: #444;
+      max-width: 60ch; margin: 0 auto 2rem; text-align: center; line-height: 1.35;
+    }
+    .compuesto-pie {
+      font-size: clamp(0.88rem, 1.3vw, 1rem); color: #6f6f6f;
+      max-width: 66ch; margin: 2rem auto 0; text-align: center; line-height: 1.5;
+    }
+
+    /* Ficha de concepto */
+    .ficha { width: 100%; max-width: 62rem; margin: 0 auto; }
+    .ficha-num { margin-bottom: 1.6rem; }
+    .ficha-termino {
+      font-size: clamp(1.5rem, 3.6vw, 2.4rem); font-weight: 900; color: #111;
+      letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.1;
+    }
+    .ficha-def {
+      font-size: clamp(1.25rem, 2.8vw, 2rem); font-weight: 900; color: #444;
+      line-height: 1.28; margin-top: 0.9rem; max-width: 40ch;
+    }
+    .ficha-def em { font-style: normal; background: #eeff41; padding: 0 0.15em; }
+    .ficha-fuente { font-size: 0.82rem; color: #6f6f6f; margin-top: 1rem; letter-spacing: 0.03em; }
+    .ficha-celdas {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem;
+      margin-top: 2.4rem; padding-top: 2.2rem; border-top: 1px solid #e5e5e5;
+    }
+    .ficha-celdas.una { grid-template-columns: 1fr; max-width: 46ch; }
+    .ficha-celda .rotulo { display: block; margin-bottom: 0.7rem; }
+    .ficha-celda p { font-size: clamp(0.98rem, 1.5vw, 1.1rem); color: #555; line-height: 1.6; }
+    .ficha-celda + .ficha-celda { border-left: 1px solid #e5e5e5; padding-left: 3rem; }
+
+    /* Rejilla */
+    .rejilla { display: grid; gap: 2.2rem; width: 100%; max-width: 66rem; margin: 0 auto; }
+    .rejilla--3 { grid-template-columns: repeat(3, 1fr); }
+    .rejilla--2x2 { grid-template-columns: 1fr 1fr; }
+    .celda { border-top: 4px solid #444; padding-top: 1.1rem; }
+    .celda.acento { border-top-color: #eeff41; }
+    .celda .rotulo { display: block; margin-bottom: 0.7rem; }
+    .celda-titulo { font-size: clamp(1.1rem, 2.1vw, 1.45rem); font-weight: 900; color: #111; line-height: 1.2; margin-bottom: 0.7rem; }
+    .celda-cuerpo { font-size: clamp(0.92rem, 1.4vw, 1.05rem); color: #555; line-height: 1.55; }
+    .celda-cuerpo .src { color: #6f6f6f; }
+
+    /* Par en contraste */
+    .par { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; width: 100%; max-width: 62rem; margin: 0 auto; }
+    .par-encabezado { font-size: clamp(0.95rem, 1.8vw, 1.15rem); font-weight: 900; letter-spacing: 0.03em; padding: 0.8rem 1.1rem; line-height: 1.25; }
+    .par-col.a .par-encabezado { background: #eeff41; color: #111; }
+    .par-col.b .par-encabezado { background: #222; color: #fff; }
+    .par-cuerpo { font-size: clamp(0.98rem, 1.5vw, 1.12rem); color: #555; line-height: 1.6; padding: 1.3rem 1.1rem 0; }
+    .par-cuerpo strong { color: #222; font-weight: 700; }
+
+    /* Pauta operativa */
+    .pauta { list-style: none; width: 100%; max-width: 52rem; margin: 0 auto; }
+    .pauta-titulo {
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 900; color: #111;
+      margin: 0 auto 1.8rem; max-width: 52rem; width: 100%; line-height: 1.25; text-align: left;
+    }
+    .pauta li {
+      display: flex; gap: 1.4rem; align-items: baseline; padding: 1rem 0;
+      border-bottom: 1px solid #e5e5e5; font-size: clamp(1rem, 1.7vw, 1.25rem); color: #444; line-height: 1.45;
+    }
+    .pauta li:last-child { border-bottom: none; }
+    .pauta .n { font-size: 0.8rem; font-weight: 700; color: #6f6f6f; letter-spacing: 0.06em; flex: 0 0 1.8rem; }
+    .pauta li strong { color: #111; font-weight: 900; }
+    .pauta li .nota { display: block; font-size: 0.86em; color: #6f6f6f; margin-top: 0.25rem; }
+
+    /* Mapa */
+    .mapa { width: 100%; max-width: 46rem; margin: 0 auto; }
+    .mapa-item {
+      font-size: clamp(1.15rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: 0.03em;
+      text-transform: uppercase; color: #444; padding: 0.55rem 0; line-height: 1.15;
+    }
+    .mapa-item .q {
+      display: block; text-transform: none; letter-spacing: 0; font-size: 0.46em;
+      font-weight: 400; color: #6f6f6f; margin-top: 0.15rem;
+    }
+    .mapa-item.visto { color: #6f6f6f; }
+    .mapa-item.actual { color: #111; }
+    .mapa-item.actual span { background: #eeff41; padding: 0 0.2em; }
+    .mapa-item.actual::after { content: " ←"; color: #111; }
+    .mapa-pie { font-size: 0.9rem; color: #6f6f6f; margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid #e5e5e5; }
+
+    /* Slide de QR: el bloque que se proyecta para que lo lea toda el aula */
+    .qr { width: min(30vh, 260px); height: auto; }
+
+    /* ── Animaciones ── */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: scale(1); } }
+    @keyframes drawIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .slide.active { animation: fadeIn 0.18s ease-out forwards; }
+    .slide.active.slide--conclusion { animation: riseIn 0.22s ease-out forwards; }
+    .slide.active.slide--section { animation: scaleIn 0.2s ease-out forwards; }
+    .slide.active.slide--visual svg > * { opacity: 0; animation: drawIn 0.22s ease-out forwards; }
+    .slide--visual svg > *:nth-child(1) { animation-delay: 0.02s; }
+    .slide--visual svg > *:nth-child(2) { animation-delay: 0.04s; }
+    .slide--visual svg > *:nth-child(3) { animation-delay: 0.06s; }
+    .slide--visual svg > *:nth-child(4) { animation-delay: 0.08s; }
+    .slide--visual svg > *:nth-child(5) { animation-delay: 0.10s; }
+    .slide--visual svg > *:nth-child(6) { animation-delay: 0.12s; }
+    .slide--visual svg > *:nth-child(7) { animation-delay: 0.14s; }
+    .slide--visual svg > *:nth-child(n+8) { animation-delay: 0.16s; }
+
+    .slide.active .ficha-celda, .slide.active .celda, .slide.active .par-col,
+    .slide.active .pauta li, .slide.active .mapa-item {
+      opacity: 0; animation: drawIn 0.18s ease-out forwards;
+    }
+    .ficha-celda:nth-child(1), .celda:nth-child(1), .par-col:nth-child(1),
+    .pauta li:nth-child(1), .mapa-item:nth-child(1) { animation-delay: 0.04s; }
+    .ficha-celda:nth-child(2), .celda:nth-child(2), .par-col:nth-child(2),
+    .pauta li:nth-child(2), .mapa-item:nth-child(2) { animation-delay: 0.08s; }
+    .celda:nth-child(3), .pauta li:nth-child(3), .mapa-item:nth-child(3) { animation-delay: 0.12s; }
+    .celda:nth-child(4), .pauta li:nth-child(4), .mapa-item:nth-child(4) { animation-delay: 0.16s; }
+    .pauta li:nth-child(5), .mapa-item:nth-child(5) { animation-delay: 0.20s; }
+    .pauta li:nth-child(n+6), .mapa-item:nth-child(n+6) { animation-delay: 0.24s; }
+
+    .slide.active .diagram-mobile > * { opacity: 0; animation: drawIn 0.18s ease-out forwards; }
+    .diagram-mobile > *:nth-child(1) { animation-delay: 0.04s; }
+    .diagram-mobile > *:nth-child(2) { animation-delay: 0.08s; }
+    .diagram-mobile > *:nth-child(3) { animation-delay: 0.12s; }
+    .diagram-mobile > *:nth-child(4) { animation-delay: 0.16s; }
+    .diagram-mobile > *:nth-child(5) { animation-delay: 0.20s; }
+    .diagram-mobile > *:nth-child(n+6) { animation-delay: 0.24s; }
+
+    .no-anim, .no-anim * { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+    /* Navegación */
+    .nav-hint { position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.75rem; color: #ccc; }
+    .deck-nav { position: fixed; bottom: 1.5rem; left: 2rem; font-size: 0.75rem; z-index: 10; }
+    .deck-nav-toggle {
+      background: none; border: none; font-family: 'Roboto', sans-serif; font-size: 0.75rem;
+      color: #ddd; cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .deck-nav-toggle:hover, .deck-nav.open .deck-nav-toggle { color: #888; }
+    .deck-nav-menu {
+      display: none; list-style: none; position: absolute; bottom: 100%; left: 0;
+      margin: 0 0 0.5rem; padding: 0.4rem 0; min-width: 14rem; max-height: 70vh; overflow-y: auto;
+      background: #fff; border: 1px solid #e5e5e5; text-align: left;
+    }
+    .deck-nav.open .deck-nav-menu { display: block; }
+    .deck-nav-menu button {
+      display: block; width: 100%; background: none; border: none; font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem; color: #888; text-align: left; padding: 0.4rem 1rem; cursor: pointer;
+    }
+    .deck-nav-menu button:hover { color: #222; background: #fafafa; }
+
+    .deck-nav-toggle:focus-visible, .deck-nav-menu button:focus-visible, .slide a:focus-visible { outline: 2px solid #222; outline-offset: 2px; }
+
+    /* Barra de progreso */
+    .progress-track { position: fixed; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(0,0,0,0.06); z-index: 5; }
+    .progress-fill { height: 100%; background: #eeff41; width: 0%; transition: width 0.25s ease; }
+
+    img.img-broken { display: none; }
+
+    /* Versiones móviles de los diagramas */
+    .diagram-mobile { display: none; flex-direction: column; align-items: center; gap: 0.55rem; width: 100%; max-width: 380px; }
+    .dm-label { font-family: 'Roboto', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: #999; text-transform: uppercase; }
+    .dm-box { width: 100%; border-radius: 6px; padding: 0.85rem 1rem; text-align: center; font-family: 'Roboto', sans-serif; }
+    .dm-box.dark { background: #222; color: #fff; }
+    .dm-box.accent { background: #eeff41; color: #111; }
+    .dm-box.neutral { background: #fff; color: #444; border: 1.5px solid #444; }
+    .dm-box strong { display: block; font-size: 0.95rem; font-weight: 700; }
+    .dm-box em { display: block; font-style: normal; font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
+    .dm-arrow { color: #444; font-size: 0.9rem; line-height: 0.6; }
+    .dm-note { font-family: 'Roboto', sans-serif; font-size: 0.78rem; color: #6f6f6f; text-align: center; line-height: 1.45; max-width: 36ch; margin-top: 0.35rem; }
+
+    /* Accesibilidad */
+    @media (prefers-reduced-motion: reduce) {
+      .slide.active, .slide.active.slide--conclusion, .slide.active.slide--section,
+      .slide.active.slide--visual svg > *, .slide.active .ficha-celda, .slide.active .celda,
+      .slide.active .par-col, .slide.active .pauta li, .slide.active .mapa-item,
+      .slide.active .diagram-mobile > * { animation: none; opacity: 1; transform: none; }
+      .progress-fill { transition: none; }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .slide { padding: 2.5rem; }
+      .slide--parrafo { padding: 2.5rem 3rem; }
+      .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa { padding: 2.5rem 3rem; }
+      .rejilla { gap: 1.6rem; }
+      .ficha-celdas { gap: 0 2rem; }
+      .ficha-celda + .ficha-celda { padding-left: 2rem; }
+    }
+    @media (max-width: 700px) {
+      .rejilla--3, .rejilla--2x2, .par { grid-template-columns: 1fr; gap: 1.6rem; }
+      .ficha-celdas { grid-template-columns: 1fr; gap: 1.6rem; }
+      .ficha-celda + .ficha-celda { border-left: none; padding-left: 0; border-top: 1px solid #e5e5e5; padding-top: 1.6rem; }
+      .ficha-def { max-width: none; }
+      .slide--visual svg { display: none; }
+      .slide--visual .diagram-mobile { display: flex; }
+      /* Ningún slide queda cortado en un celular: si el contenido no cabe, se
+         desplaza. `safe center` evita que centrar esconda el inicio. */
+      .slide { overflow-y: auto; overscroll-behavior: contain; justify-content: safe center; }
+      .slide > * { flex-shrink: 0; }
+    }
+    @media (max-width: 600px) {
+      /* El pie de la pantalla lo ocupan el menú de secciones y la pista táctil. */
+      .slide { padding: 1.5rem 1.5rem 3.5rem; }
+      .slide--parrafo { padding: 1.5rem 1.5rem 3.5rem; }
+      .rejilla { gap: 1.4rem; }
+      .compuesto-titulo { margin-bottom: 1.4rem; }
+      .compuesto-pie { margin-top: 1.4rem; }
+      .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa { padding: 1.5rem 1.5rem 3.5rem; }
+      .slide-title { max-width: 100%; }
+      .cita-texto { max-width: 92%; }
+      .slide-image { max-width: 90%; }
+      .refs-list, .slide-concept-body { max-width: 100%; }
+      .ph { max-width: 88%; padding: 2rem; }
+      .pauta li { gap: 0.9rem; }
+      .section-theme, .tema-central, .section-kicker { max-width: 100%; }
+      .qr { width: min(26vh, 190px); }
+      .slide-link { font-size: 0.95rem; }
+    }
+    /* Celulares angostos: los titulares grandes son lo primero que desborda. */
+    @media (max-width: 420px) {
+      .slide-title { font-size: 1.55rem; line-height: 1.28; }
+      .portada-bottom { font-size: 3rem; }
+      .section-theme { font-size: 1.75rem; }
+      .tema-central { font-size: 1.9rem; }
+      .ficha-def { font-size: 1.15rem; }
+      .mapa-item { font-size: 1.05rem; }
+      .pauta li { font-size: 0.95rem; }
+      .rejilla { gap: 1.1rem; }
+      .celda { padding-top: 0.8rem; }
+      .celda-titulo { font-size: 1.05rem; margin-bottom: 0.45rem; }
+      .celda-cuerpo { font-size: 0.88rem; line-height: 1.45; }
+      .compuesto-titulo { font-size: 1rem; margin-bottom: 1.1rem; }
+      .compuesto-pie { font-size: 0.82rem; margin-top: 1.1rem; }
+    }
+    /* Proyectar en horizontal desde un celular: la altura es lo escaso. */
+    @media (max-height: 460px) and (orientation: landscape) {
+      .slide {
+        padding: 1.25rem 2rem 2.5rem;
+        overflow-y: auto; overscroll-behavior: contain; justify-content: safe center;
+      }
+      .slide > * { flex-shrink: 0; }
+      .slide-title { font-size: clamp(1.1rem, 3.2vw, 1.9rem); }
+      .mapa-item { font-size: clamp(1rem, 2.4vw, 1.4rem); padding: 0.35rem 0; }
+      .mapa-item .q { font-size: 0.55em; }
+      .mapa-pie { margin-top: 1rem; padding-top: 0.8rem; }
+      .qr { width: min(38vh, 190px); }
+    }
+
+    .nav-hint-touch { display: none; }
+    @media (hover: none) {
+      .nav-hint { display: none; }
+      .nav-hint-touch { display: block; position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.7rem; color: #ccc; text-align: right; max-width: 45%; }
+      .deck-nav-toggle { padding: 0.6rem 0.3rem; font-size: 0.8rem; }
+      .deck-nav-menu button { padding: 0.7rem 1rem; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+
+    <!-- ══════════ APERTURA ══════════ -->
+
+    <div class="slide" style="gap: 2rem;">
+      <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" style="max-width: 40%;" alt="GIF de espera">
+      <p class="slide-title">Gracias por la puntualidad</p>
+      <p class="slide-subtitle">En breve comenzamos</p>
+    </div>
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="portada-top" style="color: #333;">Pensamiento</p>
+      <p class="portada-bottom" style="color: #111;">Sensorial</p>
+    </div>
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Clase 3</p>
+      <p class="section-theme">¿Qué es esta cosa?</p>
+    </div>
+
+    <!-- ══════════ RECOGER LO SEMBRADO ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">¿En qué quedamos?</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">La clase pasada vimos las piezas que nos ayudan a construir la relación entre una persona y un sistema</p>
+    </div>
+
+    <div class="slide slide--mapa">
+      <div class="mapa">
+        <p class="mapa-item visto">Affordance<span class="q">¿Qué puedo hacer?</span></p>
+        <p class="mapa-item visto">Significante<span class="q">¿Cómo sé que puedo hacerlo?</span></p>
+        <p class="mapa-item visto">Restricción<span class="q">¿Qué no puedo hacer?</span></p>
+        <p class="mapa-item visto">Mapping<span class="q">¿Cuál de todos, y con qué resultado?</span></p>
+        <p class="mapa-item visto">Feedforward<span class="q">¿Qué va a pasar si lo hago?</span></p>
+        <p class="mapa-item visto">Feedback<span class="q">¿Qué pasó?</span></p>
+        <p class="mapa-pie">Seis preguntas que le hicimos a un cajero.</p>
+      </div>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Entre lo que una persona quiere hacer y lo que sabe cómo hacer hay una distancia. Y entre lo que el sistema hace y lo que ella entiende, hay otra</p>
+    </div>
+
+    <!-- Diagrama de los golfos (SVG B de la Clase 2) -->
+    <div class="slide slide--visual">
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:88%; height:85%;">
+        <defs>
+          <marker id="arrB" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <g>
+          <rect x="40" y="215" width="180" height="70" rx="4" fill="#222"/>
+          <text x="130" y="242" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff" class="caps">Persona</text>
+          <text x="130" y="266" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#fff">intención · interpretación</text>
+        </g>
+        <g>
+          <rect x="680" y="215" width="180" height="70" rx="4" fill="#222"/>
+          <text x="770" y="242" text-anchor="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#fff" class="caps">Sistema</text>
+          <text x="770" y="266" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#fff">acción · estado</text>
+        </g>
+        <g>
+          <path d="M220,230 C330,90 570,90 680,230" fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#arrB)"/>
+          <rect x="330" y="95" width="240" height="46" rx="4" fill="#eeff41"/>
+          <text x="450" y="118" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#111">Golfo de la ejecución</text>
+          <text x="450" y="170" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" fill="#6f6f6f">¿cómo hago lo que quiero hacer?</text>
+        </g>
+        <g>
+          <path d="M680,272 C570,412 330,412 220,272" fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#arrB)"/>
+          <rect x="330" y="360" width="240" height="46" rx="4" fill="#eeff41"/>
+          <text x="450" y="383" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#111">Golfo de la evaluación</text>
+          <text x="450" y="335" text-anchor="middle" font-family="Roboto, sans-serif" font-size="14" fill="#6f6f6f">¿qué fue lo que acaba de pasar?</text>
+        </g>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">Los dos golfos</p>
+        <div class="dm-box dark"><strong>Persona</strong><em>intención · interpretación</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Golfo de la ejecución</strong><em>¿cómo hago lo que quiero hacer?</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box dark"><strong>Sistema</strong><em>acción · estado</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Golfo de la evaluación</strong><em>¿qué fue lo que acaba de pasar?</em></div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Cuando cambiamos las reglas de UNO, cambiamos su interfaz: conservamos algunos significantes, pero modificamos las acciones que permitía y las que limitaba</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Las reglas de un juego son convenciones. En las pantallas pasa algo parecido: casi nada está determinado físicamente, tenemos que <span class="hl">aprender</span> qué podemos hacer</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Por eso, en User Inyerface, uno de los primeros engaños es <span class="hl">el botón que no es un botón</span></p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Ya tenemos construida en la cabeza una expectativa de cómo se ve y se comporta un botón. Es un lenguaje que aprendimos</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">¿Y qué pasa si dejamos de pensar la interfaz solo como algo que ocurre en una pantalla? ¿Si la combinamos con objetos físicos, con las experiencias sensoriales que <span class="hl">Amelia Wattenberger</span> decía que habíamos perdido?</p>
+    </div>
+
+    <!-- ══════════ WIREFRAME / MOCKUP / PROTOTIPO ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Un apunte antes de seguir</p>
+      <p class="section-theme">Tres palabras que vamos a usar</p>
+    </div>
+
+    <div class="slide slide--rejilla">
+      <p class="compuesto-titulo">Las tres nombran la misma pantalla, pero responden preguntas distintas</p>
+      <div class="rejilla rejilla--3">
+        <div class="celda">
+          <span class="rotulo">Wireframe</span>
+          <p class="celda-titulo">La estructura</p>
+          <p class="celda-cuerpo">Qué hay y dónde. Jerarquía, orden, qué cabe en una pantalla. Sin color, sin tipografía, sin imágenes. Responde: <span class="src">¿qué información va acá?</span></p>
+        </div>
+        <div class="celda">
+          <span class="rotulo">Mockup</span>
+          <p class="celda-titulo">La apariencia</p>
+          <p class="celda-cuerpo">Cómo se ve: color, tipografía, contenido real. Se mira, no se toca. Responde: <span class="src">¿qué comunica esto antes de que alguien lo use?</span></p>
+        </div>
+        <div class="celda">
+          <span class="rotulo">Prototipo</span>
+          <p class="celda-titulo">El funcionamiento</p>
+          <p class="celda-cuerpo">Qué pasa cuando alguien lo usa. Puede ser papel recortado o Figma. Responde: <span class="src">¿la persona entiende qué hacer, y qué acaba de pasar?</span></p>
+        </div>
+      </div>
+      <p class="compuesto-pie">La fidelidad no las ordena de peor a mejor: un prototipo en cartón prueba cosas que un mockup impecable no puede probar.</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Un prototipo no es una versión preliminar del producto. Es <span class="hl">una forma de investigar</span></p>
+    </div>
+
+    <!-- ══════════ DESIGN CRITIQUE ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Metodología</p>
+      <p class="section-theme">Design critique</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Una interfaz no solo ayuda a completar una tarea: también <span class="hl">expresa</span>. Puede dar sensación de control, generar confianza o producir frustración</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Por eso no las evaluamos según nuestros gustos. Intentamos entender qué está haciendo la interfaz para <span class="hl">la persona que la va a usar</span></p>
+    </div>
+
+    <div class="slide slide--mapa">
+      <div class="mapa">
+        <p class="mapa-item">¿Cómo?<span class="q">¿Cómo resuelve lo que resuelve?</span></p>
+        <p class="mapa-item">¿Por qué?<span class="q">¿Qué decisión hay detrás?</span></p>
+        <p class="mapa-item">¿Para quién?<span class="q">¿A quién le sirve y a quién deja por fuera?</span></p>
+        <p class="mapa-item">¿Para qué?<span class="q">¿Qué se supone que consigue con eso?</span></p>
+        <p class="mapa-pie">Las críticas no son juicios. Son preguntas.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">El ejercicio de hoy no se trata de demostrar quién tiene la razón. Se trata de algo más difícil: <span class="hl">quién escucha mejor</span></p>
+    </div>
+
+    <!-- ══════════ ACTIVIDAD: CRÍTICA DE LOS CAJEROS ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Actividad</p>
+      <p class="section-theme">Crítica de los cajeros</p>
+    </div>
+
+    <div class="slide slide--pauta">
+      <p class="pauta-titulo">Al mirar el cajero de otro grupo</p>
+      <ol class="pauta">
+        <li><span class="n">01</span><span>Primero describan lo que vieron. <strong>Después</strong> interpreten por qué.</span></li>
+        <li><span class="n">02</span><span>¿Qué fue claro y qué no? ¿Qué les hizo ruido?</span></li>
+        <li><span class="n">03</span><span>¿Qué esperaban que ocurriera, y qué ocurrió realmente?</span></li>
+        <li><span class="n">04</span><span>¿La interfaz atiende el rasgo de la persona para la que fue diseñada?</span></li>
+      </ol>
+      <p class="compuesto-pie">Diez minutos por grupo. Quien presenta escucha y anota; no defiende.</p>
+    </div>
+
+    <!-- ══════════ RECESO ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Receso</p>
+      <p class="section-theme">Quince minutos</p>
+    </div>
+
+    <!-- ══════════ DISEÑAR PARA UNO MISMO ══════════ -->
+
+    <!-- Tema central de la sesión: paleta invertida, fondo negro -->
+    <div class="slide slide--section" style="background: #111;">
+      <p class="tema-central">¿Qué es lo que<br>realmente diseñamos?</p>
+      <p class="tema-sub">Modelos e imágenes: los puentes entre el diseñador y el usuario</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Hace unos años me tocó rediseñar el portal educativo. Cuando se lo mostré a los profesores, lo que a mí me parecía clarísimo a ellos les resultó <span class="hl">confuso y extraño</span></p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Ellos venían de una interfaz pesada que, después de mucho cacharreo, les dejaba llegar exactamente al contenido que buscaban</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Yo hice algo más simple. Pero, sin darme cuenta, les quité la sensación de control para explorar y filtrar que para ellos era lo importante</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Había diseñado un portal para mí, para el tipo de usuario que soy. Y no para las personas que de verdad lo usaban</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">El usuario no llega vacío. Llega con experiencias, con hábitos, con convenciones y con una idea propia de cómo <span class="hl">deberían</span> funcionar las cosas</p>
+    </div>
+
+    <!-- ══════════ EL PROBLEMA DE PEDIR COMIDA ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Un caso que nos va a acompañar toda la clase</p>
+      <p class="section-theme">Pedir comida</p>
+    </div>
+
+    <!-- La persona: su voz -->
+    <div class="slide">
+      <p class="slide-title">«Tengo hambre. No quiero pensar demasiado. Quiero comer algo rico. Y quiero que llegue rápido.»</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">¿Qué cree esta persona que está haciendo?</p>
+    </div>
+
+    <!-- Aparece: modelo mental -->
+    <div class="slide slide--ficha">
+      <div class="ficha">
+        <p class="rotulo ficha-num">1 de 3 · lo que trae la persona</p>
+        <p class="ficha-termino">Modelo mental</p>
+        <p class="ficha-def">La idea que la persona <em>construye</em> sobre cómo funciona algo.</p>
+        <p class="ficha-fuente">Norman, 2013</p>
+        <div class="ficha-celdas una">
+          <div class="ficha-celda">
+            <span class="rotulo">Acá</span>
+            <p>No piensa «438 restaurantes con ocho filtros». Piensa «quiero comer». Esa idea se arma con experiencias anteriores, con convenciones y con la propia interacción, y no tiene por qué coincidir con el funcionamiento real.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- El sistema: lo que tiene que resolver -->
+    <div class="slide">
+      <p class="slide-title">Pero el sistema tiene que resolver <span class="hl">esto</span>:</p>
+      <p class="slide-subtitle">explorar → filtrar → comparar → elegir → personalizar → confirmar → pagar</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">¿Cómo quiere funcionar el sistema?</p>
+    </div>
+
+    <!-- Aparece: modelo conceptual -->
+    <div class="slide slide--ficha">
+      <div class="ficha">
+        <p class="rotulo ficha-num">2 de 3 · lo que propone el diseñador</p>
+        <p class="ficha-termino">Modelo conceptual</p>
+        <p class="ficha-def">La explicación de cómo <em>queremos</em> que funcione el sistema.</p>
+        <p class="ficha-fuente">Norman, 2013</p>
+        <div class="ficha-celdas una">
+          <div class="ficha-celda">
+            <span class="rotulo">Acá</span>
+            <p>El sistema tiene esa lógica: cientos de restaurantes, filtros, promociones, tiempos, pagos y estados. Tiene sus capacidades y sus relaciones entre acción y resultado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- La brecha -->
+    <div class="slide">
+      <p class="slide-title">La persona <span class="hl">no ve directamente</span> esa lógica. Tiene que descubrirla</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">¿De dónde saca la información para descubrirla?</p>
+    </div>
+
+    <!-- Aparece: imagen del sistema -->
+    <div class="slide slide--ficha">
+      <div class="ficha">
+        <p class="rotulo ficha-num">3 de 3 · lo único que los conecta</p>
+        <p class="ficha-termino">Imagen del sistema</p>
+        <p class="ficha-def">Todo lo que el sistema hace <em>perceptible</em> para que la persona entienda cómo funciona.</p>
+        <p class="ficha-fuente">Norman, 2013</p>
+        <div class="ficha-celdas">
+          <div class="ficha-celda">
+            <span class="rotulo">Qué la compone</span>
+            <p>La interfaz es la parte central, pero no es la única. También los textos, los mensajes, los estados, las respuestas, las instrucciones y la ayuda.</p>
+          </div>
+          <div class="ficha-celda">
+            <span class="rotulo">Qué hace</span>
+            <p>El usuario tiene que poder construir una explicación del sistema a partir de lo que el sistema le hace perceptible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagrama del flujo: reusa la estética de flechas de la clase 2 -->
+    <div class="slide slide--visual">
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:80%; height:88%;">
+        <defs>
+          <marker id="arrC" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <g>
+          <rect x="300" y="30" width="300" height="66" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+          <text x="450" y="55" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1" fill="#6f6f6f" class="caps">El diseñador propone</text>
+          <text x="450" y="79" text-anchor="middle" font-family="Roboto, sans-serif" font-size="19" font-weight="900" fill="#111">Modelo conceptual</text>
+        </g>
+        <line x1="450" y1="96" x2="450" y2="150" stroke="#444" stroke-width="1.5" marker-end="url(#arrC)"/>
+        <g>
+          <rect x="300" y="217" width="300" height="66" rx="4" fill="#eeff41"/>
+          <text x="450" y="242" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1" fill="#111" class="caps">El sistema hace perceptible</text>
+          <text x="450" y="266" text-anchor="middle" font-family="Roboto, sans-serif" font-size="19" font-weight="900" fill="#111">Imagen del sistema</text>
+        </g>
+        <line x1="450" y1="283" x2="450" y2="337" stroke="#444" stroke-width="1.5" marker-end="url(#arrC)"/>
+        <g>
+          <rect x="300" y="404" width="300" height="66" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+          <text x="450" y="429" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1" fill="#6f6f6f" class="caps">El usuario construye</text>
+          <text x="450" y="453" text-anchor="middle" font-family="Roboto, sans-serif" font-size="19" font-weight="900" fill="#111">Modelo mental</text>
+        </g>
+        <text x="640" y="254" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Nuestro trabajo está acá.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">El diseñador propone</p>
+        <div class="dm-box neutral"><strong>Modelo conceptual</strong></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Imagen del sistema</strong><em>El sistema lo hace perceptible</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box neutral"><strong>Modelo mental</strong><em>El usuario lo construye</em></div>
+        <p class="dm-note">Nuestro trabajo está en el medio.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Los tres <span class="hl">no tienen por qué coincidir</span>. Ahí está el trabajo del diseño</p>
+    </div>
+
+    <!-- ══════════ EN LA CABEZA / EN EL MUNDO ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">La otra idea de Norman</p>
+      <p class="section-theme">¿En la cabeza o en el mundo?</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Supongamos que la persona tiene que <span class="hl">recordar</span> qué opción tenía envío gratis, cuánto costaba la que vio hace un minuto, qué filtros aplicó y cuánto va a pagar al final</p>
+    </div>
+
+    <div class="slide slide--par">
+      <p class="compuesto-titulo">La misma información, en dos lugares distintos</p>
+      <div class="par">
+        <div class="par-col b">
+          <p class="par-encabezado">En la cabeza</p>
+          <p class="par-cuerpo">La persona tiene que <strong>acordarse</strong>: cuánto costaba, qué descartó, qué prometía cada opción. Trabajo cognitivo que cargamos sobre ella.</p>
+        </div>
+        <div class="par-col a">
+          <p class="par-encabezado">En el mundo</p>
+          <p class="par-cuerpo">«Sin costo de envío». «Llega en 15-20 min». «Total: $28.500». «Tus pedidos anteriores». La información está <strong>disponible cuando la necesita</strong>.</p>
+        </div>
+      </div>
+      <p class="compuesto-pie">Más preciso que «el conocimiento está en el mundo»: parte de la información que necesitamos para actuar puede estar disponible en el entorno.</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">La pregunta de diseño no es «¿cómo la hago fácil?». Es <span class="hl">¿qué trabajo cognitivo le estoy trasladando a la persona?</span></p>
+    </div>
+
+    <!-- ══════════ QUÉ DISEÑAMOS REALMENTE ══════════ -->
+
+    <div class="slide">
+      <p class="slide-title">No estamos diseñando una pantalla. Estamos diseñando <span class="hl">cómo una persona se encuentra con un sistema</span></p>
+    </div>
+
+    <div class="slide slide--mapa">
+      <div class="mapa">
+        <p class="mapa-item">Qué puede hacer</p>
+        <p class="mapa-item">Qué puede entender</p>
+        <p class="mapa-item">Qué información ve</p>
+        <p class="mapa-item">Qué necesita recordar</p>
+        <p class="mapa-item">Qué puede descubrir</p>
+        <p class="mapa-pie">Eso es una mediación, no una superficie.</p>
+      </div>
+    </div>
+
+    <!-- ══════════ ACTIVIDAD ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Actividad</p>
+      <p class="section-theme">Construir la imagen del sistema</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Todos los grupos diseñan el mismo sistema: una app de domicilios. Cada uno recibe <span class="hl">una persona distinta</span></p>
+    </div>
+
+    <div class="slide slide--par">
+      <p class="compuesto-titulo">Cada grupo recibe dos fichas</p>
+      <div class="par">
+        <div class="par-col a">
+          <p class="par-encabezado">Ficha A · Modelo mental</p>
+          <p class="par-cuerpo">Quién es, qué quiere resolver, qué espera, qué no quiere hacer, qué la hace sentir perdida. <strong>Cambia en cada grupo.</strong></p>
+        </div>
+        <div class="par-col b">
+          <p class="par-encabezado">Ficha B · Modelo conceptual</p>
+          <p class="par-cuerpo">Qué puede hacer el sistema, qué información gestiona, qué estados atraviesa. <strong>No dice cómo debe verse.</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">La regla: los dos modelos <span class="hl">no coinciden</span>. Completen: «La persona espera ______, pero el sistema necesita ______»</p>
+    </div>
+
+    <div class="slide slide--pauta">
+      <p class="pauta-titulo">La investigación</p>
+      <ol class="pauta">
+        <li><span class="n">01</span><span><strong>Comprendan la persona.</strong> ¿Qué quiere? ¿Qué sabe? ¿Qué no debería tener que recordar?</span></li>
+        <li><span class="n">02</span><span><strong>Identifiquen la tensión</strong> entre esa persona y el sistema.</span></li>
+        <li><span class="n">03</span><span><strong>Construyan la imagen del sistema.</strong> Papel, Figma, cartón, objetos. La fidelidad no importa.<span class="nota">Importa que puedan probar una hipótesis, no que se vea bonita.</span></span></li>
+        <li><span class="n">04</span><span><strong>Pónganla a prueba.</strong> Otro grupo la usa con solo el modelo mental. Ustedes observan y no explican.</span></li>
+      </ol>
+    </div>
+
+    <!-- La consigna completa vive en el sitio del curso -->
+    <div class="slide slide--conclusion" style="gap: 1.5rem;">
+      <p class="slide-title">La consigna completa y las fichas están acá</p>
+      <img data-src="assets/qr-imagen-del-sistema.svg" class="qr" alt="Código QR hacia la consigna de la actividad">
+      <a class="slide-link" href="https://catedra.dejesumensaje.com/pensamiento-sensorial/imagen-del-sistema" target="_blank" rel="noopener">catedra.dejesumensaje.com/pensamiento-sensorial/imagen-del-sistema</a>
+    </div>
+
+    <!-- Las preguntas de comparación llegan DESPUÉS de la prueba -->
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Después de probar</p>
+      <p class="section-theme">Ahora sí, comparen</p>
+    </div>
+
+    <div class="slide slide--pauta">
+      <p class="pauta-titulo">Con algo que observar en la mano</p>
+      <ol class="pauta">
+        <li><span class="n">05</span><span><strong>Comparen</strong> el modelo mental inicial con el que la persona armó al usar la propuesta. ¿Qué logró comunicar? ¿Dónde produjo una lectura inesperada?</span></li>
+        <li><span class="n">06</span><span><strong>Segunda vuelta:</strong> mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?</span></li>
+      </ol>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Al final no preguntamos cuál quedó mejor. Preguntamos: <span class="hl">¿qué tuvo que hacer la interfaz para que los dos modelos se encontraran?</span></p>
+    </div>
+
+    <!-- ══════════ CIERRE: EL HILO SENSORIAL ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Cierre</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Al principio hablamos de lo que pasa cuando sacamos la interacción de la pantalla: objetos, convenciones, experiencias sensoriales</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Ahora sabemos algo más. Una interfaz no solamente organiza acciones: también organiza lo que podemos <span class="hl">percibir, entender, recordar y hacer</span></p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Por eso diseñar una interfaz es diseñar <span class="hl">una forma de relación</span>. Y esa relación siempre ocurre con alguien</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">No diseñamos para nosotros. Diseñamos para alguien que llega con su propia historia, sus propias expectativas y su propia manera de entender el mundo</p>
+    </div>
+
+    <!-- ══════════ PARA LA PRÓXIMA · TAREA ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Para la próxima</p>
+      <p class="section-theme">Dos preguntas para llevarse</p>
+    </div>
+
+    <div class="slide slide--par">
+      <p class="compuesto-titulo">La tarea tiene dos partes</p>
+      <div class="par">
+        <div class="par-col a">
+          <p class="par-encabezado">Parte 1 · En grupo · ¿Qué estamos suponiendo?</p>
+          <p class="par-cuerpo">Vuelvan sobre su app de domicilios y saquen a la luz entre <strong>5 y 8 supuestos</strong>: qué sabíamos de verdad y qué dimos por cierto. Conviertan 3 en preguntas para investigar con personas.</p>
+        </div>
+        <div class="par-col b">
+          <p class="par-encabezado">Parte 2 · Individual · Bitácora</p>
+          <p class="par-cuerpo">Elijan una interfaz —TikTok, Instagram, Temu, Rappi, Spotify o Despegar— y obsérvenla como diseñadores: <strong>¿qué parece esperar esta interfaz que yo haga?</strong> Siete preguntas y 2-3 capturas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Toda la tarea gira en torno a dos preguntas: ¿qué <span class="hl">suponemos</span> sobre las personas para las que diseñamos, y qué parece <span class="hl">suponer una interfaz</span> sobre nosotros?</p>
+    </div>
+
+    <!-- La consigna completa vive en el sitio del curso -->
+    <div class="slide slide--conclusion" style="gap: 1.5rem;">
+      <p class="slide-title">La consigna completa está acá</p>
+      <img data-src="assets/qr-tarea-suponiendo.svg" class="qr" alt="Código QR hacia la consigna completa de la tarea">
+      <a class="slide-link" href="https://catedra.dejesumensaje.com/pensamiento-sensorial/que-estamos-suponiendo" target="_blank" rel="noopener">catedra.dejesumensaje.com/pensamiento-sensorial/que-estamos-suponiendo</a>
+    </div>
+
+    <!-- ══════════ REFERENTES ══════════ -->
+
+    <div class="slide">
+      <p class="refs-title">Referentes</p>
+      <ul class="refs-list">
+        <li>Norman, D. A. <em>The Design of Everyday Things</em> (1988; ed. rev., 2013).
+          <span class="nota">Capítulo 1: modelo conceptual, modelo mental e imagen del sistema. Capítulo 3: el conocimiento en la cabeza y en el mundo.</span></li>
+        <li>Gibson, J. J. <em>The Ecological Approach to Visual Perception</em> (1979).
+          <span class="nota">De donde viene «affordance», que trabajamos la clase pasada.</span></li>
+        <li>Hutchins, E. <em>Cognition in the Wild</em> (1995).
+          <span class="nota">Para ir más lejos: pensar no ocurre solo dentro de la cabeza.</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-hint">← →</div>
+  <div class="nav-hint-touch">desliza o toca para continuar</div>
+  <nav class="deck-nav" aria-label="Navegación de la presentación">
+    <button class="deck-nav-toggle" aria-expanded="false">Secciones ↑</button>
+    <ul class="deck-nav-menu"></ul>
+  </nav>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <script>
+    let current = 0;
+    let lastShowTime = 0;
+    const slides = [...document.querySelectorAll('.slide')];
+    const progressFill = document.getElementById('progressFill');
+
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', () => {
+        const d = document.createElement('div');
+        d.className = 'ph';
+        d.textContent = img.getAttribute('alt') || 'Material pendiente';
+        img.replaceWith(d);
+      }, { once: true });
+    });
+
+    function loadImages(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('img[data-src]').forEach(img => {
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+      });
+    }
+
+    function show(n) {
+      const now = performance.now();
+      const fastNav = (now - lastShowTime) < 180;
+      lastShowTime = now;
+
+      const prevActive = slides[current];
+      if (prevActive) prevActive.classList.remove('active', 'no-anim');
+
+      current = (n + slides.length) % slides.length;
+      const next = slides[current];
+
+      if (fastNav) {
+        next.classList.add('no-anim');
+      } else {
+        void next.offsetWidth;
+      }
+      next.classList.add('active');
+      // Un slide que se dejó desplazado en el celular no debe reaparecer a media altura.
+      next.scrollTop = 0;
+
+      if (progressFill) {
+        progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+      }
+
+      loadImages(next);
+      loadImages(slides[(current + 1) % slides.length]);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); show(current - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+
+    document.addEventListener('click', e => {
+      if (e.target.closest('.deck-nav, a, button')) return;
+      show(current + 1);
+    });
+
+    document.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', e => e.stopPropagation());
+    });
+
+    let touchStartX = 0, touchStartY = 0, touchMoved = false;
+    document.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchMoved = false;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+      const target = e.target;
+      if (target.closest('a') || target.closest('.deck-nav')) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      // Desplazar un slide largo con el dedo no puede contar como pasar de slide.
+      if (touchMoved && Math.abs(dy) > Math.abs(dx)) return;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        e.preventDefault();
+        if (dx < 0) show(current + 1); else show(current - 1);
+      }
+    }, { passive: false });
+
+    const deckNav = document.querySelector('.deck-nav');
+    const navToggle = document.querySelector('.deck-nav-toggle');
+    const navMenu = document.querySelector('.deck-nav-menu');
+
+    slides.forEach((slide, index) => {
+      const label = slide.querySelector('.section-theme, .tema-central');
+      if (!label || !navMenu) return;
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.dataset.goto = String(index);
+      const clone = label.cloneNode(true);
+      clone.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+      const kicker = slide.querySelector('.section-kicker');
+      const texto = clone.textContent.replace(/\s+/g, ' ').trim();
+      button.textContent = kicker ? kicker.textContent.trim() + ' · ' + texto : texto;
+      item.appendChild(button);
+      navMenu.appendChild(item);
+    });
+
+    navToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = deckNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open);
+    });
+
+    document.querySelectorAll('.deck-nav-menu button').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        show(parseInt(b.dataset.goto, 10));
+        deckNav.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', () => deckNav.classList.remove('open'));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') deckNav.classList.remove('open');
+    });
+
+    show(0);
+  </script>
+</body>
+</html>

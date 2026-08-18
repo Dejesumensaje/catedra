@@ -1,0 +1,464 @@
+---
+// Consigna de la tarea de la sesión 3, para la sesión 4. Dos partes: los
+// supuestos del propio diseño (en grupo) y la bitácora de la semana
+// (individual). Se proyecta el QR al cierre y queda en los materiales.
+// Las dos partes son la misma pregunta vista por sus dos lados: qué suponemos
+// nosotros de las personas, y qué supone una interfaz de nosotros. Por eso van
+// juntas en una sola página y no en dos.
+import Base from '../../layouts/Base.astro';
+
+const ejemplosSupuesto = [
+  {
+    supuesto: '«La persona tiene datos y una conexión estable mientras pide.»',
+    porque: 'Nadie lo verificó. Es la condición de todo lo demás.',
+  },
+  {
+    supuesto: '«Ver el total desde el principio la tranquiliza.»',
+    porque: 'Puede ser cierto. También puede hacer que abandone antes de empezar.',
+  },
+  {
+    supuesto: '«Quien pide para varias personas quiere separar el carrito por persona.»',
+    porque: 'Es una solución disfrazada de dato: describe lo que ya diseñamos, no lo que sabemos de ella.',
+  },
+];
+
+const pruebasSupuesto = [
+  '¿De dónde salió? Si la respuesta es «nos pareció lógico», es un supuesto.',
+  '¿Alguien fuera del grupo lo dijo con sus palabras? Si no, es un supuesto.',
+  '¿Qué se cae de nuestro diseño si resulta falso? Si no se cae nada, no vale la pena escribirlo.',
+];
+
+const preguntasMalas = [
+  { mala: '¿Te gustaría ver el total desde el principio?', porque: 'Pregunta por una opinión sobre una función. Todo el mundo dice que sí.' },
+  { mala: '¿Usarías esta app?', porque: 'Predice el futuro. Nadie sabe qué va a hacer dentro de un mes.' },
+  { mala: '¿Te parece confusa esta pantalla?', porque: 'Pide un juicio sobre nuestro trabajo, en nuestra cara.' },
+];
+
+const preguntasBuenas = [
+  '¿Cuál fue la última vez que pidió comida? Cuéntemelo paso a paso.',
+  '¿Qué hizo la última vez que el pedido salió más caro de lo que esperaba?',
+  '¿Cómo decide qué pedir cuando pide para más de una persona?',
+];
+
+const bitacoraPreguntas = [
+  '¿Qué es lo primero que la interfaz me pide hacer? ¿Qué está suponiendo que yo quiero?',
+  '¿Qué acción quedó más a la mano y cuál me costó encontrar? ¿Qué dice ese reparto sobre lo que le conviene a quién?',
+  '¿Qué información me deja ver y cuál me obliga a recordar?',
+  '¿Qué da por hecho sobre mi tiempo, mi conexión, mi dispositivo o mi dinero?',
+  '¿Qué pasa cuando hago algo que no estaba previsto: equivocarme, volver atrás, no elegir nada?',
+  '¿Para quién parece estar hecha? ¿A quién deja por fuera?',
+  '¿En qué se parece y en qué se aleja del modelo que yo tenía antes de mirarla con atención?',
+];
+
+const interfaces = ['TikTok', 'Instagram', 'Temu', 'Rappi', 'Spotify', 'Despegar'];
+
+const entrega1 = [
+  { letra: 'A', titulo: 'La tabla de supuestos', detalle: 'Entre 5 y 8 filas, en dos columnas: lo que sabíamos de verdad y lo que dimos por cierto. Al lado de cada supuesto, qué se cae si resulta falso.' },
+  { letra: 'B', titulo: 'Tres preguntas', detalle: 'Los tres supuestos que más pesan, convertidos en preguntas para hacerle a una persona real. Preguntas por lo que ya pasó, no por lo que le gustaría.' },
+  { letra: 'C', titulo: 'A quién y cómo', detalle: 'A qué tipo de persona le harían esas preguntas, dónde la encontrarían y en cuánto tiempo. Dos o tres frases.' },
+];
+
+const entrega2 = [
+  { letra: 'A', titulo: 'La interfaz elegida', detalle: 'Cuál, y en qué momento real la usaron. No vale abrirla solo para hacer la tarea.' },
+  { letra: 'B', titulo: 'Las siete respuestas', detalle: 'Una por pregunta. En primera persona y en sus palabras: esto es una observación, no un informe.' },
+  { letra: 'C', titulo: 'Dos o tres capturas', detalle: 'Solo las pantallas de las que están hablando, señalando qué parte les llamó la atención.' },
+  { letra: 'D', titulo: 'La frase final', detalle: '«Esta interfaz supone que yo ______». Una sola frase, y que sea incómoda.' },
+];
+
+const listo = [
+  'Los supuestos están escritos como afirmaciones que podrían ser falsas, no como decisiones de diseño.',
+  'Ninguna de las tres preguntas se puede responder con sí o con no.',
+  'La bitácora habla de lo que la interfaz espera de ustedes, no de si les gusta.',
+  'Las capturas señalan algo concreto. Una pantalla suelta no dice nada.',
+];
+---
+
+<Base
+  titulo="¿Qué estamos suponiendo? · Tarea · Pensamiento Sensorial 3.0"
+  descripcion="Tarea de la sesión 3: sacar a la luz los supuestos del propio diseño, y observar qué supone una interfaz sobre quien la usa."
+  volverHref="/pensamiento-sensorial/s03"
+  volverTexto="Sesión 3 · ¿Qué es esta cosa?"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Tarea · Sesión 3 → Sesión 4</span>
+    <h1 class="sube sube-2">¿Qué estamos suponiendo?</h1>
+    <p class="lede sube sube-3">
+      La misma pregunta por sus dos lados: qué suponemos sobre las personas para las que
+      diseñamos, y qué supone una interfaz sobre nosotros.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <div class="encargo">
+      <p class="encargo-frase">
+        Dos partes. La primera es <strong>en grupo</strong>; la segunda,{' '}
+        <strong>individual</strong>.
+      </p>
+      <p class="encargo-nota">
+        La parte 1 se hace sobre la app de domicilios que diseñaron en clase. La parte 2 es
+        la bitácora de la semana y se hace con una interfaz que ya usan todos los días.
+        Las dos se traen a la sesión 4.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── parte 1 ─────────────────────────────────── -->
+
+  <section class="bloque">
+    <p class="rotulo-parte mono">Parte 1 · En grupo</p>
+    <h2 class="titulo-parte">Los supuestos de su propio diseño</h2>
+    <p>
+      Vuelvan sobre la app de domicilios que construyeron en clase y sepárenla en dos: lo que
+      sabían de verdad sobre esa persona y lo que dieron por cierto sin darse cuenta.
+      Entre <strong>cinco y ocho supuestos</strong>.
+    </p>
+    <p>
+      Un supuesto no es un error. Es una afirmación que hicimos sin evidencia y sobre la que
+      apoyamos una decisión. El problema no es tenerlos: es no verlos.
+    </p>
+
+    <h3 class="sub">Cómo se reconoce uno</h3>
+    <ul class="pruebas" role="list">
+      {pruebasSupuesto.map((p) => <li>{p}</li>)}
+    </ul>
+
+    <h3 class="sub">Tres ejemplos</h3>
+    <ul class="ejemplos" role="list">
+      {ejemplosSupuesto.map((e) => (
+        <li>
+          <span class="ejemplo-supuesto">{e.supuesto}</span>
+          <span class="ejemplo-porque">{e.porque}</span>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="sub">Después, tres preguntas</h3>
+    <p>
+      Escojan los tres supuestos que más pesan —aquellos donde, si estuvieran equivocados, se
+      caería buena parte del diseño— y conviértanlos en preguntas para hacerle a una persona
+      real. La diferencia entre una pregunta que sirve y una que no es de dónde saca la
+      respuesta: <strong>del pasado de esa persona, no de su imaginación</strong>.
+    </p>
+    <div class="preguntas">
+      <div class="preguntas-col no">
+        <p class="preguntas-encabezado">No sirven</p>
+        <ul role="list">
+          {preguntasMalas.map((p) => (
+            <li>
+              <span class="pregunta-texto">{p.mala}</span>
+              <span class="pregunta-porque">{p.porque}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="preguntas-col si">
+        <p class="preguntas-encabezado">Sirven</p>
+        <ul role="list">
+          {preguntasBuenas.map((p) => <li><span class="pregunta-texto">{p}</span></li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="entregable">
+      <p class="entregable-titulo">Qué entregan de la parte 1</p>
+      <ol class="entrega" role="list">
+        {entrega1.map((item) => (
+          <li>
+            <span class="entrega-letra mono" aria-hidden="true">{item.letra}</span>
+            <span class="entrega-texto">
+              <strong>{item.titulo}.</strong> <span class="entrega-detalle">{item.detalle}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── parte 2 ─────────────────────────────────── -->
+
+  <section class="bloque">
+    <p class="rotulo-parte mono">Parte 2 · Individual · Bitácora de la semana</p>
+    <h2 class="titulo-parte">La interfaz que usan todos los días</h2>
+    <p>
+      Elijan una de estas seis y úsenla como la usan siempre. Después —y solo después—
+      vuelvan sobre lo que hicieron y mírenla como diseñadores.
+    </p>
+    <ul class="chips" role="list">
+      {interfaces.map((i) => <li>{i}</li>)}
+    </ul>
+
+    <div class="pregunta-madre">
+      <p>¿Qué parece esperar esta interfaz que yo haga?</p>
+    </div>
+
+    <h3 class="sub">Siete preguntas</h3>
+    <ol class="siete" role="list">
+      {bitacoraPreguntas.map((p) => <li>{p}</li>)}
+    </ol>
+
+    <div class="entregable">
+      <p class="entregable-titulo">Qué entregan de la parte 2</p>
+      <ol class="entrega" role="list">
+        {entrega2.map((item) => (
+          <li>
+            <span class="entrega-letra mono" aria-hidden="true">{item.letra}</span>
+            <span class="entrega-texto">
+              <strong>{item.titulo}.</strong> <span class="entrega-detalle">{item.detalle}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="entregable-nota">
+        Una o dos páginas. Se escribe en primera persona y se admite lo que no se entendió:
+        eso es lo que estamos buscando.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Por qué las dos partes van juntas</h2>
+    <div class="cierre">
+      <p>
+        En la parte 1 son ustedes quienes suponen. En la parte 2 es la interfaz la que supone
+        sobre ustedes. Es la misma operación vista desde los dos lados del vidrio.
+      </p>
+      <p class="cierre-cola">
+        Toda interfaz tiene una idea de quién está del otro lado. La nuestra también.
+      </p>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  /* ── el encargo ───────────────────────────────── */
+  .encargo { border: 2px solid var(--tinta); padding: 1.75rem 2rem; max-width: 42rem; }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota { max-width: none; margin-bottom: 0; font-size: 0.98rem; color: var(--secundario); }
+
+  /* ── cabeceras de parte ───────────────────────── */
+  .rotulo-parte { display: block; color: var(--secundario); margin-bottom: 0.5rem; }
+
+  .titulo-parte {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    line-height: 1.15;
+    color: var(--tinta);
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 4px solid var(--tinta);
+    max-width: 42rem;
+  }
+
+  .sub {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--tinta);
+    margin: 2rem 0 0.75rem;
+  }
+
+  /* ── cómo se reconoce un supuesto ─────────────── */
+  .pruebas { list-style: none; max-width: 52rem; }
+
+  .pruebas li {
+    padding: 0.55rem 0;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .pruebas li:last-child { border-bottom: none; }
+
+  .ejemplos { list-style: none; max-width: 52rem; }
+
+  .ejemplos li { border-left: 2px solid var(--regla); padding: 0.3rem 0 0.3rem 1.1rem; margin-bottom: 1rem; }
+  .ejemplos li:last-child { margin-bottom: 0; }
+
+  .ejemplo-supuesto {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--tinta);
+    line-height: 1.35;
+  }
+
+  .ejemplo-porque { display: block; font-size: 0.95rem; color: var(--secundario); margin-top: 0.25rem; }
+
+  /* ── preguntas que sirven y que no ────────────── */
+  .preguntas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 56rem;
+    margin-top: 1.25rem;
+  }
+
+  .preguntas-encabezado {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1rem;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .preguntas-col.si .preguntas-encabezado { background: var(--amarillo); color: var(--tinta); }
+  .preguntas-col.no .preguntas-encabezado { background: var(--tinta); color: var(--papel); }
+
+  .preguntas-col ul { list-style: none; }
+  .preguntas-col li { padding: 0.6rem 0; border-bottom: 1px solid var(--regla); }
+  .preguntas-col li:last-child { border-bottom: none; }
+
+  .pregunta-texto { display: block; font-size: 0.98rem; color: var(--tinta); }
+  .pregunta-porque { display: block; font-size: 0.9rem; color: var(--secundario); margin-top: 0.2rem; }
+
+  /* ── parte 2 ──────────────────────────────────── */
+  .chips { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.25rem 0; }
+
+  .chips li {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.35rem 0.8rem;
+  }
+
+  /* Paleta invertida: es la pregunta que gobierna la bitácora entera. */
+  .pregunta-madre {
+    background: var(--tinta);
+    padding: 1.75rem 2rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 42rem;
+    margin: 1.75rem 0 0;
+  }
+
+  .pregunta-madre p {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.3rem, 3.6vw, 1.8rem);
+    line-height: 1.2;
+    color: var(--amarillo);
+    max-width: none;
+    margin: 0;
+  }
+
+  .siete { list-style: none; counter-reset: s; max-width: 52rem; }
+
+  .siete li {
+    counter-increment: s;
+    position: relative;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    font-size: 1.02rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .siete li:last-child { border-bottom: none; }
+
+  .siete li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--secundario);
+  }
+
+  /* ── entregables ──────────────────────────────── */
+  .entregable {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 52rem;
+    margin-top: 2rem;
+  }
+
+  .entregable-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .entrega { list-style: none; }
+
+  .entrega li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .entrega li:last-child { border-bottom: none; }
+
+  .entrega-letra { flex: 0 0 1.4rem; font-weight: 700; color: var(--secundario); }
+  .entrega-texto strong { font-family: var(--sans); font-size: 1rem; color: var(--tinta); }
+  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .entregable-nota { margin: 1.25rem 0 0; max-width: none; font-size: 0.95rem; color: var(--secundario); }
+
+  /* ── cierre ───────────────────────────────────── */
+  .cierre { max-width: 46rem; }
+  .cierre p { max-width: none; }
+
+  .cierre-cola {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    margin-top: 1.25rem;
+  }
+
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  /* ── responsive ───────────────────────────────── */
+  @media (max-width: 760px) {
+    .preguntas { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  @media (max-width: 600px) {
+    .encargo, .entregable, .pregunta-madre { padding: 1.25rem; }
+    .pregunta-madre { box-shadow: 5px 5px 0 var(--amarillo); }
+    .entrega li { gap: 0.75rem; }
+  }
+</style>

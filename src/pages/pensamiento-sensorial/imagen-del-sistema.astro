@@ -1,0 +1,655 @@
+---
+// Consigna de la actividad de la sesión 3. Se proyecta el QR en clase y queda
+// enlazada en los materiales de la sesión.
+// Aquí va SOLO la consigna. Las dos fichas viven en esta página en vez de
+// repartirse impresas: cada grupo lee la suya y ve las otras cuatro, que es lo
+// que hace legible la prueba cruzada del final.
+// Nota de vocabulario: no se dice «usuario tipo» ni «persona» en el sentido de
+// la plantilla de marketing. Cada ficha describe un modelo mental —qué cree esa
+// persona que está haciendo—, no un perfil demográfico.
+import Base from '../../layouts/Base.astro';
+
+// El modelo conceptual es el mismo para los cinco grupos: la app no cambia.
+// Lo que cambia es quién llega a ella. Por eso la ficha B se publica una vez.
+const conceptual = [
+  {
+    rotulo: 'Qué puede hacer el sistema',
+    items: [
+      'Mostrar 438 restaurantes con su carta completa, cada plato con sus opciones.',
+      'Filtrar y ordenar por categoría, precio, distancia, tiempo estimado y calificación.',
+      'Aplicar promociones que dependen del restaurante, del día, del monto y del medio de pago.',
+      'Calcular el costo de envío por distancia y el cobro de servicio por pedido.',
+      'Cobrar por tarjeta, por transferencia o en efectivo contra entrega.',
+      'Seguir el pedido desde que el restaurante lo acepta hasta que llega a la puerta.',
+    ],
+  },
+  {
+    rotulo: 'Qué información gestiona',
+    items: [
+      'Catálogo, precios y disponibilidad en tiempo real: un plato se agota a mitad del pedido.',
+      'Ubicación de entrega, que decide qué restaurantes aparecen y cuánto cuesta el envío.',
+      'Historial de pedidos y medios de pago guardados.',
+      'Cuatro montos distintos que solo al final se convierten en uno: platos, envío, servicio, propina.',
+    ],
+  },
+  {
+    rotulo: 'Qué estados atraviesa un pedido',
+    items: [
+      'Explorando · nada está comprometido todavía.',
+      'Carrito armado · hay platos elegidos y un total que aún puede cambiar.',
+      'Pago autorizado · desde aquí cancelar cuesta.',
+      'Restaurante confirmando · puede rechazar el pedido.',
+      'En preparación · ya no se puede modificar.',
+      'En camino · hay un repartidor y un tiempo estimado que se mueve.',
+      'Entregado o fallido · y en el segundo caso, alguien tiene que responder.',
+    ],
+  },
+];
+
+// Rasgos de la relación con el sistema, no perfiles: «no quiere elegir», no
+// «mujer de 24 años». Eso los hace diseñables y evita la caricatura.
+const personas = [
+  {
+    grupo: 'Grupo 1',
+    titulo: 'No quiere elegir',
+    quien: 'Llega con hambre y sin ganas de decidir. Abre la app como quien abre la nevera.',
+    espera: 'Que alguien le proponga tres cosas buenas y ya.',
+    noQuiere: 'Comparar. Leer cartas. Aplicar filtros.',
+    pierde: 'Cuando ve una cuadrícula infinita de restaurantes, cierra la app y pide lo de siempre por WhatsApp.',
+  },
+  {
+    grupo: 'Grupo 2',
+    titulo: 'Pide para cuatro',
+    quien: 'Está a cargo del pedido de la casa. Cuatro personas, cuatro gustos, una sola app.',
+    espera: 'Poder llevar cuatro decisiones en paralelo sin perder ninguna.',
+    noQuiere: 'Ser la única que sepa qué pidió cada quien, ni tener que recordarlo de memoria.',
+    pierde: 'Cuando el carrito es una lista plana de platos sueltos y ya no sabe cuál era de quién.',
+  },
+  {
+    grupo: 'Grupo 3',
+    titulo: 'Cuenta cada peso',
+    quien: 'Tiene 25.000 pesos y ni uno más. El pedido tiene que caber ahí, completo.',
+    espera: 'Saber en todo momento cuánto lleva y cuánto va a pagar de verdad.',
+    noQuiere: 'Enterarse del envío, del servicio y de la propina en la última pantalla.',
+    pierde: 'Cuando el total del final no se parece a la suma que venía haciendo en la cabeza.',
+  },
+  {
+    grupo: 'Grupo 4',
+    titulo: 'Ya le salió mal antes',
+    quien: 'Le llegó un pedido frío, incompleto y una hora tarde. Volvió, pero desconfiada.',
+    espera: 'Saber dónde está su comida, quién la trae y qué pasa si algo sale mal.',
+    noQuiere: 'Descubrir que reclamar es más difícil que pedir.',
+    pierde: 'Cuando el sistema se queda callado veinte minutos y el tiempo estimado cambia sin explicación.',
+  },
+  {
+    grupo: 'Grupo 5',
+    titulo: 'Pide siempre lo mismo',
+    quien: 'Tres restaurantes, seis platos, dos años. Entra a ejecutar, no a explorar.',
+    espera: 'Repetir el pedido de la semana pasada en dos toques.',
+    noQuiere: 'Que le muestren novedades, promociones ni categorías nuevas cada vez que entra.',
+    pierde: 'Cuando la app se rediseña y su restaurante de siempre ya no está donde estaba.',
+  },
+];
+
+const pasos = [
+  {
+    n: '01',
+    titulo: 'Comprendan la persona',
+    detalle: 'Lean la ficha A completa antes de dibujar nada. ¿Qué quiere resolver? ¿Qué ya sabe? ¿Qué no debería tener que recordar?',
+  },
+  {
+    n: '02',
+    titulo: 'Identifiquen la tensión',
+    detalle: 'Escríbanla en una sola frase: «La persona espera ______, pero el sistema necesita ______». Esa frase gobierna todo lo demás.',
+  },
+  {
+    n: '03',
+    titulo: 'Construyan la imagen del sistema',
+    detalle: 'Papel, Figma, cartón, objetos, lo que sea. La fidelidad no importa: importa que se pueda probar una hipótesis.',
+  },
+  {
+    n: '04',
+    titulo: 'Pónganla a prueba',
+    detalle: 'Otro grupo la usa. Ustedes observan y no explican. El protocolo está más abajo.',
+  },
+  {
+    n: '05',
+    titulo: 'Comparen',
+    detalle: 'El modelo mental de la ficha contra el que armó quien la usó. ¿Qué logró comunicar? ¿Dónde produjo una lectura que no esperaban?',
+  },
+  {
+    n: '06',
+    titulo: 'Segunda vuelta',
+    detalle: 'Mismo sistema, otra persona: la del grupo que los probó. ¿Qué tendría que cambiar en la imagen del sistema para servirle también a ella?',
+  },
+];
+
+const prueba = [
+  'Le entregan a otro grupo la ficha A de su persona. Nada más: ni la ficha B, ni su tensión, ni una explicación.',
+  'Le dan una tarea concreta y en voz alta: «pida la cena de esta persona».',
+  'Quien prueba habla mientras usa: qué cree que va a pasar, qué está buscando, qué acaba de entender.',
+  'Ustedes no explican, no corrigen y no defienden. Anotan.',
+  'Anotan tres cosas: dónde se detuvo, qué nombró distinto a como ustedes lo nombraron, y en qué momento dijo «ah, ya».',
+];
+
+const noExplicar = [
+  {
+    que: 'Decir «es que ahí hay que darle en el botón de arriba».',
+    porque: 'Cada explicación suya tapa exactamente el dato que la prueba estaba produciendo.',
+  },
+  {
+    que: 'Diseñar la pantalla bonita y dejar el modelo para el final.',
+    porque: 'La imagen del sistema es lo que la persona usa para entender cómo funciona. Si el modelo no está decidido, la pantalla no comunica nada.',
+  },
+  {
+    que: 'Resolver la tensión quitándole trabajo al sistema.',
+    porque: 'El sistema tiene que seguir haciendo lo que dice la ficha B. No se puede diseñar una app de domicilios que no cobre el envío.',
+  },
+  {
+    que: 'Escribir un instructivo dentro de la interfaz.',
+    porque: 'Un cartel que explica cómo funciona es la confesión de que la imagen del sistema no funciona sola.',
+  },
+];
+
+const entrega = [
+  { letra: 'A', titulo: 'La tensión', detalle: 'La frase del paso 02, escrita. Una sola.' },
+  { letra: 'B', titulo: 'La imagen del sistema', detalle: 'Los momentos que hicieron falta para probar la hipótesis. No hace falta la app entera.' },
+  { letra: 'C', titulo: 'Lo que observaron', detalle: 'Las tres anotaciones de la prueba, en las palabras de quien probó, no en las de ustedes.' },
+  { letra: 'D', titulo: 'La distancia', detalle: '¿Qué logró comunicar la interfaz y dónde produjo una lectura inesperada?' },
+  { letra: 'E', titulo: 'La segunda persona', detalle: 'Qué cambiaría si la misma app tuviera que servirle a la persona del otro grupo.' },
+];
+
+const listo = [
+  'Pueden decir su tensión en una frase, sin leer la ficha.',
+  'Alguien que solo tiene la ficha A puede usar lo que construyeron sin que ustedes hablen.',
+  'Pueden señalar un punto exacto donde la persona entendió algo distinto de lo que ustedes quisieron decir.',
+  'El sistema sigue haciendo todo lo que dice la ficha B.',
+];
+---
+
+<Base
+  titulo="Construir la imagen del sistema · Actividad · Pensamiento Sensorial 3.0"
+  descripcion="Actividad de la sesión 3: un mismo sistema, cinco personas distintas, y lo único que las conecta."
+  volverHref="/pensamiento-sensorial/s03"
+  volverTexto="Sesión 3 · ¿Qué es esta cosa?"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Actividad · Sesión 3 · En grupos · En clase</span>
+    <h1 class="sube sube-2">Construir la imagen del sistema</h1>
+    <p class="lede sube sube-3">Un sistema, cinco personas distintas, y lo único que las conecta.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="encargo">
+      <p class="encargo-frase">
+        Todos los grupos diseñan el mismo sistema: una <strong>app de domicilios</strong>.
+        Cada grupo recibe una persona distinta.
+      </p>
+      <p class="encargo-nota">
+        La app no cambia. Lo que cambia es quién llega a ella y con qué idea en la cabeza.
+        Cada grupo recibe dos fichas: la <strong>A</strong> es su persona, la <strong>B</strong>{' '}
+        es el sistema y es la misma para todos.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Las tres palabras</h2>
+    <p>
+      Son de Norman (2013) y sostienen toda la actividad. Vale la pena tenerlas a mano
+      mientras trabajan.
+    </p>
+    <dl class="glosario">
+      <div>
+        <dt>Modelo mental</dt>
+        <dd>
+          La idea que la persona construye sobre cómo funciona algo. Se arma con experiencias
+          anteriores, con convenciones y con la propia interacción. No tiene por qué coincidir
+          con el funcionamiento real.
+        </dd>
+      </div>
+      <div>
+        <dt>Modelo conceptual</dt>
+        <dd>
+          La explicación de cómo queremos que funcione el sistema: sus capacidades, su
+          información, sus estados, y la relación entre cada acción y su resultado.
+        </dd>
+      </div>
+      <div class="destacada">
+        <dt>Imagen del sistema</dt>
+        <dd>
+          Todo lo que el sistema hace perceptible para que la persona entienda cómo funciona:
+          la interfaz, pero también los textos, los mensajes, los estados, las respuestas y la
+          ayuda. <strong>Es lo único que conecta los otros dos.</strong> Es lo que ustedes van
+          a diseñar hoy.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Ficha B · El modelo conceptual</h2>
+    <p>
+      Igual para los cinco grupos. Dice qué hace el sistema, no cómo debe verse.{' '}
+      <strong>Ninguna decisión de interfaz está tomada acá.</strong>
+    </p>
+    <div class="conceptual">
+      {conceptual.map((bloque) => (
+        <div class="conceptual-col">
+          <h3 class="mono">{bloque.rotulo}</h3>
+          <ul role="list">
+            {bloque.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Ficha A · Su persona</h2>
+    <p>
+      Cada grupo trabaja con la suya. Las otras cuatro quedan acá porque al final van a
+      probar la de otro grupo y a rediseñar pensando en ella.
+    </p>
+    <ul class="personas" role="list">
+      {personas.map((p) => (
+        <li>
+          <span class="persona-grupo mono">{p.grupo}</span>
+          <h3 class="persona-titulo">{p.titulo}</h3>
+          <p class="persona-quien">{p.quien}</p>
+          <dl class="persona-campos">
+            <div><dt>Espera</dt><dd>{p.espera}</dd></div>
+            <div><dt>No quiere</dt><dd>{p.noQuiere}</dd></div>
+            <div><dt>Se pierde</dt><dd>{p.pierde}</dd></div>
+          </dl>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La regla</h2>
+    <div class="regla">
+      <p class="regla-titulo">Los dos modelos no coinciden.</p>
+      <p>
+        No es un descuido de las fichas: es el problema. Si coincidieran, no habría nada que
+        diseñar. Antes de tocar una pantalla, completen esta frase y déjenla escrita donde
+        la vean:
+      </p>
+      <p class="regla-formula">
+        «La persona espera <span class="hueco" aria-hidden="true"></span>,
+        pero el sistema necesita <span class="hueco" aria-hidden="true"></span>».
+      </p>
+      <p class="regla-cola">
+        Todo lo que hagan después es una respuesta a esa frase.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Cómo lo hacen</h2>
+    <ol class="pasos" role="list">
+      {pasos.map((p) => (
+        <li>
+          <span class="paso-n mono" aria-hidden="true">{p.n}</span>
+          <span class="paso-texto">
+            <strong>{p.titulo}.</strong> <span class="paso-detalle">{p.detalle}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+    <p class="pasos-nota">
+      Los pasos 05 y 06 solo se pueden hacer <strong>después</strong> de la prueba. Antes no
+      hay nada que comparar: solo opiniones sobre un diseño propio.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La prueba</h2>
+    <p>
+      Es el momento en que el prototipo deja de ser una maqueta y se convierte en un
+      instrumento. Dura poco: diez minutos por grupo.
+    </p>
+    <ol class="protocolo" role="list">
+      {prueba.map((p) => <li>{p}</li>)}
+    </ol>
+    <p class="remate">
+      La regla que más cuesta: ustedes observan y no explican.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Lo que esto no es</h2>
+    <ul class="anti" role="list">
+      {noExplicar.map((item) => (
+        <li>
+          <span class="anti-que">{item.que}</span>
+          <span class="anti-porque">{item.porque}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué entregan</h2>
+    <div class="entregable">
+      <p class="entregable-titulo">Cinco cosas, y se muestran al cierre de la clase.</p>
+      <ol class="entrega" role="list">
+        {entrega.map((item) => (
+          <li>
+            <span class="entrega-letra mono" aria-hidden="true">{item.letra}</span>
+            <span class="entrega-texto">
+              <strong>{item.titulo}.</strong> <span class="entrega-detalle">{item.detalle}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="entregable-nota">
+        Al final no vamos a preguntar cuál quedó mejor. Vamos a preguntar qué tuvo que hacer
+        la interfaz para que los dos modelos se encontraran.
+      </p>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  /* ── el encargo ───────────────────────────────── */
+  .encargo { border: 2px solid var(--tinta); padding: 1.75rem 2rem; max-width: 42rem; }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota { max-width: none; margin-bottom: 0; font-size: 0.98rem; color: var(--secundario); }
+  .encargo-nota strong { color: var(--tinta); }
+
+  /* ── glosario ─────────────────────────────────── */
+  .glosario { max-width: 52rem; margin-top: 1.25rem; }
+
+  .glosario > div { border-top: 1px solid var(--regla); padding: 0.9rem 0; }
+  /* El amarillo marca una sola de las tres: la que se diseña. */
+  .glosario > div.destacada { border-top: 4px solid var(--amarillo); }
+
+  .glosario dt {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    margin-bottom: 0.3rem;
+  }
+
+  .glosario dd { font-size: 0.98rem; }
+  .glosario dd strong { color: var(--tinta); }
+
+  /* ── ficha B ──────────────────────────────────── */
+  .conceptual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .conceptual-col { border-top: 3px solid var(--tinta); padding-top: 0.8rem; }
+  .conceptual-col h3 { color: var(--secundario); font-weight: 400; margin-bottom: 0.75rem; }
+  .conceptual-col ul { list-style: none; }
+
+  .conceptual-col li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .conceptual-col li:last-child { border-bottom: none; }
+
+  /* ── las cinco personas ───────────────────────── */
+  .personas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+    margin: 1.5rem 0 0;
+  }
+
+  .personas li { border-top: 3px solid var(--tinta); padding-top: 0.8rem; }
+
+  .persona-grupo { display: block; color: var(--secundario); margin-bottom: 0.5rem; }
+
+  .persona-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+
+  .persona-quien { font-size: 0.95rem; max-width: none; margin-bottom: 0.75rem; }
+
+  .persona-campos > div {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    border-top: 1px solid var(--regla);
+  }
+
+  .persona-campos dt {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    padding-top: 0.25rem;
+  }
+
+  .persona-campos dd { font-size: 0.92rem; line-height: 1.5; }
+
+  /* ── la regla ─────────────────────────────────── */
+  /* Único bloque de paleta invertida de la página: es lo que sostiene la
+     actividad y lo primero que se olvida al empezar a dibujar pantallas. */
+  .regla {
+    background: var(--tinta);
+    color: #e5e5e5;
+    padding: 2rem 2.25rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 46rem;
+  }
+
+  .regla p { max-width: none; margin-bottom: 1rem; }
+  .regla p:last-child { margin-bottom: 0; }
+
+  .regla-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--papel);
+    margin-bottom: 0.75rem !important;
+  }
+
+  .regla-formula {
+    font-family: var(--sans);
+    font-size: 1.05rem;
+    color: var(--papel);
+    line-height: 2.1;
+  }
+
+  .hueco {
+    display: inline-block;
+    width: 8rem;
+    max-width: 40vw;
+    border-bottom: 2px solid var(--amarillo);
+    vertical-align: baseline;
+  }
+
+  .regla-cola {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--amarillo);
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+  }
+
+  /* ── pasos ────────────────────────────────────── */
+  .pasos { list-style: none; max-width: 52rem; margin-top: 1.25rem; }
+
+  .pasos li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .pasos li:last-child { border-bottom: none; }
+
+  .paso-n { flex: 0 0 1.8rem; font-weight: 700; color: var(--secundario); }
+  .paso-texto strong { font-family: var(--sans); font-size: 1rem; color: var(--tinta); }
+  .paso-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .pasos-nota { font-size: 0.95rem; color: var(--secundario); margin-top: 1.25rem; }
+  .pasos-nota strong { color: var(--tinta); }
+
+  /* ── protocolo de la prueba ───────────────────── */
+  .protocolo { list-style: none; counter-reset: p; max-width: 52rem; margin: 1.25rem 0; }
+
+  .protocolo li {
+    counter-increment: p;
+    position: relative;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    font-size: 1.02rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .protocolo li:last-child { border-bottom: none; }
+
+  .protocolo li::before {
+    content: counter(p);
+    position: absolute;
+    left: 0;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--secundario);
+  }
+
+  .remate {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--tinta);
+  }
+
+  /* ── lo que esto no es ────────────────────────── */
+  .anti { list-style: none; max-width: 52rem; margin-top: 1.25rem; }
+
+  .anti li { position: relative; padding: 0.9rem 0 0.9rem 2rem; border-bottom: 1px solid var(--regla); }
+  .anti li:last-child { border-bottom: none; }
+
+  .anti li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    top: 0.95rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--tinta);
+  }
+
+  .anti-que {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--tinta);
+    margin-bottom: 0.25rem;
+  }
+
+  .anti-porque { display: block; font-size: 0.98rem; color: var(--secundario); }
+
+  /* ── el entregable ────────────────────────────── */
+  .entregable { border: 2px solid var(--tinta); padding: 1.75rem 2rem; max-width: 52rem; }
+
+  .entregable-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .entrega { list-style: none; }
+
+  .entrega li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .entrega li:last-child { border-bottom: none; }
+
+  .entrega-letra { flex: 0 0 1.4rem; font-weight: 700; color: var(--secundario); }
+  .entrega-texto strong { font-family: var(--sans); font-size: 1rem; color: var(--tinta); }
+  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .entregable-nota { margin: 1.25rem 0 0; max-width: none; font-size: 0.95rem; color: var(--secundario); }
+
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  /* ── responsive ───────────────────────────────── */
+  @media (max-width: 860px) {
+    .conceptual { grid-template-columns: 1fr; gap: 1.75rem; }
+  }
+
+  @media (max-width: 760px) {
+    .personas { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  @media (max-width: 600px) {
+    .encargo, .entregable { padding: 1.25rem; }
+    .regla { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+    .regla-formula { line-height: 2.4; }
+    .persona-campos > div { grid-template-columns: 1fr; gap: 0.15rem; }
+    .persona-campos dt { padding-top: 0; }
+    .pasos li, .entrega li { gap: 0.75rem; }
+  }
+</style>
