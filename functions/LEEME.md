@@ -1,8 +1,23 @@
-# Bitácoras de la sesión 2 — cómo se opera
+# Funciones del sitio — cómo se operan
 
 Esta carpeta es lo único del repositorio que no es estático. Cloudflare Pages la
 recoge aparte del build de Astro: el sitio sigue compilando a HTML plano, sin
 adapter y sin SSR, y esto corre en el edge solo cuando alguien llama `/api/…`.
+
+## 0. Estrenos con fecha (`_middleware.js`)
+
+Hay rutas que se suben antes de tiempo pero no deben abrirse a los estudiantes
+hasta una fecha y hora (el deck de la sesión, por ejemplo). `_middleware.js`
+las bloquea con un 403 amable hasta la fecha de `ESTRENOS`; el docente entra
+con `?clave=CLAVE_DOCENTE` una vez y sigue con cookie (los assets relativos
+del deck no arrastran el query param).
+
+Para estrenar otra ruta: agregar `{ ruta, abre }` a `ESTRENOS` en
+`functions/_middleware.js`, con `abre` en ISO con offset (`-05:00` para
+Colombia). Pasada la fecha la entrada queda inerte y se puede borrar en el
+próximo ritual semanal.
+
+## Bitácoras de la sesión 2
 
 ## 1. Configuración en Cloudflare (una sola vez, a mano)
 
