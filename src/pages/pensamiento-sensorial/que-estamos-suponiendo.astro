@@ -1,0 +1,374 @@
+---
+// Consigna de la tarea de la sesión 3. Se proyecta como QR desde el deck y
+// queda enlazada en los materiales de la sesión. Dos partes: los supuestos del
+// trabajo en clase y la bitácora sobre una interfaz conocida.
+import Base from '../../layouts/Base.astro';
+
+const interfaces = ['TikTok', 'Instagram', 'Temu', 'Rappi', 'Spotify', 'Despegar'];
+
+// Las siete preguntas de la bitácora. Son la operacionalización de una sola:
+// «¿qué parece esperar esta interfaz que yo haga?»
+const preguntas = [
+  {
+    n: '01',
+    q: '¿Qué da por sentado que ya sé hacer?',
+    nota: 'Qué convenciones usa sin explicarlas: gestos, íconos, palabras. ¿De dónde se supone que las aprendí?',
+  },
+  {
+    n: '02',
+    q: '¿Qué quiere que haga primero?',
+    nota: 'Apenas abre, ¿hacia dónde empuja? ¿Cómo lo sé: qué lo anuncia?',
+  },
+  {
+    n: '03',
+    q: '¿Qué me pide recordar?',
+    nota: 'Qué información tengo que cargar en la cabeza de una pantalla a otra para no perderme.',
+  },
+  {
+    n: '04',
+    q: '¿Qué información me deja disponible justo cuando la necesito?',
+    nota: 'Lo contrario de la anterior: qué está en el mundo —visible, a la mano— y no tengo que memorizar.',
+  },
+  {
+    n: '05',
+    q: '¿Qué supone sobre mi contexto?',
+    nota: 'Mi conexión, mi tiempo, mi atención, mi dispositivo, mi plata. ¿Qué da por hecho de mi vida?',
+  },
+  {
+    n: '06',
+    q: '¿Dónde se quedaría alguien que nunca la ha visto?',
+    nota: 'Hagan el ejercicio de mirarla con ojos ajenos: ¿en qué punto una persona nueva abandona o se equivoca?',
+  },
+  {
+    n: '07',
+    q: '¿Para quién parece pensada?',
+    nota: 'Y la más importante: ¿dónde se nota? Señalen el elemento concreto que se los dice.',
+  },
+];
+
+const listo = [
+  'Cada supuesto de la parte 1 está escrito como afirmación, no como pregunta ni como queja.',
+  'Se puede decir de cada supuesto qué lo convertiría en dato: a quién habría que observar o preguntarle.',
+  'Las tres preguntas de investigación se pueden responder con personas reales, no con opiniones del grupo.',
+  'Cada captura de la bitácora dice qué se ve y qué supone la interfaz, no solo qué les pareció.',
+];
+---
+
+<Base
+  titulo="¿Qué estamos suponiendo? · Tarea · Pensamiento Sensorial 3.0"
+  descripcion="Tarea de la sesión 3: sacar a la luz los supuestos detrás de la app de domicilios y observar una interfaz conocida con ojos de diseñador."
+  volverHref="/pensamiento-sensorial/s03"
+  volverTexto="Sesión 3 · ¿Qué es esta cosa?"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Tarea · Sesión 3 · En grupos · Para la próxima clase</span>
+    <h1 class="sube sube-2">¿Qué estamos suponiendo?</h1>
+    <p class="lede sube-3">Dos preguntas para llevarse.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="encargo">
+      <p class="encargo-frase">
+        Toda la tarea gira en torno a dos preguntas: ¿qué <strong>suponemos</strong> sobre
+        las personas para las que diseñamos, y qué parece <strong>suponer una
+        interfaz</strong> sobre nosotros?
+      </p>
+      <p class="encargo-nota">
+        Son dos partes y se entregan juntas, en un solo documento, por Classroom.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Parte 1 · Sobre su app de domicilios</h2>
+    <p>
+      En clase diseñaron una imagen del sistema para una persona que no eran ustedes.
+      Aunque la hayan puesto a prueba, gran parte de las decisiones salieron de lo que
+      el grupo <strong>dio por cierto</strong>. Eso es lo que vamos a sacar a la luz.
+    </p>
+
+    <h3 class="paso-titulo">Primero: los supuestos</h3>
+    <p>
+      Vuelvan sobre su propuesta y escriban entre <strong>cinco y ocho supuestos</strong>:
+      cosas que asumieron sobre su persona, sobre su contexto o sobre cómo usaría el
+      sistema, sin evidencia real. Un supuesto se escribe como afirmación:
+    </p>
+    <div class="ejemplos">
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">Supuesto</span>
+        <p>«La persona siempre tiene datos móviles suficientes para cargar fotos de los platos.»</p>
+      </div>
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">Supuesto</span>
+        <p>«A la persona le importa más la rapidez que el precio.»</p>
+      </div>
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">No es supuesto, es opinión</span>
+        <p>«A la gente no le gustan los filtros.» — no dice nada verificable sobre nadie en particular.</p>
+      </div>
+    </div>
+
+    <h3 class="paso-titulo">Después: las preguntas</h3>
+    <p>
+      Elijan <strong>tres</strong> de sus supuestos y conviértanlos en preguntas que se
+      puedan <strong>investigar con usuarios</strong>. La prueba es simple: la pregunta
+      tiene que poder responderse observando o hablando con personas reales, no
+      discutiendo entre ustedes.
+    </p>
+    <div class="ejemplos">
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">Sirve</span>
+        <p>«¿Cómo pide comida hoy, sin esta app, una persona que desconfía de pagar en línea?»</p>
+      </div>
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">No sirve</span>
+        <p>«¿Le gustaría a la gente pagar en efectivo?» — invita a imaginar, no a observar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Parte 2 · Bitácora</h2>
+    <p>
+      Elijan <strong>una</strong> de estas interfaces:
+      {interfaces.map((nombre, i) => (
+        <><strong>{nombre}</strong>{i < interfaces.length - 2 ? ', ' : i === interfaces.length - 2 ? ' o ' : ''}</>
+      ))}.
+      Úsenla un rato con una sola pregunta en la cabeza:
+    </p>
+    <p class="remate">
+      ¿Qué parece esperar esta interfaz que yo haga?
+    </p>
+    <p>
+      Después respóndanla por partes, con estas siete preguntas. No hace falta escribir
+      mucho en cada una: hace falta señalar <strong>el elemento concreto</strong> de la
+      interfaz que produce cada respuesta.
+    </p>
+    <ol class="preguntas" role="list">
+      {preguntas.map((p) => (
+        <li>
+          <span class="pregunta-n mono">{p.n}</span>
+          <div>
+            <h3 class="pregunta-q">{p.q}</h3>
+            <p class="pregunta-nota">{p.nota}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p>
+      Acompañen las respuestas con <strong>dos o tres capturas</strong> de pantalla.
+      Cada captura lleva una frase: qué se ve y qué supone la interfaz. Una captura sin
+      comentario es decoración; no la incluyan.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué entregan</h2>
+    <div class="entregable">
+      <p class="entregable-titulo">Un solo documento, por Classroom, antes de la próxima clase.</p>
+      <ol class="entrega" role="list">
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">A</span>
+          <span class="entrega-texto">
+            <strong>Los supuestos.</strong>{' '}
+            <span class="entrega-detalle">Entre cinco y ocho, escritos como afirmaciones.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">B</span>
+          <span class="entrega-texto">
+            <strong>Las preguntas.</strong>{' '}
+            <span class="entrega-detalle">Tres supuestos convertidos en preguntas investigables.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">C</span>
+          <span class="entrega-texto">
+            <strong>La bitácora.</strong>{' '}
+            <span class="entrega-detalle">Las siete preguntas respondidas sobre la interfaz elegida.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">D</span>
+          <span class="entrega-texto">
+            <strong>Las capturas.</strong>{' '}
+            <span class="entrega-detalle">Dos o tres, cada una con su frase.</span>
+          </span>
+          </li>
+      </ol>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  /* ── el encargo ───────────────────────────────── */
+  .encargo {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 46rem;
+  }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.35;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota {
+    max-width: none;
+    margin-bottom: 0;
+    font-size: 0.98rem;
+    color: var(--secundario);
+  }
+
+  .remate {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--tinta);
+  }
+
+  /* ── pasos y ejemplos ─────────────────────────── */
+  .paso-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--tinta);
+    margin: 2rem 0 0.75rem;
+  }
+
+  .ejemplos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.25rem;
+    margin: 1.25rem 0 0.5rem;
+    max-width: 56rem;
+  }
+
+  .ejemplo { border-top: 3px solid var(--tinta); padding-top: 0.7rem; }
+
+  .ejemplo-tag { display: block; color: var(--secundario); margin-bottom: 0.4rem; }
+
+  .ejemplo p {
+    font-size: 0.95rem;
+    color: var(--texto);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  /* ── las siete preguntas ──────────────────────── */
+  .preguntas {
+    list-style: none;
+    max-width: 52rem;
+    margin: 1.5rem 0;
+  }
+
+  .preguntas li {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .preguntas li:last-child { border-bottom: none; }
+
+  .pregunta-n {
+    flex: 0 0 1.8rem;
+    font-weight: 700;
+    color: var(--secundario);
+  }
+
+  .pregunta-q {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .pregunta-nota {
+    font-size: 0.95rem;
+    color: var(--secundario);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  /* ── el entregable ────────────────────────────── */
+  .entregable {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 52rem;
+  }
+
+  .entregable-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .entrega { list-style: none; }
+
+  .entrega li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .entrega li:last-child { border-bottom: none; }
+
+  .entrega-letra { flex: 0 0 1.4rem; font-weight: 700; color: var(--secundario); }
+
+  .entrega-texto strong {
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--tinta);
+  }
+
+  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  @media (max-width: 700px) {
+    .encargo, .entregable { padding: 1.25rem; }
+    .preguntas li { gap: 0.9rem; }
+  }
+</style>

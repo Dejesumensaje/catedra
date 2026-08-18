@@ -1,0 +1,420 @@
+---
+// Consigna de la actividad de la sesión 3: construir la imagen del sistema.
+// Se proyecta como QR desde el deck y queda enlazada en los materiales de la
+// sesión. Las fichas viven aquí: el deck solo las apunta.
+import Base from '../../layouts/Base.astro';
+
+// Las personas no son diagnósticos ni arquetipos de marketing: son modelos
+// mentales que no coinciden con el del sistema. Esa distancia es el ejercicio.
+const personas = [
+  {
+    grupo: 'Grupo 1',
+    nombre: 'Tiene hambre y no quiere decidir',
+    quiere: 'Comer algo rico, ya. No está explorando: está resolviendo.',
+    espera: 'Que la app le proponga tres o cuatro opciones buenas y punto.',
+    noQuiere: 'Comparar cientos de restaurantes ni configurar filtros.',
+    sePierde: 'Cuando la primera pantalla es un catálogo infinito con ocho categorías y un carrusel de promociones.',
+  },
+  {
+    grupo: 'Grupo 2',
+    nombre: 'Desconfía de pagar en línea',
+    quiere: 'Pedir sin registrar su tarjeta. Paga en efectivo o contraentrega.',
+    espera: 'Ver el total exacto —con envío y todo— antes de comprometerse a nada.',
+    noQuiere: 'Crear una cuenta ni dar datos de pago por adelantado.',
+    sePierde: 'Cuando le piden la tarjeta antes de mostrarle cuánto va a pagar.',
+  },
+  {
+    grupo: 'Grupo 3',
+    nombre: 'Pide para alguien más',
+    quiere: 'Enviarle el almuerzo a su abuela, que vive en otra dirección.',
+    espera: 'Poder cambiar la dirección de entrega y dejar indicaciones para el repartidor.',
+    noQuiere: 'Rehacer el pedido ni llamar al restaurante a explicar.',
+    sePierde: 'Cuando la app asume que la comida va a donde está el teléfono.',
+  },
+  {
+    grupo: 'Grupo 4',
+    nombre: 'No puede comer gluten',
+    quiere: 'Pedir sin tener que adivinar qué lleva cada plato.',
+    espera: 'Que «sin gluten» sea un dato verificable, no una etiqueta decorativa.',
+    noQuiere: 'Escribirle a cada restaurante a preguntar ingredientes.',
+    sePierde: 'Con fotos genéricas, descripciones vagas y filtros que prometen lo que el restaurante no confirma.',
+  },
+  {
+    grupo: 'Grupo 5',
+    nombre: 'Cuenta cada peso',
+    quiere: 'Saber el precio real completo: plato, envío, servicio, propina.',
+    espera: 'Poder ordenar las opciones por precio final, no por precio del plato.',
+    noQuiere: 'Sorpresas en el último paso del pago.',
+    sePierde: 'Cuando los costos aparecen uno a uno al final y el «$12.000» del principio termina en $21.500.',
+  },
+];
+
+// Ficha B, la misma para todos: capacidades del sistema, no pantallas.
+// Si dijera cómo debe verse, la actividad dejaría de ser diseño.
+const sistema = [
+  'Explorar cientos de restaurantes con su menú, sus precios y sus tiempos estimados.',
+  'Filtrar por tipo de comida, precio, tiempo de entrega y calificación.',
+  'Comparar opciones antes de elegir.',
+  'Elegir un plato y personalizarlo: cantidades, modificaciones, notas para la cocina.',
+  'Confirmar el pedido: resumen, dirección de entrega, total.',
+  'Pagar: tarjeta, billetera digital o efectivo.',
+  'Seguir el pedido por sus estados: recibido, en preparación, en camino, entregado.',
+];
+
+const pasos = [
+  {
+    numero: '01',
+    titulo: 'Comprendan la persona',
+    cuerpo: '¿Qué quiere? ¿Qué sabe? ¿Qué no debería tener que recordar?',
+  },
+  {
+    numero: '02',
+    titulo: 'Identifiquen la tensión',
+    cuerpo: '¿Dónde choca el modelo mental de su persona con el modelo conceptual del sistema?',
+  },
+  {
+    numero: '03',
+    titulo: 'Construyan la imagen del sistema',
+    cuerpo: 'Papel, Figma, cartón, objetos. La fidelidad no importa: importa que puedan probar una hipótesis, no que se vea bonita.',
+  },
+  {
+    numero: '04',
+    titulo: 'Pónganla a prueba',
+    cuerpo: 'Otro grupo la usa con solo el modelo mental en la mano. Ustedes observan y no explican.',
+  },
+];
+
+const despues = [
+  {
+    numero: '05',
+    titulo: 'Comparen',
+    cuerpo: 'El modelo mental inicial con el que la persona armó al usar la propuesta. ¿Qué logró comunicar? ¿Dónde produjo una lectura inesperada?',
+  },
+  {
+    numero: '06',
+    titulo: 'Segunda vuelta',
+    cuerpo: 'Mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?',
+  },
+];
+---
+
+<Base
+  titulo="Construir la imagen del sistema · Actividad · Pensamiento Sensorial 3.0"
+  descripcion="Actividad de la sesión 3: todos los grupos diseñan la misma app de domicilios, cada uno para una persona distinta."
+  volverHref="/pensamiento-sensorial/s03"
+  volverTexto="Sesión 3 · ¿Qué es esta cosa?"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Actividad · Sesión 3 · En grupos</span>
+    <h1 class="sube sube-2">Construir la imagen del sistema</h1>
+    <p class="lede sube-3">El mismo sistema. Cinco personas distintas.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="encargo">
+      <p class="encargo-frase">
+        Todos los grupos diseñan el mismo sistema: una app de domicilios.
+        Cada uno recibe <strong>una persona distinta</strong>.
+      </p>
+      <p class="encargo-nota">
+        Cada grupo recibe dos fichas. La <strong>ficha A</strong> es el modelo mental: quién es
+        su persona, qué quiere resolver, qué espera, qué no quiere hacer. La
+        <strong>ficha B</strong> es el modelo conceptual: qué puede hacer el sistema. No dice
+        cómo debe verse.
+      </p>
+      <p class="encargo-nota">
+        La regla: los dos modelos <strong>no coinciden</strong>. Antes de diseñar nada,
+        completen una sola frase:
+      </p>
+      <p class="encargo-plantilla">
+        «La persona espera <span class="vacio">____________</span>,
+        pero el sistema necesita <span class="vacio">____________</span>.»
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Ficha A · Su persona</h2>
+    <p>
+      Cada grupo trabaja con la suya. Las otras cuatro quedan acá para que sepan qué van
+      a enfrentar cuando les toque probar la propuesta de otro grupo.
+    </p>
+    <ul class="personas" role="list">
+      {personas.map((p) => (
+        <li class="persona">
+          <span class="persona-grupo mono">{p.grupo}</span>
+          <h3 class="persona-nombre">{p.nombre}</h3>
+          <dl class="persona-ficha">
+            <div><dt>Quiere resolver</dt><dd>{p.quiere}</dd></div>
+            <div><dt>Espera</dt><dd>{p.espera}</dd></div>
+            <div><dt>No quiere</dt><dd>{p.noQuiere}</dd></div>
+            <div><dt>Se siente perdida</dt><dd>{p.sePierde}</dd></div>
+          </dl>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Ficha B · El sistema</h2>
+    <p>
+      Esta ficha es la misma para todos. Es el modelo conceptual: lo que el sistema
+      puede hacer y la información que maneja. <strong>No es una lista de pantallas</strong>:
+      cómo se hace perceptible cada una de estas cosas es exactamente lo que van a diseñar.
+    </p>
+    <ul class="sistema" role="list">
+      {sistema.map((capacidad) => <li>{capacidad}</li>)}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La investigación</h2>
+    <ol class="pasos" role="list">
+      {pasos.map((paso) => (
+        <li class="paso">
+          <span class="paso-num mono">{paso.numero}</span>
+          <div>
+            <h3 class="paso-titulo">{paso.titulo}</h3>
+            <p class="paso-cuerpo">{paso.cuerpo}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="nota-prueba">
+      La regla de la prueba: el otro grupo usa su propuesta con <strong>solo el modelo
+      mental en la mano</strong> —la ficha A de la persona para la que diseñaron—.
+      Ustedes observan y no explican. Si hay que explicarla, la imagen del sistema
+      todavía no está haciendo su trabajo.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Después de probar</h2>
+    <ol class="pasos" role="list">
+      {despues.map((paso) => (
+        <li class="paso">
+          <span class="paso-num mono">{paso.numero}</span>
+          <div>
+            <h3 class="paso-titulo">{paso.titulo}</h3>
+            <p class="paso-cuerpo">{paso.cuerpo}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El cierre</h2>
+    <div class="cierre">
+      <p>
+        Al final no preguntamos cuál propuesta quedó mejor. Preguntamos:
+      </p>
+      <p class="cierre-pregunta">
+        ¿Qué tuvo que hacer la interfaz para que los dos modelos se encontraran?
+      </p>
+      <p>
+        Los cinco grupos resolvieron el mismo sistema para cinco personas distintas.
+        La comparación no es entre diseños: es entre cinco maneras de cerrar la misma brecha.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ── el encargo ───────────────────────────────── */
+  .encargo {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 42rem;
+  }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota {
+    max-width: none;
+    margin-bottom: 0.9rem;
+    font-size: 0.98rem;
+    color: var(--secundario);
+  }
+
+  .encargo-nota strong { color: var(--tinta); }
+
+  .encargo-plantilla {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    max-width: none;
+    margin: 1.25rem 0 0;
+    padding: 1rem 1.25rem;
+    background: var(--amarillo);
+    line-height: 1.5;
+  }
+
+  .encargo-plantilla .vacio { letter-spacing: 0.02em; }
+
+  /* ── las cinco personas ───────────────────────── */
+  .personas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+    margin: 1.5rem 0 0;
+  }
+
+  .persona { border-top: 3px solid var(--tinta); padding-top: 0.8rem; }
+
+  .persona-grupo { display: block; color: var(--secundario); margin-bottom: 0.5rem; }
+
+  .persona-nombre {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    line-height: 1.25;
+    margin-bottom: 0.9rem;
+  }
+
+  .persona-ficha { margin: 0; }
+
+  .persona-ficha div {
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .persona-ficha div:last-child { border-bottom: none; }
+
+  .persona-ficha dt {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    margin-bottom: 0.15rem;
+  }
+
+  .persona-ficha dd {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--texto);
+    line-height: 1.5;
+    max-width: none;
+  }
+
+  /* ── ficha B ──────────────────────────────────── */
+  .sistema {
+    list-style: none;
+    max-width: 52rem;
+    margin-top: 1.25rem;
+  }
+
+  .sistema li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .sistema li:last-child { border-bottom: none; }
+
+  .sistema li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  /* ── los pasos ────────────────────────────────── */
+  .pasos {
+    list-style: none;
+    max-width: 52rem;
+    margin-top: 1.25rem;
+  }
+
+  .paso {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .paso:last-child { border-bottom: none; }
+
+  .paso-num {
+    flex: 0 0 1.8rem;
+    font-weight: 700;
+    color: var(--secundario);
+  }
+
+  .paso-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    margin-bottom: 0.25rem;
+  }
+
+  .paso-cuerpo {
+    font-size: 0.98rem;
+    color: var(--texto);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .nota-prueba {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-size: 1rem;
+    color: var(--tinta);
+    max-width: 52rem;
+    margin-top: 1.75rem;
+  }
+
+  /* ── el cierre ────────────────────────────────── */
+  .cierre {
+    background: var(--tinta);
+    color: #e5e5e5;
+    padding: 2rem 2.25rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 46rem;
+  }
+
+  .cierre p { max-width: none; margin-bottom: 1rem; }
+  .cierre p:last-child { margin-bottom: 0; }
+
+  .cierre-pregunta {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    color: var(--amarillo);
+    padding: 1rem 0;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    margin: 1.25rem 0 !important;
+  }
+
+  @media (max-width: 760px) {
+    .personas { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 700px) {
+    .cierre { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+    .encargo { padding: 1.25rem; }
+    .paso { gap: 0.9rem; }
+  }
+</style>
