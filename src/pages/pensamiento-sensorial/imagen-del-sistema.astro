@@ -1,7 +1,9 @@
 ---
-// Consigna de la actividad de la sesión 3: construir la imagen del sistema.
-// Se proyecta como QR desde el deck y queda enlazada en los materiales de la
-// sesión. Las fichas viven aquí: el deck solo las apunta.
+// Consigna de la tarea de la sesión 3: construir la imagen del sistema.
+// La actividad no alcanzó a ocurrir en clase y quedó como tarea, fusionada
+// con los supuestos: el prototipo se construye en casa y la prueba cruzada
+// abre la próxima sesión. Esta es la única consigna; la antigua página de la
+// tarea (/que-estamos-suponiendo) redirige acá.
 import Base from '../../layouts/Base.astro';
 
 // Las personas no son diagnósticos ni arquetipos de marketing: son modelos
@@ -75,12 +77,88 @@ const pasos = [
   {
     numero: '03',
     titulo: 'Construyan la imagen del sistema',
-    cuerpo: 'Papel, Figma, cartón, objetos. La fidelidad no importa: importa que puedan probar una hipótesis, no que se vea bonita.',
+    cuerpo: 'La fidelidad no importa: importa que puedan probar una hipótesis, no que se vea bonita.',
   },
   {
     numero: '04',
     titulo: 'Pónganla a prueba',
     cuerpo: 'Al inicio de la próxima clase: otro grupo la usa con solo el modelo mental en la mano. Ustedes observan y no explican.',
+  },
+];
+
+const requisitos = [
+  {
+    titulo: 'Móvil',
+    cuerpo: 'El prototipo se diseña y se prueba en pantalla de celular.',
+  },
+  {
+    titulo: 'Flujo completo',
+    cuerpo: 'Desde que la persona abre la app hasta confirmar el pedido. Si en algún punto habría que «imaginar» el siguiente paso, el flujo no está completo.',
+  },
+  {
+    titulo: 'Interactuable',
+    cuerpo: 'En la próxima clase otro grupo lo recorre sin que ustedes expliquen nada. Eso define el nivel de terminado: no que se vea bonito, sino que alguien pueda usarlo.',
+  },
+];
+
+const herramientas = [
+  {
+    nombre: 'Papel',
+    cuerpo: 'Paper prototyping, con una condición: pantallas claramente marcadas y las bifurcaciones explícitas. Qué pasa si toco acá, qué pasa si me equivoco, qué pasa si cancelo.',
+  },
+  {
+    nombre: 'Canva, Figma o similar',
+    cuerpo: 'Pantallas enlazadas que se puedan recorrer de principio a fin.',
+  },
+  {
+    nombre: 'Inteligencia artificial',
+    cuerpo: 'Claude, Kimi, Gemini o la que prefieran, con la miniguía de más abajo. Es una vía más, no un requisito.',
+  },
+];
+
+const pasosIA = [
+  {
+    n: '01',
+    titulo: 'Diseñen en papel primero',
+    cuerpo: 'Antes de abrir cualquier herramienta, el grupo decide la interfaz: qué ve su persona primero, qué pantallas hay y en qué orden, qué dice cada una. Un boceto acordado por todo el grupo es suficiente. Ese boceto es su diseño, y es la referencia contra la que se evalúa todo lo demás.',
+  },
+  {
+    n: '02',
+    titulo: 'Pasen su diseño a la IA',
+    cuerpo: 'Con el boceto decidido, descríbanselo a la herramienta —o tómenle una foto al papel— junto con la ficha A y la ficha B, y pídanle el prototipo en un solo archivo HTML: «Construye este prototipo navegable. Este es nuestro diseño: …».',
+  },
+  {
+    n: '03',
+    titulo: 'Iteren contra su diseño, y guarden el rastro',
+    cuerpo: 'Lo que la IA entregue se compara con el boceto y con la ficha A. Si se inventó pantallas, cambió el orden o agregó cosas que su persona no quiere, se corrige. Vayan guardando los prompts, las versiones y las correcciones: ese rastro es parte de la entrega.',
+  },
+  {
+    n: '04',
+    titulo: 'Tráiganlo funcionando',
+    cuerpo: 'Publíquenlo gratis en Netlify Drop —arrastran el archivo y obtienen un enlace, como ya lo hizo un grupo— o simplemente traigan el archivo HTML y ábranlo en el navegador.',
+  },
+];
+
+const conceptos = [
+  {
+    n: '01',
+    q: 'Affordances y signifiers',
+    nota: '¿Cómo sabe la persona qué puede hacer, y dónde?',
+  },
+  {
+    n: '02',
+    q: 'Constraints',
+    nota: '¿Qué le impide equivocarse?',
+  },
+  {
+    n: '03',
+    q: 'Mappings',
+    nota: '¿Dónde está cada cosa, y qué relación tiene con lo que controla?',
+  },
+  {
+    n: '04',
+    q: 'Feedback',
+    nota: '¿Qué le responde el sistema cuando actúa?',
   },
 ];
 
@@ -96,31 +174,45 @@ const despues = [
     cuerpo: 'Mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?',
   },
 ];
+
+const listo = [
+  'Una persona que nunca ha visto el prototipo puede completar un pedido sin ayuda.',
+  'El flujo llega hasta el pedido confirmado, sin huecos.',
+  'Ninguna pantalla contradice la ficha A de su persona.',
+  'En cada pantalla se puede decir cómo sabe la persona qué puede hacer, qué le impide equivocarse, dónde está cada cosa y qué le responde el sistema.',
+  'Cada decisión de la lista dice de dónde salió: ficha A, ficha B o uno de los cinco conceptos.',
+  'Cada supuesto está escrito como afirmación, y se puede decir qué lo convertiría en dato: a quién habría que observar o preguntarle.',
+  'Las tres preguntas de investigación se pueden responder con personas reales, no con opiniones del grupo.',
+];
 ---
 
 <Base
-  titulo="Construir la imagen del sistema · Actividad · Pensamiento Sensorial 3.0"
-  descripcion="Actividad de la sesión 3: todos los grupos diseñan la misma app de domicilios, cada uno para una persona distinta."
+  titulo="Construir la imagen del sistema · Tarea · Pensamiento Sensorial 3.0"
+  descripcion="Tarea de la sesión 3: todos los grupos diseñan la misma app de domicilios, cada uno para una persona distinta. Prototipo móvil, flujo completo, interactuable — y los supuestos a la luz."
   volverHref="/pensamiento-sensorial/s03"
   volverTexto="Sesión 3 · ¿Qué es esta cosa?"
 >
   <section class="hero-clase">
-    <span class="mono sube sube-1">Actividad · Sesión 3 · En grupos · Se construye en casa, se prueba en clase</span>
+    <span class="mono sube sube-1">Tarea · Sesión 3 · En grupos · Para la próxima clase</span>
     <h1 class="sube sube-2">Construir la imagen del sistema</h1>
-    <p class="lede sube-3">El mismo sistema. Cinco personas distintas.</p>
+    <p class="lede sube-3">El mismo sistema. Cinco personas distintas. Se construye en casa, se prueba en clase.</p>
   </section>
 
   <section class="bloque">
     <div class="encargo">
       <p class="encargo-frase">
-        Todos los grupos diseñan el mismo sistema: una app de domicilios.
-        Cada uno recibe <strong>una persona distinta</strong>.
+        En la próxima clase, otro grupo usa su prototipo con solo la ficha A en la
+        mano. Ustedes observan y <strong>no dicen una palabra</strong>.
       </p>
       <p class="encargo-nota">
-        Cada grupo recibe dos fichas. La <strong>ficha A</strong> es el modelo mental: quién es
-        su persona, qué quiere resolver, qué espera, qué no quiere hacer. La
-        <strong>ficha B</strong> es el modelo conceptual: qué puede hacer el sistema. No dice
-        cómo debe verse.
+        Si hay que explicarlo, la imagen del sistema todavía no está haciendo su
+        trabajo. Todos los grupos diseñan el mismo sistema —una app de domicilios—
+        y cada uno recibe <strong>una persona distinta</strong>.
+      </p>
+      <p class="encargo-nota">
+        La <strong>ficha A</strong> es el modelo mental: quién es su persona, qué
+        quiere resolver, qué espera, qué no quiere hacer. La <strong>ficha B</strong>
+        es el modelo conceptual: qué puede hacer el sistema. No dice cómo debe verse.
       </p>
       <p class="encargo-nota">
         La regla: los dos modelos <strong>no coinciden</strong>. Antes de diseñar nada,
@@ -129,12 +221,6 @@ const despues = [
       <p class="encargo-plantilla">
         «La persona espera <span class="vacio">____________</span>,
         pero el sistema necesita <span class="vacio">____________</span>.»
-      </p>
-      <p class="encargo-nota" style="margin-top: 1.25rem;">
-        Esta actividad quedó como tarea: el prototipo se construye en casa y la
-        prueba cruzada —el paso 04— abre la próxima clase. Qué se entrega, con qué
-        herramientas y cómo se evalúa está en la
-        <a href="/pensamiento-sensorial/que-estamos-suponiendo">consigna de la tarea</a>.
       </p>
     </div>
   </section>
@@ -195,7 +281,190 @@ const despues = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Después de probar</h2>
+    <h2 class="mono">Lo que construyen</h2>
+    <p>
+      La imagen del sistema de su app de domicilios, para la persona que les tocó.
+      Tres requisitos no negociables:
+    </p>
+    <div class="ejemplos">
+      {requisitos.map((r) => (
+        <div class="ejemplo">
+          <span class="ejemplo-tag mono">{r.titulo}</span>
+          <p>{r.cuerpo}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Cómo lo construyen · Decisión de ustedes</h2>
+    <p>
+      La herramienta no es el tema. La interacción sí. Vale cualquier forma de
+      construir el prototipo:
+    </p>
+    <div class="ejemplos">
+      {herramientas.map((h) => (
+        <div class="ejemplo">
+          <span class="ejemplo-tag mono">{h.nombre}</span>
+          <p>{h.cuerpo}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Miniguía · Si lo construyen con IA</h2>
+    <ol class="pasos" role="list">
+      {pasosIA.map((paso) => (
+        <li class="paso">
+          <span class="paso-num mono">{paso.n}</span>
+          <div>
+            <h3 class="paso-titulo">{paso.titulo}</h3>
+            <p class="paso-cuerpo">{paso.cuerpo}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="nota-prueba">
+      La regla dura: la IA es solo la forma de hacer el prototipo —el equivalente a
+      que otro grupo use papel o Canva—. <strong>Quienes diseñan la interfaz son
+      ustedes.</strong> Ojo con la trampa: la primera respuesta de cualquier IA es la
+      app genérica —catálogo infinito, ocho filtros, carrusel de promociones—, es
+      decir, el modelo mental de nadie. Cada pantalla tiene que atender lo que su
+      persona quiere, espera y no quiere hacer.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Lo que se evalúa</h2>
+    <p>
+      Esto es un curso de interfaz e interacción. Lo que se evalúa es cómo usan los
+      cinco conceptos para permitir <strong>interacciones con sentido</strong>:
+    </p>
+    <ol class="preguntas" role="list">
+      {conceptos.map((c) => (
+        <li>
+          <span class="pregunta-n mono">{c.n}</span>
+          <div>
+            <h3 class="pregunta-q">{c.q}</h3>
+            <p class="pregunta-nota">{c.nota}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p>
+      Y se evalúa <strong>el proceso</strong>: las decisiones que tomaron y cómo
+      guiaron la herramienta, no el acabado visual del prototipo. Un prototipo
+      impecable sin proceso visible no sustenta. Un prototipo tosco con decisiones
+      claras, sí.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Los supuestos</h2>
+    <p>
+      Diseñaron para una persona que no son ustedes. Gran parte de las decisiones del
+      prototipo salieron de lo que el grupo <strong>dio por cierto</strong>. Eso es lo
+      que vamos a sacar a la luz.
+    </p>
+
+    <h3 class="subpaso-titulo">Primero: los supuestos</h3>
+    <p>
+      Vuelvan sobre su prototipo y escriban entre <strong>cinco y ocho
+      supuestos</strong>: cosas que asumieron sobre su persona, sobre su contexto o
+      sobre cómo usaría el sistema, sin evidencia real. Un supuesto se escribe como
+      afirmación:
+    </p>
+    <div class="ejemplos">
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">Supuesto</span>
+        <p>«La persona siempre tiene datos móviles suficientes para cargar fotos de los platos.»</p>
+      </div>
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">Supuesto</span>
+        <p>«A la persona le importa más la rapidez que el precio.»</p>
+      </div>
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">No es supuesto, es opinión</span>
+        <p>«A la gente no le gustan los filtros.» — no dice nada verificable sobre nadie en particular.</p>
+      </div>
+    </div>
+    <p>
+      Incluyan al menos <strong>un supuesto que no haya salido de ustedes</strong>:
+      algo que la herramienta —la IA, la plantilla de Canva, el componente que
+      copiaron— dio por hecho en los detalles que su boceto no definía.
+    </p>
+
+    <h3 class="subpaso-titulo">Después: las preguntas</h3>
+    <p>
+      Elijan <strong>tres</strong> de sus supuestos y conviértanlos en preguntas que
+      se puedan <strong>investigar con usuarios</strong>. La prueba es simple: la
+      pregunta tiene que poder responderse observando o hablando con personas reales,
+      no discutiendo entre ustedes.
+    </p>
+    <div class="ejemplos">
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">Sirve</span>
+        <p>«¿Cómo pide comida hoy, sin esta app, una persona que desconfía de pagar en línea?»</p>
+      </div>
+      <div class="ejemplo">
+        <span class="ejemplo-tag mono">No sirve</span>
+        <p>«¿Le gustaría a la gente pagar en efectivo?» — invita a imaginar, no a observar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué entregan</h2>
+    <div class="entregable">
+      <p class="entregable-titulo">Un solo documento, por Classroom, antes de la próxima clase. El enlace o el archivo del prototipo, aparte.</p>
+      <ol class="entrega" role="list">
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">A</span>
+          <span class="entrega-texto">
+            <strong>El prototipo.</strong>{' '}
+            <span class="entrega-detalle">Funcionando, móvil, flujo completo, interactuable.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">B</span>
+          <span class="entrega-texto">
+            <strong>El boceto inicial.</strong>{' '}
+            <span class="entrega-detalle">Foto de donde el grupo decidió la interfaz antes de construir.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">C</span>
+          <span class="entrega-texto">
+            <strong>Las decisiones.</strong>{' '}
+            <span class="entrega-detalle">Lista corta: cada decisión de interfaz y a qué responde —ficha A, ficha B o uno de los cinco conceptos—.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">D</span>
+          <span class="entrega-texto">
+            <strong>El rastro de IA.</strong>{' '}
+            <span class="entrega-detalle">Solo si la usaron: los prompts clave, qué entregó, qué corrigieron y por qué.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">E</span>
+          <span class="entrega-texto">
+            <strong>Los supuestos y las preguntas.</strong>{' '}
+            <span class="entrega-detalle">Entre cinco y ocho afirmaciones; tres convertidas en preguntas investigables.</span>
+          </span>
+        </li>
+      </ol>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">En la próxima clase · Después de probar</h2>
     <ol class="pasos" role="list">
       {despues.map((paso) => (
         <li class="paso">
@@ -231,7 +500,7 @@ const despues = [
   .encargo {
     border: 2px solid var(--tinta);
     padding: 1.75rem 2rem;
-    max-width: 42rem;
+    max-width: 46rem;
   }
 
   .encargo-frase {
@@ -261,7 +530,7 @@ const despues = [
     font-size: 1.1rem;
     color: var(--tinta);
     max-width: none;
-    margin: 1.25rem 0 0;
+    margin: 0.5rem 0 0;
     padding: 1rem 1.25rem;
     background: var(--amarillo);
     line-height: 1.5;
@@ -366,12 +635,9 @@ const despues = [
     color: var(--secundario);
   }
 
-  .paso-titulo {
-    font-family: var(--sans);
-    font-weight: 900;
+  .paso .paso-titulo {
     font-size: 1.05rem;
-    color: var(--tinta);
-    margin-bottom: 0.25rem;
+    margin: 0 0 0.25rem;
   }
 
   .paso-cuerpo {
@@ -388,6 +654,136 @@ const despues = [
     color: var(--tinta);
     max-width: 52rem;
     margin-top: 1.75rem;
+  }
+
+  .nota-prueba strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  /* ── subtítulos de sección ────────────────────── */
+  .subpaso-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--tinta);
+    margin: 2rem 0 0.75rem;
+  }
+
+  /* ── tarjetas (requisitos, herramientas, ejemplos) */
+  .ejemplos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.25rem;
+    margin: 1.25rem 0 0.5rem;
+    max-width: 56rem;
+  }
+
+  .ejemplo { border-top: 3px solid var(--tinta); padding-top: 0.7rem; }
+
+  .ejemplo-tag { display: block; color: var(--secundario); margin-bottom: 0.4rem; }
+
+  .ejemplo p {
+    font-size: 0.95rem;
+    color: var(--texto);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  /* ── los conceptos ────────────────────────────── */
+  .preguntas {
+    list-style: none;
+    max-width: 52rem;
+    margin: 1.5rem 0;
+  }
+
+  .preguntas li {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .preguntas li:last-child { border-bottom: none; }
+
+  .pregunta-n {
+    flex: 0 0 1.8rem;
+    font-weight: 700;
+    color: var(--secundario);
+  }
+
+  .pregunta-q {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .pregunta-nota {
+    font-size: 0.95rem;
+    color: var(--secundario);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  /* ── el entregable ────────────────────────────── */
+  .entregable {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 52rem;
+  }
+
+  .entregable-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .entrega { list-style: none; }
+
+  .entrega li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .entrega li:last-child { border-bottom: none; }
+
+  .entrega-letra { flex: 0 0 1.4rem; font-weight: 700; color: var(--secundario); }
+
+  .entrega-texto strong {
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--tinta);
+  }
+
+  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
   }
 
   /* ── el cierre ────────────────────────────────── */
@@ -420,7 +816,7 @@ const despues = [
 
   @media (max-width: 700px) {
     .cierre { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
-    .encargo { padding: 1.25rem; }
-    .paso { gap: 0.9rem; }
+    .encargo, .entregable { padding: 1.25rem; }
+    .paso, .preguntas li { gap: 0.9rem; }
   }
 </style>
