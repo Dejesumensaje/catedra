@@ -1,9 +1,9 @@
 ---
 // Consigna de la tarea de la sesión 3: construir la imagen del sistema.
-// La actividad no alcanzó a ocurrir en clase y quedó como tarea, fusionada
-// con los supuestos: el prototipo se construye en casa y la prueba cruzada
-// abre la próxima sesión. Esta es la única consigna; la antigua página de la
-// tarea (/que-estamos-suponiendo) redirige acá.
+// La actividad no alcanzó a ocurrir en clase y quedó como tarea: el prototipo
+// se construye en casa y la prueba cruzada abre la próxima sesión. La primera
+// fase es el simulador (/simulador). Esta es la única consigna; la antigua
+// página de la tarea (/que-estamos-suponiendo) redirige acá.
 import Base from '../../layouts/Base.astro';
 
 // Las personas no son diagnósticos ni arquetipos de marketing: son modelos
@@ -73,23 +73,18 @@ const pasos = [
   },
   {
     numero: '02',
-    titulo: 'Saquen los supuestos',
-    cuerpo: 'Con el prototipo ya hecho, escriban lo que dieron por cierto sin comprobarlo, y conviertan tres de esos supuestos en preguntas investigables.',
-  },
-  {
-    numero: '03',
     titulo: 'Pónganla a prueba',
     cuerpo: 'Otro grupo la recorre con solo la ficha A en la mano.',
     enClase: true,
   },
   {
-    numero: '04',
+    numero: '03',
     titulo: 'Comparen',
     cuerpo: 'El modelo mental inicial con el que la persona armó al usar la propuesta. ¿Qué logró comunicar? ¿Dónde produjo una lectura inesperada?',
     enClase: true,
   },
   {
-    numero: '05',
+    numero: '04',
     titulo: 'Segunda vuelta',
     cuerpo: 'Mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?',
     enClase: true,
@@ -179,7 +174,6 @@ const listo = [
   'Si la primera pantalla es un catálogo con filtros, pueden defender por qué su persona empieza ahí.',
   'En cada pantalla se puede decir cómo sabe la persona qué puede hacer, qué le impide equivocarse, dónde está cada cosa y qué le responde el sistema.',
   'Cada decisión del prototipo dice de dónde salió: ficha A, ficha B o uno de los cinco conceptos.',
-  'Cada supuesto se puede convertir en dato: pueden decir a quién habría que observar o preguntarle.',
 ];
 ---
 
@@ -209,7 +203,7 @@ const listo = [
         se exporta: <strong>ese recorrido es la primera parte de la entrega</strong>.
       </p>
       <p class="encargo-nota">
-        Tómenlo con calma: equivocarse adentro del simulador es parte del ejercicio.
+        Tómenlo con calma: equivocarse dentro del simulador es parte del ejercicio.
       </p>
       <p class="encargo-cta">
         <a class="boton" href="/pensamiento-sensorial/simulador">Abrir el simulador →</a>
@@ -272,34 +266,18 @@ const listo = [
     <h2 class="mono">Ficha B · El sistema</h2>
     <p>
       Esta ficha es la misma para todos. Es el modelo conceptual: lo que el sistema
-      puede hacer y la información que maneja. <strong>No es una lista de pantallas</strong>:
-      cómo se hace perceptible cada una de estas cosas es exactamente lo que van a diseñar.
+      puede hacer y la información que maneja. <strong>No es una lista de pantallas</strong>,
+      ni un menú obligatorio: cómo se hace perceptible cada una de estas cosas —y
+      cuáles ni siquiera aparecen— es exactamente lo que van a diseñar.
     </p>
     <ul class="sistema" role="list">
       {sistema.map((capacidad) => <li>{capacidad}</li>)}
     </ul>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">La trampa · Diseñar la app que ya existe</h2>
-    <p>
-      La referencia más fuerte que tienen es la app de domicilios que ya usan. El
-      riesgo es entregar esa misma app con un ajuste: un filtro más, una pantalla
-      menos. Eso no es diseñar para su persona — es diseñar para el modelo mental
-      de nadie.
-    </p>
-    <p>
-      La ficha B <strong>no es un menú de pantallas obligatorias</strong>: es lo que
-      el sistema sabe hacer. El trabajo es elegir qué se queda visible, qué se
-      esconde y qué se elimina. Por eso hay un requisito: al menos una capacidad de
-      la ficha B tiene que quedar <strong>por fuera o transformada</strong>, y
-      tienen que poder decir por qué su persona no la necesita. Ernesto —que solo
-      quiere repetir el almuerzo de siempre— debería terminar sin catálogo infinito,
-      sin filtros y sin comparación; si su prototipo los tiene, no diseñaron para él.
-    </p>
     <p class="remate">
-      La prueba del intercambio: ¿su prototipo le serviría igual a la persona de
-      otro grupo? Si la respuesta es sí, todavía no es de la suya.
+      Restar también es diseñar: al menos una de estas capacidades tiene que
+      quedar <strong>por fuera o transformada</strong>, y tienen que poder decir por qué su
+      persona no la necesita. Ernesto —que solo quiere repetir el almuerzo de
+      siempre— debería terminar sin catálogo infinito, sin filtros y sin comparación.
     </p>
   </section>
 
@@ -307,7 +285,7 @@ const listo = [
     <h2 class="mono">El proceso · de acá en adelante</h2>
     <p>
       Las tres primeras preguntas —dónde le falla la app a su persona, qué quiere y
-      dónde choca con el sistema— ya las respondieron adentro del simulador. Lo que
+      dónde choca con el sistema— ya las respondieron dentro del simulador. Lo que
       queda es esto:
     </p>
     <ol class="pasos" role="list">
@@ -413,63 +391,6 @@ const listo = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Los supuestos</h2>
-    <p>
-      Diseñaron para una persona que no son ustedes. Gran parte de las decisiones del
-      prototipo salieron de lo que el grupo <strong>dio por cierto</strong>. Eso es lo
-      que vamos a sacar a la luz. Esta parte se escribe <strong>al final, con el
-      prototipo ya construido</strong> —antes no hay sobre qué mirar hacia atrás—, y
-      va en el mismo documento de la entrega. Acá va lo que se entiende por un buen
-      supuesto:
-    </p>
-
-    <h3 class="subpaso-titulo">Primero: los supuestos</h3>
-    <p>
-      Vuelvan sobre su prototipo y escriban entre <strong>cinco y ocho
-      supuestos</strong>: cosas que asumieron sobre su persona, sobre su contexto o
-      sobre cómo usaría el sistema, sin evidencia real. Un supuesto se escribe como
-      afirmación:
-    </p>
-    <div class="ejemplos">
-      <div class="ejemplo">
-        <span class="ejemplo-tag mono">Supuesto</span>
-        <p>«La persona siempre tiene datos móviles suficientes para cargar fotos de los platos.»</p>
-      </div>
-      <div class="ejemplo">
-        <span class="ejemplo-tag mono">Supuesto</span>
-        <p>«A la persona le importa más la rapidez que el precio.»</p>
-      </div>
-      <div class="ejemplo">
-        <span class="ejemplo-tag mono">No es supuesto, es opinión</span>
-        <p>«A la gente no le gustan los filtros.» — no dice nada verificable sobre nadie en particular.</p>
-      </div>
-    </div>
-    <p>
-      Incluyan al menos <strong>un supuesto que no haya salido de ustedes</strong>:
-      algo que la herramienta —la IA, la plantilla de Canva, el componente que
-      copiaron— dio por hecho en los detalles que su boceto no definía.
-    </p>
-
-    <h3 class="subpaso-titulo">Después: las preguntas</h3>
-    <p>
-      Elijan <strong>tres</strong> de sus supuestos y conviértanlos en preguntas que
-      se puedan <strong>investigar con usuarios</strong>. La prueba es simple: la
-      pregunta tiene que poder responderse observando o hablando con personas reales,
-      no discutiendo entre ustedes.
-    </p>
-    <div class="ejemplos">
-      <div class="ejemplo">
-        <span class="ejemplo-tag mono">Sirve</span>
-        <p>«¿Cómo pide comida hoy, sin esta app, una persona que desconfía de pagar en línea?»</p>
-      </div>
-      <div class="ejemplo">
-        <span class="ejemplo-tag mono">No sirve</span>
-        <p>«¿Le gustaría a la gente pagar en efectivo?» — invita a imaginar, no a observar.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="bloque">
     <h2 class="mono">Qué entregan</h2>
     <div class="entregable">
       <p class="entregable-titulo">Un solo documento, por Classroom, antes de la próxima clase. El enlace o el archivo del prototipo, aparte.</p>
@@ -491,19 +412,12 @@ const listo = [
         <li>
           <span class="entrega-letra mono" aria-hidden="true">C</span>
           <span class="entrega-texto">
-            <strong>Los supuestos y las tres preguntas.</strong>{' '}
-            <span class="entrega-detalle">Como se explica más arriba.</span>
-          </span>
-        </li>
-        <li>
-          <span class="entrega-letra mono" aria-hidden="true">D</span>
-          <span class="entrega-texto">
             <strong>El boceto inicial.</strong>{' '}
             <span class="entrega-detalle">Foto de donde el grupo decidió la interfaz antes de construir.</span>
           </span>
         </li>
         <li>
-          <span class="entrega-letra mono" aria-hidden="true">E</span>
+          <span class="entrega-letra mono" aria-hidden="true">D</span>
           <span class="entrega-texto">
             <strong>El rastro de IA.</strong>{' '}
             <span class="entrega-detalle">Solo si la usaron: los prompts clave, qué entregó, qué corrigieron y por qué.</span>
@@ -718,13 +632,6 @@ const listo = [
   .nota-prueba strong { background: var(--amarillo); padding: 0 0.15em; }
 
   /* ── subtítulos de sección ────────────────────── */
-  .subpaso-titulo {
-    font-family: var(--sans);
-    font-weight: 900;
-    font-size: 1.25rem;
-    color: var(--tinta);
-    margin: 2rem 0 0.75rem;
-  }
 
   /* ── tarjetas (requisitos, herramientas, ejemplos) */
   .ejemplos {
