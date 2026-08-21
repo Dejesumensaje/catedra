@@ -68,28 +68,31 @@ const sistema = [
 const pasos = [
   {
     numero: '01',
-    titulo: 'Encuentren el quiebre',
-    cuerpo: '¿En qué momento exacto le falla a su persona la app de domicilios que existe hoy? Ese momento es el punto de partida: la referencia se usa para romper, no para copiar.',
+    titulo: 'Construyan la imagen del sistema',
+    cuerpo: 'Con lo que trajeron del simulador: la ficha A, lo que el sistema da por hecho y su replanteamiento. La fidelidad no importa; importa que puedan probar una hipótesis, no que se vea bonita.',
   },
   {
     numero: '02',
-    titulo: 'Comprendan la persona',
-    cuerpo: '¿Qué quiere? ¿Qué sabe? ¿Qué no debería tener que recordar?',
+    titulo: 'Saquen los supuestos',
+    cuerpo: 'Con el prototipo ya hecho, escriban lo que dieron por cierto sin comprobarlo, y conviertan tres de esos supuestos en preguntas investigables.',
   },
   {
     numero: '03',
-    titulo: 'Identifiquen la tensión',
-    cuerpo: '¿Dónde choca el modelo mental de su persona con el modelo conceptual del sistema?',
+    titulo: 'Pónganla a prueba',
+    cuerpo: 'Otro grupo la recorre con solo la ficha A en la mano.',
+    enClase: true,
   },
   {
     numero: '04',
-    titulo: 'Construyan la imagen del sistema',
-    cuerpo: 'La fidelidad no importa: importa que puedan probar una hipótesis, no que se vea bonita.',
+    titulo: 'Comparen',
+    cuerpo: 'El modelo mental inicial con el que la persona armó al usar la propuesta. ¿Qué logró comunicar? ¿Dónde produjo una lectura inesperada?',
+    enClase: true,
   },
   {
     numero: '05',
-    titulo: 'Pónganla a prueba',
-    cuerpo: 'Al inicio de la próxima clase: otro grupo la usa con solo el modelo mental en la mano. Ustedes observan y no explican.',
+    titulo: 'Segunda vuelta',
+    cuerpo: 'Mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?',
+    enClase: true,
   },
 ];
 
@@ -104,7 +107,7 @@ const requisitos = [
   },
   {
     titulo: 'Interactuable',
-    cuerpo: 'En la próxima clase otro grupo lo recorre sin que ustedes expliquen nada. Eso define el nivel de terminado: no que se vea bonito, sino que alguien pueda usarlo.',
+    cuerpo: 'Eso define el nivel de terminado: no que se vea bonito, sino que alguien lo pueda recorrer sin ayuda.',
   },
 ];
 
@@ -169,30 +172,14 @@ const conceptos = [
   },
 ];
 
-const despues = [
-  {
-    numero: '06',
-    titulo: 'Comparen',
-    cuerpo: 'El modelo mental inicial con el que la persona armó al usar la propuesta. ¿Qué logró comunicar? ¿Dónde produjo una lectura inesperada?',
-  },
-  {
-    numero: '07',
-    titulo: 'Segunda vuelta',
-    cuerpo: 'Mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?',
-  },
-];
-
 const listo = [
-  'El recorrido del simulador está completo y exportado: decisiones, tensión y replanteamiento.',
-  'Una persona que nunca ha visto el prototipo puede completar un pedido sin ayuda.',
-  'El flujo llega hasta el pedido confirmado, sin huecos.',
+  'Una persona que nunca ha visto el prototipo puede completar un pedido sin ayuda, hasta el pedido confirmado y sin huecos.',
   'Ninguna pantalla contradice la ficha A de su persona.',
   'Al menos una capacidad de la ficha B quedó por fuera o transformada, y pueden decir por qué su persona no la necesita.',
   'Si la primera pantalla es un catálogo con filtros, pueden defender por qué su persona empieza ahí.',
   'En cada pantalla se puede decir cómo sabe la persona qué puede hacer, qué le impide equivocarse, dónde está cada cosa y qué le responde el sistema.',
-  'Cada decisión del recorrido dice de dónde salió: ficha A, ficha B o uno de los cinco conceptos.',
-  'Cada supuesto está escrito como afirmación, y se puede decir qué lo convertiría en dato: a quién habría que observar o preguntarle.',
-  'Las tres preguntas de investigación se pueden responder con personas reales, no con opiniones del grupo.',
+  'Cada decisión del prototipo dice de dónde salió: ficha A, ficha B o uno de los cinco conceptos.',
+  'Cada supuesto se puede convertir en dato: pueden decir a quién habría que observar o preguntarle.',
 ];
 ---
 
@@ -222,10 +209,7 @@ const listo = [
         se exporta: <strong>ese recorrido es la primera parte de la entrega</strong>.
       </p>
       <p class="encargo-nota">
-        Son tres fases: primero <strong>viven</strong> el modelo mental, después{' '}
-        <strong>observan</strong> el modelo conceptual, y al final{' '}
-        <strong>diseñan</strong> el encuentro entre los dos. Tómenlo con calma:
-        equivocarse adentro del simulador es parte del ejercicio.
+        Tómenlo con calma: equivocarse adentro del simulador es parte del ejercicio.
       </p>
       <p class="encargo-cta">
         <a class="boton" href="/pensamiento-sensorial/simulador">Abrir el simulador →</a>
@@ -247,16 +231,16 @@ const listo = [
       </p>
       <p class="encargo-nota">
         La <strong>ficha A</strong> es el modelo mental: quién es su persona, qué
-        quiere resolver, qué espera, qué no quiere hacer. La <strong>ficha B</strong>
+        quiere resolver, qué espera, qué no quiere hacer. La <strong>ficha B</strong>{' '}
         es el modelo conceptual: qué puede hacer el sistema. No dice cómo debe verse.
       </p>
       <p class="encargo-nota">
-        La regla: los dos modelos <strong>no coinciden</strong>. Antes de diseñar nada,
-        completen una sola frase:
+        La regla: los dos modelos <strong>no coinciden</strong>. El simulador los deja
+        con los dos extremos escritos —lo que espera su persona y lo que el sistema da
+        por hecho—. Lo que falta va en el medio, y es lo que ustedes construyen:
       </p>
       <p class="encargo-plantilla">
-        «La persona espera <span class="vacio">____________</span>,
-        pero el sistema necesita <span class="vacio">____________</span>.»
+        modelo mental · <span class="vacio">la imagen del sistema</span> · modelo conceptual
       </p>
     </div>
   </section>
@@ -320,24 +304,25 @@ const listo = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">La investigación</h2>
+    <h2 class="mono">El proceso · de acá en adelante</h2>
+    <p>
+      Las tres primeras preguntas —dónde le falla la app a su persona, qué quiere y
+      dónde choca con el sistema— ya las respondieron adentro del simulador. Lo que
+      queda es esto:
+    </p>
     <ol class="pasos" role="list">
       {pasos.map((paso) => (
         <li class="paso">
           <span class="paso-num mono">{paso.numero}</span>
           <div>
-            <h3 class="paso-titulo">{paso.titulo}</h3>
+            <h3 class="paso-titulo">
+              {paso.titulo}{paso.enClase && <span class="paso-cuando mono">en clase</span>}
+            </h3>
             <p class="paso-cuerpo">{paso.cuerpo}</p>
           </div>
         </li>
       ))}
     </ol>
-    <p class="nota-prueba">
-      La regla de la prueba: el otro grupo usa su propuesta con <strong>solo el modelo
-      mental en la mano</strong> —la ficha A de la persona para la que diseñaron—.
-      Ustedes observan y no explican. Si hay que explicarla, la imagen del sistema
-      todavía no está haciendo su trabajo.
-    </p>
   </section>
 
   <section class="bloque">
@@ -373,7 +358,12 @@ const listo = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Miniguía · Si lo construyen con IA</h2>
+    <details class="miniguia">
+    <summary>
+      <span class="miniguia-signo" aria-hidden="true">+</span>
+      <span class="mono">Miniguía · si lo construyen con IA</span>
+      <span class="miniguia-nota">cuatro pasos · ábranla solo si esa es su herramienta</span>
+    </summary>
     <ol class="pasos" role="list">
       {pasosIA.map((paso) => (
         <li class="paso">
@@ -394,6 +384,7 @@ const listo = [
       domicilios que ya conocen, la señal no es que haya que pulirlo: es que el
       diseño todavía no está hecho.
     </p>
+    </details>
   </section>
 
   <section class="bloque">
@@ -405,7 +396,7 @@ const listo = [
     <ol class="preguntas" role="list">
       {conceptos.map((c) => (
         <li>
-          <span class="pregunta-n mono">{c.n}</span>
+          <span class="pregunta-n mono" aria-hidden="true">·</span>
           <div>
             <h3 class="pregunta-q">{c.q}</h3>
             <p class="pregunta-nota">{c.nota}</p>
@@ -487,7 +478,7 @@ const listo = [
           <span class="entrega-letra mono" aria-hidden="true">A</span>
           <span class="entrega-texto">
             <strong>El recorrido del simulador.</strong>{' '}
-            <span class="entrega-detalle">Se copia o se descarga desde la pantalla final del simulador. Trae las decisiones, la tensión y el replanteamiento.</span>
+            <span class="entrega-detalle">Se copia o se descarga desde la pantalla final del simulador. Trae las decisiones, lo que el sistema da por hecho y el replanteamiento.</span>
           </span>
         </li>
         <li>
@@ -501,7 +492,7 @@ const listo = [
           <span class="entrega-letra mono" aria-hidden="true">C</span>
           <span class="entrega-texto">
             <strong>Los supuestos y las tres preguntas.</strong>{' '}
-            <span class="entrega-detalle">Entre cinco y ocho supuestos escritos como afirmaciones, y tres de ellos convertidos en preguntas investigables.</span>
+            <span class="entrega-detalle">Como se explica más arriba.</span>
           </span>
         </li>
         <li>
@@ -525,21 +516,6 @@ const listo = [
     <ul class="listo" role="list">
       {listo.map((l) => <li>{l}</li>)}
     </ul>
-  </section>
-
-  <section class="bloque">
-    <h2 class="mono">En la próxima clase · Después de probar</h2>
-    <ol class="pasos" role="list">
-      {despues.map((paso) => (
-        <li class="paso">
-          <span class="paso-num mono">{paso.numero}</span>
-          <div>
-            <h3 class="paso-titulo">{paso.titulo}</h3>
-            <p class="paso-cuerpo">{paso.cuerpo}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
   </section>
 
   <section class="bloque">
@@ -600,7 +576,13 @@ const listo = [
     line-height: 1.5;
   }
 
-  .encargo-plantilla .vacio { letter-spacing: 0.02em; }
+  /* el hueco: mismo punteado que el cierre del simulador */
+  .encargo-plantilla .vacio {
+    letter-spacing: 0.02em;
+    border: 2px dashed var(--tinta);
+    padding: 0.2rem 0.6rem;
+    display: inline-block;
+  }
 
   .encargo-cta { margin: 1.5rem 0 0; max-width: none; }
   .encargo-cta .boton { text-decoration: none; display: inline-block; }
@@ -780,6 +762,47 @@ const listo = [
   }
 
   .preguntas li:last-child { border-bottom: none; }
+
+  /* la miniguía queda plegada: solo la abre quien construye con IA */
+  .miniguia { margin-top: 0.5rem; }
+
+  .miniguia summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--regla);
+    border-bottom: 1px solid var(--regla);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+
+  .miniguia summary::-webkit-details-marker { display: none; }
+
+  .miniguia-signo {
+    font-family: var(--sans);
+    font-weight: 900;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0 0.4rem;
+    line-height: 1.35;
+  }
+
+  .miniguia[open] .miniguia-signo { background: var(--amarillo); }
+  .miniguia summary:hover .miniguia-signo { background: var(--amarillo); }
+  .miniguia summary .mono { color: var(--tinta); }
+  .miniguia-nota { color: var(--secundario); font-size: 0.9rem; }
+  .miniguia[open] summary { margin-bottom: 1.25rem; border-bottom-color: transparent; }
+
+  .paso-cuando {
+    margin-left: 0.7rem;
+    color: var(--secundario);
+    font-size: 0.65rem;
+    border: 1px solid var(--regla);
+    padding: 0.1rem 0.4rem;
+    vertical-align: 0.15em;
+  }
 
   .pregunta-n {
     flex: 0 0 1.8rem;

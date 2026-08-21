@@ -498,13 +498,13 @@ import Base from '../../layouts/Base.astro';
         <p>Ya tienen los dos extremos: lo que espera ${esc(p.first)} y lo que el
         sistema da por hecho. Lo que falta está en el medio.</p>
         <div class="sim-puente">
-          <div class="sim-need"><span class="mono">Modelo mental</span>${esc(p.tension.person)}</div>
+          <div class="sim-need"><span class="mono">Modelo mental · la ficha A de ${esc(p.first)}</span>${esc(p.tension.person)}</div>
           <div class="sim-hueco">
             <span class="mono">Imagen del sistema</span>
             <p>Esto es lo que falta, y es lo único que no les podemos dar: la
             interfaz por donde ${esc(p.first)} y el sistema puedan encontrarse.</p>
           </div>
-          <div class="sim-need sim-need-sistema"><span class="mono">Modelo conceptual</span>${esc(S.supuestoSistema) || "—"}</div>
+          <div class="sim-need sim-need-sistema"><span class="mono">Modelo conceptual · la ficha B</span>${esc(S.supuestoSistema) || "—"}</div>
         </div>
         <p>No diseñen una «mejor app de domicilios». Diseñen la interfaz que haga
         perceptible y operable lo que ${esc(p.first)} está intentando hacer de verdad.</p>
