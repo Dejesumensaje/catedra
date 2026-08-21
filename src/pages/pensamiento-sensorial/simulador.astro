@@ -1,0 +1,1437 @@
+---
+// Simulador «Imagen del sistema» — primera fase de la tarea de la sesión 3.
+// Cada grupo vive la situación de su persona, observa la distancia entre su
+// modelo mental y el modelo conceptual del sistema, y solo entonces diseña.
+// El recorrido se guarda en localStorage y se exporta en Markdown: ese
+// recorrido es la primera parte de la entrega por Classroom.
+// La lógica pura vive en src/lib/simulador/motor.js (probable desde Node con
+// scripts/prueba-simulador.mjs); acá queda solo la interfaz.
+import Base from '../../layouts/Base.astro';
+---
+
+<Base
+  titulo="Simulador · Imagen del sistema · Pensamiento Sensorial 3.0"
+  descripcion="Una persona. Un sistema. Un problema. Vive la situación, encuentra la tensión entre los dos modelos y diseña el encuentro."
+  volverHref="/pensamiento-sensorial/imagen-del-sistema"
+  volverTexto="La consigna completa"
+>
+  <div class="sim">
+    <header class="sim-cabecera">
+      <span class="mono sim-kicker">Simulador · Sesión 3</span>
+      <h1>Imagen del sistema</h1>
+      <div class="sim-fases" id="fases" aria-label="Progreso por fases"></div>
+    </header>
+
+    <div class="sim-grid" id="grid">
+      <div id="stage" aria-live="polite"></div>
+      <aside class="sim-telefono-wrap" id="telefonoWrap" aria-label="La app en el teléfono de la persona">
+        <div class="sim-telefono" id="telefono"></div>
+      </aside>
+    </div>
+
+    <div class="sim-pie">
+      <button class="sim-reset" id="resetBtn" type="button">Reiniciar el recorrido</button>
+      <p class="sim-nota">El recorrido se guarda solo, en este navegador. Pueden cerrar y volver después.</p>
+    </div>
+
+    <div class="sim-toast" id="toast" role="status"></div>
+  </div>
+</Base>
+
+<script>
+  import {
+    PERSONAS, GRUPOS, STORAGE_KEY, nuevoEstado, asignarPersona,
+    personaDe, opcionDe, consecuenciaDe, exportarMarkdown
+  } from '../../lib/simulador/motor.js';
+
+  /* ---------- estado ---------- */
+  let S = cargar();
+  function cargar() {
+    try {
+      const r = localStorage.getItem(STORAGE_KEY);
+      const base = nuevoEstado();
+      return r ? Object.assign(base, JSON.parse(r)) : base;
+    } catch (e) { return nuevoEstado(); }
+  }
+  function guardar() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); } catch (e) {} }
+
+  const persona = () => personaDe(S);
+  const beats = () => persona().beats;
+  const diseno = () => persona().design;
+  const esc = (s) => (s || "").replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const LETRAS = ["A", "B", "C", "D"];
+
+  /* ---------- teléfono ---------- */
+  // La spec describe la pantalla de la app en ese momento: qué filas hay y
+  // cuál queda marcada. El teléfono cambia con cada decisión.
+  let ultimaSpec = null;
+  function specDe(beat, opt) {
+    if (opt && opt.phone) return opt.phone;
+    if (beat && beat.phone) return beat.phone;
+    return ultimaSpec;
+  }
+  function specDisenoActual() {
+    // En las rondas de diseño el teléfono muestra el sistema como va quedando:
+    // la última decisión tomada, o la app estándar si aún no hay ninguna.
+    if (S.dpath.length > 0) {
+      const i = S.dpath.length - 1;
+      const o = diseno()[i].options.find(x => x.id === S.dpath[i].optId);
+      if (o && o.phone) return o.phone;
+    }
+    return beats()[beats().length - 1].phone;
+  }
+  function renderTelefono(spec) {
+    if (spec) ultimaSpec = spec;
+    const el = document.getElementById("telefono");
+    const wrap = document.getElementById("telefonoWrap");
+    if (!ultimaSpec) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    const sp = ultimaSpec;
+    const filas = (sp.filas || []).map(f =>
+      `<div class="tel-fila${sp.resalta === f ? ' marcada' : ''}">${esc(f)}</div>`).join("");
+    // El reloj del mockup marca la hora de la escena de esa persona.
+    const hora = (persona().scene[0].match(/\d{1,2}:\d{2}/) || ["12:20"])[0];
+    el.innerHTML = `
+      <div class="tel-barra"><span>${esc(hora)}</span><span class="tel-puntos" aria-hidden="true">●●●</span></div>
+      ${sp.aviso ? `<div class="tel-aviso">${esc(sp.aviso)}</div>` : ""}
+      ${sp.titulo ? `<div class="tel-titulo">${esc(sp.titulo)}</div>` : ""}
+      ${filas}`;
+  }
+
+  /* ---------- fases ---------- */
+  const FASE = {
+    persona: 1, beat: 1, consequence: 1, exit: 1,
+    mental: 2, conceptual: 2, tension: 2,
+    designIntro: 3, design: 3, designConseq: 3, breaking: 3,
+    reframe: 3, explain: 3, final: 3
+  };
+
+  // Un recorrido guardado antes de que se quitara un paso puede apuntar a una
+  // pantalla que ya no existe: se devuelve al cierre en vez de quedar muerto.
+  if (S.screen !== "start" && !(S.screen in FASE)) { S.screen = "final"; guardar(); }
+  function renderFases() {
+    const cur = FASE[vista] || 0;
+    const nombres = ["1 · Vive", "2 · Observa", "3 · Diseña"];
+    document.getElementById("fases").innerHTML = nombres.map((n, i) => {
+      const k = i + 1;
+      let cls = "sim-fase";
+      if (k === cur) cls += " activa"; else if (k < cur) cls += " hecha";
+      return `<span class="${cls}">${n}</span>`;
+    }).join("");
+  }
+
+  /* ---------- infraestructura de pantallas ----------
+     `vista` es la pantalla que se muestra; `S.screen` es el progreso guardado.
+     Al cargar con progreso previo siempre se abre en `start`, que ofrece
+     «Continuar donde quedó». */
+  let vista = "start";
+  const stage = document.getElementById("stage");
+  function ir(screen) {
+    vista = screen;
+    if (screen !== "start") { S.screen = screen; guardar(); }
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function render() {
+    renderFases();
+    const fn = PANTALLAS[vista] || PANTALLAS.start;
+    stage.innerHTML = `<div class="sim-pantalla">${fn()}</div>`;
+    if (CABLEADO[vista]) CABLEADO[vista]();
+    renderTelefono(TELEFONO[vista] ? TELEFONO[vista]() : null);
+  }
+  function pista(m) { const h = document.getElementById("hint"); if (h) h.textContent = m || ""; }
+
+  // Qué ve el teléfono en cada pantalla. null = no cambia (se queda lo último).
+  const TELEFONO = {
+    persona: () => null,
+    beat: () => beats()[S.beat].phone,
+    consequence: () => specDe(beats()[S.beat], opcionDe(beats()[S.beat], S.path[S.beat].optId)),
+    design: () => specDisenoActual(),
+    designConseq: () => diseno()[S.dbeat].options.find(x => x.id === S.dpath[S.dbeat].optId).phone
+  };
+
+  // Las dos voces del supuesto: la del grupo y la del simulador, lado a lado.
+  function vocesHTML(escrito, nuestro) {
+    return `
+      <div class="sim-dos-col sim-voces">
+        <div class="sim-col sim-col-persona"><h3 class="mono">Ustedes escribieron</h3><p>${esc(escrito)}</p></div>
+        <div class="sim-col sim-col-sistema"><h3 class="mono">Nosotros lo diríamos así</h3><p>${esc(nuestro)}</p></div>
+      </div>
+      <p class="sim-voz-nota">No es la respuesta correcta: es otra manera de decirlo.
+      Si dijeron cosas distintas, puede que las dos señalen la misma grieta —o que
+      ustedes vieran una que a nosotros se nos pasó.</p>`;
+  }
+
+  /* ---------- pantallas ---------- */
+  const PANTALLAS = {
+    start() {
+      const enCurso = S.screen !== "start" && S.personaId;
+      const grupos = Object.keys(GRUPOS).map(g =>
+        `<button class="sim-grupo${S.grupo === g ? ' sel' : ''}" data-g="${g}" type="button">Grupo ${g}</button>`).join("");
+      return `
+      <div class="sim-inicio">
+        <p class="sim-lede">Una persona. Un sistema. Un problema.</p>
+        <p>Van a entrar en la situación de alguien que quiere pedir comida, sentir
+        dónde el sistema no la deja hacer lo que esperaba y, solo entonces, ponerse
+        a diseñar.</p>
+        <div class="sim-movimientos">
+          <div class="sim-mov"><span class="sim-mov-n">1</span>«Esto es lo que yo esperaba que el sistema hiciera.»</div>
+          <div class="sim-mov"><span class="sim-mov-n">2</span>«Ah, así es como el sistema está pensado de verdad.»</div>
+          <div class="sim-mov"><span class="sim-mov-n">3</span>«Entonces me toca diseñar el encuentro entre ambos.»</div>
+        </div>
+        <h2 class="mono sim-sub">Su grupo</h2>
+        <p class="sim-nota-bloque">Cada grupo trabaja siempre con la misma persona. Si no tienen número de grupo, empiecen sin elegir: les tocará una al azar.</p>
+        <div class="sim-grupos" id="grupos">${grupos}</div>
+      </div>
+      <div class="sim-nav">
+        <span></span>
+        ${enCurso
+          ? `<button class="boton" id="continuarBtn" type="button">Continuar donde quedó →</button>`
+          : `<button class="boton" id="beginBtn" type="button">Empezar →</button>`}
+      </div>`;
+    },
+
+    /* ---------- FASE 1 · VIVE ---------- */
+    persona() {
+      const p = persona();
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">1·1</span> Fase 1 · Ponte en sus zapatos</div>
+      <div class="sim-escena">
+        <span class="sim-tiempo mono">${esc(p.scene[0])}</span>
+        <p><span class="sim-avatar" aria-hidden="true">${p.emoji}</span> ${esc(p.scene[1])}</p>
+        <p class="sim-escena-grande">${esc(p.scene[2])}</p>
+      </div>
+      <div class="sim-need"><span class="mono">Lo que necesita</span>${esc(p.need)}</div>
+      <p>A partir de aquí no diseñas nada. Solo intentas usar la app como lo haría
+      ${esc(p.first)}, y ves qué pasa.</p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Ser ${esc(p.first)} por un momento →</button>
+      </div>`;
+    },
+
+    beat() {
+      const p = persona(); const b = beats()[S.beat];
+      const sit = b.situation.map(s => `<p>${esc(s)}</p>`).join("");
+      const sys = b.system ? `<div class="sim-sys"><span class="mono">La app muestra</span><p class="sim-sys-msg">${esc(b.system)}</p></div>` : "";
+      const opts = b.options.map((o, i) => `
+        <button class="sim-opt" data-id="${o.id}" type="button"><span class="sim-opt-key mono">${LETRAS[i]}</span><span>${esc(o.label)}</span></button>`).join("");
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">1·${S.beat + 2}</span> ${esc(b.tag)} · eres ${esc(p.first)}</div>
+      <div class="sim-situacion">${sit}</div>
+      ${sys}
+      <h2 class="sim-pregunta">${esc(b.question || "¿Qué haces?")}</h2>
+      <div class="sim-opts" id="opts">${opts}</div>
+      <div class="sim-nav"><button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button><span></span></div>`;
+    },
+
+    consequence() {
+      const p = persona(); const b = beats()[S.beat];
+      const o = opcionDe(b, S.path[S.beat].optId);
+      const c = consecuenciaDe(b, o);
+      const last = S.beat >= beats().length - 1;
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">1·${S.beat + 2}</span> ${b.shared ? 'Lo que de verdad pasó' : 'Consecuencia'}</div>
+      <p class="sim-applied">${b.shared
+        ? `Respondiste: <strong>${esc(o.label)}</strong>`
+        : `${esc(p.first)} decidió: <strong>${esc(o.label)}</strong>`}</p>
+      <div class="sim-conseq">
+        <p class="sim-conseq-head">${esc(c.head)}</p>
+        <p class="sim-conseq-res">${esc(c.result)}</p>
+        <div class="sim-trade">
+          <div class="sim-chip sim-mas"><span class="sim-chip-s" aria-hidden="true">+</span><span>${esc(c.plus)}</span></div>
+          <div class="sim-chip sim-menos"><span class="sim-chip-s" aria-hidden="true">−</span><span>${esc(c.minus)}</span></div>
+        </div>
+      </div>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">${last ? 'Salir de la situación →' : '¿Y ahora? →'}</button>
+      </div>`;
+    },
+
+    exit() {
+      const p = persona();
+      return `
+      <div class="sim-paso sim-paso-amarillo"><span class="sim-paso-n">✳</span> Fin de la fase 1</div>
+      <h2 class="sim-h">Ya viviste la situación desde dentro.</h2>
+      <p>Llegaste hasta donde el sistema te dejó. Y saliste con algo así en la cabeza:</p>
+      <blockquote class="sim-frustracion">${esc(p.frustration)}</blockquote>
+      <p>Ahora sal del rol de ${esc(p.first)}. Vamos a mirar, desde afuera, qué
+      estaba pasando entre la persona y el sistema.</p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Mirar desde afuera →</button>
+      </div>`;
+    },
+
+    /* ---------- FASE 2 · OBSERVA ---------- */
+    mental() {
+      const p = persona();
+      const opts = p.expectations.map(txt => {
+        const sel = S.expectations.includes(txt);
+        return `<button class="sim-opt${sel ? ' sel' : ''}" data-exp="${esc(txt)}" type="button" aria-pressed="${sel}"><span class="sim-chk" aria-hidden="true">${sel ? '✓' : ''}</span><span>${esc(txt)}</span></button>`;
+      }).join("");
+      return `
+      <div class="sim-paso sim-paso-amarillo"><span class="sim-paso-n">2·1</span> Fase 2 · El modelo mental</div>
+      <h2 class="sim-h">Acabas de vivir la situación como la entiende ${esc(p.first)}.</h2>
+      <p>Eso es su <strong>modelo mental</strong>: la idea con la que llegó a la app
+      sobre cómo debería funcionar para poder resolver lo suyo. No es la necesidad ni
+      la motivación: son las cosas que daba por hecho que la app le dejaría hacer.</p>
+      <h3 class="sim-pregunta">${esc(p.first)} daba por hecho que con esta app podría… <span class="sim-pregunta-nota">(marca las que reconociste)</span></h3>
+      <div class="sim-opts" id="exps">${opts}</div>
+      <p class="sim-hint" id="hint"></p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Continuar →</button>
+      </div>`;
+    },
+
+    conceptual() {
+      const p = persona();
+      const rels = p.concept.length >= 5
+        ? ["realiza un", "que contiene", "se entrega en una", "y se cierra con"]
+        : ["luego", "luego", "y finalmente"];
+      let chain = "";
+      p.concept.forEach((n, i) => {
+        chain += `<span class="sim-cnode">${esc(n)}</span>`;
+        if (i < p.concept.length - 1) chain += `<span class="sim-crel">${esc(rels[i] || "→")}</span>`;
+      });
+      return `
+      <div class="sim-paso sim-paso-amarillo"><span class="sim-paso-n">2·2</span> Fase 2 · El modelo conceptual</div>
+      <h2 class="sim-h">Ahora mira el sistema desde afuera.</h2>
+      <p>Esta es la manera en que el sistema está <em>pensado</em> para funcionar. No
+      son botones ni pantallas: son los conceptos con los que el sistema entiende lo que pasa.</p>
+      <div class="sim-concept">${chain}</div>
+      <p class="sim-cierre-modelo">Para el sistema, todo esto <strong>ya está resuelto</strong> cuando ${esc(p.doneWhen)}</p>
+      <p>Esto es el <strong>modelo conceptual</strong>: qué entiende el sistema que está pasando.</p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Poner las dos cosas frente a frente →</button>
+      </div>`;
+    },
+
+    tension() {
+      const p = persona(); const t = p.tension;
+      // Ya no hay opción correcta: el grupo escribe su diagnóstico y solo
+      // después ve el nuestro, al lado, como segunda voz y no como respuesta.
+      const escrito = S.supuestoSistema.trim();
+      return `
+      <div class="sim-paso sim-paso-amarillo"><span class="sim-paso-n">2·3</span> Fase 2 · El supuesto del sistema</div>
+      <div class="sim-dos-col">
+        <div class="sim-col sim-col-persona"><h3 class="mono">Lo que la persona espera</h3><p>${esc(t.person)}</p></div>
+        <div class="sim-col sim-col-sistema"><h3 class="mono">Lo que el sistema entiende</h3><p>${esc(t.system)}</p></div>
+      </div>
+      <p>Las dos frases son razonables. Ninguna está equivocada. Lo que no se ve es
+      lo que el sistema tiene que <strong>dar por sentado</strong> para poder estar
+      organizado así.</p>
+      <h3 class="sim-pregunta">¿Qué da por hecho el sistema que para ${esc(p.first)} no es cierto?</h3>
+      <label class="sim-campo">
+        <textarea id="supSistema" rows="2" placeholder="Que…">${esc(S.supuestoSistema)}</textarea>
+      </label>
+      <p class="sim-campo-nota">Una frase, empezando por «que…».</p>
+      <button class="sim-pista-btn" id="verBtn" type="button"${escrito ? '' : ' disabled'}>Ver cómo lo diríamos nosotros</button>
+      <div class="sim-reveal${S.supuestoVisto && escrito ? ' show' : ''}" id="reveal">${vocesHTML(escrito, t.supuesto)}</div>
+      <p class="sim-hint" id="hint"></p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Ahora sí: diseña →</button>
+      </div>`;
+    },
+
+    /* ---------- FASE 3 · DISEÑA ---------- */
+    designIntro() {
+      const p = persona();
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">3·1</span> Fase 3 · Ahora te toca diseñar</div>
+      <h2 class="sim-h">Ya no eres ${esc(p.first)}.</h2>
+      <p>Tu trabajo ahora es construir una interfaz que medie entre lo que
+      ${esc(p.first)} espera y la manera en que el sistema funciona.</p>
+      <p class="sim-nota-bloque sim-nota-marcada">Cada decisión de diseño va a
+      <strong>resolver algo</strong> y a <strong>costar algo</strong>. Diseñar es
+      decidir qué se hace visible, qué se simplifica y qué costo se introduce.</p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Empezar a diseñar →</button>
+      </div>`;
+    },
+
+    design() {
+      const r = diseno()[S.dbeat];
+      const opts = r.options.map((o, i) => `
+        <button class="sim-opt" data-id="${o.id}" type="button"><span class="sim-opt-key mono">${LETRAS[i]}</span><span>${esc(o.label)}</span></button>`).join("");
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">3·${S.dbeat + 2}</span> Diseño · Decisión ${S.dbeat + 1} de ${diseno().length}</div>
+      <div class="sim-need sim-need-diseno"><span class="mono">El problema ahora</span>${esc(r.problem)}</div>
+      <h2 class="sim-pregunta">${S.dbeat === 0 ? '¿Qué diseñas primero?' : '¿Qué cambiarías ahora?'}</h2>
+      <div class="sim-opts" id="opts">${opts}</div>
+      <div class="sim-nav"><button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button><span></span></div>`;
+    },
+
+    designConseq() {
+      const r = diseno()[S.dbeat];
+      const o = r.options.find(x => x.id === S.dpath[S.dbeat].optId);
+      const last = S.dbeat >= diseno().length - 1;
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">3·${S.dbeat + 2}</span> Consecuencia de diseño</div>
+      <p class="sim-applied">Diseñaste: <strong>${esc(o.label)}</strong></p>
+      <div class="sim-conseq">
+        <p class="sim-conseq-head">Funciona.</p>
+        <p class="sim-conseq-res">${esc(o.result)}</p>
+        <div class="sim-trade">
+          <div class="sim-chip sim-mas"><span class="sim-chip-s" aria-hidden="true">+</span><span>${esc(o.gain)}</span></div>
+          <div class="sim-chip sim-menos"><span class="sim-chip-s" aria-hidden="true">−</span><span>${esc(o.cost)}</span></div>
+        </div>
+        <p class="sim-conseq-turn">Pero aparece otro problema.</p>
+        <p class="sim-conseq-but">${esc(r.emerge)}</p>
+      </div>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">${last ? 'Mira lo que has construido →' : '¿Qué cambiarías ahora? →'}</button>
+      </div>`;
+    },
+
+    breaking() {
+      const p = persona();
+      const chain = S.dpath.map((pk, i) => {
+        const o = diseno()[i].options.find(x => x.id === pk.optId);
+        return `<li><span class="sim-cadena-n mono">${i + 1}</span><span>${esc(o.label)}</span></li>`;
+      }).join("");
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">3·5</span> El punto de quiebre</div>
+      <h2 class="sim-h">Mira todo lo que has construido.</h2>
+      <ol class="sim-cadena">${chain}</ol>
+      <p>${S.dpath.length} decisiones. Cada una resolvió algo real, y ninguna tocó
+      la idea de fondo: qué significa «pedir comida» para ${esc(p.first)}.</p>
+      <p class="sim-break">¿Y si el problema no fuera una función que falta?</p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Replantear la actividad →</button>
+      </div>`;
+    },
+
+    reframe() {
+      const p = persona();
+      return `
+      <div class="sim-paso"><span class="sim-paso-n">3·6</span> Replanteamiento</div>
+      <h2 class="sim-h">Cambia la pregunta.</h2>
+      <p>No describas una función ni una pantalla. Tampoco repitas la necesidad.
+      Escribe una nueva manera de entender qué es esta actividad para ${esc(p.first)}.</p>
+      <div class="sim-prompts">
+        <span class="mono">Vuelve a lo que viviste siendo ${esc(p.first)}</span>
+        <ul>
+          <li>qué intentaba resolver</li>
+          <li>para quién lo hacía</li>
+          <li>qué necesitaba decidir</li>
+          <li>qué quería evitar</li>
+          <li>qué relación quería con el sistema</li>
+        </ul>
+      </div>
+      <div class="sim-fillline">
+        <label>Para ${esc(p.first)}, pedir comida no es
+          <input type="text" id="rNot" placeholder="…" value="${esc(S.reframeNot)}">.
+        </label>
+        <label>Es
+          <input type="text" id="rIs" placeholder="…" value="${esc(S.reframeIs)}">.
+        </label>
+      </div>
+      <button class="sim-pista-btn" id="pistaBtn" type="button">Necesito una pista</button>
+      <p class="sim-pista" id="pista">${esc(p.hint)}</p>
+      <p class="sim-hint" id="hint"></p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Guardar →</button>
+      </div>`;
+    },
+
+    explain() {
+      const p = persona();
+      return `
+      <div class="sim-paso sim-paso-amarillo"><span class="sim-paso-n">✳</span> Lo que acabas de descubrir</div>
+      <p class="sim-nota-bloque sim-nota-marcada"><strong>Acabas de formular una
+      hipótesis sobre el modelo mental de ${esc(p.first)}.</strong><br>
+      ${esc(p.first)} no entiende «pedir comida» de la misma manera que el sistema.</p>
+      <h2 class="sim-h">Tu trabajo no es elegir quién tiene razón.</h2>
+      <p>Es construir una interfaz que permita que ambos —la persona y el sistema—
+      puedan encontrarse. Esa interfaz es el puente entre el modelo mental y el
+      modelo conceptual.</p>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <button class="boton" id="nextBtn" type="button">Cerrar el recorrido →</button>
+      </div>`;
+    },
+
+    final() {
+      const p = persona();
+      const exps = S.expectations.length ? S.expectations.join("; ") : "—";
+      return `
+      <div class="sim-done" aria-hidden="true">✓</div>
+      <h2 class="sim-h">Ya pueden decir qué es lo que no funciona.</h2>
+      <p>No «la app es mala». Sino: el sistema da por hecho algo que para
+      ${esc(p.first)} no es cierto, y de ahí se sigue todo lo demás. Eso que acaban
+      de nombrar es con lo que van a diseñar.</p>
+
+      <h3 class="mono sim-sub">Lo que se llevan</h3>
+      <ul class="sim-check">
+        <li><span class="sim-check-i" aria-hidden="true">✓</span><span><strong>Qué intenta hacer la persona</strong><br>${esc(p.need)}</span></li>
+        <li><span class="sim-check-i" aria-hidden="true">✓</span><span><strong>Qué espera del sistema</strong><br>${esc(exps)}</span></li>
+        <li><span class="sim-check-i" aria-hidden="true">✓</span><span><strong>Cómo está organizado el sistema</strong><br>${p.concept.map(esc).join(" → ")}</span></li>
+        <li><span class="sim-check-i" aria-hidden="true">✓</span><span><strong>Lo que el sistema da por hecho</strong><br>${esc(S.supuestoSistema) || "—"}</span></li>
+        <li><span class="sim-check-i" aria-hidden="true">✓</span><span><strong>Cómo replantearon la actividad</strong><br>Pedir comida no es <em>${esc(S.reframeNot) || "…"}</em>. Es <em>${esc(S.reframeIs) || "…"}</em>.</span></li>
+      </ul>
+      <details class="sim-recorrido">
+        <summary class="mono">Ver el recorrido completo del grupo</summary>
+        <pre id="recorridoTexto">${esc(exportarMarkdown(S))}</pre>
+      </details>
+      <div class="sim-acciones">
+        <button class="sim-btn-fantasma" id="copyBtn" type="button">Copiar recorrido</button>
+        <button class="sim-btn-fantasma" id="mdBtn" type="button">Descargar .md</button>
+      </div>
+      <p class="sim-nota-bloque">Guárdenlo antes de cerrar: el recorrido es la
+      primera parte de la entrega por Classroom.</p>
+
+      <div class="sim-sigue">
+        <h3 class="mono">Lo que sigue</h3>
+        <p class="sim-sigue-frase">Acá siempre hubo una lista.</p>
+        <p>En cada paso les dimos de dónde escoger, y con eso bastaba para reconocer
+        el problema. Diseñar la imagen del sistema es lo contrario: lo que
+        ${esc(p.first)} necesita no va a estar en ninguna lista. Les toca inventarlo.</p>
+        <p>Ya tienen los dos extremos: lo que espera ${esc(p.first)} y lo que el
+        sistema da por hecho. Lo que falta está en el medio.</p>
+        <div class="sim-puente">
+          <div class="sim-need"><span class="mono">Modelo mental</span>${esc(p.tension.person)}</div>
+          <div class="sim-hueco">
+            <span class="mono">Imagen del sistema</span>
+            <p>Esto es lo que falta, y es lo único que no les podemos dar: la
+            interfaz por donde ${esc(p.first)} y el sistema puedan encontrarse.</p>
+          </div>
+          <div class="sim-need sim-need-sistema"><span class="mono">Modelo conceptual</span>${esc(S.supuestoSistema) || "—"}</div>
+        </div>
+        <p>No diseñen una «mejor app de domicilios». Diseñen la interfaz que haga
+        perceptible y operable lo que ${esc(p.first)} está intentando hacer de verdad.</p>
+        <p class="sim-sigue-cta"><a class="boton" href="/pensamiento-sensorial/imagen-del-sistema">Abrir la consigna →</a></p>
+      </div>
+      <div class="sim-nav">
+        <button class="sim-btn-fantasma" id="backBtn" type="button">← Volver</button>
+        <span></span>
+      </div>`;
+    }
+  };
+
+  /* ---------- cableado ---------- */
+  const CABLEADO = {
+    start() {
+      document.querySelectorAll(".sim-grupo").forEach(b => {
+        b.onclick = () => {
+          const nueva = asignarPersona(b.dataset.g);
+          // Cambiar de grupo cambia de persona: el recorrido anterior ya no
+          // aplica y se reinicia (el grupo es lo primero que se elige).
+          if (S.personaId && S.personaId !== nueva) {
+            const grupo = b.dataset.g;
+            S = nuevoEstado();
+            S.grupo = grupo;
+          } else {
+            S.grupo = b.dataset.g;
+          }
+          S.personaId = nueva;
+          guardar();
+          render();
+        };
+      });
+      const begin = document.getElementById("beginBtn");
+      if (begin) begin.onclick = () => {
+        if (!S.personaId) { S.personaId = asignarPersona(S.grupo); guardar(); }
+        ir("persona");
+      };
+      const cont = document.getElementById("continuarBtn");
+      if (cont) cont.onclick = () => ir(S.screen);
+    },
+    persona() {
+      document.getElementById("backBtn").onclick = () => ir("start");
+      document.getElementById("nextBtn").onclick = () => { S.beat = 0; guardar(); ir("beat"); };
+    },
+    beat() {
+      document.querySelectorAll("#opts .sim-opt").forEach(o => {
+        o.onclick = () => { S.path[S.beat] = { optId: o.dataset.id }; S.path = S.path.slice(0, S.beat + 1); guardar(); ir("consequence"); };
+      });
+      document.getElementById("backBtn").onclick = () => { if (S.beat === 0) ir("persona"); else { S.beat--; guardar(); ir("consequence"); } };
+    },
+    consequence() {
+      const last = S.beat >= beats().length - 1;
+      document.getElementById("backBtn").onclick = () => { S.path = S.path.slice(0, S.beat); guardar(); ir("beat"); };
+      document.getElementById("nextBtn").onclick = () => { if (last) ir("exit"); else { S.beat++; guardar(); ir("beat"); } };
+    },
+    exit() {
+      document.getElementById("backBtn").onclick = () => { S.beat = beats().length - 1; guardar(); ir("consequence"); };
+      document.getElementById("nextBtn").onclick = () => ir("mental");
+    },
+    mental() {
+      document.querySelectorAll("#exps .sim-opt").forEach(o => {
+        o.onclick = () => {
+          const t = o.dataset.exp;
+          if (S.expectations.includes(t)) S.expectations = S.expectations.filter(x => x !== t);
+          else S.expectations = S.expectations.concat([t]);
+          guardar();
+          const sel = S.expectations.includes(t);
+          o.classList.toggle("sel", sel);
+          o.setAttribute("aria-pressed", sel);
+          o.querySelector(".sim-chk").textContent = sel ? "✓" : "";
+          pista("");
+        };
+      });
+      document.getElementById("backBtn").onclick = () => ir("exit");
+      document.getElementById("nextBtn").onclick = () => {
+        if (S.expectations.length === 0) { pista("Marca al menos una expectativa que hayas reconocido."); return; }
+        ir("conceptual");
+      };
+    },
+    conceptual() {
+      document.getElementById("backBtn").onclick = () => ir("mental");
+      document.getElementById("nextBtn").onclick = () => ir("tension");
+    },
+    tension() {
+      const p = persona();
+      const ta = document.getElementById("supSistema");
+      const ver = document.getElementById("verBtn");
+      const rev = document.getElementById("reveal");
+      ta.oninput = () => {
+        S.supuestoSistema = ta.value; guardar(); pista("");
+        // El botón se abre solo cuando ya escribieron algo: la segunda voz
+        // no puede llegar antes que la propia.
+        ver.disabled = !S.supuestoSistema.trim();
+        if (S.supuestoVisto) rev.innerHTML = vocesHTML(S.supuestoSistema.trim(), p.tension.supuesto);
+      };
+      ver.onclick = () => {
+        if (!S.supuestoSistema.trim()) return;
+        S.supuestoVisto = true; guardar();
+        rev.innerHTML = vocesHTML(S.supuestoSistema.trim(), p.tension.supuesto);
+        rev.classList.add("show");
+      };
+      document.getElementById("backBtn").onclick = () => ir("conceptual");
+      document.getElementById("nextBtn").onclick = () => {
+        if (!S.supuestoSistema.trim()) { pista("Escriban en una frase qué da por hecho el sistema."); return; }
+        ir("designIntro");
+      };
+    },
+    designIntro() {
+      document.getElementById("backBtn").onclick = () => ir("tension");
+      document.getElementById("nextBtn").onclick = () => { S.dbeat = 0; guardar(); ir("design"); };
+    },
+    design() {
+      document.querySelectorAll("#opts .sim-opt").forEach(o => {
+        o.onclick = () => { S.dpath[S.dbeat] = { optId: o.dataset.id }; S.dpath = S.dpath.slice(0, S.dbeat + 1); guardar(); ir("designConseq"); };
+      });
+      document.getElementById("backBtn").onclick = () => { if (S.dbeat === 0) ir("designIntro"); else { S.dbeat--; guardar(); ir("designConseq"); } };
+    },
+    designConseq() {
+      const last = S.dbeat >= diseno().length - 1;
+      document.getElementById("backBtn").onclick = () => { S.dpath = S.dpath.slice(0, S.dbeat); guardar(); ir("design"); };
+      document.getElementById("nextBtn").onclick = () => { if (last) ir("breaking"); else { S.dbeat++; guardar(); ir("design"); } };
+    },
+    breaking() {
+      document.getElementById("backBtn").onclick = () => { S.dbeat = diseno().length - 1; guardar(); ir("designConseq"); };
+      document.getElementById("nextBtn").onclick = () => ir("reframe");
+    },
+    reframe() {
+      const a = document.getElementById("rNot"), b = document.getElementById("rIs");
+      a.oninput = () => { S.reframeNot = a.value; guardar(); pista(""); };
+      b.oninput = () => { S.reframeIs = b.value; guardar(); pista(""); };
+      document.getElementById("pistaBtn").onclick = (e) => {
+        const el = document.getElementById("pista");
+        el.classList.toggle("show");
+        e.target.textContent = el.classList.contains("show") ? "Ocultar pista" : "Necesito una pista";
+      };
+      document.getElementById("backBtn").onclick = () => ir("breaking");
+      document.getElementById("nextBtn").onclick = () => {
+        if (!S.reframeNot.trim() || !S.reframeIs.trim()) { pista("Completa las dos partes de la frase."); return; }
+        ir("explain");
+      };
+    },
+    explain() {
+      document.getElementById("backBtn").onclick = () => ir("reframe");
+      document.getElementById("nextBtn").onclick = () => ir("final");
+    },
+    final() {
+      document.getElementById("backBtn").onclick = () => ir("explain");
+      document.getElementById("copyBtn").onclick = () => {
+        const txt = exportarMarkdown(S);
+        if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast("Recorrido copiado")).catch(() => copiarPlano(txt));
+        else copiarPlano(txt);
+      };
+      document.getElementById("mdBtn").onclick = () => {
+        const blob = new Blob([exportarMarkdown(S)], { type: "text/markdown;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `recorrido-imagen-del-sistema${S.grupo ? '-grupo-' + S.grupo : ''}.md`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast("Recorrido descargado");
+      };
+    }
+  };
+
+  /* ---------- utilidades ---------- */
+  let toastTimer = null;
+  function toast(m) {
+    const t = document.getElementById("toast");
+    t.textContent = m;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 1900);
+  }
+  function copiarPlano(txt) {
+    const ta = document.createElement("textarea");
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); toast("Recorrido copiado"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  document.getElementById("resetBtn").onclick = () => {
+    if (confirm("¿Reiniciar el simulador? Se borrará el recorrido guardado en este navegador.")) {
+      localStorage.removeItem(STORAGE_KEY);
+      S = nuevoEstado();
+      ultimaSpec = null;
+      render();
+    }
+  };
+
+  render();
+</script>
+
+<style is:global>
+  /* ── marco del simulador ─────────────────────── */
+  .sim-cabecera { padding: 3rem 0 1.75rem; }
+
+  .sim-kicker { color: var(--secundario); display: block; margin-bottom: 1rem; }
+
+  .sim-cabecera h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2rem, 5.5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--tinta);
+  }
+
+  .sim-fases {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  .sim-fase {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    border: 1px solid var(--regla);
+    padding: 0.35rem 0.7rem;
+  }
+
+  .sim-fase.activa { color: var(--tinta); border-color: var(--tinta); background: var(--amarillo); }
+  .sim-fase.hecha { color: var(--tinta); border-color: var(--tinta); }
+
+  /* en pantallas con teléfono, dos columnas; el teléfono acompaña */
+  .sim-grid { display: block; }
+
+  .sim-grid:has(#telefonoWrap:not([hidden])) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .sim-telefono-wrap { position: sticky; top: 1.5rem; }
+
+  /* ── el teléfono ─────────────────────────────── */
+  .sim-telefono {
+    border: 2px solid var(--tinta);
+    box-shadow: 6px 6px 0 var(--regla);
+    background: var(--papel);
+    font-family: var(--sans);
+    padding: 0.75rem 0.85rem 1rem;
+  }
+
+  .tel-barra {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--secundario);
+    border-bottom: 1px solid var(--regla);
+    padding-bottom: 0.45rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .tel-puntos { letter-spacing: 0.15em; font-size: 0.45rem; }
+
+  .tel-aviso {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    background: var(--amarillo);
+    border: 1px solid var(--tinta);
+    padding: 0.3rem 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .tel-titulo {
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--tinta);
+    margin-bottom: 0.5rem;
+  }
+
+  .tel-fila {
+    font-size: 0.78rem;
+    color: var(--texto);
+    border-bottom: 1px solid var(--regla);
+    padding: 0.45rem 0.15rem;
+    line-height: 1.35;
+  }
+
+  .tel-fila:last-child { border-bottom: none; }
+
+  /* el amarillo marca qué cambió con la decisión: nunca es decorativo */
+  .tel-fila.marcada {
+    background: linear-gradient(to top, var(--amarillo) 38%, transparent 38%);
+    color: var(--tinta);
+    font-weight: 500;
+  }
+
+  /* ── pantallas ───────────────────────────────── */
+  .sim-pantalla { padding-bottom: 2.5rem; max-width: 40rem; }
+
+  .sim-pantalla p { max-width: 56ch; margin-bottom: 1rem; }
+
+  .sim-lede {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--tinta);
+    margin-bottom: 1.25rem;
+  }
+
+  .sim-h {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--tinta);
+    margin-bottom: 1.25rem;
+    max-width: 24ch;
+  }
+
+  .sim-sub { color: var(--secundario); margin: 1.75rem 0 0.5rem; }
+
+  .sim-paso {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .sim-paso-n {
+    font-weight: 900;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.15rem 0.45rem;
+  }
+
+  .sim-paso-amarillo .sim-paso-n { background: var(--amarillo); }
+
+  /* escena de la persona */
+  .sim-escena {
+    border: 2px solid var(--tinta);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sim-escena p { margin-bottom: 0.5rem; }
+  .sim-escena p:last-child { margin-bottom: 0; }
+
+  .sim-tiempo { color: var(--secundario); display: block; margin-bottom: 0.75rem; }
+
+  .sim-avatar { font-size: 1.3rem; }
+
+  .sim-escena-grande {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--tinta);
+  }
+
+  .sim-need {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--tinta);
+  }
+
+  .sim-need .mono { color: var(--secundario); display: block; margin-bottom: 0.3rem; }
+
+  .sim-need-diseno { border-left-color: var(--tinta); }
+
+  /* movimientos del inicio */
+  .sim-movimientos { margin: 1.5rem 0 0; }
+
+  .sim-mov {
+    border-top: 1px solid var(--regla);
+    padding: 0.8rem 0;
+    font-style: italic;
+    display: flex;
+    gap: 0.9rem;
+    align-items: baseline;
+  }
+
+  .sim-mov:last-child { border-bottom: 1px solid var(--regla); }
+
+  .sim-mov-n {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-style: normal;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0 0.4rem;
+    flex: 0 0 auto;
+  }
+
+  /* selector de grupo */
+  .sim-grupos { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.75rem; }
+
+  .sim-grupo {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--papel);
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.7rem 1.1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .sim-grupo:hover { background: var(--amarillo); }
+  .sim-grupo.sel { background: var(--tinta); color: var(--papel); }
+
+  /* situación y sistema */
+  .sim-situacion p { font-size: 1.05rem; }
+
+  .sim-sys {
+    border: 1px solid var(--tinta);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    max-width: 24rem;
+  }
+
+  .sim-sys .mono { color: var(--secundario); display: block; margin-bottom: 0.35rem; }
+
+  .sim-sys-msg {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    margin-bottom: 0 !important;
+  }
+
+  .sim-pregunta {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--tinta);
+    margin: 1.5rem 0 1rem;
+    line-height: 1.3;
+  }
+
+  .sim-pregunta-nota { font-weight: 400; color: var(--secundario); font-size: 0.9rem; }
+
+  /* opciones */
+  .sim-opts { display: grid; gap: 0.6rem; margin-bottom: 1.5rem; }
+
+  .sim-opt {
+    display: flex;
+    gap: 0.9rem;
+    align-items: baseline;
+    text-align: left;
+    font: inherit;
+    color: var(--tinta);
+    background: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1.45;
+  }
+
+  .sim-opt:hover, .sim-opt:focus-visible {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--amarillo), 4px 4px 0 1px var(--tinta);
+  }
+
+  .sim-opt.sel { box-shadow: 4px 4px 0 var(--amarillo), 4px 4px 0 1px var(--tinta); }
+
+  .sim-opt-key { font-weight: 700; color: var(--secundario); flex: 0 0 auto; }
+  .sim-opt.sel .sim-opt-key { color: var(--tinta); }
+
+  .sim-chk { font-weight: 900; flex: 0 0 1rem; color: var(--tinta); }
+
+  /* consecuencias */
+  .sim-applied { color: var(--secundario); font-size: 0.95rem; }
+  .sim-applied strong { color: var(--tinta); }
+
+  .sim-conseq {
+    border: 2px solid var(--tinta);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sim-conseq-head {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    margin-bottom: 0.5rem;
+  }
+
+  .sim-conseq-res { font-size: 1.05rem; }
+
+  .sim-trade { display: grid; gap: 0.5rem; margin-top: 1.25rem; }
+
+  .sim-chip { display: flex; gap: 0.7rem; align-items: baseline; font-size: 0.95rem; }
+
+  .sim-chip-s {
+    font-family: var(--sans);
+    font-weight: 900;
+    border: 1px solid var(--tinta);
+    width: 1.3rem;
+    height: 1.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    transform: translateY(0.2rem);
+  }
+
+  .sim-mas .sim-chip-s { background: var(--amarillo); }
+  .sim-chip span:last-child { max-width: 52ch; }
+
+  .sim-conseq-turn {
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--tinta);
+    margin: 1.5rem 0 0.35rem;
+  }
+
+  .sim-conseq-but { font-style: italic; color: var(--tinta); margin-bottom: 0 !important; }
+
+  /* frustración al salir del rol */
+  .sim-frustracion {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--tinta);
+    margin: 1.5rem 0;
+    max-width: 32ch;
+  }
+
+  /* modelo conceptual */
+  .sim-concept {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.6rem;
+    margin: 1.5rem 0;
+  }
+
+  .sim-cnode {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.4rem 0.8rem;
+  }
+
+  .sim-crel { font-size: 0.85rem; color: var(--secundario); font-style: italic; }
+
+  .sim-cierre-modelo {
+    border: 1px solid var(--regla);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem !important;
+    max-width: none !important;
+  }
+
+  /* tensión */
+  .sim-dos-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .sim-col { padding: 1.25rem 1.5rem; }
+  .sim-col .mono { display: block; margin-bottom: 0.6rem; }
+  .sim-col p { font-size: 1.05rem; margin-bottom: 0; }
+
+  .sim-col-persona { border-left: 3px solid var(--amarillo); padding-left: 1.25rem; padding-right: 0; }
+  .sim-col-persona .mono { color: var(--tinta); }
+
+  .sim-col-sistema { border-left: 3px solid var(--regla); padding-left: 1.25rem; padding-right: 0; }
+  .sim-col-sistema .mono { color: var(--secundario); }
+
+  .sim-reveal { display: none; margin-top: 1.75rem; }
+  .sim-reveal.show { display: block; }
+
+  /* las dos voces del supuesto */
+  .sim-voces { margin-bottom: 0.9rem; }
+  .sim-voces .sim-col p { font-size: 1rem; }
+
+  .sim-voz-nota {
+    color: var(--secundario);
+    font-size: 0.9rem;
+    max-width: 58ch;
+    margin-bottom: 1.25rem;
+  }
+
+  .sim-campo-nota {
+    color: var(--secundario);
+    font-size: 0.85rem;
+    margin-top: -1.1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .sim-pista-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .sim-pista-btn[disabled]:hover { color: var(--secundario); border-color: var(--secundario); }
+
+  /* cadena de decisiones en el quiebre */
+  .sim-cadena { list-style: none; margin: 0 0 1.5rem; }
+
+  .sim-cadena li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: baseline;
+    border-top: 1px solid var(--regla);
+    padding: 0.7rem 0;
+  }
+
+  .sim-cadena li:last-child { border-bottom: 1px solid var(--regla); }
+
+  .sim-cadena-n { font-weight: 700; color: var(--secundario); }
+
+  .sim-break {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--tinta);
+    background: var(--amarillo);
+    display: inline;
+    padding: 0 0.15em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    line-height: 1.7;
+  }
+
+  /* replanteamiento */
+  .sim-prompts {
+    border: 1px solid var(--regla);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sim-prompts .mono { color: var(--secundario); display: block; margin-bottom: 0.5rem; }
+
+  .sim-prompts ul { list-style: none; }
+  .sim-prompts li { padding: 0.15rem 0; font-size: 0.95rem; }
+
+  .sim-fillline {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--tinta);
+    line-height: 2.2;
+    margin-bottom: 1.25rem;
+  }
+
+  .sim-fillline label { display: block; }
+
+  .sim-fillline input {
+    font: inherit;
+    font-weight: 400;
+    border: none;
+    border-bottom: 2px solid var(--tinta);
+    background: transparent;
+    padding: 0.1rem 0.3rem;
+    margin: 0 0.3rem;
+    min-width: 12ch;
+    width: 55%;
+    outline: none;
+  }
+
+  .sim-fillline input:focus { background: var(--amarillo); }
+
+  .sim-pista-btn {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--secundario);
+    color: var(--secundario);
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+  }
+
+  .sim-pista-btn:hover { color: var(--tinta); border-color: var(--tinta); }
+
+  .sim-pista {
+    display: none;
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    margin-top: 1rem;
+    font-style: italic;
+  }
+
+  .sim-pista.show { display: block; }
+
+  /* campos de texto */
+  .sim-campo { display: block; margin-bottom: 1.5rem; }
+
+  .sim-campo .mono { color: var(--secundario); display: block; margin-bottom: 0.45rem; }
+
+  .sim-campo textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.8rem 0.9rem;
+    resize: vertical;
+    outline: none;
+    background: var(--papel);
+  }
+
+  .sim-campo textarea:focus { box-shadow: 3px 3px 0 var(--amarillo); }
+
+  /* final */
+  .sim-done {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--tinta);
+    background: var(--amarillo);
+    border: 2px solid var(--tinta);
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 4px 4px 0 var(--tinta);
+    margin-bottom: 1.75rem;
+  }
+
+  .sim-check { list-style: none; margin: 0 0 1.75rem; }
+
+  .sim-check li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: baseline;
+    border-top: 1px solid var(--regla);
+    padding: 0.85rem 0;
+  }
+
+  .sim-check li:last-child { border-bottom: 1px solid var(--regla); }
+
+  .sim-check-i { font-weight: 900; color: var(--tinta); }
+  .sim-check strong { font-family: var(--sans); font-size: 0.95rem; }
+
+  .sim-recorrido { margin-bottom: 1.75rem; }
+
+  .sim-recorrido summary {
+    cursor: pointer;
+    color: var(--secundario);
+    padding: 0.5rem 0;
+  }
+
+  .sim-recorrido summary:hover { color: var(--tinta); }
+
+  .sim-recorrido pre {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: 1px solid var(--regla);
+    padding: 1rem 1.25rem;
+    margin-top: 0.75rem;
+    max-height: 24rem;
+    overflow-y: auto;
+  }
+
+  .sim-acciones { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+
+  .sim-acciones .boton { text-decoration: none; display: inline-block; }
+
+  /* el puente hacia la consigna */
+  .sim-sigue {
+    border-top: 2px solid var(--tinta);
+    padding-top: 1.75rem;
+    margin-top: 2.5rem;
+  }
+
+  .sim-sigue > .mono { color: var(--secundario); display: block; margin-bottom: 1rem; }
+
+  .sim-sigue-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.3rem, 3.2vw, 1.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--tinta);
+    margin-bottom: 1rem;
+  }
+
+  /* los dos extremos, y el hueco que les toca */
+  .sim-puente { margin: 1.5rem 0 1.75rem; }
+  .sim-puente .sim-need { margin-bottom: 0; }
+  .sim-need-sistema { border-left-color: var(--regla); }
+
+  .sim-hueco {
+    border: 2px dashed var(--tinta);
+    padding: 1.4rem 1.3rem;
+    margin: 0.9rem 0;
+  }
+
+  .sim-hueco .mono { color: var(--tinta); display: block; margin-bottom: 0.5rem; }
+  /* sin el tope de medida: los tres bloques tienen que leerse como una sola pila */
+  .sim-hueco p { max-width: none; margin-bottom: 0; }
+
+  .sim-sigue-cta { margin-top: 1.75rem; }
+  .sim-sigue-cta .boton { text-decoration: none; display: inline-block; }
+
+  /* notas, hints, navegación */
+  .sim-nota-bloque { font-size: 0.95rem; color: var(--secundario); }
+  .sim-nota-bloque strong { color: var(--tinta); }
+
+  .sim-nota-marcada {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    color: var(--texto);
+    font-size: 1rem;
+  }
+
+  .sim-hint {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #b3261e;
+    min-height: 1.2em;
+  }
+
+  .sim-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .sim-btn-fantasma {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: none;
+    color: var(--secundario);
+    border: 1px solid var(--secundario);
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .sim-btn-fantasma:hover { color: var(--tinta); border-color: var(--tinta); }
+
+  /* pie del simulador */
+  .sim-pie {
+    border-top: 1px solid var(--regla);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sim-reset {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    color: var(--secundario);
+    cursor: pointer;
+    padding: 0.25rem 0;
+    text-decoration: underline;
+    text-decoration-color: var(--regla);
+    text-underline-offset: 0.15em;
+  }
+
+  .sim-reset:hover { color: var(--tinta); text-decoration-color: var(--tinta); }
+
+  .sim-nota { font-size: 0.85rem; color: var(--secundario); }
+
+  /* toast */
+  .sim-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translate(-50%, 1rem);
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: var(--tinta);
+    color: var(--papel);
+    padding: 0.7rem 1.25rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 30;
+  }
+
+  .sim-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ── responsive ──────────────────────────────── */
+  @media (max-width: 50rem) {
+    .sim-grid:has(#telefonoWrap:not([hidden])) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    /* en el celular el teléfono va primero: es la escena */
+    .sim-telefono-wrap { position: static; order: -1; max-width: 19rem; }
+  }
+
+  @media (max-width: 40rem) {
+    .sim-cabecera { padding: 2.25rem 0 1.5rem; }
+    .sim-dos-col { grid-template-columns: 1fr; }
+    .sim-escena, .sim-conseq { padding: 1.25rem; }
+    .sim-nav { flex-wrap: wrap; }
+  }
+</style>

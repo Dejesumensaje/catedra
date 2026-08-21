@@ -8,46 +8,48 @@ import Base from '../../layouts/Base.astro';
 
 // Las personas no son diagnósticos ni arquetipos de marketing: son modelos
 // mentales que no coinciden con el del sistema. Esa distancia es el ejercicio.
+// Son las mismas cinco personas del simulador —allí se vive su situación— y la
+// asignación a los grupos se hizo por sorteo.
 const personas = [
   {
     grupo: 'Grupo 1',
-    nombre: 'Desconfía de pagar en línea',
-    quiere: 'Pedir sin registrar su tarjeta. Paga en efectivo o contraentrega.',
-    espera: 'Ver el total exacto —con envío y todo— antes de comprometerse a nada.',
-    noQuiere: 'Crear una cuenta ni dar datos de pago por adelantado.',
-    sePierde: 'Cuando le piden la tarjeta antes de mostrarle cuánto va a pagar.',
+    nombre: 'Valentina, 22 · un plato con gluten la enferma de verdad',
+    quiere: 'Almorzar sin exponerse al gluten.',
+    espera: 'Poder confiar en que una opción es segura — no solo ver información sobre ella.',
+    noQuiere: 'Adivinar si la etiqueta «sin gluten» es confiable, ni escribirle a cada restaurante a preguntar.',
+    sePierde: 'Cuando tiene toda la información y aún así no puede confiar: informar no es lo mismo que responder por el plato.',
   },
   {
     grupo: 'Grupo 2',
-    nombre: 'Tiene hambre y no quiere decidir',
-    quiere: 'Comer algo rico, ya. No está explorando: está resolviendo.',
-    espera: 'Que la app le proponga tres o cuatro opciones buenas y punto.',
-    noQuiere: 'Comparar cientos de restaurantes ni configurar filtros.',
-    sePierde: 'Cuando la primera pantalla es un catálogo infinito con ocho categorías y un carrusel de promociones.',
+    nombre: 'Sofía, 29 · pide para su mamá, enferma y en otra ciudad',
+    quiere: 'Que su mamá, sola en Medellín, almuerce hoy. Ella está en Bogotá.',
+    espera: 'Pedir para otra persona, a distancia, y saber qué le pasó después de la entrega.',
+    noQuiere: 'Que el sistema la trate como quien recibe: notificaciones, timbre e instrucciones no son para ella.',
+    sePierde: 'Cuando «pedido entregado ✓» no le dice lo único que necesita saber: si su mamá abrió y está comiendo.',
   },
   {
     grupo: 'Grupo 3',
-    nombre: 'Pide para alguien más',
-    quiere: 'Enviarle el almuerzo a su abuela, que vive en otra dirección.',
-    espera: 'Poder cambiar la dirección de entrega y dejar indicaciones para el repartidor.',
-    noQuiere: 'Rehacer el pedido ni llamar al restaurante a explicar.',
-    sePierde: 'Cuando la app asume que la comida va a donde está el teléfono.',
+    nombre: 'Camila, 27 · tiene 40 minutos para almorzar',
+    quiere: 'Almorzar antes de la 1:00 p. m. A esa hora entra a una reunión que no puede moverse.',
+    espera: 'Que el tiempo que la app promete sea algo en lo que se pueda confiar: que alguien responda por esa hora.',
+    noQuiere: 'Estimados que se recalculan en silencio mientras su hora de almuerzo corre.',
+    sePierde: 'Cuando ningún número de la pantalla le dice lo único que importa: si va a alcanzar o no.',
   },
   {
     grupo: 'Grupo 4',
-    nombre: 'No puede comer gluten',
-    quiere: 'Pedir sin tener que adivinar qué lleva cada plato.',
-    espera: 'Que «sin gluten» sea un dato verificable, no una etiqueta decorativa.',
-    noQuiere: 'Escribirle a cada restaurante a preguntar ingredientes.',
-    sePierde: 'Con fotos genéricas, descripciones vagas y filtros que prometen lo que el restaurante no confirma.',
+    nombre: 'Andrés, 41 · coordina el almuerzo de las 8 personas de su equipo',
+    quiere: 'Resolver el almuerzo de ocho personas como una sola situación, no como ocho pedidos.',
+    espera: 'Reunir lo que quiere cada quien, repartir cada plato y cobrar a cada uno lo suyo.',
+    noQuiere: 'Ocho procesos completos, ni perseguir a todos la semana siguiente para que le paguen.',
+    sePierde: 'Cuando el sistema lo trata como un solo comensal: un comprador, un pedido, un pago — y él está coordinando a ocho.',
   },
   {
     grupo: 'Grupo 5',
-    nombre: 'Cuenta cada peso',
-    quiere: 'Saber el precio real completo: plato, envío, servicio, propina.',
-    espera: 'Poder ordenar las opciones por precio final, no por precio del plato.',
-    noQuiere: 'Sorpresas en el último paso del pago.',
-    sePierde: 'Cuando los costos aparecen uno a uno al final y el «$12.000» del principio termina en $21.500.',
+    nombre: 'Ernesto, 68 · quiere el almuerzo de siempre',
+    quiere: 'Pedir el almuerzo del domingo: el mismo de siempre, del restaurante del barrio.',
+    espera: 'Repetir con confianza algo que ya conoce, sin explorar ni decidir todo de nuevo.',
+    noQuiere: 'Los 438 restaurantes, ni rearmar el pedido plato por plato cada vez.',
+    sePierde: 'Cuando cualquier cambio —un precio, un menú reordenado— lo devuelve a explorar, comparar y dudar.',
   },
 ];
 
@@ -66,21 +68,26 @@ const sistema = [
 const pasos = [
   {
     numero: '01',
+    titulo: 'Encuentren el quiebre',
+    cuerpo: '¿En qué momento exacto le falla a su persona la app de domicilios que existe hoy? Ese momento es el punto de partida: la referencia se usa para romper, no para copiar.',
+  },
+  {
+    numero: '02',
     titulo: 'Comprendan la persona',
     cuerpo: '¿Qué quiere? ¿Qué sabe? ¿Qué no debería tener que recordar?',
   },
   {
-    numero: '02',
+    numero: '03',
     titulo: 'Identifiquen la tensión',
     cuerpo: '¿Dónde choca el modelo mental de su persona con el modelo conceptual del sistema?',
   },
   {
-    numero: '03',
+    numero: '04',
     titulo: 'Construyan la imagen del sistema',
     cuerpo: 'La fidelidad no importa: importa que puedan probar una hipótesis, no que se vea bonita.',
   },
   {
-    numero: '04',
+    numero: '05',
     titulo: 'Pónganla a prueba',
     cuerpo: 'Al inicio de la próxima clase: otro grupo la usa con solo el modelo mental en la mano. Ustedes observan y no explican.',
   },
@@ -164,23 +171,26 @@ const conceptos = [
 
 const despues = [
   {
-    numero: '05',
+    numero: '06',
     titulo: 'Comparen',
     cuerpo: 'El modelo mental inicial con el que la persona armó al usar la propuesta. ¿Qué logró comunicar? ¿Dónde produjo una lectura inesperada?',
   },
   {
-    numero: '06',
+    numero: '07',
     titulo: 'Segunda vuelta',
     cuerpo: 'Mismo sistema, otra persona. ¿Qué tendría que cambiar en la imagen del sistema?',
   },
 ];
 
 const listo = [
+  'El recorrido del simulador está completo y exportado: decisiones, tensión y replanteamiento.',
   'Una persona que nunca ha visto el prototipo puede completar un pedido sin ayuda.',
   'El flujo llega hasta el pedido confirmado, sin huecos.',
   'Ninguna pantalla contradice la ficha A de su persona.',
+  'Al menos una capacidad de la ficha B quedó por fuera o transformada, y pueden decir por qué su persona no la necesita.',
+  'Si la primera pantalla es un catálogo con filtros, pueden defender por qué su persona empieza ahí.',
   'En cada pantalla se puede decir cómo sabe la persona qué puede hacer, qué le impide equivocarse, dónde está cada cosa y qué le responde el sistema.',
-  'Cada decisión de la lista dice de dónde salió: ficha A, ficha B o uno de los cinco conceptos.',
+  'Cada decisión del recorrido dice de dónde salió: ficha A, ficha B o uno de los cinco conceptos.',
   'Cada supuesto está escrito como afirmación, y se puede decir qué lo convertiría en dato: a quién habría que observar o preguntarle.',
   'Las tres preguntas de investigación se pueden responder con personas reales, no con opiniones del grupo.',
 ];
@@ -199,6 +209,32 @@ const listo = [
   </section>
 
   <section class="bloque">
+    <h2 class="mono">Primero · El simulador</h2>
+    <div class="encargo">
+      <p class="encargo-frase">
+        Antes de diseñar nada: <strong>vivan el problema.</strong>
+      </p>
+      <p class="encargo-nota">
+        Una persona. Un sistema. Un problema. El simulador los pone en la situación
+        de su persona —la del sorteo, la misma de la ficha A de más abajo—: usan la
+        app como la usaría ella, sienten dónde el sistema no la deja hacer lo que
+        esperaba, y solo entonces se ponen a diseñar. El recorrido queda guardado y
+        se exporta: <strong>ese recorrido es la primera parte de la entrega</strong>.
+      </p>
+      <p class="encargo-nota">
+        Son tres fases: primero <strong>viven</strong> el modelo mental, después{' '}
+        <strong>observan</strong> el modelo conceptual, y al final{' '}
+        <strong>diseñan</strong> el encuentro entre los dos. Tómenlo con calma:
+        equivocarse adentro del simulador es parte del ejercicio.
+      </p>
+      <p class="encargo-cta">
+        <a class="boton" href="/pensamiento-sensorial/simulador">Abrir el simulador →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El encargo</h2>
     <div class="encargo">
       <p class="encargo-frase">
         En la próxima clase, otro grupo usa su prototipo con solo la ficha A en la
@@ -228,8 +264,9 @@ const listo = [
   <section class="bloque">
     <h2 class="mono">Ficha A · Su persona</h2>
     <p>
-      Cada grupo trabaja con la suya. Las otras cuatro quedan acá para que sepan qué van
-      a enfrentar cuando les toque probar la propuesta de otro grupo.
+      Cada grupo trabaja con la suya —la misma que les tocó en el simulador—. Las
+      otras cuatro quedan acá para que sepan qué van a enfrentar cuando les toque
+      probar la propuesta de otro grupo.
     </p>
     <ul class="personas" role="list">
       {personas.map((p) => (
@@ -257,6 +294,29 @@ const listo = [
     <ul class="sistema" role="list">
       {sistema.map((capacidad) => <li>{capacidad}</li>)}
     </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La trampa · Diseñar la app que ya existe</h2>
+    <p>
+      La referencia más fuerte que tienen es la app de domicilios que ya usan. El
+      riesgo es entregar esa misma app con un ajuste: un filtro más, una pantalla
+      menos. Eso no es diseñar para su persona — es diseñar para el modelo mental
+      de nadie.
+    </p>
+    <p>
+      La ficha B <strong>no es un menú de pantallas obligatorias</strong>: es lo que
+      el sistema sabe hacer. El trabajo es elegir qué se queda visible, qué se
+      esconde y qué se elimina. Por eso hay un requisito: al menos una capacidad de
+      la ficha B tiene que quedar <strong>por fuera o transformada</strong>, y
+      tienen que poder decir por qué su persona no la necesita. Ernesto —que solo
+      quiere repetir el almuerzo de siempre— debería terminar sin catálogo infinito,
+      sin filtros y sin comparación; si su prototipo los tiene, no diseñaron para él.
+    </p>
+    <p class="remate">
+      La prueba del intercambio: ¿su prototipo le serviría igual a la persona de
+      otro grupo? Si la respuesta es sí, todavía no es de la suya.
+    </p>
   </section>
 
   <section class="bloque">
@@ -330,8 +390,9 @@ const listo = [
       que otro grupo use papel o Canva—. <strong>Quienes diseñan la interfaz son
       ustedes.</strong> Ojo con la trampa: la primera respuesta de cualquier IA es la
       app genérica —catálogo infinito, ocho filtros, carrusel de promociones—, es
-      decir, el modelo mental de nadie. Cada pantalla tiene que atender lo que su
-      persona quiere, espera y no quiere hacer.
+      decir, el modelo mental de nadie. Si lo que entrega se parece a la app de
+      domicilios que ya conocen, la señal no es que haya que pulirlo: es que el
+      diseño todavía no está hecho.
     </p>
   </section>
 
@@ -365,7 +426,10 @@ const listo = [
     <p>
       Diseñaron para una persona que no son ustedes. Gran parte de las decisiones del
       prototipo salieron de lo que el grupo <strong>dio por cierto</strong>. Eso es lo
-      que vamos a sacar a la luz.
+      que vamos a sacar a la luz. Esta parte se escribe <strong>al final, con el
+      prototipo ya construido</strong> —antes no hay sobre qué mirar hacia atrás—, y
+      va en el mismo documento de la entrega. Acá va lo que se entiende por un buen
+      supuesto:
     </p>
 
     <h3 class="subpaso-titulo">Primero: los supuestos</h3>
@@ -422,36 +486,36 @@ const listo = [
         <li>
           <span class="entrega-letra mono" aria-hidden="true">A</span>
           <span class="entrega-texto">
+            <strong>El recorrido del simulador.</strong>{' '}
+            <span class="entrega-detalle">Se copia o se descarga desde la pantalla final del simulador. Trae las decisiones, la tensión y el replanteamiento.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">B</span>
+          <span class="entrega-texto">
             <strong>El prototipo.</strong>{' '}
             <span class="entrega-detalle">Funcionando, móvil, flujo completo, interactuable.</span>
           </span>
         </li>
         <li>
-          <span class="entrega-letra mono" aria-hidden="true">B</span>
+          <span class="entrega-letra mono" aria-hidden="true">C</span>
+          <span class="entrega-texto">
+            <strong>Los supuestos y las tres preguntas.</strong>{' '}
+            <span class="entrega-detalle">Entre cinco y ocho supuestos escritos como afirmaciones, y tres de ellos convertidos en preguntas investigables.</span>
+          </span>
+        </li>
+        <li>
+          <span class="entrega-letra mono" aria-hidden="true">D</span>
           <span class="entrega-texto">
             <strong>El boceto inicial.</strong>{' '}
             <span class="entrega-detalle">Foto de donde el grupo decidió la interfaz antes de construir.</span>
           </span>
         </li>
         <li>
-          <span class="entrega-letra mono" aria-hidden="true">C</span>
-          <span class="entrega-texto">
-            <strong>Las decisiones.</strong>{' '}
-            <span class="entrega-detalle">Lista corta: cada decisión de interfaz y a qué responde —ficha A, ficha B o uno de los cinco conceptos—.</span>
-          </span>
-        </li>
-        <li>
-          <span class="entrega-letra mono" aria-hidden="true">D</span>
+          <span class="entrega-letra mono" aria-hidden="true">E</span>
           <span class="entrega-texto">
             <strong>El rastro de IA.</strong>{' '}
             <span class="entrega-detalle">Solo si la usaron: los prompts clave, qué entregó, qué corrigieron y por qué.</span>
-          </span>
-        </li>
-        <li>
-          <span class="entrega-letra mono" aria-hidden="true">E</span>
-          <span class="entrega-texto">
-            <strong>Los supuestos y las preguntas.</strong>{' '}
-            <span class="entrega-detalle">Entre cinco y ocho afirmaciones; tres convertidas en preguntas investigables.</span>
           </span>
         </li>
       </ol>
@@ -538,6 +602,9 @@ const listo = [
 
   .encargo-plantilla .vacio { letter-spacing: 0.02em; }
 
+  .encargo-cta { margin: 1.5rem 0 0; max-width: none; }
+  .encargo-cta .boton { text-decoration: none; display: inline-block; }
+
   /* ── las cinco personas ───────────────────────── */
   .personas {
     list-style: none;
@@ -610,6 +677,16 @@ const listo = [
     top: 0.55rem;
     font-family: var(--sans);
     color: var(--tinta);
+  }
+
+  /* ── remate de sección ────────────────────────── */
+  .remate {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    max-width: 52rem;
   }
 
   /* ── los pasos ────────────────────────────────── */
