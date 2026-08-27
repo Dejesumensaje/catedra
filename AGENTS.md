@@ -54,9 +54,11 @@ todo el curso sin abrir un solo deck.
 .
 ├── AGENTS.md               ← este archivo
 ├── CLAUDE.md               ← puntero a este archivo
-├── .claude/commands/       ← comandos del flujo semanal
+├── .claude/
+│   ├── commands/           ← comandos del flujo semanal
+│   └── agents/             ← subagentes del repo (revisor-de-textos)
 ├── skills/
-│   └── pensamiento-sensorial-slides/   ← estilo de las presentaciones (NO TOCAR)
+│   └── pensamiento-sensorial-slides/   ← estilo de las presentaciones
 ├── src/
 │   ├── content.config.ts   ← schema
 │   ├── content/
@@ -127,6 +129,22 @@ Tres pasos. El segundo existe para que el paso caro sea corto.
    [clase]
 /memoria-clase 07      →  bloque memoria en el .mdx, estado → con-memoria
 ```
+
+El paso de revisión es aparte y lo hace un subagente barato:
+
+```
+[antes de dar por terminada la sesión]
+   subagente revisor-de-textos sobre el deck, las consignas y el .mdx
+   → reporta hallazgos con cita y propuesta; no edita nada
+   → el modelo alto decide qué se aplica
+```
+
+**Sobre el SKILL de las presentaciones.** Antes decía «NO TOCAR». La regla real es más
+precisa: **no se improvisa el estilo**, porque es muy específico y no se deduce. Pero el
+documento sí se actualiza cuando dictar una clase enseña algo —un tipo de diapositiva
+nuevo, un error que se repitió, una contradicción entre lo que dice y lo que hacen los
+decks—. Si un deck se desvía del SKILL y funciona mejor, manda el deck y el SKILL se
+corrige.
 
 **Por qué el outline intermedio:** revisar 40 slides en HTML cuesta miles de tokens y es
 incómodo. Revisar 40 líneas de texto cuesta poco y es donde realmente se decide si la
