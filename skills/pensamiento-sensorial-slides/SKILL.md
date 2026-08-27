@@ -251,6 +251,41 @@ Excepción: el slide de espera, donde el GIF convive con el texto de bienvenida.
 
 ## Infografías y mapas conceptuales
 
+### La prueba de un diagrama: ¿se puede interrogar?
+
+> **Estrenada en el deck s04, y es la regla más importante de esta sección.**
+
+Un diagrama no está para resumir lo que ya se dijo. Está para que el profesor pueda
+**señalar una parte concreta y hacer una pregunta sin explicar nada antes**:
+
+> ¿Qué está pasando acá? · ¿Dónde empieza la interacción? · ¿Qué sabe la persona?
+> ¿Qué sabe el sistema? · ¿Qué tiene que recordar? · ¿Qué información desaparece?
+
+Si el diagrama no aguanta ese uso, no es una herramienta de pensamiento: es una
+ilustración. La referencia viva es el esquema del cajero de s02, que sostuvo un bloque
+teórico entero porque cada pieza podía encenderse y preguntarse aparte.
+
+**Consecuencia práctica:** cuando haya que elegir entre una ficha elegante y un diagrama
+que permita hacer una pregunta, va el diagrama.
+
+### Mostrar la situación, no la taxonomía
+
+El error más caro que cometió el s04 en su primera versión: dibujar los **roles** en vez
+de la **escena**. Para explicar «Put-That-There» —alguien señala una pantalla de pared y
+dice «pon eso ahí»— la v1 puso tres cajas que decían `VOZ · la acción`,
+`GESTO · cuál objeto`, `GESTO · qué lugar`, con flechas que confluían. Nadie lo entendía,
+y con razón: no había pantalla, no había dedo, no había objetos. Las cajas *nombraban* el
+gesto en vez de mostrarlo, y la disposición en tres columnas sugería una secuencia que no
+existe.
+
+La versión que sí funciona dibuja la situación: la pantalla de pared con figuras encima,
+la frase abajo con «eso» y «ahí» dentro de cajas de línea punteada —el contorno roto *es*
+el argumento: son palabras huecas—, y dos flechas que suben desde esas palabras hasta lo
+que el dedo resuelve.
+
+**La regla:** si el concepto tiene una escena, dibuja la escena. Un diagrama de categorías
+solo se entiende si ya se entendió el concepto, o sea, cuando ya no hace falta.
+
 ### Cuándo incluir uno (criterio de decisión)
 
 Antes de generar cada bloque de contenido, evaluar si el concepto cumple al menos dos de
@@ -476,6 +511,16 @@ que ir en un orden, es narrativa y van como oraciones sueltas.
 **Cuándo NO usarlos.** Para resumir un argumento que ya se contó bien en oraciones. Para
 meter más contenido en menos slides. Para hacer una agenda. Ninguna de esas es una razón.
 
+**Y una razón más para no usarlos, aprendida en s04: el exceso de fichas.** Convertir cada
+concepto en `rótulo + tarjeta + definición + fuente + dos celdas` produce un lenguaje
+editorial y corporativo —una colección de tarjetas—, no un argumento visual. El s04 llegó
+a tener tres `slide--ficha` seguidas para las tres modalidades; se reemplazaron por **un
+solo diagrama de tres paneles** que se puede señalar, más un párrafo denso donde hacía
+falta precisión. La presentación mejoró y quedó más corta.
+
+Antes de poner una ficha, la pregunta es: ¿esto se entiende mejor como tarjeta, o como
+algo que se puede recorrer con el dedo?
+
 ### Reglas comunes
 
 - Roboto sobre blanco, como todo lo demás. Reglas de 1px `#e5e5e5` para separar.
@@ -609,6 +654,68 @@ Dos reglas que no se pueden relajar aquí:
     <p class="mapa-item">Restricción</p>
     <p class="mapa-pie">Cada uno responde una pregunta distinta. Vamos en orden.</p>
   </div>
+</div>
+```
+
+### 6 · `slide--preguntas-grandes` — la diapositiva que solo pregunta
+
+No toda diapositiva tiene que explicar algo. Algunas existen para que el estudiante mire y
+piense, y se proyectan **mientras se está mirando otra cosa**: una prueba en vivo, una
+instalación, cinco propuestas pegadas en el tablero.
+
+Sin número y sin viñeta, a propósito: no es una lista operativa —para eso está
+`slide--pauta`— ni un argumento. Son preguntas para hacer en voz alta.
+
+```html
+<div class="slide slide--preguntas-grandes">
+  <p class="pg-titulo">Mientras miran, busquen esto</p>
+  <ul class="pg">
+    <li>¿Dónde se atasca?</li>
+    <li>¿Qué intenta hacer primero?</li>
+    <li>¿Qué asumimos que iba a entender solo?</li>
+  </ul>
+</div>
+```
+
+Una diapositiva que solo diga **¿Dónde está la interfaz?** es perfectamente válida.
+
+### 7 · `slide--demo` — componentes que funcionan de verdad
+
+El deck es HTML. Cuando el tema *son* las convenciones de interfaz, proyectar una imagen
+de un botón es pedir un acto de fe: pon el botón.
+
+El s04 lo usa para las convenciones visuales —botón, botón desactivado, slider, enlace,
+campo de texto y tarjeta arrastrable—, con sus cursores y sus estados de hover
+funcionando. El profesor pasa el mouse y arrastra delante de todos.
+
+**Dos cosas técnicas que hay que respetar o el deck se rompe:**
+
+```js
+// el clic no puede pasar de diapositiva si cae dentro de un control
+if (e.target.closest('.deck-nav, a, button, .demo')) return;
+
+// y el teclado se cede cuando el foco está en un campo:
+// sin esto, escribir un espacio salta de página
+const t = e.target;
+if (t && (t.matches('input, textarea, select') || t.isContentEditable)) return;
+```
+
+Todo control interactivo va dentro de un contenedor con clase `.demo`.
+
+**Y una regla de contenido:** la diapositiva no lleva instrucciones de uso. Si hay que
+escribir «pasen el mouse por encima», la convención no estaba funcionando sola — que es
+justo lo que la diapositiva afirma.
+
+### 8 · `.visual-titulo` — el titular de un diagrama
+
+Un `slide--visual` sin titular obliga al profesor a decir de qué es el diagrama antes de
+poder señalarlo. El titular dice qué se está mirando; el diagrama responde el resto.
+
+```html
+<div class="slide slide--visual">
+  <p class="visual-titulo">Lo que una interfaz sostiene, tenga la forma que tenga</p>
+  <svg viewBox="0 0 900 430" ...>…</svg>
+  <div class="diagram-mobile">…</div>
 </div>
 ```
 
@@ -753,6 +860,44 @@ Se copia tal cual al bloque `<style>` del deck.
 }
 ```
 
+### CSS de los tipos nuevos
+
+```css
+/* preguntas grandes */
+.slide--preguntas-grandes { align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem; }
+.pg-titulo {
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #6f6f6f;
+  max-width: 56rem; margin: 0 auto 1.8rem; width: 100%;
+}
+.pg { list-style: none; width: 100%; max-width: 56rem; margin: 0 auto; }
+.pg li {
+  font-size: clamp(1.25rem, 2.9vw, 2rem); font-weight: 900; color: #444;
+  line-height: 1.25; padding: 0.7rem 0; border-bottom: 1px solid #e5e5e5;
+}
+.pg li:last-child { border-bottom: none; }
+.pg--compacta li { font-size: clamp(1rem, 2.2vw, 1.5rem); padding: 0.5rem 0; }
+
+/* titular de un diagrama */
+.slide--visual { gap: 0.4rem; }
+.visual-titulo {
+  font-family: 'Roboto', sans-serif;
+  font-size: clamp(1rem, 2.1vw, 1.45rem);
+  font-weight: 900; color: #444; line-height: 1.3;
+  max-width: 60ch; margin-bottom: 0.4rem;
+}
+
+/* fuente al pie de un slide--parrafo */
+.slide-fuente {
+  font-size: 0.82rem; color: #6f6f6f; max-width: 60%;
+  margin-top: 1.4rem; line-height: 1.5; text-align: left;
+}
+```
+
+La tira de componentes (`slide--demo`) no se copia: se escribe para cada caso, porque los
+controles dependen de lo que la clase esté enseñando. Lo que sí se copia son las dos
+guardas de JavaScript de más arriba.
+
 Añadir también los cinco selectores al bloque de `prefers-reduced-motion`, junto a los demás.
 
 ---
@@ -803,6 +948,44 @@ Cada slide debe poder leerse como continuación del anterior. Si se leen en voz 
 tras otro, deben sonar como un monólogo coherente.
 
 ---
+
+### Las comas, que en español no funcionan como en inglés
+
+Este es un error que se cuela solo cuando el texto lo produce un modelo, y hay que
+buscarlo a propósito. En inglés se pone una coma antes de la conjunción por cadencia; en
+español no.
+
+**Coma serial: no existe.** «Presencialmente, por teléfono~~,~~ o por una app».
+«Qué hace la persona, qué hace el sistema~~,~~ y cómo se reparten el trabajo».
+
+**Coma de ritmo antes de conjunción: sobra** cuando la conjunción coordina dos predicados
+o dos complementos del **mismo sujeto**, sin contraste ni cambio de sentido. El caso que
+más se repite son las interrogativas coordinadas:
+
+```
+❌ ¿Qué información deja pasar, y cuál no?      ✅ ¿Qué información deja pasar y cuál no?
+❌ Es lo más fácil, y lo primero que se agota.  ✅ Es lo más fácil y lo primero que se agota.
+❌ Quién carga con el error, y cuándo se entera ✅ Quién carga con el error y cuándo se entera
+```
+
+**Sí lleva coma antes de y/o/e/u** en cuatro casos, y hay que dejarlos en paz:
+
+1. La enumeración es compleja: sus miembros ya llevan comas dentro.
+   *«…(Rozin, Wooden Mirror, 1999), y el juego cuyo idioma…»*
+2. Se cierra un inciso.
+   *«alguien que va caminando, con audífonos y un reloj, y que no quiere recorrer una lista»*
+3. Hay cambio de sujeto con contraste.
+   *«Alguien dice que siempre revisa el total, y uno lo mira pagar sin revisar nada»*
+4. La coma desambigua porque el miembro anterior ya tiene un *y*.
+   *«Sanders y Stappers (2012), y la documentación de Apple»*
+
+**Y «porque»:** la causal pura va sin coma —explica la causa del hecho—; solo la
+explicativa la lleva, cuando justifica por qué se dice lo que se dice.
+
+```
+❌ Tiene que acordarse de cuánta plata metió, porque la pantalla dejó de mostrarlo.
+✅ Tiene que acordarse de cuánta plata metió porque la pantalla dejó de mostrarlo.
+```
 
 ## Editorial pass — revisión final obligatoria
 
@@ -855,6 +1038,33 @@ una frase, decirla en una frase.
 **5. Cierres que anuncian el siguiente slide.** El último slide de un bloque no debe decir
 lo que viene después. Cerrar el argumento actual; el siguiente slide ya se presenta solo.
 
+**6. El tic del «no es X, sino Y».** Es el giro favorito de un modelo escribiendo en
+español, y se nota. En la v1 del deck s04 aparecía en **diez diapositivas de noventa y
+seis** —«no es la misma interfaz traducida a otro canal», «no es poner varias interfaces
+juntas», «la pregunta no es cuál es mejor», «no están armando un acertijo»—. Leído
+seguido, el argumento parece llevar siempre al mismo sitio.
+
+Es contable, así que hay que contarlo antes de entregar:
+
+```bash
+grep -oE '\bno es\b|\bNo es\b' deck.html | wc -l
+```
+
+Se conserva solo donde **la distinción es el contenido** —una definición que se construye
+por oposición, una precisión contra un lugar común—. En los demás sitios se reemplaza por
+lo que la diapositiva realmente aporta: un dato, un mecanismo, una atribución, un ejemplo.
+
+**7. La densidad no es el problema.** El problema es la información sin función. Una
+diapositiva puede llevar definición, diagrama, etiquetas, ejemplo y pregunta al mismo
+tiempo si todos esos elementos sirven a la misma idea. **No reduzcas contenido solo para
+que se vea minimalista:** estas presentaciones son documentos autónomos, tienen que poder
+leerse sin el profesor, y también usarse con él. Lo que sí hay que mantener es la
+jerarquía visual y el aire.
+
+Corolario: **una definición completa vive en una sola diapositiva.** No se parte en tres
+para aligerarla. Si es un término que el curso va a seguir usando, va entera y en
+`slide--cita`, para que se pueda copiar del proyector.
+
 ### Señal de que el editorial pass funcionó
 
 Al leer el guión editado en voz alta, cada oración debe añadir algo que la anterior no
@@ -863,6 +1073,30 @@ dijo. Si se puede saltar un slide y la narrativa sigue teniendo sentido, ese sli
 ---
 
 ## HTML: estructura técnica
+
+> **Antes de copiar la plantilla de abajo: el shell técnico se toma del último deck
+> publicado, no de este documento.** La plantilla que sigue es la base mínima y quedó por
+> detrás de los decks reales. Desde s02 los decks traen cosas que acá no están y que no se
+> pueden perder:
+>
+> - **barra de progreso** (`.progress-track` / `#progressFill`) — este documento decía
+>   «sin barra de progreso»; los decks la llevan y funciona. Manda el deck.
+> - **menú de secciones autogenerado** recorriendo `.section-theme` y `.tema-central`.
+>   Es lo que hace que los rangos del outline se puedan recalcular, y conviene recortar
+>   las etiquetas largas a ~52 caracteres o el menú se desborda.
+> - **lazy-load por `data-src`** — así se cargan los QR.
+> - **gestos táctiles** con umbral y descarte del swipe vertical, y `100dvh`.
+> - **`e.stopPropagation()` en los `<a>`**, más la guarda de `.demo` y la del teclado en
+>   campos de texto (ver `slide--demo`).
+> - **portada con fondo `#eeff41`** — este documento dice blanco; los decks se desviaron
+>   y se ven mejor así.
+> - **`#6f6f6f` para texto secundario, nunca `#888`** (piso AA, ver §Reglas de color).
+> - clases propias que conviene conservar: `.slide--cita`, `.tema-central` / `.tema-sub`,
+>   `.section-kicker`, `.refs-title` / `.refs-list`, `.hl`.
+>
+> Lo práctico: partir el HTML del deck anterior en tres —cabecera con el `<style>`, las
+> diapositivas, y el cromo con el `<script>`— y escribir solo las diapositivas.
+
 
 ```html
 <!DOCTYPE html>
@@ -1144,11 +1378,37 @@ dijo. Si se puede saltar un slide y la narrativa sigue teniendo sentido, ese sli
 - [ ] Si el tema tiene 3+ dimensiones, comparación o proceso → hay un slide SVG
 - [ ] Los SVG usan solo los tokens del sistema: `#eeff41`, `#222`, `#444`, `#888`, Roboto
 - [ ] El slide visual va después de la explicación textual, nunca antes
-- [ ] Sin número de slide visible, sin barra de progreso
+- [ ] Sin número de slide visible
+- [ ] El shell técnico salió del último deck, no de la plantilla mínima de este documento
+- [ ] Cada diagrama aguanta que lo señalen: se puede apuntar a una parte y preguntar algo
+- [ ] Ningún concepto quedó convertido en ficha cuando podía ser un diagrama
+- [ ] Las definiciones están completas y en una sola diapositiva
+- [ ] Se contó el giro «no es X, sino Y» y solo quedó donde la distinción es el contenido
+- [ ] Ninguna diapositiva existe solo para anunciar la siguiente
+- [ ] Comas revisadas: ni coma serial, ni coma de ritmo antes de conjunción
+- [ ] Ninguna afirmación técnica sin verificar en documentación oficial, con modelo y versión
+- [ ] Ningún bloque presenta como revelación algo que la clase ya sabía
+- [ ] Si hay componentes interactivos, van dentro de `.demo` y el teclado se cede en los campos
 
 ---
 
 ## Notas sobre contenido académico
+
+**No montar un bloque como revelación de algo que la clase ya sabe.** El s04 llegó a tener
+un bloque construido sobre la idea de que los estudiantes creían que «interfaz = pantalla»
+y había que corregirlos. Era falso: eso ya se les había dicho en clase —de viva voz, sin
+diapositiva—, y presentarlo como novedad dejaba al profesor contradiciéndose delante de su
+grupo. **Antes de escribir «casi todos creíamos que…», hay que preguntar qué se dijo ya,
+incluso lo que no quedó proyectado.** El movimiento correcto casi nunca es corregir una
+creencia: es empujar una que ya tienen hasta su consecuencia incómoda.
+
+**Verificar toda capacidad técnica antes de publicarla.** Si el material afirma que un
+aparato hace algo, hay que comprobarlo en la documentación oficial del fabricante y
+escribir **el modelo y la versión exactos**. Presentar como universal algo que existe en
+un solo modelo es un error de la misma familia que inventarse una cita. En el s04, la
+verificación produjo además el mejor material del ejercicio: los gestos de cabeza de los
+AirPods solo funcionan respondiendo a un anuncio de Siri, o sea que usarlos obliga a que
+el sistema hable primero — una restricción real que decide quién abre la interacción.
 
 William es estricto con las fuentes: **nunca fabricar frameworks o autores**. Si el tema
 requiere citar a alguien (ej: Wensveen et al., Dan Saffer), usar solo fuentes verificables
