@@ -9,52 +9,51 @@
 import Base from '../../layouts/Base.astro';
 
 const sirven = [
-  'Alguien que juegue mucho, o alguien que no juegue nunca.',
-  'Alguien que vaya a museos, o alguien que no haya entrado a uno en años.',
-  'Alguien que ya haya estado en una instalación interactiva.',
-  'Alguien que use las cosas de una manera rara, o que se pelee con ellas.',
-  'Alguien con un hábito que tenga que ver con lo que quieren explorar.',
+  'No tiene que ser experta en nada, ni haber visto nunca una obra interactiva.',
+  'No tiene que ser «el usuario perfecto». Basta con que se parezca a quien describieron.',
+  'Puede ser alguien del salón que encaje con el perfil y no sea de su grupo.',
+  'Puede ser una llamada de doce minutos a alguien que ya tienen en mente.',
 ];
 
 const hipotesis = [
-  'Creemos que prefiere que le expliquen antes de empezar.',
-  'Creemos que se frustra cuando no entiende qué puede hacer.',
-  'Creemos que disfruta descubrir las reglas por su cuenta.',
-  'Creemos que evita las cosas donde teme quedar en ridículo.',
+  'Creemos que se aburre si no entiende rápido qué puede hacer.',
+  'Creemos que prefiere descubrir las cosas por su cuenta.',
+  'Creemos que no vuelve si le da pena equivocarse en público.',
+  'Creemos que le llaman más la atención las cosas que no entiende del todo.',
 ];
 
 const prohibidas = [
-  '¿Te gustaría una instalación así?',
+  '¿Tú has ido a una instalación interactiva?',
+  '¿Te gustaría una experiencia así?',
   '¿Usarías una interfaz de voz?',
   '¿Qué te gustaría que tuviera?',
-  '¿Te parece buena la idea?',
 ];
 
 const sirvenPreguntas = [
-  'Cuéntame la última vez que un juego te enseñó una regla sin explicártela.',
-  'Cuéntame la última vez que entraste a una experiencia interactiva o a una instalación.',
-  '¿Qué hiciste la última vez que no sabías cómo interactuar con algo?',
-  '¿Cómo te diste cuenta de qué podías hacer?',
-  '¿Qué hizo que siguieras intentando? ¿Y qué hizo que lo dejaras?',
+  '¿Qué es lo último que viste, jugaste o visitaste que se te quedó pegado?',
+  '¿Por qué ese y no otro?',
+  '¿Qué tipo de cosas te gustan? ¿Qué tienen en común?',
+  'Contame algo que empezaste y dejaste a la mitad. ¿Qué pasó?',
+  '¿Qué fue lo último que te sorprendió?',
 ];
 
 const niveles = [
   {
     nivel: 'Lo dijo',
     que: 'Sus palabras, entre comillas. No un resumen de lo que quiso decir.',
-    ejemplo: '«Me aburrí porque no sabía si estaba avanzando.»',
+    ejemplo: '«Me quedé porque no entendía nada y quería entender.»',
     dequien: 'De ella',
   },
   {
-    nivel: 'Lo vimos',
-    que: 'Lo que hizo, no lo que contó que hace. Solo si estuvieron ahí.',
-    ejemplo: 'Abrió el menú tres veces y no tocó nada.',
+    nivel: 'Lo notamos',
+    que: 'Lo que pasó mientras hablaba: dónde se emocionó, dónde se quedó corta, qué evitó.',
+    ejemplo: 'Se emocionó contando eso y habló cinco minutos seguidos.',
     dequien: 'De ella',
   },
   {
     nivel: 'Lo inferimos',
     que: 'Nuestra lectura de las dos anteriores. Es útil, y no es un hecho.',
-    ejemplo: 'Necesita saber que va avanzando para seguir.',
+    ejemplo: 'No le molesta no entender: le molesta que se lo expliquen.',
     dequien: 'Nuestra',
   },
 ];
@@ -63,13 +62,13 @@ const ficha = [
   { campo: 'Sabemos que…', cuantas: '3', nota: 'Cada una respaldada directamente por algo que dijo o que hizo. Si no pueden señalar la frase que la sostiene, no va acá.' },
   { campo: 'Parece que…', cuantas: '2', nota: 'Interpretaciones razonables a partir de esa evidencia. Son de ustedes, no de ella.' },
   { campo: 'Todavía no sabemos…', cuantas: '2', nota: 'Preguntas que siguen abiertas. Salir con preguntas nuevas es un buen resultado, no un fracaso.' },
-  { campo: 'Habíamos supuesto que…', cuantas: '2', nota: 'Dos de las cinco del paso 1, y qué le pasó a cada una: se confirmó, cambió, o resultó falsa.' },
+  { campo: 'Habíamos supuesto que…', cuantas: '2', nota: 'Dos de las cinco del paso 2, y qué le pasó a cada una: se confirmó, cambió, o resultó falsa.' },
   { campo: 'Para esta persona, interactuar parece significar…', cuantas: '1 frase', nota: 'Una sola. Y sigue siendo una hipótesis: va a cambiar con las próximas entrevistas.' },
 ];
 
 const tiempos = [
-  { min: '5 min', que: 'Escribir las cinco hipótesis', quien: 'paso 1' },
-  { min: '5 min', que: 'Preparar las cinco preguntas', quien: 'paso 2' },
+  { min: '5 min', que: 'Decidir el tipo de experiencia y el público', quien: 'paso 1' },
+  { min: '5 min', que: 'Escribir las cinco hipótesis', quien: 'paso 2' },
   { min: '12 min', que: 'La entrevista', quien: 'paso 3' },
   { min: '10 min', que: 'Construir la ficha', quien: 'paso 4' },
 ];
@@ -78,7 +77,7 @@ const tarea = [
   'Registrar experiencias concretas, no opiniones sobre lo que ustedes quieren hacer.',
   'Separar en las notas lo que dijo, lo que vieron y lo que infirieron.',
   'Anotar en qué coinciden las tres personas, y sobre todo en qué se contradicen.',
-  'Volver a las cinco hipótesis del paso 1 y marcar cuáles siguen en pie.',
+  'Volver a las cinco hipótesis del paso 2 y marcar cuáles siguen en pie.',
   'Dejar escritas las preguntas nuevas que aparecieron.',
 ];
 
@@ -90,7 +89,7 @@ const noSePide = [
 ];
 
 const listo = [
-  'Hablaron con una persona que existe y que pueden volver a contactar.',
+  'Hablaron con una persona que existe, que pueden volver a contactar, y que se parece al público que describieron en el paso 1.',
   'Las cinco hipótesis quedaron escritas antes de la entrevista, no después.',
   'En las notas se distingue lo que dijo de lo que ustedes interpretaron.',
   'La ficha tiene al menos dos preguntas abiertas. Si no tiene ninguna, no investigaron: confirmaron.',
@@ -114,13 +113,14 @@ const listo = [
     <h2 class="mono">El encargo</h2>
     <div class="encargo">
       <p class="encargo-frase">
-        Escojan <strong>una persona real</strong>, escriban qué creen de ella, y después
-        pregúntenle.
+        Imaginen para quién quieren hacer algo, escriban qué creen de esa persona, y
+        después <strong>búsquenla y pregúntenle</strong>.
       </p>
       <p class="encargo-nota">
-        El orden importa: lo que creemos se escribe <strong>antes</strong> de la
-        entrevista. Si se escribe después, ya no se puede saber qué sabíamos y qué
-        aprendimos.
+        El orden importa. Primero se decide el tipo de experiencia y el tipo de público;
+        después se escribe lo que suponemos de él; y solo entonces se habla con alguien
+        real. Si lo que creemos se escribe <strong>después</strong> de la entrevista, ya
+        no hay manera de saber qué sabíamos y qué aprendimos.
       </p>
       <p class="encargo-nota">
         Al final no van a tener «la verdad sobre el usuario». Van a tener algo mejor:
@@ -131,29 +131,33 @@ const listo = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">A quién entrevistar</h2>
-    <p>
-      No hace falta que sea «el usuario ideal» de nada. Sirve casi cualquiera que tenga
-      algo que ver con el territorio que están explorando:
+    <h2 class="mono">Paso 1 · Para qué y para quién</h2>
+    <ol class="pasos" role="list">
+      <li class="paso">
+        <span class="paso-num mono">01</span>
+        <div>
+          <h3 class="paso-titulo">¿Qué tipo de experiencia quieren hacer?</h3>
+          <p class="paso-cuerpo">Un sitio, un videojuego, una instalación. <strong>El tipo, no la idea</strong>: todavía no hace falta tener nada decidido, y de hecho es mejor que no lo tengan.</p>
+        </div>
+      </li>
+      <li class="paso">
+        <span class="paso-num mono">02</span>
+        <div>
+          <h3 class="paso-titulo">¿A quién le quieren proponer esa interacción?</h3>
+          <p class="paso-cuerpo">Descríbanlo en tres o cuatro líneas: qué hace esa persona, qué consume, dónde se la encuentra uno. No es una ficha todavía — es a quién le están hablando.</p>
+        </div>
+      </li>
+    </ol>
+    <p class="remate">
+      Eso que acaban de describir <strong>no existe</strong>. Es un público imaginado, y
+      es exactamente lo que vamos a poner a prueba.
     </p>
-    <ul class="listo" role="list">
-      {sirven.map((s) => <li>{s}</li>)}
-    </ul>
-    <div class="condicion">
-      <p class="condicion-frase">La única condición: que exista y puedan hablar con ella.</p>
-      <p>
-        Hoy, en clase, vale llamar por teléfono a alguien que ya tengan en mente, o
-        entrevistar a alguien del salón que encaje con el perfil y que no sea de su grupo.
-        <strong>Lo que no vale es inventar otra persona.</strong> Eso ya lo hicimos la
-        semana pasada, y de ahí venimos.
-      </p>
-    </div>
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Paso 1 · Escriban lo que creen</h2>
+    <h2 class="mono">Paso 2 · Lo que suponemos</h2>
     <p>
-      Cinco afirmaciones sobre esa persona. Ni una más. Todas empiezan igual:
+      Cinco afirmaciones sobre ese público. Ni una más. Todas empiezan igual:
       <strong>«Creemos que…»</strong>, porque escribirlo así deja claro de qué se trata.
     </p>
     <ul class="hipotesis" role="list">
@@ -163,32 +167,56 @@ const listo = [
     </ul>
     <p class="remate">
       Esto no es conocimiento sobre nadie. Es <strong>lo que estábamos fingiendo saber</strong>.
-      Guárdenlo: en el paso 4 lo van a volver a mirar.
+      Guárdenlo: al final lo van a volver a mirar, una por una.
     </p>
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Paso 2 · Cinco preguntas</h2>
+    <h2 class="mono">Paso 3 · Buscar a alguien de ese público</h2>
     <p>
-      La regla es la misma de la clase: <strong>pregunten por experiencias, no por
-      opiniones sobre lo que ustedes quieren hacer.</strong>
+      Una persona real que <strong>pueda ser ese público</strong>. Nada más:
+    </p>
+    <ul class="listo" role="list">
+      {sirven.map((s) => <li>{s}</li>)}
+    </ul>
+    <div class="condicion">
+      <p class="condicion-frase">La única condición: que exista y puedan hablar con ella.</p>
+      <p>
+        <strong>Lo que no vale es inventar otra persona.</strong> Eso ya lo hicimos la
+        semana pasada, y de ahí venimos.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Cómo preguntar</h2>
+    <p>
+      La trampa está acá: <strong>no le pregunten por lo que ustedes quieren hacer.</strong>
+      Si van a hacer una instalación y arrancan con «¿tú has ido a una instalación
+      interactiva?», la respuesta va a ser que no y ahí se acabó la conversación — y si
+      dice que sí, va a hablar de la instalación, no de ella.
+    </p>
+    <p>
+      Lo que nos interesa es cómo esa persona se relaciona con las cosas, y eso no aparece
+      preguntando por la categoría. Aparece preguntando por <strong>lo que la marcó, y por
+      qué</strong>.
     </p>
     <div class="dos-columnas">
       <div class="col col--mal">
         <span class="col-tag mono">No sirven</span>
         <ul role="list">{prohibidas.map((p) => <li>{p}</li>)}</ul>
-        <p class="col-nota">Piden una predicción, y encima le dicen a la persona qué respuesta esperamos.</p>
+        <p class="col-nota">Preguntan por la categoría que nosotros queremos, y le dicen a la persona qué respuesta esperamos.</p>
       </div>
       <div class="col col--bien">
         <span class="col-tag mono">Sirven</span>
         <ul role="list">{sirvenPreguntas.map((p) => <li>{p}</li>)}</ul>
-        <p class="col-nota">Piden un recuerdo con lugar, momento y desenlace. Eso se puede seguir preguntando.</p>
+        <p class="col-nota">Piden algo que le pasó y el porqué. La segunda es <strong>la pregunta</strong>: las demás existen para poder hacerla.</p>
       </div>
     </div>
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Paso 3 · La entrevista</h2>
+    <h2 class="mono">Y mientras hablan</h2>
     <ol class="pasos" role="list">
       <li class="paso">
         <span class="paso-num mono">01</span>
