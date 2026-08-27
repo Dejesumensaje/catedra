@@ -1,0 +1,526 @@
+---
+// Actividad de cierre de la sesión 4 y su continuación como tarea.
+// Cierra el arco de la clase: inventamos una persona → descubrimos que era una
+// hipótesis → la ponemos a prueba con alguien real. El artefacto no es una
+// «persona» de manual —sin foto, sin edad, sin hobbies— sino una ficha de modelo
+// mental que obliga a separar lo dicho, lo observado y lo inferido, y que deja
+// escritas las preguntas que siguen abiertas.
+// La investigación queda abierta a propósito: es la materia prima de la sesión 5.
+import Base from '../../layouts/Base.astro';
+
+const sirven = [
+  'Alguien que juegue mucho, o alguien que no juegue nunca.',
+  'Alguien que vaya a museos, o alguien que no haya entrado a uno en años.',
+  'Alguien que ya haya estado en una instalación interactiva.',
+  'Alguien que use las cosas de una manera rara, o que se pelee con ellas.',
+  'Alguien con un hábito que tenga que ver con lo que quieren explorar.',
+];
+
+const hipotesis = [
+  'Creemos que prefiere que le expliquen antes de empezar.',
+  'Creemos que se frustra cuando no entiende qué puede hacer.',
+  'Creemos que disfruta descubrir las reglas por su cuenta.',
+  'Creemos que evita las cosas donde teme quedar en ridículo.',
+];
+
+const prohibidas = [
+  '¿Te gustaría una instalación así?',
+  '¿Usarías una interfaz de voz?',
+  '¿Qué te gustaría que tuviera?',
+  '¿Te parece buena la idea?',
+];
+
+const sirvenPreguntas = [
+  'Cuéntame la última vez que un juego te enseñó una regla sin explicártela.',
+  'Cuéntame la última vez que entraste a una experiencia interactiva o a una instalación.',
+  '¿Qué hiciste la última vez que no sabías cómo interactuar con algo?',
+  '¿Cómo te diste cuenta de qué podías hacer?',
+  '¿Qué hizo que siguieras intentando? ¿Y qué hizo que lo dejaras?',
+];
+
+const niveles = [
+  {
+    nivel: 'Lo dijo',
+    que: 'Sus palabras, entre comillas. No un resumen de lo que quiso decir.',
+    ejemplo: '«Me aburrí porque no sabía si estaba avanzando.»',
+    dequien: 'De ella',
+  },
+  {
+    nivel: 'Lo vimos',
+    que: 'Lo que hizo, no lo que contó que hace. Solo si estuvieron ahí.',
+    ejemplo: 'Abrió el menú tres veces y no tocó nada.',
+    dequien: 'De ella',
+  },
+  {
+    nivel: 'Lo inferimos',
+    que: 'Nuestra lectura de las dos anteriores. Es útil, y no es un hecho.',
+    ejemplo: 'Necesita saber que va avanzando para seguir.',
+    dequien: 'Nuestra',
+  },
+];
+
+const ficha = [
+  { campo: 'Sabemos que…', cuantas: '3', nota: 'Cada una respaldada directamente por algo que dijo o que hizo. Si no pueden señalar la frase que la sostiene, no va acá.' },
+  { campo: 'Parece que…', cuantas: '2', nota: 'Interpretaciones razonables a partir de esa evidencia. Son de ustedes, no de ella.' },
+  { campo: 'Todavía no sabemos…', cuantas: '2', nota: 'Preguntas que siguen abiertas. Salir con preguntas nuevas es un buen resultado, no un fracaso.' },
+  { campo: 'Habíamos supuesto que…', cuantas: '2', nota: 'Dos de las cinco del paso 1, y qué le pasó a cada una: se confirmó, cambió, o resultó falsa.' },
+  { campo: 'Para esta persona, interactuar parece significar…', cuantas: '1 frase', nota: 'Una sola. Y sigue siendo una hipótesis: va a cambiar con las próximas entrevistas.' },
+];
+
+const tiempos = [
+  { min: '5 min', que: 'Escribir las cinco hipótesis', quien: 'paso 1' },
+  { min: '5 min', que: 'Preparar las cinco preguntas', quien: 'paso 2' },
+  { min: '12 min', que: 'La entrevista', quien: 'paso 3' },
+  { min: '10 min', que: 'Construir la ficha', quien: 'paso 4' },
+];
+
+const tarea = [
+  'Registrar experiencias concretas, no opiniones sobre lo que ustedes quieren hacer.',
+  'Separar en las notas lo que dijo, lo que vieron y lo que infirieron.',
+  'Anotar en qué coinciden las tres personas, y sobre todo en qué se contradicen.',
+  'Volver a las cinco hipótesis del paso 1 y marcar cuáles siguen en pie.',
+  'Dejar escritas las preguntas nuevas que aparecieron.',
+];
+
+const noSePide = [
+  'Wireframes, mockups o pantallas.',
+  'Una solución, un concepto o una propuesta.',
+  'Identidad gráfica, nombre o lenguaje visual.',
+  'Conclusiones cerradas sobre «el usuario».',
+];
+
+const listo = [
+  'Hablaron con una persona que existe y que pueden volver a contactar.',
+  'Las cinco hipótesis quedaron escritas antes de la entrevista, no después.',
+  'En las notas se distingue lo que dijo de lo que ustedes interpretaron.',
+  'La ficha tiene al menos dos preguntas abiertas. Si no tiene ninguna, no investigaron: confirmaron.',
+  'Al menos una de las cinco hipótesis iniciales cambió o resultó falsa.',
+];
+---
+
+<Base
+  titulo="¿Qué sabemos de verdad? · Actividad y tarea · Pensamiento Sensorial 3.0"
+  descripcion="Actividad de cierre de la sesión 4: pasar de una persona imaginada a una primera comprensión basada en evidencia. Cinco hipótesis, una entrevista y una ficha de modelo mental."
+  volverHref="/pensamiento-sensorial/s04"
+  volverTexto="Sesión 4 · Preguntar y percibir"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Actividad y tarea · Sesión 4 · En grupos</span>
+    <h1 class="sube sube-2">¿Qué sabemos de verdad?</h1>
+    <p class="lede sube-3">La semana pasada diseñamos para una persona que inventamos. Hoy hablamos con una que existe.</p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El encargo</h2>
+    <div class="encargo">
+      <p class="encargo-frase">
+        Escojan <strong>una persona real</strong>, escriban qué creen de ella, y después
+        pregúntenle.
+      </p>
+      <p class="encargo-nota">
+        El orden importa: lo que creemos se escribe <strong>antes</strong> de la
+        entrevista. Si se escribe después, ya no se puede saber qué sabíamos y qué
+        aprendimos.
+      </p>
+      <p class="encargo-nota">
+        Al final no van a tener «la verdad sobre el usuario». Van a tener algo mejor:
+        unas cuantas suposiciones reemplazadas por evidencia, y unas preguntas nuevas
+        que antes no existían.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">A quién entrevistar</h2>
+    <p>
+      No hace falta que sea «el usuario ideal» de nada. Sirve casi cualquiera que tenga
+      algo que ver con el territorio que están explorando:
+    </p>
+    <ul class="listo" role="list">
+      {sirven.map((s) => <li>{s}</li>)}
+    </ul>
+    <div class="condicion">
+      <p class="condicion-frase">La única condición: que exista y puedan hablar con ella.</p>
+      <p>
+        Hoy, en clase, vale llamar por teléfono a alguien que ya tengan en mente, o
+        entrevistar a alguien del salón que encaje con el perfil y que no sea de su grupo.
+        <strong>Lo que no vale es inventar otra persona.</strong> Eso ya lo hicimos la
+        semana pasada, y de ahí venimos.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Paso 1 · Escriban lo que creen</h2>
+    <p>
+      Cinco afirmaciones sobre esa persona. Ni una más. Todas empiezan igual:
+      <strong>«Creemos que…»</strong>, porque escribirlo así deja claro de qué se trata.
+    </p>
+    <ul class="hipotesis" role="list">
+      {hipotesis.map((h) => (
+        <li><span class="hipotesis-tag mono">Hipótesis</span>{h}</li>
+      ))}
+    </ul>
+    <p class="remate">
+      Esto no es conocimiento sobre nadie. Es <strong>lo que estábamos fingiendo saber</strong>.
+      Guárdenlo: en el paso 4 lo van a volver a mirar.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Paso 2 · Cinco preguntas</h2>
+    <p>
+      La regla es la misma de la clase: <strong>pregunten por experiencias, no por
+      opiniones sobre lo que ustedes quieren hacer.</strong>
+    </p>
+    <div class="dos-columnas">
+      <div class="col col--mal">
+        <span class="col-tag mono">No sirven</span>
+        <ul role="list">{prohibidas.map((p) => <li>{p}</li>)}</ul>
+        <p class="col-nota">Piden una predicción, y encima le dicen a la persona qué respuesta esperamos.</p>
+      </div>
+      <div class="col col--bien">
+        <span class="col-tag mono">Sirven</span>
+        <ul role="list">{sirvenPreguntas.map((p) => <li>{p}</li>)}</ul>
+        <p class="col-nota">Piden un recuerdo con lugar, momento y desenlace. Eso se puede seguir preguntando.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Paso 3 · La entrevista</h2>
+    <ol class="pasos" role="list">
+      <li class="paso">
+        <span class="paso-num mono">01</span>
+        <div>
+          <h3 class="paso-titulo">Uno pregunta, otro escribe</h3>
+          <p class="paso-cuerpo">Y quien escribe anota <strong>las palabras de ella</strong>, no un resumen de lo que quiso decir. Las comillas son parte del trabajo.</p>
+        </div>
+      </li>
+      <li class="paso">
+        <span class="paso-num mono">02</span>
+        <div>
+          <h3 class="paso-titulo">No vendan la idea</h3>
+          <p class="paso-cuerpo">No cuenten todavía qué quieren diseñar. En el momento en que lo cuenten, la persona empieza a responder para ayudarles, y deja de contar lo que le pasó.</p>
+        </div>
+      </li>
+      <li class="paso">
+        <span class="paso-num mono">03</span>
+        <div>
+          <h3 class="paso-titulo">No llenen el silencio</h3>
+          <p class="paso-cuerpo">Cuando responda algo corto, esperen. Los tres segundos incómodos después de una respuesta son donde suele aparecer lo que de verdad importa.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Al anotar · tres cosas que no valen lo mismo</h2>
+    <table class="niveles">
+      <thead>
+        <tr><th scope="col">Nivel</th><th scope="col">Qué es</th><th scope="col">Un ejemplo</th><th scope="col">¿De quién es?</th></tr>
+      </thead>
+      <tbody>
+        {niveles.map((n) => (
+          <tr class={n.nivel === 'Lo inferimos' ? 'nivel-nuestro' : undefined}>
+            <th scope="row">{n.nivel}</th>
+            <td>{n.que}</td>
+            <td class="niveles-ej">{n.ejemplo}</td>
+            <td class="niveles-quien">{n.dequien}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="remate">
+      Las tres sirven. Solo las dos primeras son evidencia — son lo explícito y lo
+      observable de los que hablamos en clase. <strong>La tercera es nuestra, y puede
+      estar mal.</strong> Escribirla como si fuera un hecho es la manera más rápida de
+      volver a diseñar para nosotros mismos.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Paso 4 · La ficha</h2>
+    <p>
+      Sin foto, sin edad, sin hobbies, sin frase simpática. No es una ficha de personaje:
+      es lo que entendieron de <strong>cómo esa persona se relaciona con las cosas</strong>.
+    </p>
+    <table class="ficha">
+      <tbody>
+        {ficha.map((f) => (
+          <tr class={f.cuantas === '1 frase' ? 'ficha-cierre' : undefined}>
+            <th scope="row">{f.campo}<span class="ficha-cuantas mono">{f.cuantas}</span></th>
+            <td>{f.nota}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Los tiempos</h2>
+    <table class="tiempos">
+      <tbody>
+        {tiempos.map((t) => (
+          <tr>
+            <th scope="row" class="mono">{t.min}</th>
+            <td><strong>{t.que}</strong><span class="tiempos-quien">{t.quien}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Y después de clase · dos o tres personas más</h2>
+    <p>
+      La investigación no se acaba con una entrevista. Antes de la próxima clase, cada
+      grupo habla con <strong>dos o tres personas más</strong> y hace lo mismo con cada
+      una. Lo que traigan es el material con el que vamos a trabajar en la sesión 5.
+    </p>
+    <ul class="listo" role="list">
+      {tarea.map((t) => <li>{t}</li>)}
+    </ul>
+    <div class="nopide">
+      <p class="nopide-frase">Todavía no se pide nada de esto</p>
+      <ul role="list">{noSePide.map((n) => <li>{n}</li>)}</ul>
+      <p class="nopide-cola">
+        La investigación se queda abierta a propósito. Diseñar viene después, y viene
+        mejor si esto está bien hecho.
+      </p>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El cierre</h2>
+    <div class="cierre">
+      <p>Al terminar no van a tener una respuesta. Van a tener esto:</p>
+      <p class="cierre-pregunta">
+        Ahora sabemos más. Y sabemos mejor qué todavía no sabemos.
+      </p>
+      <p>
+        Investigar no elimina la incertidumbre: la hace visible. Y con una incertidumbre
+        visible ya se puede trabajar — que es exactamente lo que vamos a hacer en las dos
+        clases que vienen.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .encargo { border: 2px solid var(--tinta); padding: 1.75rem 2rem; max-width: 46rem; }
+
+  .encargo-frase {
+    font-family: var(--sans); font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem); line-height: 1.25;
+    color: var(--tinta); max-width: none; margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota {
+    max-width: none; margin-bottom: 0.9rem;
+    font-size: 0.98rem; color: var(--secundario);
+  }
+
+  .encargo-nota:last-child { margin-bottom: 0; }
+  .encargo-nota strong { color: var(--tinta); }
+
+  .remate {
+    border-left: 3px solid var(--amarillo); padding-left: 1rem;
+    font-size: 1.05rem; color: var(--tinta); max-width: 52rem;
+  }
+
+  /* ── la condición ─────────────────────────────── */
+  .condicion {
+    border: 2px solid var(--tinta); border-left-width: 10px;
+    border-left-color: var(--amarillo);
+    padding: 1.4rem 1.6rem; max-width: 46rem; margin-top: 1.5rem;
+  }
+
+  .condicion-frase {
+    font-family: var(--sans); font-weight: 900; font-size: 1.2rem;
+    color: var(--tinta); max-width: none; margin-bottom: 0.7rem;
+  }
+
+  .condicion p:last-child { max-width: none; margin-bottom: 0; font-size: 0.98rem; }
+
+  /* ── las hipótesis ────────────────────────────── */
+  .hipotesis { list-style: none; max-width: 52rem; margin: 1.25rem 0 1.5rem; }
+
+  .hipotesis li {
+    padding: 0.7rem 0; border-bottom: 1px solid var(--regla);
+    font-size: 1.02rem; color: var(--tinta);
+  }
+
+  .hipotesis li:last-child { border-bottom: none; }
+
+  .hipotesis-tag {
+    display: inline-block; margin-right: 0.8rem;
+    background: var(--amarillo); color: var(--tinta);
+    padding: 0.1rem 0.45rem;
+  }
+
+  /* ── preguntas en dos columnas ────────────────── */
+  .dos-columnas {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    max-width: 56rem; margin: 1.5rem 0 0;
+  }
+
+  .col { padding-top: 0.8rem; }
+  .col--mal { border-top: 3px solid var(--regla); }
+  .col--bien { border-top: 3px solid var(--amarillo); }
+  .col-tag { display: block; color: var(--secundario); margin-bottom: 0.7rem; }
+
+  .col ul { list-style: none; }
+
+  .col li {
+    padding: 0.5rem 0; border-bottom: 1px solid var(--regla);
+    font-size: 0.97rem; line-height: 1.45;
+  }
+
+  .col--mal li { color: var(--secundario); }
+  .col--bien li { color: var(--tinta); }
+  .col li:last-child { border-bottom: none; }
+
+  .col-nota { font-size: 0.9rem; color: var(--secundario); margin-top: 0.8rem; max-width: none; }
+
+  /* ── pasos ────────────────────────────────────── */
+  .pasos { list-style: none; max-width: 52rem; margin-top: 1.25rem; }
+
+  .paso {
+    display: flex; gap: 1.4rem; align-items: baseline;
+    padding: 1rem 0; border-bottom: 1px solid var(--regla);
+  }
+
+  .paso:last-child { border-bottom: none; }
+  .paso-num { flex: 0 0 1.8rem; font-weight: 700; color: var(--secundario); }
+  .paso .paso-titulo { font-size: 1.05rem; margin: 0 0 0.25rem; }
+  .paso-cuerpo { font-size: 0.98rem; color: var(--texto); max-width: none; margin-bottom: 0; }
+
+  /* ── tablas ───────────────────────────────────── */
+  .niveles, .ficha, .tiempos {
+    width: 100%; max-width: 54rem; border-collapse: collapse;
+    margin: 1.25rem 0 1rem; font-size: 0.96rem;
+  }
+
+  .niveles th, .niveles td, .ficha th, .ficha td, .tiempos th, .tiempos td {
+    border: 1px solid var(--regla); padding: 0.75rem 0.9rem;
+    text-align: left; vertical-align: top;
+  }
+
+  .niveles thead th {
+    font-family: var(--sans); font-weight: 700; font-size: 0.72rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--secundario); background: var(--amarillo);
+  }
+
+  .niveles th[scope='row'], .ficha th[scope='row'], .tiempos th[scope='row'] {
+    font-family: var(--sans); font-weight: 900; color: var(--tinta); width: 11rem;
+  }
+
+  .niveles-ej { font-style: italic; color: var(--texto); }
+  .niveles-quien { font-family: var(--sans); font-weight: 700; white-space: nowrap; }
+  .nivel-nuestro { background: rgba(238, 255, 65, 0.35); }
+  .nivel-nuestro .niveles-quien { color: var(--tinta); }
+
+  .ficha th[scope='row'] { width: 17rem; }
+
+  .ficha-cuantas {
+    display: block; color: var(--secundario); font-weight: 400; margin-top: 0.2rem;
+  }
+
+  .ficha-cierre th[scope='row'] { background: var(--amarillo); }
+
+  .tiempos td strong { font-family: var(--sans); color: var(--tinta); }
+
+  .tiempos-quien {
+    display: block; font-size: 0.88rem; color: var(--secundario); margin-top: 0.15rem;
+  }
+
+  /* ── lo que no se pide ────────────────────────── */
+  .nopide {
+    border: 2px solid var(--tinta); padding: 1.5rem 1.75rem;
+    max-width: 46rem; margin: 2rem 0 0;
+  }
+
+  .nopide-frase {
+    font-family: var(--sans); font-weight: 900; font-size: 1.2rem;
+    color: var(--tinta); max-width: none; margin-bottom: 0.9rem;
+  }
+
+  .nopide ul { list-style: none; }
+
+  .nopide li {
+    position: relative; padding: 0.45rem 0 0.45rem 1.7rem;
+    font-size: 0.97rem; color: var(--texto);
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .nopide li:last-child { border-bottom: none; }
+
+  .nopide li::before {
+    content: '×'; position: absolute; left: 0.2rem; top: 0.4rem;
+    font-family: var(--sans); font-weight: 700; color: var(--tinta);
+  }
+
+  .nopide-cola { max-width: none; margin: 1rem 0 0; font-size: 0.95rem; color: var(--secundario); }
+
+  /* ── listas de chequeo ────────────────────────── */
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative; padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem; border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□'; position: absolute; left: 0; top: 0.55rem;
+    font-family: var(--sans); color: var(--tinta);
+  }
+
+  /* ── el cierre ────────────────────────────────── */
+  .cierre {
+    background: var(--tinta); color: #e5e5e5;
+    padding: 2rem 2.25rem; box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 46rem;
+  }
+
+  .cierre p { max-width: none; margin-bottom: 1rem; }
+  .cierre p:last-child { margin-bottom: 0; }
+
+  .cierre-pregunta {
+    font-family: var(--sans); font-weight: 900; font-size: 1.35rem;
+    line-height: 1.3; color: var(--amarillo);
+    padding: 1rem 0; border-top: 1px solid #444; border-bottom: 1px solid #444;
+    margin: 1.25rem 0 !important;
+  }
+
+  @media (max-width: 760px) {
+    .dos-columnas { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  @media (max-width: 700px) {
+    .cierre { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+    .encargo, .condicion, .nopide { padding: 1.25rem; }
+    .paso { gap: 0.9rem; }
+    .niveles th[scope='row'], .ficha th[scope='row'], .tiempos th[scope='row'] { width: auto; }
+    .niveles { font-size: 0.86rem; }
+  }
+
+  @media print {
+    .hero-clase .lede, .cierre { display: none; }
+    .bloque { padding: 1.2rem 0; page-break-inside: avoid; }
+    .encargo, .condicion, .nopide { border-width: 1px; }
+    .ficha td { height: 3rem; }
+    a[href]::after { content: ''; }
+  }
+</style>

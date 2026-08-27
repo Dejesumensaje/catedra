@@ -61,11 +61,16 @@ reproductores al arrancar.
 > remoto, hay que darle play en el navegador real antes de confiar en él: que el
 > servidor responda no es que el video se vea.
 
-## Los QR — dos en el deck
+## Los QR — tres en el deck
 
 Las consignas viven en el sitio y el deck solo las apunta. Ningún deck repite
 una consigna que ya está publicada.
 
+- `qr-que-sabemos.svg` → `/pensamiento-sensorial/que-sabemos-de-verdad`
+  (la actividad de investigación y su continuación como tarea: los cuatro pasos,
+  los tres niveles de evidencia y la ficha de modelo mental). **Aparece dos veces
+  en el deck**: al cerrar la actividad y otra vez en «Para la próxima», porque la
+  misma página sirve para las dos cosas.
 - `qr-pedir-sin-mirar.svg` → `/pensamiento-sensorial/pedir-sin-mirar`
   (el brief de la actividad: hallazgos, escenario, vocabulario de interacción
   verificado, los cuatro pasos, la hoja del paso 02 y los tiempos)
