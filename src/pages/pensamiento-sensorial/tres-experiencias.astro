@@ -1,0 +1,602 @@
+---
+// Tarea de la sesión 4, para la sesión 5: tres experiencias interactivas
+// registradas con siete preguntas. Son el mismo instrumento con el que la
+// sesión 5 va a leer interacciones: se practica solo en la casa y llega usado
+// al salón. No se pide diseñar ninguna solución ni proponer mejoras.
+// Cada pregunta va con una respuesta que no sirve y una que sí, porque la
+// diferencia entre las dos es lo que la tarea entrena de verdad.
+import Base from '../../layouts/Base.astro';
+
+const tipos = [
+  {
+    titulo: 'Un videojuego',
+    cuerpo: 'Cualquiera, de cualquier época y cualquier plataforma. No tiene que ser uno raro ni de autor: puede ser el que juegan todos los días. Sirve más si pueden jugarlo esta semana con la libreta al lado.',
+  },
+  {
+    titulo: 'Una instalación interactiva o experiencia espacial',
+    cuerpo: 'Algo que ocurre en un espacio y responde a que alguien esté ahí. Un museo, una exposición, una proyección, una pieza de arte, una atracción. Si no tienen una cerca, vale una documentada en video — pero digan que la vieron en video.',
+  },
+  {
+    titulo: 'Una interfaz cotidiana, no necesariamente digital',
+    cuerpo: 'Un ascensor, un cajero, una máquina de café, un torniquete, una puerta automática, un menú telefónico, la lavadora de la casa. Entre más aburrida parezca, mejor.',
+  },
+];
+
+// Cada una con un ejemplo de respuesta que no sirve y uno que sí: es la
+// diferencia que más cuesta y la que decide si la tarea sirvió.
+const preguntas = [
+  {
+    n: '01',
+    q: '¿Qué puede hacer la persona?',
+    regla: 'Acciones, no botones.',
+    mal: 'Hay un botón de play y uno de pausa.',
+    bien: 'Puede interrumpir lo que está pasando y retomarlo donde iba.',
+  },
+  {
+    n: '02',
+    q: '¿Cómo descubre qué puede hacer?',
+    regla: 'Quién se lo enseñó, y cómo.',
+    mal: 'Está explicado en el menú de ayuda.',
+    bien: 'El primer tramo no deja hacer nada más que saltar, así que aprende a saltar sin que nadie se lo diga.',
+  },
+  {
+    n: '03',
+    q: '¿Qué tiene que recordar?',
+    regla: 'Todo lo que el sistema no deja a la vista.',
+    mal: 'Nada, es intuitivo.',
+    bien: 'Tiene que acordarse de cuánta plata metió porque la pantalla dejó de mostrarlo al elegir el producto.',
+  },
+  {
+    n: '04',
+    q: '¿Cómo responde el sistema?',
+    regla: 'Qué devuelve, por qué canal y cuánto se demora.',
+    mal: 'Responde bien y rápido.',
+    bien: 'El torniquete no dice nada: gira o no gira. La respuesta es el propio movimiento del cuerpo.',
+  },
+  {
+    n: '05',
+    q: '¿Cómo sabe que algo ocurrió?',
+    regla: 'No es lo mismo «te entendí» que «ya está hecho».',
+    mal: 'Aparece un mensaje.',
+    bien: 'Suena un pito distinto del pito de error, y la luz pasa de rojo a verde durante dos segundos. Si uno mira para otro lado, se lo pierde.',
+  },
+  {
+    n: '06',
+    q: '¿Qué pasa si se equivoca?',
+    regla: 'Y si no hay manera de volver atrás, decirlo.',
+    mal: 'Se puede volver atrás.',
+    bien: 'No puede: la máquina se tragó la moneda y no hay ningún control que la devuelva. Toca buscar a una persona.',
+  },
+  {
+    n: '07',
+    q: '¿Qué relación propone?',
+    regla: 'Una palabra, y después la frase que la sostiene.',
+    mal: 'Es una buena experiencia.',
+    bien: 'Obedecer: el sistema pregunta, la persona contesta y no hay manera de cambiar el orden ni de adelantarse.',
+  },
+];
+
+const relaciones = [
+  'explorar', 'obedecer', 'jugar', 'colaborar', 'competir',
+  'negociar', 'construir', 'descubrir', 'controlar', 'experimentar',
+];
+
+const entrega = [
+  {
+    letra: 'A',
+    titulo: 'Las tres experiencias',
+    detalle: 'Una de cada tipo. Nombre, qué es en una línea y dónde la usaron o la vieron.',
+  },
+  {
+    letra: 'B',
+    titulo: 'Las siete preguntas, respondidas para cada una',
+    detalle: 'Veintiuna respuestas en total. Cortas: dos o tres líneas cada una.',
+  },
+  {
+    letra: 'C',
+    titulo: 'Una imagen por experiencia',
+    detalle: 'Foto, captura de pantalla o enlace a un video. Sirve para que en clase sepamos de qué estamos hablando.',
+  },
+];
+
+const listo = [
+  'Ninguna respuesta a la pregunta 01 nombra un botón, una pestaña o un menú.',
+  'Las tres experiencias son de tipos distintos, y una de ellas no es digital.',
+  'En la pregunta 06 hay al menos un caso donde la persona no puede deshacer lo que hizo. Si las tres se recuperan bien, probablemente eligieron tres sistemas demasiado amables.',
+  'La relación de la pregunta 07 está dicha con un verbo, no con un adjetivo.',
+  'No hay ninguna propuesta de mejora. Ni una.',
+];
+
+// Solo enlaces verificados. Es un punto de partida opcional, no un menú cerrado.
+const banco = [
+  { grupo: 'Videojuegos', items: [
+    { nombre: 'Papers, Please', nota: 'La interacción es examinar y comparar documentos bajo presión de tiempo y de plata.', url: 'https://dukope.com/' },
+    { nombre: 'Return of the Obra Dinn', nota: 'No hay combate: hay que deducir qué pasó a partir de escenas congeladas.', url: 'https://dukope.com/' },
+    { nombre: 'Baba Is You', nota: 'Las reglas del juego son objetos que se empujan dentro del nivel. Jugar es reescribirlas.', url: 'https://www.hempuli.com/' },
+    { nombre: 'Journey', nota: 'Dos personas se comunican sin texto ni voz: solo un tono y el movimiento.', url: 'https://thatgamecompany.com/journey/' },
+    { nombre: 'Brothers: A Tale of Two Sons', nota: 'Un jugador controla a dos hermanos al tiempo, uno por cada palanca del control.', url: 'https://505games.com/games/brothers/' },
+    { nombre: 'Keep Talking and Nobody Explodes', nota: 'Quien ve la bomba no tiene el manual; quien tiene el manual no ve la bomba.', url: 'https://keeptalkinggame.com/' },
+    { nombre: 'Chants of Sennaar', nota: 'El mecanismo central es descifrar un idioma que nadie explica.', url: 'https://www.rundisc.io/chants-of-sennaar/' },
+  ]},
+  { grupo: 'Instalaciones y experiencias espaciales', items: [
+    { nombre: 'Body Movies — Rafael Lozano-Hemmer', nota: 'Los retratos proyectados solo aparecen dentro de la sombra de quien pasa.', url: 'https://www.lozano-hemmer.com/body_movies.php' },
+    { nombre: 'Pulse Room — Rafael Lozano-Hemmer', nota: 'Cientos de bombillos laten con el pulso de quien sostiene el sensor.', url: 'https://www.lozano-hemmer.com/pulse_room.php' },
+    { nombre: 'Wooden Mirror — Daniel Rozin', nota: 'Un espejo hecho de 830 tablitas de madera que giran para formar la imagen.', url: 'https://history.siggraph.org/artwork/daniel-rozin-wooden-mirror/' },
+    { nombre: 'teamLab', nota: 'Salas donde la proyección reacciona a dónde está y qué hace cada visitante.', url: 'https://www.teamlab.art/e/tokyo/' },
+  ]},
+  { grupo: 'Cotidiano', items: [
+    { nombre: 'Manual de normas gráficas del metro de Nueva York', nota: 'Vignelli y Noorda, 1970. La información aparece en el punto de decisión: nunca antes, nunca después.', url: 'https://www.moma.org/collection/works/89620' },
+  ]},
+];
+---
+
+<Base
+  titulo="Tres experiencias interactivas · Tarea · Pensamiento Sensorial 3.0"
+  descripcion="Tarea de la sesión 4: buscar tres experiencias interactivas —un videojuego, una instalación y una interfaz cotidiana— y registrarlas con las siete preguntas. No se pide diseñar nada."
+  volverHref="/pensamiento-sensorial/s04"
+  volverTexto="Sesión 4 · Preguntar y percibir"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Tarea · Sesión 4 · Individual · Para la próxima clase</span>
+    <h1 class="sube sube-2">Tres experiencias interactivas</h1>
+    <p class="lede sube-3">Un videojuego, una instalación, una cosa cotidiana. Las mismas siete preguntas para las tres.</p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El encargo</h2>
+    <div class="encargo">
+      <p class="encargo-frase">
+        Salgan a buscar tres experiencias interactivas y <strong>léanlas</strong>. No
+        hay que arreglar ninguna.
+      </p>
+      <p class="encargo-nota">
+        Esta tarea es individual. Cada quien trae las suyas, y en la próxima sesión
+        aprendemos a leer interacciones con ese material sobre la mesa. Si todo el
+        mundo trae lo mismo, la sesión 5 no tiene con qué comparar.
+      </p>
+      <p class="encargo-nota">
+        Las siete preguntas de más abajo son <strong>las mismas</strong> con las que
+        vamos a leer interacciones en la próxima sesión. Llegar con ellas ya usadas
+        tres veces es la mitad del trabajo de esa clase.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Las tres · una de cada tipo</h2>
+    <div class="ejemplos">
+      {tipos.map((t) => (
+        <div class="ejemplo">
+          <span class="ejemplo-tag mono">{t.titulo}</span>
+          <p>{t.cuerpo}</p>
+        </div>
+      ))}
+    </div>
+    <p class="remate">
+      Tienen que ser de tres tipos distintos. Tres videojuegos no son tres experiencias:
+      son un videojuego mirado tres veces.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Las siete preguntas</h2>
+    <p>
+      Para <strong>cada una</strong> de las tres. Dos o tres líneas por respuesta: no
+      queremos un ensayo, queremos precisión. Al lado de cada pregunta hay una respuesta
+      que no sirve y una que sí, porque la diferencia entre las dos es exactamente lo
+      que esta tarea entrena. Casi todas las respuestas malas tienen el mismo defecto:
+      describen la pantalla en vez de la interacción.
+    </p>
+    <ol class="siete" role="list">
+      {preguntas.map((p) => (
+        <li class="siete-item">
+          <div class="siete-cabeza">
+            <span class="siete-n mono">{p.n}</span>
+            <div>
+              <h3 class="siete-q">{p.q}</h3>
+              <p class="siete-regla">{p.regla}</p>
+            </div>
+          </div>
+          <div class="siete-ejemplos">
+            <p class="ej ej--mal"><span class="ej-tag mono">No sirve</span>{p.mal}</p>
+            <p class="ej ej--bien"><span class="ej-tag mono">Sirve</span>{p.bien}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La pregunta 07 · vocabulario de apoyo</h2>
+    <p>
+      Nombrar una relación cuesta más que las otras seis. Esta lista es una ayuda para
+      arrancar, no un menú cerrado: si la relación que encontraron no está acá,
+      <strong>nómbrenla ustedes</strong>. Esas son las respuestas más interesantes.
+    </p>
+    <ul class="relaciones" role="list">
+      {relaciones.map((r) => <li>{r}</li>)}
+    </ul>
+    <p class="remate">
+      Un verbo, y después la frase que lo sostiene. «Negociar» sin explicación no dice
+      nada; «negociar: el sistema propone un precio y espera a ver si uno insiste» sí.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Lo que esta tarea no pide</h2>
+    <div class="nopide">
+      <p class="nopide-frase">No hay que proponer ninguna mejora.</p>
+      <p>
+        Ni rediseñar, ni sugerir, ni decir qué está mal. Si encuentran una interfaz
+        pésima, la registran igual de completa que una buena: lo que interesa es qué
+        relación propone, no cuánto se puede arreglar. Arreglar es de otras sesiones.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué entregan</h2>
+    <div class="entregable">
+      <p class="entregable-titulo">Un solo documento, por Classroom, antes de la próxima clase.</p>
+      <ol class="entrega" role="list">
+        {entrega.map((e) => (
+          <li>
+            <span class="entrega-letra mono" aria-hidden="true">{e.letra}</span>
+            <span class="entrega-texto">
+              <strong>{e.titulo}.</strong>{' '}
+              <span class="entrega-detalle">{e.detalle}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <details class="miniguia">
+      <summary>
+        <span class="miniguia-signo" aria-hidden="true">+</span>
+        <span class="mono">Si no saben por dónde empezar</span>
+        <span class="miniguia-nota">opcional · no hay que elegir de acá</span>
+      </summary>
+      <p>
+        Un punto de partida, no una lista de opciones válidas. Una experiencia que
+        ustedes conozcan de verdad siempre va a producir mejores respuestas que una que
+        vieron en un video por hacer la tarea.
+      </p>
+      {banco.map((b) => (
+        <div class="banco">
+          <h4 class="banco-titulo mono">{b.grupo}</h4>
+          <ul class="banco-lista" role="list">
+            {b.items.map((i) => (
+              <li>
+                <a href={i.url} target="_blank" rel="noopener">{i.nombre}</a>
+                <span class="banco-nota">{i.nota}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </details>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El cierre</h2>
+    <div class="cierre">
+      <p>La sesión que viene no empieza preguntando cuál de las tres les gustó más. Empieza así:</p>
+      <p class="cierre-pregunta">
+        ¿Qué relación propone esta cosa y cómo se las arregla para proponerla?
+      </p>
+      <p>
+        Traigan material del que se pueda responder eso. Si sus respuestas describen
+        pantallas, en clase no vamos a tener de qué hablar.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ── el encargo ───────────────────────────────── */
+  .encargo {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 46rem;
+  }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota {
+    max-width: none;
+    margin-bottom: 0.9rem;
+    font-size: 0.98rem;
+    color: var(--secundario);
+  }
+
+  .encargo-nota:last-child { margin-bottom: 0; }
+  .encargo-nota strong { color: var(--tinta); }
+
+  /* ── los tres tipos ───────────────────────────── */
+  .ejemplos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.25rem;
+    margin: 1.25rem 0 1.75rem;
+    max-width: 56rem;
+  }
+
+  .ejemplo { border-top: 3px solid var(--tinta); padding-top: 0.7rem; }
+  .ejemplo-tag { display: block; color: var(--secundario); margin-bottom: 0.4rem; }
+
+  .ejemplo p {
+    font-size: 0.95rem;
+    color: var(--texto);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .remate {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    max-width: 52rem;
+  }
+
+  /* ── las siete preguntas ──────────────────────── */
+  .siete { list-style: none; max-width: 54rem; margin: 1.75rem 0 0; }
+
+  .siete-item {
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .siete-item:last-child { border-bottom: none; }
+
+  .siete-cabeza { display: flex; gap: 1.4rem; align-items: baseline; }
+  .siete-n { flex: 0 0 1.8rem; font-weight: 700; color: var(--secundario); }
+
+  .siete-q {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+  }
+
+  .siete-regla {
+    font-size: 0.92rem;
+    color: var(--secundario);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .siete-ejemplos {
+    margin: 0.9rem 0 0 3.2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.25rem;
+  }
+
+  .ej {
+    max-width: none;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding-top: 0.6rem;
+    margin-bottom: 0;
+  }
+
+  .ej--mal { border-top: 3px solid var(--regla); color: var(--secundario); }
+  .ej--bien { border-top: 3px solid var(--amarillo); color: var(--tinta); }
+
+  .ej-tag {
+    display: block;
+    color: var(--secundario);
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── vocabulario de relaciones ────────────────── */
+  .relaciones {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    max-width: 52rem;
+    margin: 1.25rem 0 1.5rem;
+  }
+
+  .relaciones li {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0.3rem 0.7rem;
+  }
+
+  /* ── lo que no se pide ────────────────────────── */
+  .nopide {
+    border: 2px solid var(--tinta);
+    border-left-width: 10px;
+    border-left-color: var(--amarillo);
+    padding: 1.5rem 1.75rem;
+    max-width: 46rem;
+  }
+
+  .nopide-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 0.8rem;
+  }
+
+  .nopide p:last-child { max-width: none; margin-bottom: 0; font-size: 0.98rem; }
+
+  /* ── el entregable ────────────────────────────── */
+  .entregable {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 52rem;
+  }
+
+  .entregable-titulo {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1.25rem;
+  }
+
+  .entrega { list-style: none; }
+
+  .entrega li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .entrega li:last-child { border-bottom: none; }
+  .entrega-letra { flex: 0 0 1.4rem; font-weight: 700; color: var(--secundario); }
+
+  .entrega-texto strong {
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--tinta);
+  }
+
+  .entrega-detalle { color: var(--secundario); font-size: 0.98rem; }
+
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  /* ── el banco, plegado ────────────────────────── */
+  .miniguia { margin-top: 0.5rem; }
+
+  .miniguia summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--regla);
+    border-bottom: 1px solid var(--regla);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+
+  .miniguia summary::-webkit-details-marker { display: none; }
+
+  .miniguia-signo {
+    font-family: var(--sans);
+    font-weight: 900;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0 0.4rem;
+    line-height: 1.35;
+  }
+
+  .miniguia[open] .miniguia-signo { background: var(--amarillo); }
+  .miniguia summary:hover .miniguia-signo { background: var(--amarillo); }
+  .miniguia summary .mono { color: var(--tinta); }
+  .miniguia-nota { color: var(--secundario); font-size: 0.9rem; }
+  .miniguia[open] summary { margin-bottom: 1.25rem; border-bottom-color: transparent; }
+
+  .banco { margin-top: 1.75rem; }
+  .banco-titulo { display: block; color: var(--secundario); margin-bottom: 0.6rem; }
+  .banco-lista { list-style: none; max-width: 52rem; }
+
+  .banco-lista li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .banco-lista li:last-child { border-bottom: none; }
+
+  .banco-lista a {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.98rem;
+  }
+
+  .banco-nota {
+    display: block;
+    font-size: 0.92rem;
+    color: var(--secundario);
+    margin-top: 0.15rem;
+  }
+
+  /* ── el cierre ────────────────────────────────── */
+  .cierre {
+    background: var(--tinta);
+    color: #e5e5e5;
+    padding: 2rem 2.25rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 46rem;
+  }
+
+  .cierre p { max-width: none; margin-bottom: 1rem; }
+  .cierre p:last-child { margin-bottom: 0; }
+
+  .cierre-pregunta {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    color: var(--amarillo);
+    padding: 1rem 0;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    margin: 1.25rem 0 !important;
+  }
+
+  @media (max-width: 700px) {
+    .cierre { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+    .encargo, .entregable, .nopide { padding: 1.25rem; }
+    .siete-cabeza { gap: 0.9rem; }
+    .siete-ejemplos { grid-template-columns: 1fr; gap: 1rem; margin-left: 0; }
+  }
+
+  @media print {
+    .cierre, .miniguia { display: none; }
+    .bloque { padding: 1.2rem 0; page-break-inside: avoid; }
+    .encargo, .entregable, .nopide { border-width: 1px; }
+  }
+</style>

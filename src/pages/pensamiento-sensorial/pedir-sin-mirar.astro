@@ -1,0 +1,683 @@
+---
+// Brief de la actividad principal de la sesión 4: «Pedir sin mirar».
+// Todos los grupos reciben exactamente el mismo brief, el mismo usuario, los
+// mismos hallazgos y el mismo vocabulario de interacción. La diferencia está en
+// las decisiones de diseño, y la discusión final compara esas diferencias: es
+// lo que prepara los modelos de interacción de la sesión 5.
+//
+// Las capacidades de hardware se verificaron en la documentación de Apple antes
+// de publicarse (support.apple.com). Los gestos de cabeza de los AirPods solo
+// existen dentro de un anuncio de Siri, y esa restricción no es un detalle
+// técnico: obliga a decidir quién abre la interacción. Doble toque y giro de
+// muñeca solo existen en parte de la línea de Apple Watch.
+import Base from '../../layouts/Base.astro';
+
+const hallazgos = [
+  {
+    n: '01',
+    titulo: 'Las personas se agobian navegando entre demasiadas opciones',
+    cuerpo: 'No es que no sepan usar la app. Es que abrir cuatrocientos restaurantes para volver a pedir lo mismo de siempre es un trabajo que nadie pidió hacer.',
+  },
+  {
+    n: '02',
+    titulo: 'Este nicho vive rodeado de dispositivos',
+    cuerpo: 'Usa Apple Watch y AirPods Pro, y ya está acostumbrado a que sus aparatos respondan a la voz, al movimiento y al contexto. No da por hecho que el teléfono sea el centro de todo.',
+  },
+];
+
+// Solo capacidades verificadas en support.apple.com. Cada una con su restricción
+// real: publicar como universal algo que existe en un solo modelo sería mentir.
+const entradas = [
+  {
+    canal: 'Voz',
+    puede: 'Palabras, frases, preguntas, respuestas, confirmaciones y cancelaciones.',
+    ojo: null,
+  },
+  {
+    canal: 'Cabeza · AirPods',
+    puede: 'Asentir y negar con la cabeza.',
+    ojo: 'Solo funciona respondiendo a algo que Siri acaba de anunciar —una llamada, una notificación—. No es un control libre: si quieren usarlo, el sistema tiene que hablar primero. Disponible en AirPods Pro 2 y posteriores, AirPods 4 y AirPods Max 2.',
+  },
+  {
+    canal: 'Muñeca · Apple Watch',
+    puede: 'Doble toque (juntar índice y pulgar dos veces), giro de muñeca, girar y presionar la corona, pantalla táctil, botón lateral.',
+    ojo: 'El doble toque existe desde watchOS 10.1 y el giro de muñeca desde watchOS 26, y los dos solo en Apple Watch Series 9, SE 3, Ultra 2 y modelos posteriores. En un Series 8 o en un SE de 1.ª o 2.ª generación no existen.',
+  },
+  {
+    canal: 'Dedos · pantalla',
+    puede: 'Tocar, mantener presionado, deslizar, arrastrar, pellizcar, expandir, doble toque.',
+    ojo: null,
+  },
+  {
+    canal: 'Vástago · AirPods Pro',
+    puede: 'Presionar una vez, dos o tres, mantener presionado y deslizar para el volumen.',
+    ojo: 'El deslizamiento de volumen existe en AirPods Pro 2 y 3, no en los de primera generación.',
+  },
+];
+
+const salidas = [
+  { canal: 'Voz del sistema', puede: 'Anunciar, preguntar, leer de vuelta, confirmar.' },
+  { canal: 'Sonido', puede: 'Tonos cortos que significan cosas distintas: recibido, error, listo.' },
+  { canal: 'Vibración', puede: 'Háptica en la muñeca. Se puede variar el ritmo, la intensidad y la cantidad.' },
+  { canal: 'Pantalla del reloj', puede: 'Un vistazo corto: estado, confirmación, una sola cosa a la vez.' },
+  { canal: 'Pantalla del teléfono', puede: 'Si ustedes deciden que aparezca — y sobre todo, cuándo.' },
+];
+
+const pasos = [
+  {
+    n: '01',
+    titulo: 'Definan la experiencia',
+    cuerpo: '¿Qué tiene que hacer la persona para completar el pedido? Dibujen la secuencia de principio a fin. No hacen falta pantallas: hacen falta momentos.',
+  },
+  {
+    n: '02',
+    titulo: 'Distribuyan la interacción',
+    cuerpo: 'Para cada momento: qué hace la persona y con qué —voz, cabeza, muñeca, dedos— y qué hace el sistema por su cuenta sin preguntarle nada.',
+  },
+  {
+    n: '03',
+    titulo: 'Diseñen el feedback',
+    cuerpo: 'Para cada acción importante: ¿cómo sabe la persona que el sistema entendió? ¿Y qué pasa cuando no entendió? Esa segunda pregunta es la que casi todos se saltan.',
+  },
+  {
+    n: '04',
+    titulo: 'Prototipen actuando',
+    cuerpo: 'Sin programar nada. Una persona hace de usuario, otra de sistema, y la interacción se ejecuta completa. La voz, los tonos, la vibración y el reloj los representan ustedes con el cuerpo y con lo que haya en el salón.',
+  },
+];
+
+const momentos = ['Empezar', 'Elegir qué', 'Cambiar algo', 'Confirmar', 'Equivocarse'];
+
+const presentacion = [
+  { n: '01', q: 'La situación', nota: 'Qué está haciendo la persona en el momento en que empieza.' },
+  { n: '02', q: 'La secuencia', nota: 'Qué ocurre desde que comienza hasta que termina.' },
+  { n: '03', q: 'El modelo de interacción', nota: 'Qué hace la persona, qué hace el sistema y cómo se reparten el trabajo.' },
+  { n: '04', q: 'La demostración', nota: 'Ejecutan la experiencia delante de todos. Cuatro minutos.' },
+  { n: '05', q: 'Una decisión que quieran defender', nota: '«Elegimos hacer X con Y porque…». Una sola, la que más discutieron.' },
+];
+
+const discusion = [
+  '¿Quién inicia la interacción: la persona o el sistema?',
+  '¿Cuánto decide la persona y cuánto decide el sistema por ella?',
+  '¿Qué tiene que recordar la persona?',
+  '¿Cuándo aparece la pantalla, si es que aparece?',
+  '¿Qué significa cada gesto dentro del sistema y cómo se aprende?',
+  '¿Cómo responde el sistema cuando algo sale mal?',
+  '¿Qué relación propone esta experiencia entre la persona y el sistema?',
+];
+
+const tiempos = [
+  { min: '10 min', que: 'Definir la experiencia y dibujar la secuencia', quien: 'paso 01' },
+  { min: '15 min', que: 'Distribuir la interacción y diseñar el feedback', quien: 'pasos 02 y 03' },
+  { min: '10 min', que: 'Ensayar el prototipo actuado', quien: 'paso 04' },
+  { min: '20 min', que: 'Demostraciones', quien: 'cuatro minutos por grupo' },
+  { min: '15 min', que: 'Discusión', quien: 'todos' },
+];
+
+const listo = [
+  'La secuencia se puede ejecutar de principio a fin sin que nadie tenga que explicar un paso.',
+  'Cada momento dice cómo sabe la persona que el sistema entendió.',
+  'Hay una respuesta para cuando el sistema entiende mal, y no es «vuelve a empezar».',
+  'Pueden justificar cada modalidad con el problema de diseño, no con que estaba disponible.',
+  'Si usaron una capacidad que no está en todos los modelos, pueden decir qué le pasa a quien no la tiene.',
+  'Su propuesta no es la app de hoy con voz encima.',
+];
+---
+
+<Base
+  titulo="Pedir sin mirar · Actividad · Pensamiento Sensorial 3.0"
+  descripcion="Actividad de la sesión 4: diseñar una experiencia multimodal para pedir domicilios. Mismo usuario, mismo escenario y mismas tecnologías para los cinco grupos; la diferencia está en las decisiones de diseño."
+  volverHref="/pensamiento-sensorial/s04"
+  volverTexto="Sesión 4 · Preguntar y percibir"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Actividad · Sesión 4 · En grupos · En clase</span>
+    <h1 class="sube sube-2">Pedir sin mirar</h1>
+    <p class="lede sube-3">Diseñar una experiencia multimodal para pedir un domicilio. Mismo brief para todos; lo que cambia son las decisiones.</p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El encargo</h2>
+    <div class="encargo">
+      <p class="encargo-frase">
+        Diseñen una experiencia para que esta persona pueda pedir su comida habitual
+        <strong>sin depender de navegar una pantalla</strong> llena de opciones.
+      </p>
+      <p class="encargo-nota">
+        Los cinco grupos reciben el mismo usuario, el mismo escenario, los mismos
+        hallazgos de investigación y las mismas tecnologías. Al final va a haber cinco
+        experiencias distintas, y esa diferencia es el material de la discusión.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Lo que dejó la investigación inicial</h2>
+    <ol class="hallazgos" role="list">
+      {hallazgos.map((h) => (
+        <li>
+          <span class="hallazgo-n mono">{h.n}</span>
+          <div>
+            <h3 class="hallazgo-q">{h.titulo}</h3>
+            <p class="hallazgo-nota">{h.cuerpo}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="remate">
+      Esto describe <strong>un nicho</strong>, no a todas las personas que piden
+      domicilios. Diseñar para él es una decisión, y hay que poder sostenerla.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El escenario</h2>
+    <div class="escenario">
+      <p>
+        Es la hora del almuerzo. La persona va camino a casa, con los AirPods puestos y el
+        reloj en la muñeca. Quiere pedir lo de siempre, del restaurante de siempre.
+      </p>
+      <p class="escenario-remate">
+        No quiere sacar el teléfono. No quiere recorrer una lista. <strong>Quiere pedir.</strong>
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Vocabulario de interacción · lo que la persona puede hacer</h2>
+    <p>
+      Esto no es un menú de soluciones: son las capacidades disponibles.
+      <strong>Ninguna trae un significado puesto.</strong> Que asentir signifique aceptar
+      —o cualquier otra cosa— lo deciden ustedes dentro de su sistema.
+    </p>
+    <table class="capacidades">
+      <tbody>
+        {entradas.map((e) => (
+          <tr>
+            <th scope="row">{e.canal}</th>
+            <td>
+              <p class="cap-puede">{e.puede}</p>
+              {e.ojo && <p class="cap-ojo"><span class="cap-ojo-tag mono">Ojo</span>{e.ojo}</p>}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="nota-fuente">
+      Verificado en la documentación de Apple antes de publicarse. Si van a usar una
+      capacidad que no existe en todos los modelos, tienen que poder decir qué le pasa a
+      quien no la tiene.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Vocabulario de interacción · cómo puede responder el sistema</h2>
+    <table class="capacidades">
+      <tbody>
+        {salidas.map((s) => (
+          <tr>
+            <th scope="row">{s.canal}</th>
+            <td><p class="cap-puede">{s.puede}</p></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La regla principal</h2>
+    <div class="encargo encargo--regla">
+      <p class="encargo-frase">No diseñen gestos. <strong>Diseñen una interacción.</strong></p>
+      <p class="encargo-nota">
+        El gesto es uno de los materiales, como la voz o la vibración. La pregunta no es
+        qué gesto usamos, sino qué debería poder hacer la persona y cuál es la mejor
+        manera de que pueda hacerlo.
+      </p>
+    </div>
+    <h3 class="sub mono">Lo que no queremos ver</h3>
+    <ul class="malas" role="list">
+      <li><strong>La app de hoy, pero con voz.</strong> Si la propuesta es la misma lista de cuatrocientos restaurantes leída en voz alta, el problema empeoró: ahora hay que recordarla.</li>
+      <li><strong>Un gesto porque el gesto existe.</strong> No tienen que usar todas las modalidades, ni eliminar la pantalla, ni resolverlo todo por voz.</li>
+      <li><strong>Un sistema que nunca se equivoca.</strong> La voz se entiende mal, los gestos se confunden. Un diseño que no contempla eso no está terminado.</li>
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El proceso · cuatro pasos</h2>
+    <ol class="pasos" role="list">
+      {pasos.map((p) => (
+        <li class="paso">
+          <span class="paso-num mono">{p.n}</span>
+          <div>
+            <h3 class="paso-titulo">{p.titulo}</h3>
+            <p class="paso-cuerpo">{p.cuerpo}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La hoja del paso 02</h2>
+    <p>
+      Cinco momentos, tres columnas. Se llena a mano, en una hoja grande. La última fila
+      es la que separa un diseño de una demostración.
+    </p>
+    <table class="hoja">
+      <thead>
+        <tr>
+          <th scope="col">Momento</th>
+          <th scope="col">La persona</th>
+          <th scope="col">El sistema</th>
+          <th scope="col">¿Cómo sabe que pasó?</th>
+        </tr>
+      </thead>
+      <tbody>
+        {momentos.map((m) => (
+          <tr class={m === 'Equivocarse' ? 'hoja-dificil' : undefined}>
+            <th scope="row">{m}</th>
+            <td></td><td></td><td></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La pregunta más importante</h2>
+    <div class="cierre cierre--medio">
+      <p class="cierre-pregunta">¿Por qué usamos esta modalidad aquí?</p>
+      <p>
+        «Porque sería chévere hacerlo con la cabeza» no es una respuesta. «Porque va
+        caminando, lleva bolsas y no puede sacar el teléfono» sí lo es. Cada decisión de
+        modalidad tiene que poder amarrarse al problema de diseño.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué presenta cada grupo</h2>
+    <ol class="preguntas" role="list">
+      {presentacion.map((p) => (
+        <li>
+          <span class="pregunta-n mono">{p.n}</span>
+          <div>
+            <h3 class="pregunta-q">{p.q}</h3>
+            <p class="pregunta-nota">{p.nota}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">La discusión final</h2>
+    <p>
+      Todos recibieron lo mismo y salieron cosas distintas. La pregunta es por qué, y
+      después estas:
+    </p>
+    <ul class="listo listo--preguntas" role="list">
+      {discusion.map((d) => <li>{d}</li>)}
+    </ul>
+    <p class="remate">
+      La última es la que abre la próxima clase. Guárdenla.
+    </p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Los tiempos</h2>
+    <table class="tiempos">
+      <tbody>
+        {tiempos.map((t) => (
+          <tr>
+            <th scope="row" class="mono">{t.min}</th>
+            <td><strong>{t.que}</strong><span class="tiempos-quien">{t.quien}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <h3 class="listo-titulo mono">Está listo cuando…</h3>
+    <ul class="listo" role="list">
+      {listo.map((l) => <li>{l}</li>)}
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <details class="miniguia">
+      <summary>
+        <span class="miniguia-signo" aria-hidden="true">+</span>
+        <span class="mono">Si no da el tiempo</span>
+        <span class="miniguia-nota">la versión corta · la decide el profesor en el salón</span>
+      </summary>
+      <p>
+        Se recorta la experiencia a <strong>un solo momento</strong>: desde que la persona
+        decide pedir hasta que sabe que el pedido quedó hecho. Los pasos 02 y 03 se hacen
+        solo para ese tramo, y las demostraciones bajan a dos minutos por grupo.
+      </p>
+      <p>
+        Lo que <strong>no</strong> se recorta: el paso 03 —el feedback y el error— y la
+        demostración actuada. Sin ejecutar la interacción no hay nada que discutir, y la
+        discusión final es lo que conecta con la próxima clase.
+      </p>
+    </details>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El cierre</h2>
+    <div class="cierre">
+      <p>Cinco grupos, el mismo brief, cinco experiencias distintas. Al final no preguntamos cuál quedó mejor:</p>
+      <p class="cierre-pregunta">
+        ¿Qué relación propone cada una entre la persona y el sistema?
+      </p>
+      <p>
+        Una que pregunta y espera no propone lo mismo que una que decide sola y avisa
+        después. Ninguna de las dos está mal. Son relaciones distintas, y esa es
+        exactamente la materia de la próxima clase.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .encargo {
+    border: 2px solid var(--tinta);
+    padding: 1.75rem 2rem;
+    max-width: 46rem;
+  }
+
+  .encargo--regla { margin-bottom: 1.5rem; }
+
+  .encargo-frase {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    line-height: 1.25;
+    color: var(--tinta);
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+
+  .encargo-nota {
+    max-width: none;
+    margin-bottom: 0;
+    font-size: 0.98rem;
+    color: var(--secundario);
+  }
+
+  .encargo-nota strong { color: var(--tinta); }
+
+  /* ── hallazgos ────────────────────────────────── */
+  .hallazgos { list-style: none; max-width: 52rem; margin: 1.25rem 0 1.5rem; }
+
+  .hallazgos li {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .hallazgos li:last-child { border-bottom: none; }
+  .hallazgo-n { flex: 0 0 1.8rem; font-weight: 700; color: var(--secundario); }
+
+  .hallazgo-q {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--tinta);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+  }
+
+  .hallazgo-nota { font-size: 0.97rem; color: var(--texto); max-width: none; margin-bottom: 0; }
+
+  .remate {
+    border-left: 3px solid var(--amarillo);
+    padding-left: 1rem;
+    font-size: 1.05rem;
+    color: var(--tinta);
+    max-width: 52rem;
+  }
+
+  /* ── el escenario ─────────────────────────────── */
+  .escenario {
+    background: var(--amarillo);
+    padding: 1.75rem 2rem;
+    max-width: 46rem;
+  }
+
+  .escenario p { max-width: none; color: var(--tinta); margin-bottom: 0.9rem; }
+
+  .escenario-remate {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.1rem, 2.6vw, 1.35rem);
+    line-height: 1.3;
+    margin-bottom: 0 !important;
+  }
+
+  /* ── tablas de capacidades ────────────────────── */
+  .capacidades, .hoja, .tiempos {
+    width: 100%;
+    max-width: 54rem;
+    border-collapse: collapse;
+    margin: 1.25rem 0 1rem;
+    font-size: 0.97rem;
+  }
+
+  .capacidades th, .capacidades td,
+  .hoja th, .hoja td,
+  .tiempos th, .tiempos td {
+    border: 1px solid var(--regla);
+    padding: 0.8rem 1rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .capacidades th[scope='row'], .tiempos th[scope='row'] {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 0.95rem;
+    color: var(--tinta);
+    width: 13rem;
+  }
+
+  .cap-puede { max-width: none; margin-bottom: 0; color: var(--texto); }
+
+  .cap-ojo {
+    max-width: none;
+    margin: 0.6rem 0 0;
+    font-size: 0.92rem;
+    color: var(--tinta);
+    background: var(--amarillo);
+    padding: 0.6rem 0.8rem;
+  }
+
+  .cap-ojo-tag { display: block; color: var(--tinta); margin-bottom: 0.25rem; }
+
+  .nota-fuente { font-size: 0.9rem; color: var(--secundario); max-width: 52rem; }
+
+  /* ── la hoja del paso 02 ──────────────────────── */
+  .hoja thead th {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    background: var(--amarillo);
+  }
+
+  .hoja th[scope='row'] {
+    font-family: var(--sans);
+    font-weight: 900;
+    color: var(--tinta);
+    width: 10rem;
+  }
+
+  .hoja tbody td { height: 3.2rem; }
+  .hoja-dificil th[scope='row'] { background: var(--amarillo); }
+
+  .tiempos td strong { font-family: var(--sans); color: var(--tinta); }
+
+  .tiempos-quien {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--secundario);
+    margin-top: 0.15rem;
+  }
+
+  /* ── lo que no queremos ver ───────────────────── */
+  .sub { display: block; color: var(--secundario); margin: 2rem 0 0.75rem; }
+  .malas { list-style: none; max-width: 52rem; }
+
+  .malas li {
+    position: relative;
+    padding: 0.7rem 0 0.7rem 1.9rem;
+    font-size: 0.98rem;
+    color: var(--texto);
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .malas li:last-child { border-bottom: none; }
+  .malas li strong { color: var(--tinta); font-family: var(--sans); }
+
+  .malas li::before {
+    content: '×';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.6rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--tinta);
+  }
+
+  /* ── pasos y presentación ─────────────────────── */
+  .pasos, .preguntas { list-style: none; max-width: 52rem; margin-top: 1.25rem; }
+
+  .paso, .preguntas li {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .paso:last-child, .preguntas li:last-child { border-bottom: none; }
+  .paso-num, .pregunta-n { flex: 0 0 1.8rem; font-weight: 700; color: var(--secundario); }
+  .paso .paso-titulo, .pregunta-q { font-size: 1.05rem; margin: 0 0 0.25rem; }
+
+  .pregunta-q { font-family: var(--sans); font-weight: 900; color: var(--tinta); line-height: 1.3; }
+
+  .paso-cuerpo, .pregunta-nota {
+    font-size: 0.98rem;
+    color: var(--texto);
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .pregunta-nota { color: var(--secundario); }
+
+  /* ── listas de chequeo ────────────────────────── */
+  .listo-titulo { display: block; color: var(--secundario); margin: 2.5rem 0 1rem; }
+  .listo { list-style: none; max-width: 52rem; }
+
+  .listo li {
+    position: relative;
+    padding: 0.6rem 0 0.6rem 1.9rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--regla);
+  }
+
+  .listo li:last-child { border-bottom: none; }
+
+  .listo li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    font-family: var(--sans);
+    color: var(--tinta);
+  }
+
+  .listo--preguntas li { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+  .listo--preguntas li::before { content: '·'; font-weight: 900; }
+
+  /* ── la salida de emergencia ──────────────────── */
+  .miniguia { margin-top: 0.5rem; }
+
+  .miniguia summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--regla);
+    border-bottom: 1px solid var(--regla);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+
+  .miniguia summary::-webkit-details-marker { display: none; }
+
+  .miniguia-signo {
+    font-family: var(--sans);
+    font-weight: 900;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: 0 0.4rem;
+    line-height: 1.35;
+  }
+
+  .miniguia[open] .miniguia-signo { background: var(--amarillo); }
+  .miniguia summary:hover .miniguia-signo { background: var(--amarillo); }
+  .miniguia summary .mono { color: var(--tinta); }
+  .miniguia-nota { color: var(--secundario); font-size: 0.9rem; }
+  .miniguia[open] summary { margin-bottom: 1.25rem; border-bottom-color: transparent; }
+
+  /* ── cierres ──────────────────────────────────── */
+  .cierre {
+    background: var(--tinta);
+    color: #e5e5e5;
+    padding: 2rem 2.25rem;
+    box-shadow: 8px 8px 0 var(--amarillo);
+    max-width: 46rem;
+  }
+
+  .cierre--medio { box-shadow: 6px 6px 0 var(--amarillo); }
+  .cierre p { max-width: none; margin-bottom: 1rem; }
+  .cierre p:last-child { margin-bottom: 0; }
+
+  .cierre-pregunta {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    color: var(--amarillo);
+    padding: 1rem 0;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    margin: 1.25rem 0 !important;
+  }
+
+  .cierre--medio .cierre-pregunta { margin-top: 0 !important; border-top: none; padding-top: 0; }
+
+  @media (max-width: 700px) {
+    .cierre { padding: 1.5rem 1.25rem; box-shadow: 5px 5px 0 var(--amarillo); }
+    .encargo, .escenario { padding: 1.25rem; }
+    .paso, .preguntas li, .hallazgos li { gap: 0.9rem; }
+    .capacidades th[scope='row'], .tiempos th[scope='row'], .hoja th[scope='row'] { width: auto; }
+    .hoja { font-size: 0.85rem; }
+  }
+
+  @media print {
+    .hero-clase .lede, .cierre, .miniguia { display: none; }
+    .bloque { padding: 1.2rem 0; page-break-inside: avoid; }
+    .encargo { border-width: 1px; }
+    .escenario { background: none; border: 2px solid #000; }
+    .hoja tbody td { height: 4.5rem; }
+    a[href]::after { content: ''; }
+  }
+</style>

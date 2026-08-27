@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Clase 4 — Preguntar y percibir | Pensamiento Sensorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Reset y base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    .slides-container { width: 100%; height: 100vh; height: 100dvh; }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      background: #fff;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 4rem;
+      text-align: center;
+    }
+    .slide.active { display: flex; }
+
+    /* Tipografía principal — Roboto Black */
+    .slide-title {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 900;
+      color: #444;
+      line-height: 1.3;
+      max-width: 75%;
+    }
+    .slide-subtitle {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 400;
+      color: #6f6f6f;
+      margin-top: 0.75rem;
+    }
+
+    /* Highlight amarillo — énfasis dentro del slide (máx. una frase) */
+    .hl { background-color: #eeff41; padding: 0 0.15em; }
+
+    /* Links */
+    .slide a { color: #1a9e9e; text-decoration: none; border-bottom: 2px solid #1a9e9e; }
+    .slide-link {
+      font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      /* Subrayado en vez de borde: al partirse en dos líneas, el borde del
+         enlace se estiraba hasta el ancho del slide. */
+      border-bottom: none;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+
+    /* Slide de cita */
+    .slide--cita { background: #f4f3ee; }
+    .cita-texto {
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 4.2vw, 2.5rem);
+      color: #222;
+      max-width: 70%;
+      line-height: 1.45;
+    }
+    .cita-fuente {
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #6f6f6f;
+      margin-top: 1.6rem;
+    }
+    .cita-fuente em { font-style: italic; text-transform: none; }
+
+    .slide-image { max-width: 65%; max-height: 60vh; object-fit: contain; }
+
+    /* Portada */
+    .portada-top {
+      font-size: clamp(1.2rem, 4.5vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      line-height: 1;
+    }
+    .portada-bottom {
+      font-size: clamp(3.4rem, 16vw, 7.5rem);
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+
+    /* Divisores */
+    .section-kicker {
+      font-size: clamp(1rem, 3.2vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #555;
+    }
+    .section-theme {
+      font-size: clamp(2rem, 6.5vw, 4.2rem);
+      font-weight: 900;
+      color: #111;
+      line-height: 1.15;
+      margin-top: 0.5rem;
+      max-width: 85%;
+    }
+
+    /* Tema central: paleta invertida */
+    .tema-central {
+      font-size: clamp(2.4rem, 8vw, 5.5rem);
+      font-weight: 900;
+      color: #eeff41;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      max-width: 85%;
+    }
+    /* Registro conceptual bajo el tema evocador: apagado para no competir con el amarillo */
+    .tema-sub {
+      font-size: clamp(0.95rem, 2vw, 1.35rem);
+      font-weight: 400;
+      color: #bdbdbd;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+      max-width: 42ch;
+      margin-top: 1.6rem;
+    }
+
+    .slide--visual svg text.caps { text-transform: uppercase; }
+
+    /* Concepto con párrafo */
+    .slide-concept-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 900;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+    .slide-concept-body {
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      color: #555;
+      max-width: 60ch;
+      line-height: 1.75;
+      text-align: left;
+    }
+    .slide-concept-body .src { color: #6f6f6f; font-size: 0.95em; }
+    .slide--parrafo { align-items: flex-start; padding: 6rem 10rem; }
+
+    /* Referencias */
+    .refs-title { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 900; color: #444; margin-bottom: 2rem; }
+    .refs-list {
+      list-style: none; text-align: left; max-width: 60ch;
+      font-size: clamp(0.95rem, 1.9vw, 1.2rem); font-weight: 400; color: #555; line-height: 1.7;
+    }
+    .refs-list li { margin-bottom: 0.9rem; }
+    .refs-list em { font-style: italic; }
+    .refs-list li .nota { display: block; font-size: 0.86em; color: #6f6f6f; }
+    .refs-list li.src { color: #6f6f6f; font-size: 0.92em; margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid #e5e5e5; }
+
+    /* Marcador de material pendiente */
+    .ph { border: 2px dashed #e5e5e5; padding: 3.5rem 4rem; color: #999; font-size: 1.1rem; font-weight: 400; max-width: 62%; line-height: 1.6; }
+
+    /* ══ LAYOUTS COMPUESTOS ══ */
+    .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa {
+      align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem;
+    }
+    .rotulo { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6f6f6f; }
+    .compuesto-titulo {
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 900; color: #444;
+      max-width: 60ch; margin: 0 auto 2rem; text-align: center; line-height: 1.35;
+    }
+    .compuesto-pie {
+      font-size: clamp(0.88rem, 1.3vw, 1rem); color: #6f6f6f;
+      max-width: 66ch; margin: 2rem auto 0; text-align: center; line-height: 1.5;
+    }
+
+    /* Ficha de concepto */
+    .ficha { width: 100%; max-width: 62rem; margin: 0 auto; }
+    .ficha-num { margin-bottom: 1.6rem; }
+    .ficha-termino {
+      font-size: clamp(1.6rem, 3.6vw, 2.4rem); font-weight: 900; color: #111;
+      letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.1;
+    }
+    .ficha-def {
+      font-size: clamp(1.35rem, 2.8vw, 2rem); font-weight: 900; color: #444;
+      line-height: 1.28; margin-top: 0.9rem; max-width: 40ch;
+    }
+    .ficha-def em { font-style: normal; background: #eeff41; padding: 0 0.15em; }
+    .ficha-fuente { font-size: 0.82rem; color: #6f6f6f; margin-top: 1rem; letter-spacing: 0.03em; }
+    .ficha-celdas {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem;
+      margin-top: 2.4rem; padding-top: 2.2rem; border-top: 1px solid #e5e5e5;
+    }
+    .ficha-celdas.una { grid-template-columns: 1fr; max-width: 46ch; }
+    .ficha-celda .rotulo { display: block; margin-bottom: 0.7rem; }
+    .ficha-celda p { font-size: clamp(0.98rem, 1.5vw, 1.1rem); color: #555; line-height: 1.6; }
+    .ficha-celda + .ficha-celda { border-left: 1px solid #e5e5e5; padding-left: 3rem; }
+
+    /* Rejilla */
+    .rejilla { display: grid; gap: 2.2rem; width: 100%; max-width: 66rem; margin: 0 auto; }
+    .rejilla--3 { grid-template-columns: repeat(3, 1fr); }
+    .rejilla--2x2 { grid-template-columns: 1fr 1fr; }
+    .celda { border-top: 4px solid #444; padding-top: 1.1rem; }
+    .celda.acento { border-top-color: #eeff41; }
+    .celda .rotulo { display: block; margin-bottom: 0.7rem; }
+    .celda-titulo { font-size: clamp(1.1rem, 2.1vw, 1.45rem); font-weight: 900; color: #111; line-height: 1.2; margin-bottom: 0.7rem; }
+    .celda-cuerpo { font-size: clamp(0.92rem, 1.4vw, 1.05rem); color: #555; line-height: 1.55; }
+    .celda-cuerpo .src { color: #6f6f6f; }
+
+    /* Par en contraste */
+    .par { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; width: 100%; max-width: 62rem; margin: 0 auto; }
+    .par-encabezado { font-size: clamp(0.95rem, 1.8vw, 1.15rem); font-weight: 900; letter-spacing: 0.03em; padding: 0.8rem 1.1rem; line-height: 1.25; }
+    .par-col.a .par-encabezado { background: #eeff41; color: #111; }
+    .par-col.b .par-encabezado { background: #222; color: #fff; }
+    .par-cuerpo { font-size: clamp(0.98rem, 1.5vw, 1.12rem); color: #555; line-height: 1.6; padding: 1.3rem 1.1rem 0; }
+    .par-cuerpo strong { color: #222; font-weight: 700; }
+
+    /* Pauta operativa */
+    .pauta { list-style: none; width: 100%; max-width: 52rem; margin: 0 auto; }
+    .pauta-titulo {
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 900; color: #111;
+      margin: 0 auto 1.8rem; max-width: 52rem; width: 100%; line-height: 1.25; text-align: left;
+    }
+    .pauta li {
+      display: flex; gap: 1.4rem; align-items: baseline; padding: 1rem 0;
+      border-bottom: 1px solid #e5e5e5; font-size: clamp(1rem, 1.7vw, 1.25rem); color: #444; line-height: 1.45;
+    }
+    .pauta li:last-child { border-bottom: none; }
+    .pauta .n { font-size: 0.8rem; font-weight: 700; color: #6f6f6f; letter-spacing: 0.06em; flex: 0 0 1.8rem; }
+    .pauta li strong { color: #111; font-weight: 900; }
+    .pauta li .nota { display: block; font-size: 0.86em; color: #6f6f6f; margin-top: 0.25rem; }
+
+    /* Mapa */
+    .mapa { width: 100%; max-width: 46rem; margin: 0 auto; }
+    .mapa-item {
+      font-size: clamp(1.3rem, 3.2vw, 2.2rem); font-weight: 900; letter-spacing: 0.03em;
+      text-transform: uppercase; color: #444; padding: 0.55rem 0; line-height: 1.15;
+    }
+    .mapa-item .q {
+      display: block; text-transform: none; letter-spacing: 0; font-size: 0.42em;
+      font-weight: 400; color: #6f6f6f; margin-top: 0.1rem;
+    }
+    .mapa-item.visto { color: #6f6f6f; }
+    .mapa-item.actual { color: #111; }
+    .mapa-item.actual span { background: #eeff41; padding: 0 0.2em; }
+    .mapa-item.actual::after { content: " ←"; color: #111; }
+    .mapa-pie { font-size: 0.9rem; color: #6f6f6f; margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid #e5e5e5; }
+
+    /* Slide de QR: el bloque que se proyecta para que lo lea toda el aula */
+    .qr { width: min(30vh, 260px); height: auto; }
+
+    /* ── Animaciones ── */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: scale(1); } }
+    @keyframes drawIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .slide.active { animation: fadeIn 0.18s ease-out forwards; }
+    .slide.active.slide--conclusion { animation: riseIn 0.22s ease-out forwards; }
+    .slide.active.slide--section { animation: scaleIn 0.2s ease-out forwards; }
+    .slide.active.slide--visual svg > * { opacity: 0; animation: drawIn 0.22s ease-out forwards; }
+    .slide--visual svg > *:nth-child(1) { animation-delay: 0.02s; }
+    .slide--visual svg > *:nth-child(2) { animation-delay: 0.04s; }
+    .slide--visual svg > *:nth-child(3) { animation-delay: 0.06s; }
+    .slide--visual svg > *:nth-child(4) { animation-delay: 0.08s; }
+    .slide--visual svg > *:nth-child(5) { animation-delay: 0.10s; }
+    .slide--visual svg > *:nth-child(6) { animation-delay: 0.12s; }
+    .slide--visual svg > *:nth-child(7) { animation-delay: 0.14s; }
+    .slide--visual svg > *:nth-child(n+8) { animation-delay: 0.16s; }
+
+    .slide.active .ficha-celda, .slide.active .celda, .slide.active .par-col,
+    .slide.active .pauta li, .slide.active .mapa-item {
+      opacity: 0; animation: drawIn 0.18s ease-out forwards;
+    }
+    .ficha-celda:nth-child(1), .celda:nth-child(1), .par-col:nth-child(1),
+    .pauta li:nth-child(1), .mapa-item:nth-child(1) { animation-delay: 0.04s; }
+    .ficha-celda:nth-child(2), .celda:nth-child(2), .par-col:nth-child(2),
+    .pauta li:nth-child(2), .mapa-item:nth-child(2) { animation-delay: 0.08s; }
+    .celda:nth-child(3), .pauta li:nth-child(3), .mapa-item:nth-child(3) { animation-delay: 0.12s; }
+    .celda:nth-child(4), .pauta li:nth-child(4), .mapa-item:nth-child(4) { animation-delay: 0.16s; }
+    .pauta li:nth-child(5), .mapa-item:nth-child(5) { animation-delay: 0.20s; }
+    .pauta li:nth-child(n+6), .mapa-item:nth-child(n+6) { animation-delay: 0.24s; }
+
+    .slide.active .diagram-mobile > * { opacity: 0; animation: drawIn 0.18s ease-out forwards; }
+    .diagram-mobile > *:nth-child(1) { animation-delay: 0.04s; }
+    .diagram-mobile > *:nth-child(2) { animation-delay: 0.08s; }
+    .diagram-mobile > *:nth-child(3) { animation-delay: 0.12s; }
+    .diagram-mobile > *:nth-child(4) { animation-delay: 0.16s; }
+    .diagram-mobile > *:nth-child(5) { animation-delay: 0.20s; }
+    .diagram-mobile > *:nth-child(n+6) { animation-delay: 0.24s; }
+
+    .no-anim, .no-anim * { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+    /* Navegación */
+    .nav-hint { position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.75rem; color: #ccc; }
+    .deck-nav { position: fixed; bottom: 1.5rem; left: 2rem; font-size: 0.75rem; z-index: 10; }
+    .deck-nav-toggle {
+      background: none; border: none; font-family: 'Roboto', sans-serif; font-size: 0.75rem;
+      color: #ddd; cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .deck-nav-toggle:hover, .deck-nav.open .deck-nav-toggle { color: #888; }
+    .deck-nav-menu {
+      display: none; list-style: none; position: absolute; bottom: 100%; left: 0;
+      margin: 0 0 0.5rem; padding: 0.4rem 0; min-width: 14rem; max-height: 70vh; overflow-y: auto;
+      background: #fff; border: 1px solid #e5e5e5; text-align: left;
+    }
+    .deck-nav.open .deck-nav-menu { display: block; }
+    .deck-nav-menu button {
+      display: block; width: 100%; background: none; border: none; font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem; color: #888; text-align: left; padding: 0.4rem 1rem; cursor: pointer;
+    }
+    .deck-nav-menu button:hover { color: #222; background: #fafafa; }
+
+    .deck-nav-toggle:focus-visible, .deck-nav-menu button:focus-visible, .slide a:focus-visible { outline: 2px solid #222; outline-offset: 2px; }
+
+    /* Barra de progreso */
+    .progress-track { position: fixed; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(0,0,0,0.06); z-index: 5; }
+    .progress-fill { height: 100%; background: #eeff41; width: 0%; transition: width 0.25s ease; }
+
+    img.img-broken { display: none; }
+
+    /* Versiones móviles de los diagramas */
+    .diagram-mobile { display: none; flex-direction: column; align-items: center; gap: 0.55rem; width: 100%; max-width: 380px; }
+    .dm-label { font-family: 'Roboto', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: #999; text-transform: uppercase; }
+    .dm-box { width: 100%; border-radius: 6px; padding: 0.85rem 1rem; text-align: center; font-family: 'Roboto', sans-serif; }
+    .dm-box.dark { background: #222; color: #fff; }
+    .dm-box.accent { background: #eeff41; color: #111; }
+    .dm-box.neutral { background: #fff; color: #444; border: 1.5px solid #444; }
+    .dm-box strong { display: block; font-size: 0.95rem; font-weight: 700; }
+    .dm-box em { display: block; font-style: normal; font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
+    .dm-arrow { color: #444; font-size: 0.9rem; line-height: 0.6; }
+    .dm-note { font-family: 'Roboto', sans-serif; font-size: 0.78rem; color: #6f6f6f; text-align: center; line-height: 1.45; max-width: 36ch; margin-top: 0.35rem; }
+
+    /* Accesibilidad */
+    @media (prefers-reduced-motion: reduce) {
+      .slide.active, .slide.active.slide--conclusion, .slide.active.slide--section,
+      .slide.active .demo-item, .slide.active .nombres li, .slide.active .pg li,
+      .slide.active.slide--visual svg > *, .slide.active .ficha-celda, .slide.active .celda,
+      .slide.active .par-col, .slide.active .pauta li, .slide.active .mapa-item,
+      .slide.active .diagram-mobile > * { animation: none; opacity: 1; transform: none; }
+      .progress-fill { transition: none; }
+    }
+
+    /* Los tres niveles de fidelidad: horizontal en pantalla ancha;
+       en pantalla angosta se cambia por la versión apilada, que se recorre
+       con desplazamiento vertical en vez de encogerse hasta lo ilegible.
+       La regla base va ANTES del bloque responsive para que el media query
+       la pueda pisar por orden de aparición. */
+    .wmp-v { display: none; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .slide { padding: 2.5rem; }
+      .slide--parrafo { padding: 2.5rem 3rem; }
+      .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa { padding: 2.5rem 3rem; }
+      .rejilla { gap: 1.6rem; }
+      .ficha-celdas { gap: 0 2rem; }
+      .ficha-celda + .ficha-celda { padding-left: 2rem; }
+    }
+    @media (max-width: 700px) {
+      .rejilla--3, .rejilla--2x2, .par { grid-template-columns: 1fr; gap: 1.6rem; }
+      .ficha-celdas { grid-template-columns: 1fr; gap: 1.6rem; }
+      .ficha-celda + .ficha-celda { border-left: none; padding-left: 0; border-top: 1px solid #e5e5e5; padding-top: 1.6rem; }
+      .ficha-def { max-width: none; }
+      .slide--visual svg { display: none; }
+      .slide--visual .diagram-mobile { display: flex; }
+      /* Ningún slide queda cortado en un celular: si el contenido no cabe, se
+         desplaza. `safe center` evita que centrar esconda el inicio. */
+      .slide { overflow-y: auto; overscroll-behavior: contain; justify-content: safe center; }
+      .slide > * { flex-shrink: 0; }
+    }
+    @media (max-width: 600px) {
+      /* El pie de la pantalla lo ocupan el menú de secciones y la pista táctil. */
+      .slide { padding: 1.5rem 1.5rem 3.5rem; }
+      .slide--parrafo { padding: 1.5rem 1.5rem 3.5rem; }
+      .rejilla { gap: 1.4rem; }
+      .compuesto-titulo { margin-bottom: 1.4rem; }
+      .compuesto-pie { margin-top: 1.4rem; }
+      .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa { padding: 1.5rem 1.5rem 3.5rem; }
+      .slide-title { max-width: 100%; }
+      .cita-texto { max-width: 92%; }
+      .slide-image { max-width: 90%; }
+      .refs-list, .slide-concept-body { max-width: 100%; }
+      .ph { max-width: 88%; padding: 2rem; }
+      .pauta li { gap: 0.9rem; }
+      .wmp-h { display: none; }
+      .wmp-v { display: block; width: 100%; max-width: 380px; }
+      .section-theme, .tema-central, .section-kicker { max-width: 100%; }
+      .qr { width: min(26vh, 190px); }
+      .slide-link { font-size: 0.95rem; }
+    }
+    /* Celulares angostos: los titulares grandes son lo primero que desborda. */
+    @media (max-width: 420px) {
+      .slide-title { font-size: 1.55rem; line-height: 1.28; }
+      .portada-bottom { font-size: 3rem; }
+      .section-theme { font-size: 1.75rem; }
+      .tema-central { font-size: 1.9rem; }
+      .ficha-def { font-size: 1.15rem; }
+      .mapa-item { font-size: 1.05rem; }
+      .pauta li { font-size: 0.95rem; }
+      .rejilla { gap: 1.1rem; }
+      .celda { padding-top: 0.8rem; }
+      .celda-titulo { font-size: 1.05rem; margin-bottom: 0.45rem; }
+      .celda-cuerpo { font-size: 0.88rem; line-height: 1.45; }
+      .compuesto-titulo { font-size: 1rem; margin-bottom: 1.1rem; }
+      .compuesto-pie { font-size: 0.82rem; margin-top: 1.1rem; }
+    }
+    /* Proyectar en horizontal desde un celular: la altura es lo escaso. */
+    @media (max-height: 460px) and (orientation: landscape) {
+      .slide {
+        padding: 1.25rem 2rem 2.5rem;
+        overflow-y: auto; overscroll-behavior: contain; justify-content: safe center;
+      }
+      .slide > * { flex-shrink: 0; }
+      .slide-title { font-size: clamp(1.1rem, 3.2vw, 1.9rem); }
+      .mapa-item { font-size: clamp(1rem, 2.4vw, 1.4rem); padding: 0.35rem 0; }
+      .mapa-item .q { font-size: 0.55em; }
+      .mapa-pie { margin-top: 1rem; padding-top: 0.8rem; }
+      .qr { width: min(38vh, 190px); }
+    }
+
+    .nav-hint-touch { display: none; }
+    @media (hover: none) {
+      .nav-hint { display: none; }
+      .nav-hint-touch { display: block; position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.7rem; color: #ccc; text-align: right; max-width: 45%; }
+      .deck-nav-toggle { padding: 0.6rem 0.3rem; font-size: 0.8rem; }
+      .deck-nav-menu button { padding: 0.7rem 1rem; font-size: 0.8rem; }
+    }
+
+    /* ── titular sobre un diagrama ─────────────────────────────
+       El diagrama es la herramienta; el titular dice qué se está
+       mirando para que el profesor pueda señalar sin explicar antes. */
+    .slide--visual { gap: 0.4rem; }
+    .visual-titulo {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1rem, 2.1vw, 1.45rem);
+      font-weight: 900;
+      color: #444;
+      line-height: 1.3;
+      max-width: 60ch;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── fuente al pie de un slide de párrafo ── */
+    .slide-fuente {
+      font-size: 0.82rem;
+      color: #6f6f6f;
+      max-width: 60%;
+      margin-top: 1.4rem;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    /* ── los nombres de las personas inventadas ── */
+    .slide--nombres { align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem; }
+    .nombres-titulo {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #6f6f6f;
+      max-width: 60rem; margin: 0 auto 1.6rem; width: 100%;
+    }
+    .nombres { list-style: none; width: 100%; max-width: 60rem; margin: 0 auto; }
+    .nombres li {
+      display: flex; gap: 1.5rem; align-items: baseline;
+      padding: 0.8rem 0; border-bottom: 1px solid #e5e5e5;
+    }
+    .nombres li:last-child { border-bottom: none; }
+    .nombres li strong {
+      font-size: clamp(1.3rem, 2.8vw, 2rem); font-weight: 900; color: #111;
+      flex: 0 0 8.5rem; line-height: 1.15;
+    }
+    .nombres li span { font-size: clamp(0.95rem, 1.5vw, 1.1rem); color: #6f6f6f; line-height: 1.4; }
+
+    /* ── preguntas grandes: un slide que solo provoca mirar ──
+       No lleva número ni viñeta: no es una lista operativa, son
+       preguntas para hacer en voz alta mientras se mira otra cosa. */
+    .slide--preguntas-grandes { align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem; }
+    .pg-titulo {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #6f6f6f;
+      max-width: 56rem; margin: 0 auto 1.8rem; width: 100%;
+    }
+    .pg { list-style: none; width: 100%; max-width: 56rem; margin: 0 auto; }
+    .pg li {
+      font-size: clamp(1.25rem, 2.9vw, 2rem); font-weight: 900; color: #444;
+      line-height: 1.25; padding: 0.7rem 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .pg li:last-child { border-bottom: none; }
+    .pg--compacta li { font-size: clamp(1rem, 2.2vw, 1.5rem); padding: 0.5rem 0; }
+
+    .slide.active .nombres li, .slide.active .pg li {
+      opacity: 0; animation: drawIn 0.18s ease-out forwards;
+    }
+    .nombres li:nth-child(1), .pg li:nth-child(1) { animation-delay: 0.04s; }
+    .nombres li:nth-child(2), .pg li:nth-child(2) { animation-delay: 0.08s; }
+    .nombres li:nth-child(3), .pg li:nth-child(3) { animation-delay: 0.12s; }
+    .nombres li:nth-child(4), .pg li:nth-child(4) { animation-delay: 0.16s; }
+    .nombres li:nth-child(5), .pg li:nth-child(5) { animation-delay: 0.20s; }
+    .pg li:nth-child(n+6) { animation-delay: 0.24s; }
+
+    @media (max-width: 900px) {
+      .slide--nombres, .slide--preguntas-grandes { padding: 2.5rem 3rem; }
+    }
+    @media (max-width: 700px) {
+      .nombres li { flex-direction: column; gap: 0.2rem; }
+      .nombres li strong { flex: none; }
+      .slide-fuente { max-width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .slide--nombres, .slide--preguntas-grandes { padding: 1.5rem 1.5rem 3rem; overflow-y: auto; }
+    }
+
+    /* ── tira de componentes reales ────────────────────────────
+       La diapositiva afirma que las convenciones visuales se
+       aprenden mirando. Proyectarla sin mostrarlas era pedir un
+       acto de fe: acá los componentes funcionan de verdad —el
+       cursor cambia, el slider se arrastra, el deshabilitado no
+       responde—, así que la afirmación se puede comprobar en vivo. */
+    .slide--demo { align-items: stretch; justify-content: center; text-align: left; padding: 3rem 5rem; }
+    .demo-titulo {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1rem, 2.1vw, 1.45rem);
+      font-weight: 900; color: #444; line-height: 1.3;
+      max-width: 62rem; margin: 0 auto 2.2rem; width: 100%; text-align: center;
+    }
+    .demo-tira {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem 2.5rem; width: 100%; max-width: 62rem; margin: 0 auto;
+    }
+    .demo-item { border-top: 3px solid #444; padding-top: 1rem; }
+    .demo-pieza {
+      min-height: 5.2rem; display: flex; align-items: center;
+      justify-content: flex-start; margin-bottom: 0.9rem;
+    }
+    .demo-nota { font-size: 0.95rem; color: #555; line-height: 1.5; }
+    .demo-nota b { color: #111; font-weight: 700; }
+
+    /* botón */
+    .demo-boton {
+      font-family: 'Roboto', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #111; background: #eeff41; border: 2px solid #111;
+      padding: 0.7rem 1.6rem; cursor: pointer;
+      box-shadow: 4px 4px 0 #111; transition: transform 0.06s, box-shadow 0.06s;
+    }
+    .demo-boton:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #111; }
+    .demo-boton:active { transform: translate(4px, 4px); box-shadow: 0 0 0 #111; }
+
+    /* botón desactivado */
+    .demo-boton[disabled] {
+      color: #999; background: #f2f2f2; border-color: #d5d5d5;
+      box-shadow: 4px 4px 0 #e5e5e5; cursor: not-allowed;
+    }
+    .demo-boton[disabled]:hover { transform: none; box-shadow: 4px 4px 0 #e5e5e5; }
+
+    /* slider real */
+    .demo-slider { width: 100%; max-width: 15rem; accent-color: #111; cursor: grab; }
+    .demo-slider:active { cursor: grabbing; }
+
+    /* enlace */
+    .demo-enlace {
+      font-family: 'Roboto', sans-serif; font-size: 1.05rem; font-weight: 700;
+      color: #1a9e9e; text-decoration: underline; text-underline-offset: 4px;
+      text-decoration-thickness: 2px; cursor: pointer;
+    }
+    .demo-enlace:hover { color: #111; background: #eeff41; }
+
+    /* campo de texto */
+    .demo-campo {
+      font-family: 'Roboto', sans-serif; font-size: 1rem; color: #111;
+      border: none; border-bottom: 2px solid #444; background: #f7f7f7;
+      padding: 0.6rem 0.8rem; width: 100%; max-width: 15rem; cursor: text;
+    }
+    .demo-campo:focus { outline: 2px solid #eeff41; border-bottom-color: #111; }
+
+    /* tarjeta arrastrable */
+    .demo-arrastra {
+      font-family: 'Roboto', sans-serif; font-size: 0.9rem; font-weight: 700;
+      color: #111; background: #fff; border: 2px solid #111;
+      padding: 0.9rem 1.2rem; cursor: grab; box-shadow: 5px 5px 0 #e5e5e5;
+      user-select: none;
+    }
+    .demo-arrastra:active { cursor: grabbing; box-shadow: 2px 2px 0 #e5e5e5; }
+
+    .demo-pie {
+      font-size: 0.95rem; color: #6f6f6f; text-align: center;
+      max-width: 60ch; margin: 2.2rem auto 0; line-height: 1.5;
+    }
+
+    .slide.active .demo-item { opacity: 0; animation: drawIn 0.18s ease-out forwards; }
+    .demo-item:nth-child(1) { animation-delay: 0.04s; }
+    .demo-item:nth-child(2) { animation-delay: 0.08s; }
+    .demo-item:nth-child(3) { animation-delay: 0.12s; }
+    .demo-item:nth-child(4) { animation-delay: 0.16s; }
+    .demo-item:nth-child(5) { animation-delay: 0.20s; }
+    .demo-item:nth-child(6) { animation-delay: 0.24s; }
+
+    @media (max-width: 900px) {
+      .slide--demo { padding: 2.5rem 3rem; }
+      .demo-tira { grid-template-columns: repeat(2, 1fr); gap: 1.6rem; }
+    }
+    @media (max-width: 600px) {
+      .slide--demo { padding: 1.5rem 1.5rem 3rem; overflow-y: auto; }
+      .demo-tira { grid-template-columns: 1fr; }
+      .demo-pieza { min-height: 0; }
+    }
+
+    /* ── diapositiva con video ─────────────────────────────────
+       El video es el argumento: la instalación no se puede contar,
+       hay que verla moverse. El enlace de abajo no es decoración:
+       es el respaldo si el iframe no carga (abrir el deck como
+       archivo local bloquea los embebidos de YouTube). */
+    .slide--video { gap: 1rem; }
+    .video-titulo {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1rem, 2.1vw, 1.4rem);
+      font-weight: 900; color: #444; line-height: 1.3; max-width: 62ch;
+    }
+    .video-marco {
+      width: 62%; aspect-ratio: 16 / 9; background: #111;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .video-marco > video, .video-marco > iframe { width: 100%; height: 100%; display: block; border: 0; }
+    .video-credito { font-size: 0.85rem; color: #6f6f6f; }
+    .video-credito a { font-weight: 700; }
+    @media (max-width: 900px) { .video-marco { width: 88%; } }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+
+    <!-- ══════════ APERTURA ══════════ -->
+
+    <div class="slide" style="gap: 2rem;">
+      <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" style="max-width: 40%;" alt="GIF de espera">
+      <p class="slide-title">Gracias por la puntualidad</p>
+      <p class="slide-subtitle">En breve comenzamos</p>
+    </div>
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="portada-top" style="color: #333;">Pensamiento</p>
+      <p class="portada-bottom" style="color: #111;">Sensorial</p>
+    </div>
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Clase 4</p>
+      <p class="section-theme">Preguntar y percibir</p>
+    </div>
+
+    <!-- ══════════ ¿EN QUÉ QUEDAMOS? ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">¿En qué quedamos?</p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">Tres cosas distintas que la clase pasada aprendimos a separar</p>
+      <svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg" style="width:82%; height:78%;">
+        <defs>
+          <marker id="fA" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <g>
+          <rect x="290" y="16" width="320" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+          <text x="450" y="42" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#6f6f6f" class="caps">Lo que nosotros construimos</text>
+          <text x="450" y="68" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="900" fill="#111">Modelo conceptual</text>
+        </g>
+        <line x1="450" y1="88" x2="450" y2="176" stroke="#444" stroke-width="1.5" marker-end="url(#fA)"/>
+        <text x="466" y="138" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">lo volvemos perceptible</text>
+        <g>
+          <rect x="290" y="196" width="320" height="72" rx="4" fill="#eeff41"/>
+          <text x="450" y="222" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#111" class="caps">Lo único que la persona recibe</text>
+          <text x="450" y="248" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="900" fill="#111">Imagen del sistema</text>
+        </g>
+        <line x1="450" y1="268" x2="450" y2="356" stroke="#444" stroke-width="1.5" marker-end="url(#fA)"/>
+        <text x="466" y="318" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">ella la interpreta</text>
+        <g>
+          <rect x="290" y="376" width="320" height="72" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+          <text x="450" y="402" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#6f6f6f" class="caps">Lo que la persona construye</text>
+          <text x="450" y="428" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="900" fill="#111">Modelo mental</text>
+        </g>
+        <g>
+          <line x1="270" y1="52" x2="130" y2="52" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="124" y="48" text-anchor="end" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Vive en nuestra cabeza</text>
+          <text x="124" y="66" text-anchor="end" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">y en nuestros documentos</text>
+        </g>
+        <g>
+          <line x1="630" y1="232" x2="770" y2="232" stroke="#444" stroke-width="1"/>
+          <text x="776" y="228" font-family="Roboto, sans-serif" font-size="12" font-weight="700" fill="#111">Acá trabajamos</text>
+          <text x="776" y="246" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">nosotros</text>
+        </g>
+        <g>
+          <line x1="270" y1="412" x2="130" y2="412" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="124" y="408" text-anchor="end" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Vive en su cabeza,</text>
+          <text x="124" y="426" text-anchor="end" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">y no la podemos ver</text>
+        </g>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">Lo que nosotros construimos</p>
+        <div class="dm-box neutral"><strong>Modelo conceptual</strong><em>vive en nuestra cabeza</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Imagen del sistema</strong><em>lo único que la persona recibe · acá trabajamos</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box neutral"><strong>Modelo mental</strong><em>lo que ella construye, y no lo podemos ver</em></div>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Nadie recibe nuestro modelo conceptual. Recibe una imagen, y con esa imagen <span class="hl">se arma el suyo</span></p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Y para eso, la semana pasada, cada grupo diseñó para una persona</p>
+    </div>
+
+    <div class="slide slide--nombres">
+      <p class="nombres-titulo">Las cinco personas de la clase pasada</p>
+      <ul class="nombres">
+        <li><strong>Valentina</strong><span>22 · un plato con gluten la enferma de verdad</span></li>
+        <li><strong>Sofía</strong><span>29 · pide para su mamá, enferma y en otra ciudad</span></li>
+        <li><strong>Camila</strong><span>27 · tiene 40 minutos para almorzar</span></li>
+        <li><strong>Andrés</strong><span>41 · coordina el almuerzo de ocho personas</span></li>
+        <li><strong>Ernesto</strong><span>68 · quiere el almuerzo de siempre</span></li>
+      </ul>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Ninguna de las cinco existe. <span class="hl">Las escribí yo</span>, una tarde, antes de la clase</p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Eso no las vuelve inútiles</p>
+      <p class="slide-concept-body">
+        Una representación de usuario —una persona, un perfil, un arquetipo— sirve para
+        alinear a un equipo y para poder discutir decisiones sin hablar de uno mismo.
+        El problema no es inventarla.<br><br>
+        El problema es tratarla como un dato. Una representación de usuario es
+        <strong>una hipótesis sobre personas reales</strong>, y una hipótesis existe para
+        ser contrastada. Si nadie la contrasta nunca, deja de ser una herramienta de
+        diseño y se vuelve una manera elegante de seguir diseñando para nosotros mismos.
+      </p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Entonces la pregunta de hoy es de dónde saldría una ficha que sí se pueda contrastar</p>
+    </div>
+
+    <!-- ══════════ ACTIVIDAD · LA PRUEBA CRUZADA ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Actividad</p>
+      <p class="section-theme">La prueba cruzada</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Antes de eso hay una deuda: los prototipos de la semana pasada todavía no los ha usado nadie</p>
+    </div>
+
+    <div class="slide slide--pauta">
+      <p class="pauta-titulo">Cómo se hace</p>
+      <ol class="pauta">
+        <li><span class="n">01</span><span>Le entregan su prototipo a otro grupo. <strong>Sin decir una palabra</strong>: ni cómo se usa, ni qué querían lograr.</span></li>
+        <li><span class="n">02</span><span>Ese grupo lo recorre con la ficha A de su persona en la mano, tratando de completar un pedido.</span></li>
+        <li><span class="n">03</span><span>Ustedes observan y anotan. Sin intervenir, aunque duela.</span></li>
+        <li><span class="n">04</span><span>Al final sí se habla: primero se describe lo que se vio, después se interpreta por qué.</span></li>
+      </ol>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Mientras miran, busquen esto</p>
+      <ul class="pg">
+        <li>¿Dónde se atasca?</li>
+        <li>¿Qué intenta hacer primero?</li>
+        <li>¿Qué esperaba encontrar y no estaba?</li>
+        <li>¿Qué asumimos que iba a entender solo?</li>
+      </ul>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Si hay que explicarlo, la imagen del sistema <span class="hl">todavía no está haciendo su trabajo</span></p>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Y después hablamos</p>
+      <ul class="pg">
+        <li>¿Cómo les fue?</li>
+        <li>¿Qué pensaron mientras simulaban a esa persona?</li>
+        <li>¿Qué descubrieron que no habían previsto?</li>
+        <li>¿Qué harían distinto después de ver a los otros grupos?</li>
+      </ul>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Simular a alguien nos da <span class="hl">una hipótesis</span>. No nos da conocimiento sobre nadie</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Volvemos a eso al final de la clase. Antes hay que resolver un problema más viejo</p>
+    </div>
+
+    <!-- ══════════ ¿QUÉ LLAMAMOS INTERFAZ? ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Volvamos a la interfaz</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Esto ya lo dijimos: una interfaz es todo lo que hacemos para comunicarle a alguien qué puede hacer y qué pasó cuando lo hizo</p>
+    </div>
+
+    <div class="slide slide--cita">
+      <p class="cita-texto">Una interfaz es aquello que media una relación: la hace posible y, al hacerlo, la organiza, la traduce y la transforma.</p>
+      <p class="cita-fuente">Nuestra definición, versión 1.0 · clase 1</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Nunca dijimos que fuera una pantalla. Y aun así, todo lo que hemos diseñado en este curso se comunica por los ojos</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">No es un descuido. En lo digital nos apoyamos en la vista porque es donde viven las convenciones</p>
+    </div>
+
+    <div class="slide slide--demo">
+      <p class="demo-titulo">Qué se ve clicable, qué se ve deslizable, qué se ve desactivado</p>
+      <div class="demo-tira demo">
+        <div class="demo-item">
+          <div class="demo-pieza"><button class="demo-boton" type="button">Confirmar pedido</button></div>
+          <p class="demo-nota"><b>Se puede presionar.</b> Lo dicen el relieve, el color lleno y el borde. Y al pasar el mouse, se hunde.</p>
+        </div>
+        <div class="demo-item">
+          <div class="demo-pieza"><button class="demo-boton" type="button" disabled>Confirmar pedido</button></div>
+          <p class="demo-nota"><b>Existe y no se puede.</b> Mismo objeto, sin contraste y sin relieve. El cursor lo confirma: tachado.</p>
+        </div>
+        <div class="demo-item">
+          <div class="demo-pieza"><input class="demo-slider" type="range" min="0" max="100" value="35" aria-label="Ejemplo de control deslizable"></div>
+          <p class="demo-nota"><b>Se arrastra.</b> Un riel y una perilla encima. Nadie explicó nunca que eso significa «agárrame y muéveme».</p>
+        </div>
+        <div class="demo-item">
+          <div class="demo-pieza"><span class="demo-enlace">Ver el restaurante</span></div>
+          <p class="demo-nota"><b>Lleva a otra parte.</b> Subrayado y de otro color. Una convención que viene de antes de las apps.</p>
+        </div>
+        <div class="demo-item">
+          <div class="demo-pieza"><input class="demo-campo" type="text" placeholder="Nota para la cocina" aria-label="Ejemplo de campo de texto"></div>
+          <p class="demo-nota"><b>Se escribe.</b> Una caja hundida, un texto gris que se va solo y un cursor que cambia a una viga.</p>
+        </div>
+        <div class="demo-item">
+          <div class="demo-pieza"><span class="demo-arrastra">☰ &nbsp;Arepa de chócolo</span></div>
+          <p class="demo-nota"><b>Se mueve de lugar.</b> El asa de tres rayas y la sombra despegada. El cursor se vuelve una mano abierta.</p>
+        </div>
+      </div>
+      <p class="demo-pie">Nada de esto está escrito en ninguna parte. Lo aprendimos mirando, y por eso funciona sin que nadie lo explique.</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">La pregunta de hoy: <span class="hl">¿y si quitamos el sentido donde viven todas esas convenciones?</span></p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">Lo que una interfaz sostiene, tenga la forma que tenga</p>
+      <svg viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg" style="width:86%; height:76%;">
+        <defs>
+          <marker id="fB" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <g>
+          <rect x="40" y="150" width="180" height="90" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
+          <text x="130" y="188" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="900" fill="#111">Persona</text>
+          <text x="130" y="212" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">intención · interpretación</text>
+        </g>
+        <g>
+          <rect x="360" y="140" width="180" height="110" rx="4" fill="#eeff41"/>
+          <text x="450" y="184" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="900" fill="#111">Interfaz</text>
+          <text x="450" y="206" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#111">hace posible · organiza</text>
+          <text x="450" y="222" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#111">traduce · transforma</text>
+        </g>
+        <g>
+          <rect x="680" y="150" width="180" height="90" rx="4" fill="#222"/>
+          <text x="770" y="188" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="900" fill="#fff">Sistema</text>
+          <text x="770" y="212" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#bdbdbd">estado · reglas</text>
+        </g>
+        <path d="M220,175 L360,175" stroke="#444" stroke-width="1.5" marker-end="url(#fB)"/>
+        <text x="290" y="164" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" fill="#111">acción</text>
+        <path d="M540,175 L680,175" stroke="#444" stroke-width="1.5" marker-end="url(#fB)"/>
+        <path d="M680,215 L540,215" stroke="#444" stroke-width="1.5" marker-end="url(#fB)"/>
+        <text x="610" y="240" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" fill="#111">respuesta</text>
+        <path d="M360,215 L220,215" stroke="#444" stroke-width="1.5" marker-end="url(#fB)"/>
+        <g>
+          <line x1="130" y1="150" x2="130" y2="96" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="130" y="86" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">¿Qué quiere hacer?</text>
+          <line x1="130" y1="240" x2="130" y2="300" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="130" y="322" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">¿Cómo sabe</text>
+          <text x="130" y="340" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">que puede?</text>
+          <line x1="450" y1="250" x2="450" y2="300" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="450" y="322" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">¿Qué información</text>
+          <text x="450" y="340" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">deja pasar y cuál no?</text>
+          <line x1="770" y1="150" x2="770" y2="96" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="770" y="86" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">¿Qué sabe el sistema?</text>
+          <line x1="770" y1="240" x2="770" y2="300" stroke="#e5e5e5" stroke-width="1"/>
+          <text x="770" y="322" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">¿Cómo avisa</text>
+          <text x="770" y="340" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#444">que pasó algo?</text>
+        </g>
+        <text x="450" y="400" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Nada de esto exige que la interfaz se vea. Solo que se perciba.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">Lo que una interfaz sostiene</p>
+        <div class="dm-box neutral"><strong>Persona</strong><em>¿qué quiere hacer? ¿cómo sabe que puede?</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Interfaz</strong><em>hace posible, organiza, traduce, transforma</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box dark"><strong>Sistema</strong><em>¿qué sabe? ¿cómo avisa que pasó algo?</em></div>
+        <span class="dm-arrow">↑</span>
+        <p class="dm-note">La respuesta vuelve por el mismo camino. Nada de esto exige que la interfaz se vea.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">Cuatro sistemas que comunican lo que es posible sin una sola convención de pantalla</p>
+      <svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" style="width:92%; height:78%;">
+        <g>
+          <text x="8" y="60" font-family="Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="0.8" fill="#6f6f6f" class="caps">¿Qué hace</text>
+          <text x="8" y="76" font-family="Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="0.8" fill="#6f6f6f" class="caps">la persona?</text>
+          <text x="8" y="190" font-family="Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="0.8" fill="#6f6f6f" class="caps">¿Cómo sabe</text>
+          <text x="8" y="206" font-family="Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="0.8" fill="#6f6f6f" class="caps">que puede?</text>
+          <text x="8" y="320" font-family="Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="0.8" fill="#6f6f6f" class="caps">¿Cómo responde</text>
+          <text x="8" y="336" font-family="Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="0.8" fill="#6f6f6f" class="caps">el sistema?</text>
+        </g>
+        <line x1="150" y1="18" x2="900" y2="18" stroke="#444" stroke-width="2"/>
+        <line x1="150" y1="130" x2="900" y2="130" stroke="#e5e5e5" stroke-width="1"/>
+        <line x1="150" y1="260" x2="900" y2="260" stroke="#e5e5e5" stroke-width="1"/>
+        <line x1="150" y1="390" x2="900" y2="390" stroke="#e5e5e5" stroke-width="1"/>
+
+        <g font-family="Roboto, sans-serif">
+          <text x="160" y="42" font-size="13" font-weight="900" fill="#111">TORNIQUETE</text>
+          <text x="160" y="72" font-size="13" fill="#444">Empujar con el cuerpo</text>
+          <text x="160" y="92" font-size="13" fill="#444">hasta que ceda.</text>
+          <text x="160" y="164" font-size="13" fill="#444">Por la forma del eje:</text>
+          <text x="160" y="184" font-size="13" fill="#444">gira en un solo sentido</text>
+          <text x="160" y="204" font-size="13" fill="#444">y de a una persona.</text>
+          <text x="160" y="294" font-size="13" fill="#444">Cede o no cede.</text>
+          <text x="160" y="314" font-size="13" fill="#444">La respuesta es el</text>
+          <text x="160" y="334" font-size="13" fill="#444">propio movimiento.</text>
+        </g>
+        <g font-family="Roboto, sans-serif">
+          <text x="350" y="42" font-size="13" font-weight="900" fill="#111">SEMÁFORO SONORO</text>
+          <text x="350" y="72" font-size="13" fill="#444">Escuchar y esperar</text>
+          <text x="350" y="92" font-size="13" fill="#444">el cambio de ritmo.</text>
+          <text x="350" y="164" font-size="13" fill="#444">Porque el pito lento</text>
+          <text x="350" y="184" font-size="13" fill="#444">y el rápido significan</text>
+          <text x="350" y="204" font-size="13" fill="#444">cosas distintas.</text>
+          <text x="350" y="294" font-size="13" fill="#444">Acelera hasta cortarse.</text>
+          <text x="350" y="314" font-size="13" fill="#444">Nunca dice cuánto</text>
+          <text x="350" y="334" font-size="13" fill="#444">tiempo queda.</text>
+        </g>
+        <g font-family="Roboto, sans-serif">
+          <text x="555" y="42" font-size="13" font-weight="900" fill="#111">PUERTA AUTOMÁTICA</text>
+          <text x="555" y="72" font-size="13" fill="#444">Caminar hacia ella.</text>
+          <text x="555" y="92" font-size="13" fill="#444">Nada más.</text>
+          <text x="555" y="164" font-size="13" fill="#444">Porque vio a otro</text>
+          <text x="555" y="184" font-size="13" fill="#444">pasar o porque</text>
+          <text x="555" y="204" font-size="13" fill="#444">se abrió sola.</text>
+          <text x="555" y="294" font-size="13" fill="#444">Se abre. Y si no,</text>
+          <text x="555" y="314" font-size="13" fill="#444">no hay manera</text>
+          <text x="555" y="334" font-size="13" fill="#444">de insistir.</text>
+        </g>
+        <g font-family="Roboto, sans-serif">
+          <rect x="740" y="26" width="152" height="356" fill="#eeff41" opacity="0.35"/>
+          <text x="752" y="42" font-size="13" font-weight="900" fill="#111">MENÚ TELEFÓNICO</text>
+          <text x="752" y="72" font-size="13" fill="#444">Oír la lista completa</text>
+          <text x="752" y="92" font-size="13" fill="#444">y marcar un número.</text>
+          <text x="752" y="164" font-size="13" fill="#444">Porque una voz se las</text>
+          <text x="752" y="184" font-size="13" fill="#444">enumera. Una vez.</text>
+          <text x="752" y="294" font-size="13" fill="#444">Repite, avanza</text>
+          <text x="752" y="314" font-size="13" fill="#444">o cuelga.</text>
+        </g>
+        <text x="150" y="424" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Las cuatro median una relación. Solo la última le exige a la persona recordar lo que acaba de oír.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">Cuatro interfaces sin pantalla</p>
+        <div class="dm-box neutral"><strong>Torniquete</strong><em>empuja · la forma del eje se lo dice · cede o no cede</em></div>
+        <div class="dm-box neutral"><strong>Semáforo sonoro</strong><em>escucha · el ritmo del pito · acelera hasta cortarse</em></div>
+        <div class="dm-box neutral"><strong>Puerta automática</strong><em>camina · vio a otro pasar · se abre o nada</em></div>
+        <div class="dm-box accent"><strong>Menú telefónico</strong><em>oye y marca · una voz enumera, una vez · repite o cuelga</em></div>
+        <p class="dm-note">Solo la última le exige a la persona recordar lo que acaba de oír.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">En ninguno de los cuatro hay algo que <em>se vea</em> presionable. Lo posible se comunica por <span class="hl">la forma, el ritmo o lo que hace otra persona</span></p>
+    </div>
+
+
+    <!-- ══════════ UNA MISMA TAREA ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Una misma tarea</p>
+      <p class="section-theme">Tres contextos</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Pedir dos almuerzos</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Presencialmente, por teléfono o por una app</p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">Pedir dos almuerzos, en tres contextos</p>
+      <svg viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg" style="width:88%; height:76%;">
+        <defs>
+          <marker id="fC" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#888"/>
+          </marker>
+        </defs>
+        <text x="150" y="24" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="900" letter-spacing="1" fill="#111" class="caps">En persona</text>
+        <text x="450" y="24" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="900" letter-spacing="1" fill="#111" class="caps">Por teléfono</text>
+        <text x="750" y="24" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="900" letter-spacing="1" fill="#111" class="caps">En pantalla</text>
+        <line x1="300" y1="10" x2="300" y2="400" stroke="#e5e5e5" stroke-width="1"/>
+        <line x1="600" y1="10" x2="600" y2="400" stroke="#e5e5e5" stroke-width="1"/>
+
+        <g font-family="Roboto, sans-serif" font-size="14" font-weight="700">
+          <rect x="80" y="46" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="150" y="68" text-anchor="middle" fill="#444">Hablar</text>
+          <line x1="150" y1="80" x2="150" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="80" y="102" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="150" y="124" text-anchor="middle" fill="#444">Señalar</text>
+          <line x1="150" y1="136" x2="150" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="80" y="158" width="140" height="34" rx="3" fill="#eeff41"/>
+          <text x="150" y="180" text-anchor="middle" fill="#111">Preguntar</text>
+          <line x1="150" y1="192" x2="150" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="80" y="214" width="140" height="34" rx="3" fill="#eeff41"/>
+          <text x="150" y="236" text-anchor="middle" fill="#111">Corregir</text>
+        </g>
+
+        <g font-family="Roboto, sans-serif" font-size="14" font-weight="700">
+          <rect x="380" y="46" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="450" y="68" text-anchor="middle" fill="#444">Escuchar</text>
+          <line x1="450" y1="80" x2="450" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="380" y="102" width="140" height="34" rx="3" fill="#eeff41"/>
+          <text x="450" y="124" text-anchor="middle" fill="#111">Recordar</text>
+          <line x1="450" y1="136" x2="450" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="380" y="158" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="450" y="180" text-anchor="middle" fill="#444">Hablar</text>
+          <line x1="450" y1="192" x2="450" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="380" y="214" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="450" y="236" text-anchor="middle" fill="#444">Esperar</text>
+          <line x1="450" y1="248" x2="450" y2="266" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="380" y="270" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="450" y="292" text-anchor="middle" fill="#444">Confirmar</text>
+        </g>
+
+        <g font-family="Roboto, sans-serif" font-size="14" font-weight="700">
+          <rect x="680" y="46" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="750" y="68" text-anchor="middle" fill="#444">Mirar</text>
+          <line x1="750" y1="80" x2="750" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="680" y="102" width="140" height="34" rx="3" fill="#eeff41"/>
+          <text x="750" y="124" text-anchor="middle" fill="#111">Comparar</text>
+          <line x1="750" y1="136" x2="750" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="680" y="158" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="750" y="180" text-anchor="middle" fill="#444">Seleccionar</text>
+          <line x1="750" y1="192" x2="750" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#fC)"/>
+          <rect x="680" y="214" width="140" height="34" rx="3" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="750" y="236" text-anchor="middle" fill="#444">Revisar</text>
+        </g>
+
+        <text x="150" y="342" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">El error se arregla</text>
+        <text x="150" y="358" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">mientras se habla</text>
+        <text x="450" y="342" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Todo lo dicho hay que</text>
+        <text x="450" y="358" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">sostenerlo en la cabeza</text>
+        <text x="750" y="342" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Queda escrito, pero solo</text>
+        <text x="750" y="358" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">existe lo que alguien previó</text>
+        <text x="450" y="420" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">En amarillo, lo que cada canal le exige a la persona y los otros dos no.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">La misma intención, tres veces</p>
+        <div class="dm-box neutral"><strong>En persona</strong><em>hablar · señalar · preguntar · corregir</em></div>
+        <div class="dm-box neutral"><strong>Por teléfono</strong><em>escuchar · recordar · hablar · esperar · confirmar</em></div>
+        <div class="dm-box neutral"><strong>En pantalla</strong><em>mirar · comparar · seleccionar · revisar</em></div>
+        <p class="dm-note">Preguntar y corregir, recordar, comparar: cada canal exige algo que los otros no.</p>
+      </div>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">¿Es la misma tarea?</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Sí. Y <span class="hl">no es la misma interacción</span></p>
+    </div>
+
+    <div class="slide slide--par">
+      <p class="compuesto-titulo">Y lo que más cambia ni siquiera está en la lista de acciones</p>
+      <div class="par">
+        <div class="par-col a">
+          <p class="par-encabezado">En persona, el error lo arregla el otro</p>
+          <p class="par-cuerpo">La cara del cajero avisa antes de que uno termine la frase. La reparación cuesta <strong>una frase</strong> y ocurre antes de que el pedido exista.</p>
+        </div>
+        <div class="par-col b">
+          <p class="par-encabezado">En pantalla, el error lo arregla la persona</p>
+          <p class="par-cuerpo">Y solo lo descubre cuando llega el domicilio. La reparación cuesta <strong>una llamada, un reembolso o un almuerzo botado</strong>.</p>
+        </div>
+      </div>
+      <p class="compuesto-pie">Quién carga con el error y cuándo se entera, no lo decide la tarea. Lo decide el contexto.</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">La tarea no cambió. Cambió <span class="hl">la relación que construimos con el sistema</span></p>
+    </div>
+
+    <!-- ══════════ MODALIDADES ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Modalidades</p>
+    </div>
+
+    <div class="slide slide--cita">
+      <p class="cita-texto">Una modalidad es el canal por el que ocurre el intercambio: qué sentido recibe lo que el sistema emite y qué parte del cuerpo produce la acción.</p>
+      <p class="cita-fuente">La definición que vamos a usar hoy</p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">Una lente para mirarlas, no una clasificación</p>
+      <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" style="width:90%; height:76%;">
+        <line x1="300" y1="20" x2="300" y2="330" stroke="#e5e5e5" stroke-width="1"/>
+        <line x1="600" y1="20" x2="600" y2="330" stroke="#e5e5e5" stroke-width="1"/>
+
+        <text x="150" y="42" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="900" letter-spacing="1" fill="#111" class="caps">Gráfica</text>
+        <text x="150" y="64" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">ocupa espacio</text>
+        <rect x="60" y="86" width="180" height="120" rx="3" fill="none" stroke="#444" stroke-width="1.5"/>
+        <rect x="74" y="100" width="70" height="14" rx="2" fill="#eeff41"/>
+        <rect x="152" y="100" width="76" height="14" rx="2" fill="#eeff41"/>
+        <rect x="74" y="124" width="154" height="14" rx="2" fill="#eeff41"/>
+        <rect x="74" y="148" width="60" height="14" rx="2" fill="#eeff41"/>
+        <rect x="142" y="148" width="86" height="14" rx="2" fill="#eeff41"/>
+        <rect x="74" y="172" width="110" height="14" rx="2" fill="#eeff41"/>
+        <text x="150" y="238" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#444">Todo está al tiempo</text>
+        <text x="150" y="256" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#444">y sigue estando.</text>
+        <text x="150" y="286" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Se puede volver a mirar.</text>
+        <text x="150" y="304" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Lo que no cabe, no existe.</text>
+
+        <text x="450" y="42" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="900" letter-spacing="1" fill="#111" class="caps">Voz</text>
+        <text x="450" y="64" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">ocupa tiempo</text>
+        <line x1="345" y1="146" x2="555" y2="146" stroke="#444" stroke-width="1.5"/>
+        <rect x="352" y="126" width="26" height="20" fill="#e5e5e5"/>
+        <rect x="392" y="120" width="26" height="26" fill="#d5d5d5"/>
+        <rect x="432" y="116" width="26" height="30" fill="#bdbdbd"/>
+        <rect x="472" y="112" width="26" height="34" fill="#8a8a8a"/>
+        <rect x="512" y="106" width="26" height="40" fill="#eeff41"/>
+        <text x="352" y="170" font-family="Roboto, sans-serif" font-size="11" fill="#888">antes</text>
+        <text x="524" y="170" text-anchor="end" font-family="Roboto, sans-serif" font-size="11" fill="#111" font-weight="700">ahora</text>
+        <text x="450" y="238" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#444">Solo existe lo último.</text>
+        <text x="450" y="256" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#444">Lo anterior ya no está.</text>
+        <text x="450" y="286" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">Alguien tiene que sostenerlo:</text>
+        <text x="450" y="304" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">la persona o el sistema.</text>
+
+        <text x="750" y="42" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="900" letter-spacing="1" fill="#111" class="caps">Gesto</text>
+        <text x="750" y="64" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">ocupa el cuerpo</text>
+        <path d="M672,190 C700,120 800,120 828,190" fill="none" stroke="#eeff41" stroke-width="10" stroke-linecap="round"/>
+        <path d="M672,190 C700,120 800,120 828,190" fill="none" stroke="#444" stroke-width="1.2" stroke-dasharray="3 4"/>
+        <circle cx="672" cy="190" r="6" fill="#444"/>
+        <circle cx="828" cy="190" r="6" fill="#444"/>
+        <text x="750" y="238" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#444">La acción ocurre</text>
+        <text x="750" y="256" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#444">y no deja huella.</text>
+        <text x="750" y="286" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">No hay dónde leer</text>
+        <text x="750" y="304" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">qué gestos existen.</text>
+
+        <text x="450" y="378" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Sirve para hacer preguntas, no para clasificar. Casi toda experiencia real mezcla las tres.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">Una lente, no una clasificación</p>
+        <div class="dm-box neutral"><strong>Gráfica · espacio</strong><em>todo está al tiempo y sigue estando. Lo que no cabe, no existe.</em></div>
+        <div class="dm-box neutral"><strong>Voz · tiempo</strong><em>solo existe lo último. Alguien tiene que sostener lo anterior.</em></div>
+        <div class="dm-box neutral"><strong>Gesto · cuerpo</strong><em>la acción ocurre y no deja huella. No hay dónde leer qué gestos existen.</em></div>
+        <p class="dm-note">Casi toda experiencia real mezcla las tres.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Voz · lo que aparece cuando el canal no persiste</p>
+      <p class="slide-concept-body">
+        La voz sirve bien para expresar una intención completa de una vez —«pídeme lo de
+        siempre del restaurante de siempre»—, para preguntar, para responder y para
+        confirmar. Y al mismo tiempo abre cuatro problemas que en una pantalla no existen:<br><br>
+        <strong>Memoria.</strong> Lo dicho hace tres turnos ya no está en ninguna parte.<br>
+        <strong>Secuencia.</strong> Hay un orden obligatorio: no se puede «mirar todo primero».<br>
+        <strong>Ambigüedad.</strong> «Ese» y «el otro» dependen de un contexto que el sistema puede no tener.<br>
+        <strong>Feedback.</strong> Confirmar cuesta un turno entero, así que confirmar todo vuelve la conversación insoportable — y no confirmar nada la vuelve insegura.
+      </p>
+      <p class="slide-fuente">Pearl, <em>Designing Voice User Interfaces</em>, 2016</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Con el gesto, la pregunta interesante no es cuál gesto usamos</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Es <span class="hl">qué significa ese gesto dentro del sistema</span> y cómo lo aprende alguien que llega por primera vez</p>
+    </div>
+
+    <!-- ══════════ MULTIMODALIDAD ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Multimodalidad</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">¿Y qué pasa cuando podemos combinar varias?</p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">1980, MIT · alguien señala una pantalla de pared y dice tres palabras</p>
+      <svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg" style="width:88%; height:80%;">
+        <defs>
+          <marker id="fG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#111"/>
+          </marker>
+        </defs>
+
+        <text x="140" y="20" font-family="Roboto, sans-serif" font-size="10" font-weight="700" letter-spacing="1.4" fill="#bdbdbd" class="caps">La pantalla de pared</text>
+        <rect x="140" y="30" width="620" height="190" rx="3" fill="#fafafa" stroke="#444" stroke-width="1.5"/>
+
+        <circle cx="270" cy="125" r="34" fill="#eeff41" stroke="#111" stroke-width="1.5"/>
+        <rect x="390" y="95" width="60" height="60" fill="none" stroke="#444" stroke-width="1.5"/>
+        <path d="M530,155 L560,98 L590,155 Z" fill="none" stroke="#444" stroke-width="1.5"/>
+        <circle cx="680" cy="125" r="30" fill="none" stroke="#444" stroke-width="1.5" stroke-dasharray="5 5"/>
+        <line x1="668" y1="125" x2="692" y2="125" stroke="#bdbdbd" stroke-width="1.5"/>
+        <line x1="680" y1="113" x2="680" y2="137" stroke="#bdbdbd" stroke-width="1.5"/>
+        <text x="680" y="80" text-anchor="middle" font-family="Roboto, sans-serif" font-size="11" fill="#6f6f6f">un sitio vacío</text>
+
+        <path d="M416,292 C400,240 330,205 276,166" fill="none" stroke="#111" stroke-width="1.8" marker-end="url(#fG)"/>
+        <path d="M558,292 C580,245 642,203 678,160" fill="none" stroke="#111" stroke-width="1.8" marker-end="url(#fG)"/>
+
+        <text x="250" y="336" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="900" fill="#111">«Pon</text>
+        <rect x="368" y="300" width="96" height="50" rx="3" fill="none" stroke="#111" stroke-width="1.6" stroke-dasharray="6 5"/>
+        <text x="416" y="336" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="900" fill="#111">eso</text>
+        <rect x="508" y="300" width="100" height="50" rx="3" fill="none" stroke="#111" stroke-width="1.6" stroke-dasharray="6 5"/>
+        <text x="558" y="336" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="900" fill="#111">ahí</text>
+        <text x="632" y="336" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="900" fill="#111">»</text>
+
+        <text x="250" y="380" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">la voz dice la acción</text>
+        <text x="500" y="380" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#111">el dedo dice cuál y dónde</text>
+
+        <text x="450" y="440" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">«Eso» y «ahí» son palabras vacías: no significan nada hasta que el dedo las llena, en el mismo instante en que se dicen.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">«Pon eso ahí»</p>
+        <div class="dm-box accent"><strong>Pon</strong><em>la voz dice la acción</em></div>
+        <div class="dm-box neutral"><strong>eso</strong><em>palabra vacía — el dedo señala cuál objeto</em></div>
+        <div class="dm-box neutral"><strong>ahí</strong><em>palabra vacía — el dedo señala qué sitio</em></div>
+        <p class="dm-note">No significan nada hasta que el dedo las llena, en el mismo instante en que se dicen.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--cita">
+      <p class="cita-texto">Un sistema multimodal procesa dos o más canales de entrada de manera combinada: no repite lo mismo por dos vías, sino que los interpreta juntos para producir un significado que ninguno tenía por separado.</p>
+      <p class="cita-fuente">A partir de Oviatt, <em>Ten Myths of Multimodal Interaction</em>, 1999 · el caso es Bolt, «Put-That-There», SIGGRAPH 1980</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Cada modalidad aporta una parte de la información. Ninguna tiene que aportarla toda</p>
+    </div>
+
+    <!-- ══════════ RECESO ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Receso</p>
+      <p class="slide-subtitle" style="color: #333;">Quince minutos</p>
+    </div>
+
+
+    <!-- ══════════ ACTIVIDAD · PEDIR SIN MIRAR ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Actividad</p>
+      <p class="section-theme">Pedir sin mirar</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Vamos a diseñar una experiencia nueva para pedir domicilios</p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Lo que dejó la investigación inicial</p>
+      <p class="slide-concept-body">
+        <strong>01 · Las personas se agobian cuando tienen que navegar entre demasiadas
+        opciones.</strong> No es que no sepan usar la app: es que abrir cuatrocientos
+        restaurantes para volver a pedir lo mismo de siempre es un trabajo que nadie
+        pidió hacer.<br><br>
+        <strong>02 · Este nicho vive con dispositivos encima.</strong> Usa Apple Watch y
+        AirPods Pro, y ya está acostumbrado a que sus aparatos respondan a la voz, al
+        movimiento y al contexto. No da por hecho que el teléfono tenga que ser el centro
+        de todo.
+      </p>
+      <p class="slide-fuente">Es un nicho específico, no «los usuarios de una app de domicilios».</p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">El escenario</p>
+      <p class="slide-concept-body">
+        Es la hora del almuerzo. La persona va camino a casa, con los AirPods puestos y el
+        reloj en la muñeca. Quiere pedir lo de siempre, del restaurante de siempre.<br><br>
+        No quiere sacar el teléfono. No quiere recorrer una lista. <strong>Quiere pedir.</strong>
+      </p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">El reto: que esta persona pueda pedir su comida habitual <span class="hl">sin depender de navegar una pantalla</span> llena de opciones</p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">Lo que tienen disponible · el cuerpo y los aparatos</p>
+      <svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" style="width:90%; height:76%;">
+        <defs>
+          <marker id="fE" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <text x="200" y="26" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#6f6f6f" class="caps">La persona actúa</text>
+        <text x="700" y="26" text-anchor="middle" font-family="Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#6f6f6f" class="caps">El sistema responde</text>
+        <line x1="450" y1="14" x2="450" y2="400" stroke="#e5e5e5" stroke-width="1"/>
+
+        <g font-family="Roboto, sans-serif">
+          <rect x="60" y="46" width="280" height="62" rx="4" fill="#eeff41"/>
+          <text x="76" y="70" font-size="14" font-weight="900" fill="#111">Voz</text>
+          <text x="76" y="92" font-size="12" fill="#111">palabras, preguntas, confirmar, cancelar</text>
+
+          <rect x="60" y="118" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="76" y="142" font-size="14" font-weight="900" fill="#111">Cabeza · AirPods</text>
+          <text x="76" y="164" font-size="12" fill="#444">asentir o negar, si el sistema habló primero</text>
+
+          <rect x="60" y="190" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="76" y="214" font-size="14" font-weight="900" fill="#111">Muñeca · Apple Watch</text>
+          <text x="76" y="236" font-size="12" fill="#444">doble toque, giro de muñeca, corona, pantalla</text>
+
+          <rect x="60" y="262" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="76" y="286" font-size="14" font-weight="900" fill="#111">Dedos · pantalla</text>
+          <text x="76" y="308" font-size="12" fill="#444">tocar, mantener, deslizar, arrastrar</text>
+
+          <rect x="60" y="334" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="76" y="358" font-size="14" font-weight="900" fill="#111">Vástago · AirPods Pro</text>
+          <text x="76" y="380" font-size="12" fill="#444">presionar, doble o triple, mantener, volumen (Pro 2 y 3)</text>
+        </g>
+
+        <g font-family="Roboto, sans-serif">
+          <rect x="560" y="46" width="280" height="62" rx="4" fill="#eeff41"/>
+          <text x="576" y="70" font-size="14" font-weight="900" fill="#111">Voz del sistema</text>
+          <text x="576" y="92" font-size="12" fill="#111">anuncia, pregunta, lee, confirma</text>
+
+          <rect x="560" y="118" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="576" y="142" font-size="14" font-weight="900" fill="#111">Sonido</text>
+          <text x="576" y="164" font-size="12" fill="#444">tonos cortos: recibido, error, listo</text>
+
+          <rect x="560" y="190" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="576" y="214" font-size="14" font-weight="900" fill="#111">Vibración</text>
+          <text x="576" y="236" font-size="12" fill="#444">háptica en la muñeca, con ritmo e intensidad</text>
+
+          <rect x="560" y="262" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="576" y="286" font-size="14" font-weight="900" fill="#111">Pantalla del reloj</text>
+          <text x="576" y="308" font-size="12" fill="#444">un vistazo, poco texto, estado</text>
+
+          <rect x="560" y="334" width="280" height="62" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="576" y="358" font-size="14" font-weight="900" fill="#111">Pantalla del teléfono</text>
+          <text x="576" y="380" font-size="12" fill="#444">si deciden que aparezca, y cuándo</text>
+        </g>
+
+        <path d="M348,88 L552,88" stroke="#444" stroke-width="1.5" marker-end="url(#fE)"/>
+        <path d="M552,300 L348,300" stroke="#444" stroke-width="1.5" marker-end="url(#fE)"/>
+        <text x="450" y="422" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Ustedes deciden qué va en cada lado y qué no se usa.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">La persona actúa</p>
+        <div class="dm-box accent"><strong>Voz</strong><em>palabras, preguntas, confirmar, cancelar</em></div>
+        <div class="dm-box neutral"><strong>Cabeza · AirPods</strong><em>asentir o negar, solo si el sistema habló primero</em></div>
+        <div class="dm-box neutral"><strong>Muñeca · Apple Watch</strong><em>doble toque, giro de muñeca, corona, pantalla</em></div>
+        <div class="dm-box neutral"><strong>Dedos · pantalla</strong><em>tocar, mantener, deslizar, arrastrar</em></div>
+        <p class="dm-label">El sistema responde</p>
+        <div class="dm-box accent"><strong>Voz del sistema</strong><em>anuncia, pregunta, lee, confirma</em></div>
+        <div class="dm-box neutral"><strong>Sonido · vibración · pantalla del reloj · pantalla del teléfono</strong></div>
+      </div>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Una restricción real, y es la más interesante de todas</p>
+      <p class="slide-concept-body">
+        Los gestos de cabeza de los AirPods —asentir para aceptar, negar para
+        rechazar— <strong>solo existen dentro de un anuncio</strong>: funcionan cuando Siri
+        acaba de leer una llamada o una notificación. No son un control libre.<br><br>
+        Eso significa que, si quieren usar la cabeza, <strong>el sistema tiene que hablar
+        primero</strong>. La conversación no la abre la persona: la abre el sistema. Y eso
+        ya es una decisión sobre quién manda en la interacción.
+      </p>
+      <p class="slide-fuente">Verificado en la documentación de Apple. Disponible en AirPods Pro 2 y posteriores, AirPods 4 y AirPods Max 2 — no en modelos anteriores.</p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Y dos capacidades que no son de todos los relojes</p>
+      <p class="slide-concept-body">
+        <strong>Doble toque</strong> —juntar índice y pulgar dos veces— existe desde
+        watchOS 10.1 y solo en Apple Watch Series 9, SE 3, Ultra 2 y posteriores.<br><br>
+        <strong>Giro de muñeca</strong> —voltear la muñeca para descartar— llegó con
+        watchOS 26, en los mismos modelos.<br><br>
+        Los pueden usar. Pero si los usan, en la presentación tienen que poder decir qué le
+        pasa a alguien cuyo reloj no los tiene.
+      </p>
+      <p class="slide-fuente">Verificado en la documentación de Apple. No funcionan en Series 8 ni en Apple Watch SE de 1.ª o 2.ª generación.</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">La regla principal: <span class="hl">no diseñen gestos. Diseñen una interacción</span></p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Lo que no queremos ver</p>
+      <p class="slide-concept-body">
+        <strong>La app de hoy, pero ahora con voz.</strong> Si su propuesta es la misma
+        lista de cuatrocientos restaurantes leída en voz alta, empeoraron el problema:
+        ahora hay que recordarla.<br><br>
+        <strong>Un gesto porque el gesto existe.</strong> No tienen que usar todas las
+        modalidades. No tienen que eliminar la pantalla. No tienen que usar la voz para
+        todo. La pregunta es qué debería hacer la persona y cuál es la mejor manera de
+        que pueda hacerlo.
+      </p>
+    </div>
+
+    <div class="slide slide--pauta">
+      <p class="pauta-titulo">El proceso · cuatro pasos</p>
+      <ol class="pauta">
+        <li><span class="n">01</span><span><strong>Definan la experiencia.</strong> ¿Qué tiene que hacer la persona para completar el pedido? Dibujen la secuencia. No hacen falta pantallas.</span></li>
+        <li><span class="n">02</span><span><strong>Distribuyan la interacción.</strong> Qué hace con la voz, con la cabeza, con la muñeca, con los dedos — y qué hace el sistema solo, sin preguntar.</span></li>
+        <li><span class="n">03</span><span><strong>Diseñen el feedback.</strong> Para cada acción importante: ¿cómo sabe la persona que el sistema entendió? ¿Y qué pasa si no entendió?</span></li>
+        <li><span class="n">04</span><span><strong>Prototipen actuando.</strong> No hay que programar nada. Una persona hace de usuario, otra de sistema, y la interacción se ejecuta de principio a fin.<span class="nota">La voz, los sonidos, la vibración y el reloj los representan ustedes con el cuerpo y con objetos.</span></span></li>
+      </ol>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">La hoja que hay que llenar en el paso 02</p>
+      <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" style="width:90%; height:74%;">
+        <g font-family="Roboto, sans-serif">
+          <text x="20" y="34" font-size="12" font-weight="700" letter-spacing="1" fill="#6f6f6f" class="caps">Momento</text>
+          <text x="250" y="34" font-size="12" font-weight="700" letter-spacing="1" fill="#6f6f6f" class="caps">La persona</text>
+          <text x="480" y="34" font-size="12" font-weight="700" letter-spacing="1" fill="#6f6f6f" class="caps">El sistema</text>
+          <text x="700" y="34" font-size="12" font-weight="700" letter-spacing="1" fill="#6f6f6f" class="caps">¿Cómo sabe que pasó?</text>
+        </g>
+        <line x1="20" y1="46" x2="880" y2="46" stroke="#444" stroke-width="2"/>
+        <g font-family="Roboto, sans-serif" font-size="14" fill="#111">
+          <text x="20" y="88">Empezar</text>
+          <text x="20" y="150">Elegir qué</text>
+          <text x="20" y="212">Cambiar algo</text>
+          <text x="20" y="274">Confirmar</text>
+          <text x="20" y="336">Equivocarse</text>
+        </g>
+        <g stroke="#e5e5e5" stroke-width="1">
+          <line x1="20" y1="112" x2="880" y2="112"/>
+          <line x1="20" y1="174" x2="880" y2="174"/>
+          <line x1="20" y1="236" x2="880" y2="236"/>
+          <line x1="20" y1="298" x2="880" y2="298"/>
+          <line x1="20" y1="360" x2="880" y2="360"/>
+        </g>
+        <line x1="240" y1="46" x2="240" y2="360" stroke="#e5e5e5" stroke-width="1"/>
+        <line x1="470" y1="46" x2="470" y2="360" stroke="#e5e5e5" stroke-width="1"/>
+        <line x1="690" y1="46" x2="690" y2="360" stroke="#e5e5e5" stroke-width="1"/>
+        <g font-family="Roboto, sans-serif" font-size="13" fill="#bdbdbd">
+          <text x="250" y="88">¿con qué? ¿voz, cabeza, muñeca?</text>
+          <text x="480" y="88">¿qué hace solo?</text>
+          <text x="700" y="88">¿voz, sonido, vibración?</text>
+        </g>
+        <rect x="690" y="298" width="190" height="62" fill="#eeff41" opacity="0.4"/>
+        <text x="700" y="336" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="#111">La fila difícil</text>
+        <text x="20" y="392" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Casi todos los grupos van a llenar las cuatro primeras filas. La quinta es la que separa un diseño de una demostración.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">La hoja del paso 02</p>
+        <div class="dm-box neutral"><strong>Cinco momentos</strong><em>empezar · elegir qué · cambiar algo · confirmar · equivocarse</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box neutral"><strong>Tres columnas</strong><em>qué hace la persona · qué hace el sistema · cómo sabe que pasó</em></div>
+        <div class="dm-box accent"><strong>Equivocarse</strong><em>la fila que separa un diseño de una demostración</em></div>
+      </div>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Y cada grupo tiene que poder responder: <span class="hl">¿por qué esta modalidad, aquí?</span></p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">«Porque sería chévere hacerlo con la cabeza» no es una razón. «Porque va caminando y tiene las manos ocupadas» sí lo es</p>
+    </div>
+
+    <div class="slide slide--pauta">
+      <p class="pauta-titulo">Qué presenta cada grupo</p>
+      <ol class="pauta">
+        <li><span class="n">01</span><span><strong>La situación.</strong> Qué está haciendo la persona cuando empieza.</span></li>
+        <li><span class="n">02</span><span><strong>La secuencia.</strong> Qué ocurre desde que comienza hasta que termina.</span></li>
+        <li><span class="n">03</span><span><strong>El modelo de interacción.</strong> Qué hace la persona, qué hace el sistema, cómo se reparten.</span></li>
+        <li><span class="n">04</span><span><strong>La demostración.</strong> Ejecutan la experiencia delante de todos.</span></li>
+        <li><span class="n">05</span><span><strong>Una decisión que quieran defender.</strong> «Elegimos hacer X con Y porque…».</span></li>
+      </ol>
+    </div>
+
+    <div class="slide slide--conclusion" style="gap: 1.5rem;">
+      <p class="slide-title">El brief completo está acá</p>
+      <img data-src="assets/qr-pedir-sin-mirar.svg" class="qr" alt="Código QR hacia el brief de la actividad">
+      <a class="slide-link" href="https://catedra.dejesumensaje.com/pensamiento-sensorial/pedir-sin-mirar" target="_blank" rel="noopener">catedra.dejesumensaje.com/pensamiento-sensorial/pedir-sin-mirar</a>
+    </div>
+
+    <!-- ══════════ DISCUSIÓN ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Después de ver los cinco</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Todos recibieron el mismo usuario, el mismo escenario, los mismos hallazgos y las mismas tecnologías</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Y salieron <span class="hl">cinco experiencias distintas</span>. ¿Por qué?</p>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Comparemos</p>
+      <ul class="pg">
+        <li>¿Quién inicia la interacción: la persona o el sistema?</li>
+        <li>¿Cuánto decide la persona y cuánto decide el sistema por ella?</li>
+        <li>¿Qué tiene que recordar la persona?</li>
+        <li>¿Cuándo aparece la pantalla, si es que aparece?</li>
+        <li>¿Qué significa cada gesto dentro del sistema y cómo se aprende?</li>
+        <li>¿Cómo responde el sistema cuando algo sale mal?</li>
+      </ul>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Y la que importa para la próxima clase: <span class="hl">¿qué relación propone cada experiencia</span> entre la persona y el sistema?</p>
+    </div>
+
+
+    <!-- ══════════ ¿DÓNDE ESTÁ LA INTERFAZ? ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">¿Dónde está la interfaz aquí?</p>
+    </div>
+
+    <div class="slide" style="gap: 1rem;">
+      <p class="slide-title">Una plaza, un proyector y una luz que borra la imagen. Los retratos <span class="hl">solo aparecen dentro de la sombra</span> de quien pasa</p>
+    </div>
+
+    <div class="slide slide--video">
+      <p class="video-titulo">Body Movies · Lisboa</p>
+      <div class="video-marco">
+        <video controls preload="none" playsinline>
+          <source src="assets/bodymovies-lisboa.mp4" type="video/mp4">
+          <source src="https://www.lozano-hemmer.com/videos/artwork/bodymovies_lisbon.mp4#t=0.1" type="video/mp4">
+        </video>
+      </div>
+      <p class="video-credito">Rafael Lozano-Hemmer, <em>Body Movies · Relational Architecture 6</em>, 2001 · <a href="https://www.lozano-hemmer.com/body_movies.php" target="_blank" rel="noopener">lozano-hemmer.com</a></p>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Body Movies</p>
+      <ul class="pg">
+        <li>¿Qué tiene que aprender la persona?</li>
+        <li>¿Cómo descubre que su sombra hace algo?</li>
+        <li>¿Y qué pasa cuando llegan veinte personas más?</li>
+      </ul>
+    </div>
+
+    <div class="slide" style="gap: 1rem;">
+      <p class="slide-title">830 tablitas de madera, cada una con su motor. Giran para orientar su sombra y con sombras arman la cara de quien está enfrente</p>
+    </div>
+
+    <div class="slide slide--video">
+      <p class="video-titulo">Los espejos mecánicos de Daniel Rozin</p>
+      <div class="video-marco">
+        <iframe data-src="https://www.youtube.com/embed/kV8v2GKC8WA" title="Daniel Rozin y sus espejos mecánicos"
+          allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <p class="video-credito">WIRED, <em>How This Guy Makes Amazing Mechanical Mirrors</em> · la pieza de 1999 en <a href="https://history.siggraph.org/artwork/daniel-rozin-wooden-mirror/" target="_blank" rel="noopener">el archivo de SIGGRAPH</a></p>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Wooden Mirror</p>
+      <ul class="pg">
+        <li>¿Dónde está la interfaz: en la madera, en la cámara, en el ruido de los motores?</li>
+        <li>¿Cómo sabe la persona que el sistema la está viendo?</li>
+        <li>¿Se puede uno equivocar aquí?</li>
+      </ul>
+    </div>
+
+    <div class="slide" style="gap: 1rem;">
+      <p class="slide-title">Un juego sin tutorial porque su idioma tampoco se entiende. Jugar consiste en <span class="hl">ir descifrando qué significa cada símbolo</span></p>
+    </div>
+
+    <div class="slide slide--video">
+      <p class="video-titulo">Chants of Sennaar · tráiler</p>
+      <div class="video-marco">
+        <iframe data-src="https://www.youtube.com/embed/__hzPH3tcvA" title="Chants of Sennaar, tráiler de lanzamiento"
+          allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <p class="video-credito">Focus Entertainment, tráiler de lanzamiento · el juego es de <a href="https://www.rundisc.io/chants-of-sennaar/" target="_blank" rel="noopener">Rundisc</a></p>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Chants of Sennaar</p>
+      <ul class="pg">
+        <li>¿Qué puede hacer la persona, si no entiende nada?</li>
+        <li>¿Cómo responde el sistema cuando ella se equivoca de significado?</li>
+        <li>¿Quién controla el ritmo de la experiencia?</li>
+      </ul>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Tres sistemas, tres relaciones muy distintas. <span class="hl">Cómo se llaman esas relaciones lo trabajamos la próxima clase</span></p>
+    </div>
+
+    <!-- ══════════ VOLVER A INVESTIGAR ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Volver a investigar</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Quedó pendiente de dónde salió la persona para la que diseñamos</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">La inventamos. Entonces: <span class="hl">¿cómo averiguamos algo de una persona real?</span></p>
+    </div>
+
+    <div class="slide slide--visual">
+      <p class="visual-titulo">No todo lo que una persona sabe se consigue de la misma manera</p>
+      <svg viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg" style="width:86%; height:76%;">
+        <defs>
+          <marker id="fF" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+          </marker>
+        </defs>
+        <line x1="60" y1="40" x2="60" y2="360" stroke="#444" stroke-width="1.5" marker-end="url(#fF)"/>
+        <text x="44" y="52" text-anchor="end" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">superficie</text>
+        <text x="44" y="352" text-anchor="end" font-family="Roboto, sans-serif" font-size="12" fill="#6f6f6f">profundidad</text>
+
+        <g font-family="Roboto, sans-serif">
+          <rect x="100" y="40" width="700" height="88" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="122" y="70" font-size="17" font-weight="900" fill="#111">Lo que dice</text>
+          <text x="122" y="94" font-size="13" fill="#444">Conocimiento explícito: lo que alcanza a formular si le preguntamos.</text>
+          <text x="122" y="114" font-size="13" fill="#6f6f6f">Se consigue preguntando. Es lo más fácil y lo primero que se agota.</text>
+
+          <rect x="100" y="140" width="700" height="88" rx="4" fill="none" stroke="#444" stroke-width="1.3"/>
+          <text x="122" y="170" font-size="17" font-weight="900" fill="#111">Lo que hace</text>
+          <text x="122" y="194" font-size="13" fill="#444">Conocimiento observable: lo que ocurre cuando actúa en su contexto.</text>
+          <text x="122" y="214" font-size="13" fill="#6f6f6f">Se consigue mirando. Contradice lo que dice más seguido de lo que uno cree.</text>
+
+          <rect x="100" y="240" width="700" height="108" rx="4" fill="#eeff41"/>
+          <text x="122" y="270" font-size="17" font-weight="900" fill="#111">Lo que sabe y no puede decir</text>
+          <text x="122" y="294" font-size="13" fill="#111">Conocimiento tácito, y más abajo lo latente: lo que ni ella sabe todavía que quiere.</text>
+          <text x="122" y="314" font-size="13" fill="#111">No sale preguntando ni mirando. Sale cuando construye algo y explica lo que hizo.</text>
+          <text x="122" y="334" font-size="13" fill="#444">Es el nivel más caro de alcanzar y donde suelen estar las oportunidades.</text>
+        </g>
+        <text x="450" y="400" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" fill="#6f6f6f">Sanders y Stappers, Convivial Toolbox, 2012. Ninguno de los tres niveles se consigue con el método del otro.</text>
+      </svg>
+      <div class="diagram-mobile">
+        <p class="dm-label">De la superficie a la profundidad</p>
+        <div class="dm-box neutral"><strong>Lo que dice</strong><em>explícito · se consigue preguntando</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box neutral"><strong>Lo que hace</strong><em>observable · se consigue mirando en contexto</em></div>
+        <span class="dm-arrow">↓</span>
+        <div class="dm-box accent"><strong>Lo que sabe y no puede decir</strong><em>tácito y latente · sale cuando construye algo y lo explica</em></div>
+        <p class="dm-note">Sanders y Stappers, 2012. Ninguno se consigue con el método del otro.</p>
+      </div>
+    </div>
+
+    <div class="slide slide--par">
+      <p class="compuesto-titulo">Preguntar · dos preguntas que parecen la misma</p>
+      <div class="par">
+        <div class="par-col a">
+          <p class="par-encabezado">«¿Usarías esto?»</p>
+          <p class="par-cuerpo">Pide una <strong>predicción</strong> sobre algo que no ha pasado. La respuesta describe a la persona que a uno le gustaría ser, y no se puede investigar.</p>
+        </div>
+        <div class="par-col b">
+          <p class="par-encabezado">«Cuéntame la última vez que…»</p>
+          <p class="par-cuerpo">Pide un <strong>recuerdo</strong> con fecha, lugar y desenlace. Eso sí se puede seguir preguntando: qué hizo después, a quién llamó, cuánto se demoró.</p>
+        </div>
+      </div>
+      <p class="compuesto-pie">La diferencia no es de cortesía: una produce opinión y la otra produce algo que se puede investigar.</p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Observar · cuando lo que dice y lo que hace no coinciden</p>
+      <p class="slide-concept-body">
+        Va a pasar. Alguien dice que siempre revisa el total antes de pagar, y uno lo mira
+        pagar sin revisar nada.<br><br>
+        La lectura fácil es que la persona mintió. Casi nunca es eso. Una contradicción
+        entre lo que alguien dice y lo que hace es <strong>una pregunta nueva</strong>: qué
+        había en esa situación que no había en su recuerdo, qué la apuró, qué daba por
+        resuelto. Ahí suele estar lo interesante.
+      </p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">Sesgo de confirmación</p>
+      <p class="slide-concept-body">
+        La trampa más común de la investigación no es preguntar mal. Es <strong>ir a buscar
+        que nos den la razón</strong>: hacer las preguntas que confirman lo que ya
+        decidimos y descartar como caso raro lo que no encaja.<br><br>
+        No investigamos para demostrar que nuestra idea era correcta. Investigamos para
+        averiguar qué tan buena era nuestra hipótesis — y una hipótesis que no puede
+        salir mal no estaba diciendo nada.
+      </p>
+    </div>
+
+    <!-- ══════════ CIERRE ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-theme">Entonces</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">No podemos asumir cómo piensa una persona</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">No podemos apoyarnos siempre en los ojos, que es donde viven todas las convenciones que ya sabemos leer</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Y no podemos asumir que cambiar el canal solo cambia los controles</p>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Cada vez que elegimos un canal, estamos decidiendo <span class="hl">qué relación es posible</span></p>
+    </div>
+
+    <div class="slide slide--section" style="background: #111;">
+      <p class="tema-central">¿Qué tipos de relación podemos crear entre una persona y un sistema?</p>
+      <p class="tema-sub">Esa es la clase que viene.</p>
+    </div>
+
+    <!-- ══════════ PARA LA PRÓXIMA · TAREA ══════════ -->
+
+    <div class="slide slide--section" style="background: #eeff41;">
+      <p class="section-kicker">Para la próxima</p>
+      <p class="section-theme">Tres experiencias interactivas</p>
+    </div>
+
+    <div class="slide">
+      <p class="slide-title">Un videojuego. Una instalación interactiva. Una interfaz cotidiana</p>
+    </div>
+
+    <div class="slide slide--preguntas-grandes">
+      <p class="pg-titulo">Siete preguntas para cada una</p>
+      <ul class="pg pg--compacta">
+        <li>¿Qué puede hacer la persona?</li>
+        <li>¿Cómo descubre qué puede hacer?</li>
+        <li>¿Qué tiene que recordar?</li>
+        <li>¿Cómo responde el sistema?</li>
+        <li>¿Cómo sabe que algo ocurrió?</li>
+        <li>¿Qué pasa si se equivoca?</li>
+        <li>¿Qué relación propone?</li>
+      </ul>
+    </div>
+
+    <div class="slide slide--conclusion">
+      <p class="slide-title">Y <span class="hl">ninguna propuesta de mejora</span>. Primero aprendemos a observar y describir modelos de interacción que ya existen</p>
+    </div>
+
+    <div class="slide slide--conclusion" style="gap: 1.5rem;">
+      <p class="slide-title">La consigna completa está acá</p>
+      <img data-src="assets/qr-tres-experiencias.svg" class="qr" alt="Código QR hacia la consigna de la tarea">
+      <a class="slide-link" href="https://catedra.dejesumensaje.com/pensamiento-sensorial/tres-experiencias" target="_blank" rel="noopener">catedra.dejesumensaje.com/pensamiento-sensorial/tres-experiencias</a>
+    </div>
+
+    <!-- ══════════ REFERENTES ══════════ -->
+
+    <div class="slide">
+      <p class="refs-title">Referentes</p>
+      <ul class="refs-list">
+        <li>Norman, D. A. <em>The Design of Everyday Things</em> (1988; ed. rev., 2013).
+          <span class="nota">Modelo conceptual, modelo mental e imagen del sistema.</span></li>
+        <li>Bolt, R. A. «Put-That-There: Voice and Gesture at the Graphics Interface», SIGGRAPH (1980).
+          <span class="nota">El experimento que fundó la investigación en interacción multimodal.</span></li>
+        <li>Oviatt, S. «Ten Myths of Multimodal Interaction», <em>Communications of the ACM</em> 42(11) (1999).
+          <span class="nota">Desmonta el supuesto de que los modos se combinan repitiendo el mismo contenido.</span></li>
+        <li>Saffer, D. <em>Designing Gestural Interfaces</em> (2008) · Norman, D. A. y Nielsen, J. «Gestural Interfaces: A Step Backward in Usability», <em>Interactions</em> 17(5) (2010).
+          <span class="nota">La descubribilidad como problema estructural del gesto.</span></li>
+        <li>Pearl, C. <em>Designing Voice User Interfaces</em> (2016).
+          <span class="nota">Memoria, secuencia, ambigüedad y feedback en un canal que no persiste.</span></li>
+        <li>Sanders, E. B.-N. y Stappers, P. J. <em>Convivial Toolbox</em> (2012).
+          <span class="nota">Conocimiento explícito, observable, tácito y latente.</span></li>
+        <li>Documentación de Apple: doble toque y giro de muñeca en Apple Watch, gestos de cabeza en AirPods.
+          <span class="nota">Las capacidades del ejercicio se verificaron en support.apple.com antes de publicarse.</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-hint">← →</div>
+  <div class="nav-hint-touch">desliza o toca para continuar</div>
+  <nav class="deck-nav" aria-label="Navegación de la presentación">
+    <button class="deck-nav-toggle" aria-expanded="false">Secciones ↑</button>
+    <ul class="deck-nav-menu"></ul>
+  </nav>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <script>
+    let current = 0;
+    let lastShowTime = 0;
+    const slides = [...document.querySelectorAll('.slide')];
+    const progressFill = document.getElementById('progressFill');
+
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', () => {
+        const d = document.createElement('div');
+        d.className = 'ph';
+        d.textContent = img.getAttribute('alt') || 'Material pendiente';
+        img.replaceWith(d);
+      }, { once: true });
+    });
+
+    // Los videos se montan solo en la diapositiva activa: así el deck no abre
+    // dos reproductores de YouTube al arrancar, y sobre todo, al pasar de
+    // diapositiva el audio se corta en vez de seguir sonando de fondo.
+    function montarMedios(activa) {
+      document.querySelectorAll('iframe[data-src]').forEach(f => {
+        if (f.closest('.slide') === activa) {
+          if (!f.src) f.src = f.dataset.src;
+        } else if (f.src) {
+          f.removeAttribute('src');
+        }
+      });
+      document.querySelectorAll('video').forEach(v => {
+        if (v.closest('.slide') !== activa && !v.paused) v.pause();
+      });
+    }
+
+    function loadImages(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('img[data-src]').forEach(img => {
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+      });
+    }
+
+    function show(n) {
+      const now = performance.now();
+      const fastNav = (now - lastShowTime) < 180;
+      lastShowTime = now;
+
+      const prevActive = slides[current];
+      if (prevActive) prevActive.classList.remove('active', 'no-anim');
+
+      current = (n + slides.length) % slides.length;
+      const next = slides[current];
+
+      if (fastNav) {
+        next.classList.add('no-anim');
+      } else {
+        void next.offsetWidth;
+      }
+      next.classList.add('active');
+      // Un slide que se dejó desplazado en el celular no debe reaparecer a media altura.
+      next.scrollTop = 0;
+
+      if (progressFill) {
+        progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+      }
+
+      loadImages(next);
+      loadImages(slides[(current + 1) % slides.length]);
+      montarMedios(next);
+    }
+
+    document.addEventListener('keydown', e => {
+      // Si el foco está en un control de la tira de componentes, las teclas son
+      // para él: escribir en el campo o mover el slider con flechas no puede
+      // cambiar de diapositiva.
+      const t = e.target;
+      if (t && (t.matches('input, textarea, select') || t.isContentEditable)) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); show(current - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+
+    document.addEventListener('click', e => {
+      if (e.target.closest('.deck-nav, a, button, .demo, video, iframe')) return;
+      show(current + 1);
+    });
+
+    document.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', e => e.stopPropagation());
+    });
+
+    let touchStartX = 0, touchStartY = 0, touchMoved = false;
+    document.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchMoved = false;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+      const target = e.target;
+      if (target.closest('a') || target.closest('.deck-nav')) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      // Desplazar un slide largo con el dedo no puede contar como pasar de slide.
+      if (touchMoved && Math.abs(dy) > Math.abs(dx)) return;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        e.preventDefault();
+        if (dx < 0) show(current + 1); else show(current - 1);
+      }
+    }, { passive: false });
+
+    const deckNav = document.querySelector('.deck-nav');
+    const navToggle = document.querySelector('.deck-nav-toggle');
+    const navMenu = document.querySelector('.deck-nav-menu');
+
+    slides.forEach((slide, index) => {
+      const label = slide.querySelector('.section-theme, .tema-central');
+      if (!label || !navMenu) return;
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.dataset.goto = String(index);
+      const clone = label.cloneNode(true);
+      clone.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+      const kicker = slide.querySelector('.section-kicker');
+      const texto = clone.textContent.replace(/\s+/g, ' ').trim();
+      const crudo = kicker ? kicker.textContent.trim() + ' · ' + texto : texto;
+      button.textContent = crudo.length > 52 ? crudo.slice(0, 51).trimEnd() + '…' : crudo;
+      item.appendChild(button);
+      navMenu.appendChild(item);
+    });
+
+    navToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = deckNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open);
+    });
+
+    document.querySelectorAll('.deck-nav-menu button').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        show(parseInt(b.dataset.goto, 10));
+        deckNav.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', () => deckNav.classList.remove('open'));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') deckNav.classList.remove('open');
+    });
+
+    show(0);
+  </script>
+</body>
+</html>
