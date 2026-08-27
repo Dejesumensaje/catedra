@@ -31,34 +31,35 @@ preguntas de cada uno — nunca después.
 
 ## Los tres videos
 
-Cada uno de los tres casos de «¿Dónde está la interfaz aquí?» tiene ahora su
-video, en su propia diapositiva, después de la oración que lo presenta y antes
-de las preguntas.
+Cada uno de los tres casos de «¿Dónde está la interfaz aquí?» tiene su video, en
+su propia diapositiva, después de la oración que lo presenta y antes de las
+preguntas. Los tres van embebidos de YouTube, y los tres desde una fuente
+responsable de la obra:
 
-| Caso | Fuente | Cómo va montado |
-|---|---|---|
-| *Body Movies* | mp4 del sitio de Lozano-Hemmer | `<video>` con dos `<source>` |
-| Espejos de Rozin | WIRED, canal oficial | iframe de YouTube |
-| *Chants of Sennaar* | Focus Entertainment, el editor | iframe de YouTube |
+| Caso | Canal |
+|---|---|
+| *Body Movies* | V2_ Lab for the Unstable Media, donde la obra se estrenó en 2001 |
+| Espejos de Rozin | WIRED |
+| *Chants of Sennaar* | Focus Entertainment, el editor del juego |
 
-**Tres cosas que hay que saber antes de proyectar:**
+**Dos cosas que hay que saber antes de proyectar:**
 
-1. **Los embebidos de YouTube solo funcionan si el deck se sirve.** Abierto como
-   archivo (doble clic en `index.html`) YouTube devuelve «Error 153». Para la
-   clase: `npm run preview` y abrirlo por `http://localhost:…`, o usarlo desde el
-   sitio publicado. El enlace de crédito debajo de cada video es el respaldo: si
-   el iframe no carga, un clic abre el video en otra pestaña.
-2. **El video de Body Movies se transmite desde el servidor del artista.** Si la
-   red del salón no es de fiar, basta con dejar el archivo en
-   `assets/bodymovies-lisboa.mp4`: el `<video>` lo prefiere y solo cae a la URL
-   remota si no existe. Está en `.gitignore` a propósito — es del artista, se usa
-   en clase y no se republica desde el sitio.
-3. **El audio se corta solo al cambiar de diapositiva.** El iframe se monta al
-   entrar y se desmonta al salir, y los `<video>` se pausan. Sin eso, un tráiler
-   sigue sonando encima del bloque siguiente.
+1. **Los embebidos solo funcionan si el deck se sirve.** Abierto como archivo
+   (doble clic en `index.html`) YouTube devuelve «Error 153». Para la clase: el
+   sitio publicado, o `npm run preview`. El enlace de crédito debajo de cada
+   video es el respaldo: si el iframe no carga, un clic lo abre en otra pestaña.
+2. **El audio se corta solo al cambiar de diapositiva.** El iframe se monta al
+   entrar y se desmonta al salir. Sin eso, un tráiler sigue sonando encima del
+   bloque siguiente.
 
-Los iframes van con `data-src`, no con `src`: así el deck no abre dos
-reproductores de YouTube al arrancar.
+Los iframes van con `data-src`, no con `src`: así el deck no abre tres
+reproductores al arrancar.
+
+> Hubo una versión anterior que servía *Body Movies* como `<video>` desde el mp4
+> del sitio del artista. El servidor respondía y el archivo era H.264 correcto,
+> pero **no reproducía en el salón**. Si algún día se vuelve a intentar un mp4
+> remoto, hay que darle play en el navegador real antes de confiar en él: que el
+> servidor responda no es que el video se vea.
 
 ## Los QR — dos en el deck
 

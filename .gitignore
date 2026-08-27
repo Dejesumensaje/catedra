@@ -24,7 +24,3 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-
-# Copia local del video de Body Movies para proyectar sin internet.
-# Es del artista: se usa en clase, no se republica desde el sitio.
-public/presentaciones/ps3/s04/assets/bodymovies-lisboa.mp4
