@@ -165,10 +165,10 @@
     /* Referencias */
     .refs-title { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 900; color: #444; margin-bottom: 2rem; }
     .refs-list {
-      list-style: none; text-align: left; max-width: 60ch;
-      font-size: clamp(0.95rem, 1.9vw, 1.2rem); font-weight: 400; color: #555; line-height: 1.7;
+      list-style: none; text-align: left; max-width: 72ch;
+      font-size: clamp(0.85rem, 1.5vw, 1rem); font-weight: 400; color: #555; line-height: 1.5;
     }
-    .refs-list li { margin-bottom: 0.9rem; }
+    .refs-list li { margin-bottom: 0.65rem; }
     .refs-list em { font-style: italic; }
     .refs-list li .nota { display: block; font-size: 0.86em; color: #6f6f6f; }
     .refs-list li.src { color: #6f6f6f; font-size: 0.92em; margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid #e5e5e5; }
@@ -1193,6 +1193,47 @@
       </div>
     </div>
 
+    <div class="slide">
+      <p class="slide-title">Estas tres familias tienen nombre, y los van a encontrar en todas partes</p>
+    </div>
+
+    <div class="slide slide--rejilla">
+      <p class="compuesto-titulo">Tres siglas que conviene saber leer</p>
+      <div class="rejilla rejilla--3">
+        <div class="celda">
+          <span class="rotulo">GUI</span>
+          <p class="celda-titulo">Graphical User Interface</p>
+          <p class="celda-cuerpo">Interfaz gráfica de usuario. Se opera mirando y señalando una superficie: ventanas, íconos, listas, botones. Es la familia con más convenciones ya aprendidas, y por eso la más fácil de dar por obvia.</p>
+        </div>
+        <div class="celda">
+          <span class="rotulo">VUI</span>
+          <p class="celda-titulo">Voice User Interface</p>
+          <p class="celda-cuerpo">Interfaz de usuario por voz. Se opera hablando, y el sistema responde hablando. Hereda las reglas de una conversación: turnos, confirmación, y un hilo que alguien tiene que sostener.<span class="src"> Pearl, 2016.</span></p>
+        </div>
+        <div class="celda acento">
+          <span class="rotulo">NUI</span>
+          <p class="celda-titulo">Natural User Interface</p>
+          <p class="celda-cuerpo">Interfaz natural de usuario. El nombre que la industria le puso a operar con el cuerpo: tocar, arrastrar, gesticular, moverse, mirar.</p>
+        </div>
+      </div>
+      <p class="compuesto-pie">Las dos primeras describen un canal. La tercera describe una promesa — y por eso está marcada.</p>
+    </div>
+
+    <div class="slide slide--parrafo">
+      <p class="slide-concept-title">«Natural» es una palabra de marketing, no una propiedad</p>
+      <p class="slide-concept-body">
+        Norman lo escribió el mismo año en que la industria llenaba todo de gestos:
+        ningún gesto es natural. Pellizcar para achicar, deslizar para pasar, dos dedos
+        para volver atrás — <strong>todos hubo que aprenderlos</strong>, igual que hubo
+        que aprender que un rectángulo con relieve se presiona.<br><br>
+        La diferencia es que la GUI dejó sus convenciones a la vista y la NUI no: un gesto
+        que nadie enseñó, y que no deja rastro de que existe, es más difícil de descubrir
+        que un botón feo. Cambiar de canal no exime de lo de siempre — que la persona
+        pueda saber qué es posible, y qué pasó cuando actuó.
+      </p>
+      <p class="slide-fuente">Norman, D. A. «Natural user interfaces are not natural», <em>Interactions</em> 17(3), 2010.</p>
+    </div>
+
     <div class="slide slide--parrafo">
       <p class="slide-concept-title">Voz · lo que aparece cuando el canal no persiste</p>
       <p class="slide-concept-body">
@@ -1794,8 +1835,8 @@
           <span class="nota">El experimento que fundó la investigación en interacción multimodal.</span></li>
         <li>Oviatt, S. «Ten Myths of Multimodal Interaction», <em>Communications of the ACM</em> 42(11) (1999).
           <span class="nota">Desmonta el supuesto de que los modos se combinan repitiendo el mismo contenido.</span></li>
-        <li>Saffer, D. <em>Designing Gestural Interfaces</em> (2008) · Norman, D. A. y Nielsen, J. «Gestural Interfaces: A Step Backward in Usability», <em>Interactions</em> 17(5) (2010).
-          <span class="nota">La descubribilidad como problema estructural del gesto.</span></li>
+        <li>Saffer, D. <em>Designing Gestural Interfaces</em> (2008) · Norman, D. A. «Natural user interfaces are not natural», <em>Interactions</em> 17(3) (2010) · Norman, D. A. y Nielsen, J. «Gestural Interfaces: A Step Backward in Usability», <em>Interactions</em> 17(5) (2010).
+          <span class="nota">De dónde sale la sigla NUI, por qué «natural» promete más de lo que cumple, y la descubribilidad como problema estructural del gesto.</span></li>
         <li>Pearl, C. <em>Designing Voice User Interfaces</em> (2016).
           <span class="nota">Memoria, secuencia, ambigüedad y feedback en un canal que no persiste.</span></li>
         <li>Sanders, E. B.-N. y Stappers, P. J. <em>Convivial Toolbox</em> (2012).
