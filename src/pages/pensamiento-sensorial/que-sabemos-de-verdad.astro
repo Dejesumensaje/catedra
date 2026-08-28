@@ -1,16 +1,12 @@
 ---
-// Primera vuelta de investigación. Cierra el arco de la sesión 4: inventamos una
-// persona → descubrimos que era una hipótesis → la ponemos a prueba con alguien real.
-//
-// La sesión 4 no alcanzó a hacer esta actividad en clase: se anunció y pasó a ser
-// tarea, recortada a sus tres primeros pasos —tipo de experiencia y público, cinco
-// hipótesis, una sola entrevista—. El paso 4, la ficha de modelo mental, se construye
-// en clase en la sesión 5 con las notas en la mano: es un formulario, y un formulario
-// se llena mejor mirándolo y con alguien al lado que la primera vez que se ve.
-// Por eso la ficha se muestra acá pero no se pide.
-//
-// La continuación de «dos o tres personas más» salió de esta semana: era una segunda
-// ronda de algo que todavía no había tenido la primera. Vuelve cuando la haya tenido.
+// Tarea de la sesión 4. La clase se evacuó antes de la actividad de cierre, así
+// que la investigación quedó completa como tarea: una persona real, una ficha de
+// modelo mental, y un correo por grupo antes de la próxima sesión.
+// Cierra el arco de la clase: inventamos una persona → descubrimos que era una
+// hipótesis → la ponemos a prueba con alguien real. El artefacto no es una
+// «persona» de manual —sin foto, sin edad, sin hobbies— sino una ficha de modelo
+// mental que obliga a separar lo dicho, lo observado y lo inferido, y que deja
+// escritas las preguntas que siguen abiertas.
 // La investigación queda abierta a propósito: es la materia prima de la sesión 5.
 import Base from '../../layouts/Base.astro';
 
@@ -72,36 +68,18 @@ const ficha = [
   { campo: 'Para esta persona, interactuar parece significar…', cuantas: '1 frase', nota: 'Una sola. Y sigue siendo una hipótesis: va a cambiar con las próximas entrevistas.' },
 ];
 
-// Media hora de trabajo, no una semana. Está acá para que nadie lo aplace por
-// creerlo más grande de lo que es.
 const tiempos = [
-  { min: '5 min', que: 'Decidir el tipo de experiencia y el público', quien: 'paso 1 · el grupo' },
-  { min: '10 min', que: 'Escribir las cinco hipótesis', quien: 'paso 2 · el grupo' },
-  { min: '12 min', que: 'La entrevista', quien: 'paso 3 · dos del grupo' },
-  { min: '10 min', que: 'Pasar en limpio las notas', quien: 'después, el mismo día' },
+  { min: '5 min', que: 'Decidir el tipo de experiencia y el público', quien: 'paso 1' },
+  { min: '5 min', que: 'Escribir las cinco hipótesis', quien: 'paso 2' },
+  { min: '12 min', que: 'La entrevista', quien: 'paso 3' },
+  { min: '10 min', que: 'Construir la ficha', quien: 'paso 4' },
 ];
 
-const entrega = [
-  {
-    letra: 'A',
-    titulo: 'El tipo de experiencia y el público',
-    detalle: 'Tres o cuatro líneas. A quién le están hablando, no qué van a hacer.',
-  },
-  {
-    letra: 'B',
-    titulo: 'Las cinco hipótesis, tal como las escribieron antes de la entrevista',
-    detalle: 'Sin corregirlas después. Si una resultó falsa, eso es el hallazgo — no un error que haya que tapar.',
-  },
-  {
-    letra: 'C',
-    titulo: 'Las notas de la entrevista',
-    detalle: 'Con las tres columnas separadas: lo que dijo, lo que notaron, lo que infirieron. Las comillas de ella son parte de la entrega.',
-  },
-  {
-    letra: 'D',
-    titulo: 'Una línea sobre quién es esa persona',
-    detalle: 'Por qué encaja con el público que describieron, y si pueden volver a hablar con ella. No manden su nombre completo ni sus datos de contacto: eso es de ella, no del trabajo.',
-  },
+const tarea = [
+  'Registrar experiencias concretas, no opiniones sobre lo que ustedes quieren hacer.',
+  'Separar en las notas lo que dijo, lo que vieron y lo que infirieron.',
+  'Volver a las cinco hipótesis del paso 2 y marcar cuáles siguen en pie.',
+  'Dejar escritas las preguntas nuevas que aparecieron.',
 ];
 
 const noSePide = [
@@ -115,21 +93,21 @@ const listo = [
   'Hablaron con una persona que existe, que pueden volver a contactar, y que se parece al público que describieron en el paso 1.',
   'Las cinco hipótesis quedaron escritas antes de la entrevista, no después.',
   'En las notas se distingue lo que dijo de lo que ustedes interpretaron.',
-  'Hay al menos una frase textual de ella que les sorprendió.',
-  'Pueden decir qué le pasó a cada una de las cinco hipótesis: se confirmó, cambió, o resultó falsa. Si las cinco siguen intactas, vale la pena revisar si preguntaron por la categoría en vez de por ella.',
+  'La ficha tiene al menos dos preguntas abiertas. Si no tiene ninguna, no investigaron: confirmaron.',
+  'Al menos una de las cinco hipótesis iniciales cambió o resultó falsa.',
 ];
 ---
 
 <Base
   titulo="¿Qué sabemos de verdad? · Tarea · Pensamiento Sensorial 3.0"
-  descripcion="Tarea de la sesión 4: pasar de un público imaginado a una primera evidencia. Cinco hipótesis escritas antes, y una entrevista de doce minutos con alguien que existe."
+  descripcion="Tarea de la sesión 4: pasar de una persona imaginada a una primera comprensión basada en evidencia. Cinco hipótesis, una entrevista y una ficha de modelo mental."
   volverHref="/pensamiento-sensorial/s04"
   volverTexto="Sesión 4 · Preguntar y percibir"
 >
   <section class="hero-clase">
-    <span class="mono sube sube-1">Tarea · Sesión 4 · En grupos · Para la sesión 5</span>
+    <span class="mono sube sube-1">Tarea · Sesión 4 · En grupos</span>
     <h1 class="sube sube-2">¿Qué sabemos de verdad?</h1>
-    <p class="lede sube-3">Diseñamos para una persona que inventamos. Ahora hablamos con una que existe.</p>
+    <p class="lede sube-3">Hasta ahora hemos diseñado para personas que inventamos. Esta vez hablan con una que existe.</p>
   </section>
 
   <section class="bloque">
@@ -149,12 +127,6 @@ const listo = [
         Al final no van a tener «la verdad sobre el usuario». Van a tener algo mejor:
         unas cuantas suposiciones reemplazadas por evidencia, y unas preguntas nuevas
         que antes no existían.
-      </p>
-      <p class="encargo-nota">
-        <strong>Es una primera vuelta, no la investigación completa.</strong> Tres pasos y
-        una sola entrevista: media hora de trabajo bien hecha vale más que tres
-        conversaciones apuradas. La ficha de modelo mental —el paso 4— la armamos en
-        clase, en la sesión 5, con sus notas en la mano.
       </p>
     </div>
   </section>
@@ -297,15 +269,7 @@ const listo = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Paso 4 · La ficha — esa la armamos en clase</h2>
-    <div class="condicion">
-      <p class="condicion-frase">No la hagan en casa.</p>
-      <p>
-        Lleguen a la sesión 5 con <strong>las notas</strong>, y la construimos ahí. Es un
-        formulario, y la primera vez que se llena uno conviene tener a alguien al lado.
-        Va acá para que sepan hacia dónde apuntan las notas — no para entregarla.
-      </p>
-    </div>
+    <h2 class="mono">Paso 4 · La ficha</h2>
     <p>
       Sin foto, sin edad, sin hobbies, sin frase simpática. No es una ficha de personaje:
       es lo que entendieron de <strong>cómo esa persona se relaciona con las cosas</strong>.
@@ -324,10 +288,6 @@ const listo = [
 
   <section class="bloque">
     <h2 class="mono">Los tiempos</h2>
-    <p>
-      Media hora larga, no una semana. Está acá para que nadie lo aplace creyéndolo más
-      grande de lo que es.
-    </p>
     <table class="tiempos">
       <tbody>
         {tiempos.map((t) => (
@@ -341,31 +301,16 @@ const listo = [
   </section>
 
   <section class="bloque">
-    <h2 class="mono">Qué entregan</h2>
-    <div class="encargo">
-      <p class="encargo-frase">Un solo documento, por Classroom, antes de la sesión 5.</p>
-      <p class="encargo-nota">
-        No tiene que estar bonito. Tiene que estar <strong>fechado y separado</strong>: se
-        distingue lo que escribieron antes de hablar con ella de lo que escribieron
-        después.
-      </p>
-    </div>
-    <ol class="pasos" role="list">
-      {entrega.map((e) => (
-        <li class="paso">
-          <span class="paso-num mono">{e.letra}</span>
-          <div>
-            <h3 class="paso-titulo">{e.titulo}</h3>
-            <p class="paso-cuerpo">{e.detalle}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
-    <p class="remate">
-      Y una advertencia sobre la segunda ronda: <strong>todavía no va</strong>. Hablar con
-      dos o tres personas más era la continuación de esto, y esto apenas empieza. Se
-      retoma cuando la primera vuelta esté hecha.
+    <h2 class="mono">La entrega · un correo por grupo</h2>
+    <p>
+      La investigación se hace completa por fuera de clase: los cuatro pasos, con
+      <strong>una persona real</strong>. Lo que se entrega es la ficha del paso 4, y la
+      entrega es <strong>un solo correo por grupo, antes de la próxima sesión</strong>.
+      Esa ficha es el material con el que vamos a trabajar en la sesión 5.
     </p>
+    <ul class="listo" role="list">
+      {tarea.map((t) => <li>{t}</li>)}
+    </ul>
     <div class="nopide">
       <p class="nopide-frase">Todavía no se pide nada de esto</p>
       <ul role="list">{noSePide.map((n) => <li>{n}</li>)}</ul>
@@ -390,8 +335,8 @@ const listo = [
       </p>
       <p>
         Investigar no elimina la incertidumbre: la hace visible. Y con una incertidumbre
-        visible ya se puede trabajar — que es exactamente lo que vamos a hacer en la
-        sesión 5, empezando por convertir esas notas en una ficha.
+        visible ya se puede trabajar — que es exactamente lo que vamos a hacer en las dos
+        clases que vienen.
       </p>
     </div>
   </section>
