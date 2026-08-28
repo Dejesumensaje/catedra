@@ -1,4 +1,12 @@
 ---
+// NO VIGENTE. Esta tarea no se asignó: la sesión 4 no alcanzó a ejecutarse completa
+// y, en vez de mandar tres ejemplos distintos por estudiante, el profesor lleva los
+// referentes a la sesión 5 para leerlos en clase sobre casos comunes. Se gana
+// comparabilidad y se pierde variedad; si hace falta la variedad, la consigna está
+// escrita y solo hay que quitar el aviso y volver a enlazarla desde el `.mdx`.
+// La página se deja publicada como material de consulta y como banco de referentes.
+//
+// Lo que decía cuando estaba vigente:
 // Tarea de la sesión 4, para la sesión 5: tres experiencias interactivas
 // registradas con siete preguntas. Son el mismo instrumento con el que la
 // sesión 5 va a leer interacciones: se practica solo en la casa y llega usado
@@ -131,15 +139,33 @@ const banco = [
 ---
 
 <Base
-  titulo="Tres experiencias interactivas · Tarea · Pensamiento Sensorial 3.0"
-  descripcion="Tarea de la sesión 4: buscar tres experiencias interactivas —un videojuego, una instalación y una interfaz cotidiana— y registrarlas con las siete preguntas. No se pide diseñar nada."
+  titulo="Tres experiencias interactivas · Consigna no vigente · Pensamiento Sensorial 3.0"
+  descripcion="Consigna no vigente. Se conserva publicada como material de consulta: las siete preguntas con las que el curso lee interacciones, y un banco de referentes."
   volverHref="/pensamiento-sensorial/s04"
   volverTexto="Sesión 4 · Preguntar y percibir"
 >
   <section class="hero-clase">
-    <span class="mono sube sube-1">Tarea · Sesión 4 · Individual · Para la próxima clase</span>
+    <span class="mono sube sube-1">Consigna no vigente · Sesión 4</span>
     <h1 class="sube sube-2">Tres experiencias interactivas</h1>
     <p class="lede sube-3">Un videojuego, una instalación, una cosa cotidiana. Las mismas siete preguntas para las tres.</p>
+  </section>
+
+  <section class="bloque">
+    <div class="aviso" role="note">
+      <p class="aviso-titulo">Esta tarea no está asignada.</p>
+      <p>
+        La sesión 4 no alcanzó a ejecutarse completa, y en su lugar quedaron dos entregas:
+        terminar <a href="/pensamiento-sensorial/pedir-sin-mirar">«Pedir sin mirar»</a> y
+        dar la <a href="/pensamiento-sensorial/que-sabemos-de-verdad">primera vuelta de la
+        investigación</a>. Los referentes para leer modelos de interacción los lleva el
+        profesor a la sesión 5, y se trabajan en clase.
+      </p>
+      <p>
+        La página se queda publicada porque lo que hay acá sirve igual: las siete preguntas
+        son el instrumento con el que este curso lee interacciones, y el banco del final es
+        una lista de dónde mirar. <strong>Léanlo si quieren. No hay que entregar nada.</strong>
+      </p>
+    </div>
   </section>
 
   <section class="bloque">
@@ -302,6 +328,21 @@ const banco = [
 
 <style>
   /* ── el encargo ───────────────────────────────── */
+  /* ── aviso de consigna no vigente ─────────────── */
+  .aviso {
+    border: 2px solid var(--tinta); border-left-width: 10px;
+    border-left-color: var(--amarillo);
+    padding: 1.4rem 1.6rem; max-width: 46rem;
+  }
+
+  .aviso-titulo {
+    font-family: var(--sans); font-weight: 900; font-size: 1.2rem;
+    color: var(--tinta); max-width: none; margin-bottom: 0.7rem;
+  }
+
+  .aviso p { max-width: none; font-size: 0.98rem; }
+  .aviso p:last-child { margin-bottom: 0; }
+
   .encargo {
     border: 2px solid var(--tinta);
     padding: 1.75rem 2rem;
