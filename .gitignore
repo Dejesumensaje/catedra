@@ -27,3 +27,5 @@ pnpm-debug.log*
 
 # artefactos de editor
 *.swp
+# notas personales del docente
+outlines/*fichas-docente*
