@@ -1,6 +1,26 @@
 ---
 import Base from '../../layouts/Base.astro';
 
+const temas = [
+  'las redes sociales', 'la memoria', 'el cambio climático', 'la soledad', 'la inteligencia artificial',
+];
+
+const disparadores = [
+  'Me sorprende que…',
+  'Me cuesta entender por qué…',
+  'Me incomoda que…',
+  'Me interesa qué ocurre cuando…',
+  'Hay una contradicción entre… y…',
+  'Parece que queremos…, pero al mismo tiempo…',
+  'Normalmente pensamos que…, pero…',
+];
+
+const condiciones = [
+  'elegir', 'esperar', 'perder algo', 'depender de alguien', 'equivocarse',
+  'confiar', 'ocultar algo', 'recordar', 'competir', 'coordinarse',
+  'renunciar a algo', 'descubrir algo demasiado tarde',
+];
+
 const verbos = [
   'esperar', 'elegir', 'recordar', 'perder', 'confiar', 'coordinarse',
   'obedecer', 'buscar', 'repetir', 'escuchar', 'ceder', 'esconderse',
@@ -38,18 +58,43 @@ const alertas = [
     <h2 class="mono">El punto de partida</h2>
     <div class="encargo">
       <p class="encargo-frase">
-        Partan directamente de la tensión que encontraron y descubran
-        <strong>qué tendría que vivir o hacer una persona para explorarla</strong>.
+        No nos digan todavía qué quieren hacer. Dígannos
+        <strong>qué quieren poner a alguien a vivir, y por qué</strong>.
       </p>
       <p>
         Todavía no diseñen el proyecto ni elijan una tecnología. Esta tarea produce una
         hipótesis de experiencia: una decisión provisional que se puede discutir y poner a prueba.
+        El recorrido es: tema → inquietud → qué tendría que vivir alguien → verbo → tres formas
+        posibles → hipótesis.
       </p>
     </div>
   </section>
 
   <section class="bloque paso">
     <span class="paso-n mono">01</span>
+    <div>
+      <h2>Del tema a la inquietud</h2>
+      <p>Un tema no es todavía una inquietud.</p>
+      <div class="temas" aria-label="Ejemplos de temas">
+        {temas.map((tema) => <span>{tema}</span>)}
+      </div>
+      <p>
+        Todos esos son temas. La inquietud aparece cuando encuentran dentro del tema algo que
+        les produce una pregunta, una contradicción, una incomodidad o una curiosidad.
+      </p>
+      <div class="frases">
+        <p>Escriban primero el tema de su proyecto en una frase corta.</p>
+        <p>Después completen, al menos, tres de estas frases:</p>
+        <ul class="disparadores" role="list">
+          {disparadores.map((frase) => <li>{frase}</li>)}
+        </ul>
+      </div>
+      <p class="remate">Elijan la frase que más ganas les dé de explorar, no la que parezca más importante.</p>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">02</span>
     <div>
       <h2>La inquietud</h2>
       <p>Completen una de estas frases sin mencionar todavía plataforma, tecnología o solución.</p>
@@ -61,7 +106,28 @@ const alertas = [
   </section>
 
   <section class="bloque paso">
-    <span class="paso-n mono">02</span>
+    <span class="paso-n mono">03</span>
+    <div>
+      <h2>Qué tendría que vivir alguien</h2>
+      <p>
+        No diseñen todavía. La pregunta no es «¿qué interfaz hacemos?» sino:
+      </p>
+      <div class="frases">
+        <p>Si alguien tuviera que <strong>vivir</strong> esta inquietud en lugar de que nosotros se la explicáramos, ¿qué tendría que pasarle?</p>
+      </div>
+      <p>¿Tendría que…?</p>
+      <div class="verbos" aria-label="Condiciones posibles">
+        {condiciones.map((condicion) => <span>{condicion}</span>)}
+      </div>
+      <p>
+        Esa respuesta es una condición experiencial. El verbo sale de ahí, no al revés:
+        no se trata de escoger una palabra bonita de una lista.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">04</span>
     <div>
       <h2>El verbo</h2>
       <p class="frase-principal">Para explorar esta inquietud queremos que quien participe tenga que <span>________________</span>.</p>
@@ -73,10 +139,13 @@ const alertas = [
   </section>
 
   <section class="bloque paso">
-    <span class="paso-n mono">03</span>
+    <span class="paso-n mono">05</span>
     <div>
       <h2>Tres posibilidades</h2>
-      <p>Imaginen tres experiencias radicalmente diferentes que permitan explorar la misma inquietud.</p>
+      <p>
+        ¿Cómo podrían hacer que eso ocurra? Imaginen tres experiencias radicalmente
+        diferentes que permitan explorar la misma inquietud.
+      </p>
       <p class="remate">Tres experiencias, no tres interfaces de la misma idea.</p>
       <ol class="posibilidades" role="list">
         {[1, 2, 3].map((n) => (
@@ -90,12 +159,13 @@ const alertas = [
       <p>
         Puede aparecer un videojuego, una web, una instalación o una experiencia
         física-digital, pero como consecuencia de la inquietud y del verbo.
+        La forma viene después del verbo.
       </p>
     </div>
   </section>
 
   <section class="bloque paso">
-    <span class="paso-n mono">04</span>
+    <span class="paso-n mono">06</span>
     <div>
       <h2>Elegir y argumentar</h2>
       <div class="hipotesis">
@@ -111,7 +181,7 @@ const alertas = [
   </section>
 
   <section class="bloque paso">
-    <span class="paso-n mono">05</span>
+    <span class="paso-n mono">07</span>
     <div>
       <h2>Prueba de fuego</h2>
       <p class="pregunta-fuego">¿Qué perdería el proyecto si fuera simplemente un video, un texto o una presentación?</p>
@@ -119,6 +189,99 @@ const alertas = [
         Si no pierde nada importante, todavía deben trabajar en qué aporta la interacción.
         La respuesta no puede ser solamente «sería menos inmersivo» o «sería menos interactivo».
       </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Tres ejemplos resueltos</h2>
+
+    <article class="ejemplo">
+      <h3><span class="mono">Ejemplo 1</span> Redes sociales y atención</h3>
+      <dl>
+        <dt>Tema</dt>
+        <dd>«Queremos trabajar sobre redes sociales y atención.» Todavía es enorme.</dd>
+        <dt>Escarbar</dt>
+        <dd>«Nos interesa que usamos el celular para descansar, pero muchas de las experiencias que encontramos allí nos piden seguir mirando.» Ahí apareció algo: una contradicción.</dd>
+        <dt>Inquietud</dt>
+        <dd>«Nos inquieta que busquemos descanso en experiencias que compiten constantemente por nuestra atención.» Todavía no sabemos si es web, videojuego o instalación.</dd>
+        <dt>Qué tendría que vivir alguien</dt>
+        <dd>Resistir. Esperar. Decidir cuándo detenerse. Ceder atención para avanzar. Ignorar estímulos.</dd>
+        <dt>Verbo · resistir</dt>
+        <dd>«Para explorar esta inquietud queremos que quien participe tenga que resistirse a hacer algo que la experiencia constantemente le invita a hacer.»</dd>
+        <dt>Tres formas posibles</dt>
+        <dd>
+          Una web que constantemente presenta nuevas posibilidades. Un juego donde actuar es
+          tentador pero tiene consecuencias. Una instalación donde estímulos intentan capturar
+          físicamente la atención.
+        </dd>
+      </dl>
+    </article>
+
+    <article class="ejemplo">
+      <h3><span class="mono">Ejemplo 2</span> Memoria familiar</h3>
+      <dl>
+        <dt>Tema</dt>
+        <dd>La memoria. Demasiado amplio. ¿Qué de la memoria? ¿Qué nos sorprende? ¿Dónde aparece una contradicción?</dd>
+        <dt>Escarbar</dt>
+        <dd>En una familia, varias personas recuerdan el mismo acontecimiento de maneras diferentes.</dd>
+        <dt>Inquietud</dt>
+        <dd>«Nos inquieta que construyamos nuestra historia a partir de recuerdos que pueden contradecirse entre sí.»</dd>
+        <dt>Qué tendría que vivir alguien</dt>
+        <dd>No «leer testimonios»: eso sería contenido. Elegir entre versiones incompatibles. Reconstruir algo con información incompleta. Dudar de algo que antes creía cierto.</dd>
+        <dt>Verbo · reconstruir</dt>
+        <dd>«Para explorar esta inquietud queremos que quien participe tenga que reconstruir una historia sin poder saber cuál versión es completamente cierta.»</dd>
+        <dt>Tres formas posibles</dt>
+        <dd>
+          Una web que navega testimonios contradictorios y construye su propia versión. Un juego
+          donde hay que tomar decisiones basándose en recuerdos que cambian. Una instalación donde
+          distintas partes de un espacio cuentan versiones incompatibles del mismo acontecimiento.
+        </dd>
+      </dl>
+      <p class="ejemplo-cierre">
+        Ninguna nació de «queremos hacer una web». Nacieron de:
+        memoria → contradicción → reconstruir → experiencia.
+      </p>
+    </article>
+
+    <article class="ejemplo">
+      <h3><span class="mono">Ejemplo 3</span> Privacidad digital</h3>
+      <dl>
+        <dt>Tema</dt>
+        <dd>Privacidad digital. Todavía enciclopédico.</dd>
+        <dt>Escarbar</dt>
+        <dd>«Nos preocupa que aceptemos entregar información personal para acceder rápidamente a servicios que queremos usar.»</dd>
+        <dt>Inquietud</dt>
+        <dd>«Nos inquieta que cedamos información sin saber realmente qué estamos entregando a cambio de comodidad.»</dd>
+        <dt>Qué tendría que vivir alguien</dt>
+        <dd>Ceder. Confiar. Aceptar. Intercambiar. Descubrir.</dd>
+        <dt>Verbo · ceder</dt>
+        <dd>«Para explorar esta inquietud queremos que la persona tenga que ceder algo para poder continuar sin conocer completamente las consecuencias.»</dd>
+        <dt>Tres formas posibles</dt>
+        <dd>
+          Una instalación que pide algo distinto en cada etapa. Una experiencia web donde avanzar
+          requiere entregar progresivamente información. Un juego donde las decisiones fáciles
+          implican renunciar a cosas que solo cobran importancia después.
+        </dd>
+      </dl>
+    </article>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Un contraejemplo</h2>
+    <div class="contra">
+      <div class="contra-no">
+        <span class="mono">Todavía no</span>
+        <p>«Queremos explorar la soledad mediante un videojuego donde el personaje camina solo por una ciudad.»</p>
+        <p>¿Por qué no? Porque ya saltó de tema a solución.</p>
+      </div>
+      <div class="contra-si">
+        <span class="mono">Más fértil</span>
+        <p><strong>Tema:</strong> la soledad.</p>
+        <p><strong>Inquietud:</strong> nos inquieta que podamos estar permanentemente conectados y aun así sentir que nadie está realmente disponible para nosotros.</p>
+        <p><strong>Queremos que la persona tenga que:</strong> intentar contactar con otros sin saber cuándo obtendrá respuesta.</p>
+        <p><strong>Entonces exploramos:</strong> esperar, insistir, abandonar, responder.</p>
+        <p>Ahora sí podemos preguntarnos si eso merece ser un juego, una web, una instalación o una experiencia colectiva.</p>
+      </div>
     </div>
   </section>
 
@@ -140,6 +303,9 @@ const alertas = [
       {alertas.map((alerta) => <li>{alerta}</li>)}
     </ul>
     <p class="cierre">
+      No nos digan todavía qué quieren hacer. Dígannos qué quieren poner a alguien a vivir y por qué.
+    </p>
+    <p>
       La forma debe poder defenderse por lo que hace vivir a quien participa respecto de
       la inquietud que están explorando.
     </p>
@@ -171,10 +337,24 @@ const alertas = [
     font-family: var(--sans); font-weight: 900; color: var(--tinta);
     font-size: clamp(1.2rem, 3vw, 1.65rem); line-height: 1.35; max-width: none;
   }
+  .frases p { margin-bottom: 0.9rem; }
   .frases p:last-child, .hipotesis p { margin-bottom: 0; }
-  .frases span { border-bottom: 2px solid var(--tinta); }
+  .frases p > span { border-bottom: 2px solid var(--tinta); }
   .hipotesis .mono { display: block; color: var(--secundario); margin-bottom: 0.8rem; }
   .hipotesis i { font-style: normal; border-bottom: 2px solid var(--tinta); }
+
+  .disparadores { list-style: none; margin: 0; }
+  .disparadores li {
+    font-family: var(--sans); font-weight: 700; color: var(--tinta);
+    padding: 0.45rem 0; border-top: 1px solid var(--regla);
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  }
+
+  .temas { display: flex; flex-wrap: wrap; gap: 0.55rem 1rem; margin: 0.5rem 0 1rem; }
+  .temas span {
+    font-family: var(--sans); font-weight: 700; color: var(--secundario);
+    border-bottom: 3px solid var(--regla); padding: 0.2rem 0;
+  }
 
   .verbos { display: flex; flex-wrap: wrap; gap: 0.55rem 1rem; max-width: 48rem; margin-top: 1.25rem; }
   .verbos span {
@@ -184,6 +364,7 @@ const alertas = [
   .remate {
     border-left: 4px solid var(--amarillo); padding-left: 1rem;
     font-family: var(--sans); font-weight: 900; color: var(--tinta);
+    margin-top: 1.5rem;
   }
   .posibilidades {
     list-style: none; display: grid; grid-template-columns: repeat(3, 1fr);
@@ -198,6 +379,35 @@ const alertas = [
     background: var(--tinta); color: var(--papel); padding: 1.5rem 1.75rem;
     box-shadow: 8px 8px 0 var(--amarillo); max-width: 50rem; margin-bottom: 1.5rem;
   }
+
+  .ejemplo {
+    border-top: 4px solid var(--tinta); padding-top: 1.25rem;
+    max-width: 58rem; margin-top: 2.5rem;
+  }
+  .ejemplo h3 {
+    font-family: var(--sans); font-weight: 900; color: var(--tinta);
+    font-size: clamp(1.35rem, 2.8vw, 1.8rem); margin-bottom: 1.25rem;
+  }
+  .ejemplo h3 .mono { color: var(--secundario); display: block; margin-bottom: 0.35rem; }
+  .ejemplo dl { margin: 0; }
+  .ejemplo dt {
+    font-family: var(--sans); font-weight: 900; color: var(--secundario);
+    text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.85rem;
+    margin-top: 1.1rem;
+  }
+  .ejemplo dd { margin: 0.3rem 0 0; max-width: 52rem; }
+  .ejemplo-cierre {
+    border-left: 4px solid var(--amarillo); padding-left: 1rem; margin-top: 1.5rem;
+    font-family: var(--sans); font-weight: 900; color: var(--tinta); max-width: 44rem;
+  }
+
+  .contra {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 62rem;
+  }
+  .contra > div { border-top: 6px solid var(--regla); padding-top: 1.2rem; }
+  .contra .contra-si { border-top-color: var(--amarillo); }
+  .contra .mono { color: var(--secundario); display: block; margin-bottom: 0.8rem; }
+  .contra p { max-width: none; }
 
   .entregable { border: 2px solid var(--tinta); max-width: 58rem; }
   .entregable-titulo {
@@ -224,7 +434,7 @@ const alertas = [
   @media (max-width: 48rem) {
     .paso { grid-template-columns: 1fr; }
     .paso-n { padding: 0; }
-    .posibilidades { grid-template-columns: 1fr; }
+    .posibilidades, .contra { grid-template-columns: 1fr; }
     .encargo, .frases, .hipotesis, .pregunta-fuego { padding: 1.25rem; }
   }
 </style>
