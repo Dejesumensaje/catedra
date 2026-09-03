@@ -1,0 +1,230 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const verbos = [
+  'esperar', 'elegir', 'recordar', 'perder', 'confiar', 'coordinarse',
+  'obedecer', 'buscar', 'repetir', 'escuchar', 'ceder', 'esconderse',
+];
+
+const entrega = [
+  'La inquietud, escrita sin mencionar plataforma, tecnología o solución.',
+  'El verbo que nombra lo que tendría que hacer quien participe.',
+  'Tres experiencias radicalmente diferentes para explorar la misma inquietud.',
+  'La hipótesis de experiencia elegida y su argumento.',
+  'La respuesta a la prueba de fuego: qué perdería el proyecto si fuera un video, un texto o una presentación.',
+];
+
+const alertas = [
+  '«Quiero hacer un videojuego porque me gustan los videojuegos».',
+  '«Una instalación porque es inmersiva».',
+  '«Una web porque es interactiva».',
+  'Elegir sensores, pantallas o tecnologías antes de saber qué necesita vivir la persona.',
+];
+---
+
+<Base
+  titulo="¿Por qué tiene que ser una experiencia? · Tarea · Pensamiento Sensorial 3.0"
+  descripcion="Tarea de la sesión 5: partir de una inquietud y un verbo para comparar tres formas posibles y formular una hipótesis de experiencia."
+  volverHref="/pensamiento-sensorial/s05"
+  volverTexto="Sesión 5 · ¿Qué dice una interacción?"
+>
+  <section class="hero-clase">
+    <span class="mono sube sube-1">Tarea · Sesión 5 · En grupos · 60 min · Para la sesión 6</span>
+    <h1 class="sube sube-2">¿Por qué tiene que ser una experiencia?</h1>
+    <p class="lede sube sube-3">La forma se elige por lo que hace vivir a quien participa.</p>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">El punto de partida</h2>
+    <div class="encargo">
+      <p class="encargo-frase">
+        Partan directamente de la tensión que encontraron y descubran
+        <strong>qué tendría que vivir o hacer una persona para explorarla</strong>.
+      </p>
+      <p>
+        Todavía no diseñen el proyecto ni elijan una tecnología. Esta tarea produce una
+        hipótesis de experiencia: una decisión provisional que se puede discutir y poner a prueba.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">01</span>
+    <div>
+      <h2>La inquietud</h2>
+      <p>Completen una de estas frases sin mencionar todavía plataforma, tecnología o solución.</p>
+      <div class="frases">
+        <p>Nos inquieta que <span>________________</span>.</p>
+        <p>Queremos explorar qué ocurre cuando <span>________________</span>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">02</span>
+    <div>
+      <h2>El verbo</h2>
+      <p class="frase-principal">Para explorar esta inquietud queremos que quien participe tenga que <span>________________</span>.</p>
+      <p>El verbo es el corazón de la tarea. Nombra la acción que vuelve perceptible la inquietud.</p>
+      <div class="verbos" aria-label="Ejemplos de verbos">
+        {verbos.map((verbo) => <span>{verbo}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">03</span>
+    <div>
+      <h2>Tres posibilidades</h2>
+      <p>Imaginen tres experiencias radicalmente diferentes que permitan explorar la misma inquietud.</p>
+      <p class="remate">Tres experiencias, no tres interfaces de la misma idea.</p>
+      <ol class="posibilidades" role="list">
+        {[1, 2, 3].map((n) => (
+          <li>
+            <span class="mono">0{n}</span>
+            <p>La persona tendría que <i>________________</i>.</p>
+            <p>Eso permitiría explorar <i>________________</i>.</p>
+          </li>
+        ))}
+      </ol>
+      <p>
+        Puede aparecer un videojuego, una web, una instalación o una experiencia
+        física-digital, pero como consecuencia de la inquietud y del verbo.
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">04</span>
+    <div>
+      <h2>Elegir y argumentar</h2>
+      <div class="hipotesis">
+        <span class="mono">Hipótesis de experiencia</span>
+        <p>
+          Creemos que <i>__________</i> es una buena manera de explorar <i>__________</i>
+          porque hace que la persona tenga que <i>__________</i>, y eso permite hacer
+          perceptible <i>__________</i>.
+        </p>
+      </div>
+      <p>Esta elección es provisional. Tiene que poder cambiar cuando aparezca nueva evidencia.</p>
+    </div>
+  </section>
+
+  <section class="bloque paso">
+    <span class="paso-n mono">05</span>
+    <div>
+      <h2>Prueba de fuego</h2>
+      <p class="pregunta-fuego">¿Qué perdería el proyecto si fuera simplemente un video, un texto o una presentación?</p>
+      <p>
+        Si no pierde nada importante, todavía deben trabajar en qué aporta la interacción.
+        La respuesta no puede ser solamente «sería menos inmersivo» o «sería menos interactivo».
+      </p>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Qué entregan</h2>
+    <div class="entregable">
+      <p class="entregable-titulo">Un solo PDF o enlace con permiso de lectura por grupo, por correo, antes de la sesión del jueves 10 de septiembre.</p>
+      <ol role="list">
+        {entrega.map((item, i) => (
+          <li><span class="mono">{String.fromCharCode(65 + i)}</span><p>{item}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2 class="mono">Eviten estas justificaciones</h2>
+    <ul class="alertas" role="list">
+      {alertas.map((alerta) => <li>{alerta}</li>)}
+    </ul>
+    <p class="cierre">
+      La forma debe poder defenderse por lo que hace vivir a quien participa respecto de
+      la inquietud que están explorando.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .encargo { border: 2px solid var(--tinta); padding: 1.75rem 2rem; max-width: 50rem; }
+  .encargo-frase {
+    font-family: var(--sans); font-weight: 900; color: var(--tinta);
+    font-size: clamp(1.25rem, 3.2vw, 1.65rem); line-height: 1.25;
+    max-width: none; margin-bottom: 1rem;
+  }
+  .encargo-frase strong { background: var(--amarillo); padding: 0 0.15em; }
+  .encargo p:last-child { max-width: 44rem; margin-bottom: 0; }
+
+  .paso { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); gap: 1.25rem; }
+  .paso-n { color: var(--secundario); padding-top: 0.35rem; }
+  .paso h2 {
+    font-family: var(--sans); font-weight: 900; color: var(--tinta);
+    font-size: clamp(1.7rem, 4vw, 2.4rem); margin-bottom: 1rem;
+  }
+  .frases, .hipotesis {
+    border-left: 10px solid var(--amarillo); border-top: 1px solid var(--regla);
+    border-right: 1px solid var(--regla); border-bottom: 1px solid var(--regla);
+    padding: 1.4rem 1.6rem; max-width: 52rem; margin-top: 1.25rem;
+  }
+  .frases p, .frase-principal, .hipotesis p, .pregunta-fuego {
+    font-family: var(--sans); font-weight: 900; color: var(--tinta);
+    font-size: clamp(1.2rem, 3vw, 1.65rem); line-height: 1.35; max-width: none;
+  }
+  .frases p:last-child, .hipotesis p { margin-bottom: 0; }
+  .frases span { border-bottom: 2px solid var(--tinta); }
+  .hipotesis .mono { display: block; color: var(--secundario); margin-bottom: 0.8rem; }
+  .hipotesis i { font-style: normal; border-bottom: 2px solid var(--tinta); }
+
+  .verbos { display: flex; flex-wrap: wrap; gap: 0.55rem 1rem; max-width: 48rem; margin-top: 1.25rem; }
+  .verbos span {
+    font-family: var(--sans); font-weight: 700; color: var(--tinta);
+    border-bottom: 3px solid var(--amarillo); padding: 0.2rem 0;
+  }
+  .remate {
+    border-left: 4px solid var(--amarillo); padding-left: 1rem;
+    font-family: var(--sans); font-weight: 900; color: var(--tinta);
+  }
+  .posibilidades {
+    list-style: none; display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem; max-width: 62rem; margin: 1.5rem 0;
+  }
+  .posibilidades li { border-top: 4px solid var(--tinta); padding-top: 0.9rem; }
+  .posibilidades .mono { color: var(--secundario); }
+  .posibilidades p { margin: 0.65rem 0 0; }
+  .posibilidades i { font-style: normal; border-bottom: 1px solid var(--tinta); }
+
+  .pregunta-fuego {
+    background: var(--tinta); color: var(--papel); padding: 1.5rem 1.75rem;
+    box-shadow: 8px 8px 0 var(--amarillo); max-width: 50rem; margin-bottom: 1.5rem;
+  }
+
+  .entregable { border: 2px solid var(--tinta); max-width: 58rem; }
+  .entregable-titulo {
+    background: var(--amarillo); color: var(--tinta); font-family: var(--sans);
+    font-weight: 900; max-width: none; margin: 0; padding: 1rem 1.25rem;
+  }
+  .entregable ol { list-style: none; }
+  .entregable li {
+    display: grid; grid-template-columns: 2rem 1fr; gap: 1rem;
+    padding: 0.85rem 1.25rem; border-top: 1px solid var(--regla);
+  }
+  .entregable li .mono { color: var(--secundario); }
+  .entregable li p { margin: 0; max-width: none; }
+
+  .alertas { list-style: none; max-width: 54rem; }
+  .alertas li { padding: 0.8rem 0 0.8rem 1.5rem; border-bottom: 1px solid var(--regla); position: relative; }
+  .alertas li::before { content: '×'; position: absolute; left: 0; color: var(--tinta); font-weight: 900; }
+  .cierre {
+    font-family: var(--sans); font-weight: 900; color: var(--tinta);
+    font-size: clamp(1.25rem, 3.2vw, 1.75rem); line-height: 1.3;
+    max-width: 50rem; margin-top: 2rem;
+  }
+
+  @media (max-width: 48rem) {
+    .paso { grid-template-columns: 1fr; }
+    .paso-n { padding: 0; }
+    .posibilidades { grid-template-columns: 1fr; }
+    .encargo, .frases, .hipotesis, .pregunta-fuego { padding: 1.25rem; }
+  }
+</style>
