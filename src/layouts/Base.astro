@@ -825,6 +825,19 @@ const ogImage = new URL('/og.png', Astro.site);
       /* cuerpo MDX de la sesión (notas, referentes) */
       .contenido-mdx p { max-width: 56ch; margin-bottom: 1rem; }
 
+      /* Titular de sección dentro de una consigna. La misma voz sans del resto
+         del sitio: sin esta regla, un h2 de consigna hereda la serif del cuerpo
+         y el tamaño por defecto del navegador. Los rótulos `.mono` quedan fuera
+         a propósito: son etiquetas, no titulares. */
+      .bloque h2:not(.mono) {
+        font-family: var(--sans);
+        font-weight: 700;
+        font-size: 1.4rem;
+        line-height: 1.25;
+        color: var(--tinta);
+        margin-bottom: 0.9rem;
+      }
+
       .contenido-mdx h2 {
         font-family: var(--sans);
         font-weight: 700;

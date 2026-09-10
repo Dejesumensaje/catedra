@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Clase 7 — ¿Podemos defender este territorio? | Pensamiento Sensorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Reset y base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    .slides-container { width: 100%; height: 100vh; height: 100dvh; }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      background: #fff;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 4rem;
+      text-align: center;
+    }
+    .slide.active { display: flex; }
+
+    /* Tipografía principal — Roboto Black */
+    .slide-title {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 900;
+      color: #444;
+      line-height: 1.3;
+      max-width: 75%;
+    }
+    .slide-subtitle {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 400;
+      color: #6f6f6f;
+      margin-top: 0.75rem;
+    }
+
+    /* Highlight amarillo — énfasis dentro del slide (máx. una frase) */
+    .hl { background-color: #eeff41; padding: 0 0.15em; }
+
+    /* Links */
+    .slide a { color: #1a9e9e; text-decoration: none; border-bottom: 2px solid #1a9e9e; }
+    .slide-link {
+      font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      /* Subrayado en vez de borde: al partirse en dos líneas, el borde del
+         enlace se estiraba hasta el ancho del slide. */
+      border-bottom: none;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+
+    /* Slide de cita */
+    .slide--cita { background: #f4f3ee; }
+    .cita-texto {
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 4.2vw, 2.5rem);
+      color: #222;
+      max-width: 70%;
+      line-height: 1.45;
+    }
+    .cita-fuente {
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #6f6f6f;
+      margin-top: 1.6rem;
+    }
+    .cita-fuente em { font-style: italic; text-transform: none; }
+
+    .slide-image { max-width: 65%; max-height: 60vh; object-fit: contain; }
+
+    /* Portada */
+    .portada-top {
+      font-size: clamp(1.2rem, 4.5vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      line-height: 1;
+    }
+    .portada-bottom {
+      font-size: clamp(3.4rem, 16vw, 7.5rem);
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+
+    /* Divisores */
+    .section-kicker {
+      font-size: clamp(1rem, 3.2vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #555;
+    }
+    .section-theme {
+      font-size: clamp(2rem, 6.5vw, 4.2rem);
+      font-weight: 900;
+      color: #111;
+      line-height: 1.15;
+      margin-top: 0.5rem;
+      max-width: 85%;
+    }
+
+    /* Tema central: paleta invertida */
+    .tema-central {
+      font-size: clamp(2.4rem, 8vw, 5.5rem);
+      font-weight: 900;
+      color: #eeff41;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      max-width: 85%;
+    }
+    /* Registro conceptual bajo el tema evocador: apagado para no competir con el amarillo */
+    .tema-sub {
+      font-size: clamp(0.95rem, 2vw, 1.35rem);
+      font-weight: 400;
+      color: #bdbdbd;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+      max-width: 42ch;
+      margin-top: 1.6rem;
+    }
+
+    .slide--visual svg text.caps { text-transform: uppercase; }
+
+    /* Concepto con párrafo */
+    .slide-concept-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 900;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+    .slide-concept-body {
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      color: #555;
+      max-width: 60ch;
+      line-height: 1.75;
+      text-align: left;
+    }
+    .slide-concept-body .src { color: #6f6f6f; font-size: 0.95em; }
+    .slide--parrafo { align-items: flex-start; padding: 6rem 10rem; }
+
+    /* Referencias */
+    .refs-title { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 900; color: #444; margin-bottom: 2rem; }
+    .refs-list {
+      list-style: none; text-align: left; max-width: 72ch;
+      font-size: clamp(0.85rem, 1.5vw, 1rem); font-weight: 400; color: #555; line-height: 1.5;
+    }
+    .refs-list li { margin-bottom: 0.65rem; }
+    .refs-list em { font-style: italic; }
+    .refs-list li .nota { display: block; font-size: 0.86em; color: #6f6f6f; }
+    .refs-list li.src { color: #6f6f6f; font-size: 0.92em; margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid #e5e5e5; }
+
+    /* Marcador de material pendiente */
+    .ph { border: 2px dashed #e5e5e5; padding: 3.5rem 4rem; color: #999; font-size: 1.1rem; font-weight: 400; max-width: 62%; line-height: 1.6; }
+
+    /* ══ LAYOUTS COMPUESTOS ══ */
+    .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa {
+      align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem;
+    }
+    .rotulo { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6f6f6f; }
+    .compuesto-titulo {
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-weight: 900; color: #444;
+      max-width: 60ch; margin: 0 auto 2rem; text-align: center; line-height: 1.35;
+    }
+    .compuesto-pie {
+      font-size: clamp(0.88rem, 1.3vw, 1rem); color: #6f6f6f;
+      max-width: 66ch; margin: 2rem auto 0; text-align: center; line-height: 1.5;
+    }
+
+    /* Ficha de concepto */
+    .ficha { width: 100%; max-width: 62rem; margin: 0 auto; }
+    .ficha-num { margin-bottom: 1.6rem; }
+    .ficha-termino {
+      font-size: clamp(1.6rem, 3.6vw, 2.4rem); font-weight: 900; color: #111;
+      letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.1;
+    }
+    .ficha-def {
+      font-size: clamp(1.35rem, 2.8vw, 2rem); font-weight: 900; color: #444;
+      line-height: 1.28; margin-top: 0.9rem; max-width: 40ch;
+    }
+    .ficha-def em { font-style: normal; background: #eeff41; padding: 0 0.15em; }
+    .ficha-fuente { font-size: 0.82rem; color: #6f6f6f; margin-top: 1rem; letter-spacing: 0.03em; }
+    .ficha-celdas {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem;
+      margin-top: 2.4rem; padding-top: 2.2rem; border-top: 1px solid #e5e5e5;
+    }
+    .ficha-celdas.una { grid-template-columns: 1fr; max-width: 46ch; }
+    .ficha-celda .rotulo { display: block; margin-bottom: 0.7rem; }
+    .ficha-celda p { font-size: clamp(0.98rem, 1.5vw, 1.1rem); color: #555; line-height: 1.6; }
+    .ficha-celda + .ficha-celda { border-left: 1px solid #e5e5e5; padding-left: 3rem; }
+
+    /* Rejilla */
+    .rejilla { display: grid; gap: 2.2rem; width: 100%; max-width: 66rem; margin: 0 auto; }
+    .rejilla--3 { grid-template-columns: repeat(3, 1fr); }
+    .rejilla--2x2 { grid-template-columns: 1fr 1fr; }
+    .celda { border-top: 4px solid #444; padding-top: 1.1rem; }
+    .celda.acento { border-top-color: #eeff41; }
+    .celda .rotulo { display: block; margin-bottom: 0.7rem; }
+    .celda-titulo { font-size: clamp(1.1rem, 2.1vw, 1.45rem); font-weight: 900; color: #111; line-height: 1.2; margin-bottom: 0.7rem; }
+    .celda-cuerpo { font-size: clamp(0.92rem, 1.4vw, 1.05rem); color: #555; line-height: 1.55; }
+    .celda-cuerpo .src { color: #6f6f6f; }
+
+    /* Par en contraste */
+    .par { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; width: 100%; max-width: 62rem; margin: 0 auto; }
+    .par-encabezado { font-size: clamp(0.95rem, 1.8vw, 1.15rem); font-weight: 900; letter-spacing: 0.03em; padding: 0.8rem 1.1rem; line-height: 1.25; }
+    .par-col.a .par-encabezado { background: #eeff41; color: #111; }
+    .par-col.b .par-encabezado { background: #222; color: #fff; }
+    .par-cuerpo { font-size: clamp(0.98rem, 1.5vw, 1.12rem); color: #555; line-height: 1.6; padding: 1.3rem 1.1rem 0; }
+    .par-cuerpo strong { color: #222; font-weight: 700; }
+
+    /* Pauta operativa */
+    .pauta { list-style: none; width: 100%; max-width: 52rem; margin: 0 auto; }
+    .pauta-titulo {
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem); font-weight: 900; color: #111;
+      margin: 0 auto 1.8rem; max-width: 52rem; width: 100%; line-height: 1.25; text-align: left;
+    }
+    .pauta li {
+      display: flex; gap: 1.4rem; align-items: baseline; padding: 1rem 0;
+      border-bottom: 1px solid #e5e5e5; font-size: clamp(1rem, 1.7vw, 1.25rem); color: #444; line-height: 1.45;
+    }
+    .pauta li:last-child { border-bottom: none; }
+    .pauta .n { font-size: 0.8rem; font-weight: 700; color: #6f6f6f; letter-spacing: 0.06em; flex: 0 0 1.8rem; }
+    .pauta li strong { color: #111; font-weight: 900; }
+    .pauta li .nota { display: block; font-size: 0.86em; color: #6f6f6f; margin-top: 0.25rem; }
+
+    /* Mapa */
+    .mapa { width: 100%; max-width: 46rem; margin: 0 auto; }
+    .mapa-item {
+      font-size: clamp(1.3rem, 3.2vw, 2.2rem); font-weight: 900; letter-spacing: 0.03em;
+      text-transform: uppercase; color: #444; padding: 0.55rem 0; line-height: 1.15;
+    }
+    .mapa-item .q {
+      display: block; text-transform: none; letter-spacing: 0; font-size: 0.42em;
+      font-weight: 400; color: #6f6f6f; margin-top: 0.1rem;
+    }
+    .mapa-item.visto { color: #6f6f6f; }
+    .mapa-item.actual { color: #111; }
+    .mapa-item.actual span { background: #eeff41; padding: 0 0.2em; }
+    .mapa-item.actual::after { content: " ←"; color: #111; }
+    .mapa-pie { font-size: 0.9rem; color: #6f6f6f; margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid #e5e5e5; }
+
+    /* Slide de QR: el bloque que se proyecta para que lo lea toda el aula */
+    .qr { width: min(30vh, 260px); height: auto; }
+
+    /* ── Animaciones ── */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.985); } to { opacity: 1; transform: scale(1); } }
+    @keyframes drawIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .slide.active { animation: fadeIn 0.18s ease-out forwards; }
+    .slide.active.slide--conclusion { animation: riseIn 0.22s ease-out forwards; }
+    .slide.active.slide--section { animation: scaleIn 0.2s ease-out forwards; }
+    .slide.active.slide--visual svg > * { opacity: 0; animation: drawIn 0.22s ease-out forwards; }
+    .slide--visual svg > *:nth-child(1) { animation-delay: 0.02s; }
+    .slide--visual svg > *:nth-child(2) { animation-delay: 0.04s; }
+    .slide--visual svg > *:nth-child(3) { animation-delay: 0.06s; }
+    .slide--visual svg > *:nth-child(4) { animation-delay: 0.08s; }
+    .slide--visual svg > *:nth-child(5) { animation-delay: 0.10s; }
+    .slide--visual svg > *:nth-child(6) { animation-delay: 0.12s; }
+    .slide--visual svg > *:nth-child(7) { animation-delay: 0.14s; }
+    .slide--visual svg > *:nth-child(n+8) { animation-delay: 0.16s; }
+
+    .slide.active .ficha-celda, .slide.active .celda, .slide.active .par-col,
+    .slide.active .pauta li, .slide.active .mapa-item {
+      opacity: 0; animation: drawIn 0.18s ease-out forwards;
+    }
+    .ficha-celda:nth-child(1), .celda:nth-child(1), .par-col:nth-child(1),
+    .pauta li:nth-child(1), .mapa-item:nth-child(1) { animation-delay: 0.04s; }
+    .ficha-celda:nth-child(2), .celda:nth-child(2), .par-col:nth-child(2),
+    .pauta li:nth-child(2), .mapa-item:nth-child(2) { animation-delay: 0.08s; }
+    .celda:nth-child(3), .pauta li:nth-child(3), .mapa-item:nth-child(3) { animation-delay: 0.12s; }
+    .celda:nth-child(4), .pauta li:nth-child(4), .mapa-item:nth-child(4) { animation-delay: 0.16s; }
+    .pauta li:nth-child(5), .mapa-item:nth-child(5) { animation-delay: 0.20s; }
+    .pauta li:nth-child(n+6), .mapa-item:nth-child(n+6) { animation-delay: 0.24s; }
+
+    .slide.active .diagram-mobile > * { opacity: 0; animation: drawIn 0.18s ease-out forwards; }
+    .diagram-mobile > *:nth-child(1) { animation-delay: 0.04s; }
+    .diagram-mobile > *:nth-child(2) { animation-delay: 0.08s; }
+    .diagram-mobile > *:nth-child(3) { animation-delay: 0.12s; }
+    .diagram-mobile > *:nth-child(4) { animation-delay: 0.16s; }
+    .diagram-mobile > *:nth-child(5) { animation-delay: 0.20s; }
+    .diagram-mobile > *:nth-child(n+6) { animation-delay: 0.24s; }
+
+    .no-anim, .no-anim * { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+    /* Navegación */
+    .nav-hint { position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.75rem; color: #ccc; }
+    .deck-nav { position: fixed; bottom: 1.5rem; left: 2rem; font-size: 0.75rem; z-index: 10; }
+    .deck-nav-toggle {
+      background: none; border: none; font-family: 'Roboto', sans-serif; font-size: 0.75rem;
+      color: #ddd; cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .deck-nav-toggle:hover, .deck-nav.open .deck-nav-toggle { color: #888; }
+    .deck-nav-menu {
+      display: none; list-style: none; position: absolute; bottom: 100%; left: 0;
+      margin: 0 0 0.5rem; padding: 0.4rem 0; min-width: 14rem; max-height: 70vh; overflow-y: auto;
+      background: #fff; border: 1px solid #e5e5e5; text-align: left;
+    }
+    .deck-nav.open .deck-nav-menu { display: block; }
+    .deck-nav-menu button {
+      display: block; width: 100%; background: none; border: none; font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem; color: #888; text-align: left; padding: 0.4rem 1rem; cursor: pointer;
+    }
+    .deck-nav-menu button:hover { color: #222; background: #fafafa; }
+
+    .deck-nav-toggle:focus-visible, .deck-nav-menu button:focus-visible, .slide a:focus-visible { outline: 2px solid #222; outline-offset: 2px; }
+
+    /* Barra de progreso */
+    .progress-track { position: fixed; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(0,0,0,0.06); z-index: 5; }
+    .progress-fill { height: 100%; background: #eeff41; width: 0%; transition: width 0.25s ease; }
+
+    img.img-broken { display: none; }
+
+    /* Versiones móviles de los diagramas */
+    .diagram-mobile { display: none; flex-direction: column; align-items: center; gap: 0.55rem; width: 100%; max-width: 380px; }
+    .dm-label { font-family: 'Roboto', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: #999; text-transform: uppercase; }
+    .dm-box { width: 100%; padding: 0.85rem 1rem; text-align: center; font-family: 'Roboto', sans-serif; }
+    .dm-box.dark { background: #222; color: #fff; }
+    .dm-box.accent { background: #eeff41; color: #111; }
+    .dm-box.neutral { background: #fff; color: #444; border: 1.5px solid #444; }
+    .dm-box strong { display: block; font-size: 0.95rem; font-weight: 700; }
+    .dm-box em { display: block; font-style: normal; font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
+    .dm-arrow { color: #444; font-size: 0.9rem; line-height: 0.6; }
+    .dm-note { font-family: 'Roboto', sans-serif; font-size: 0.78rem; color: #6f6f6f; text-align: center; line-height: 1.45; max-width: 36ch; margin-top: 0.35rem; }
+
+    /* Accesibilidad */
+    @media (prefers-reduced-motion: reduce) {
+      .slide.active, .slide.active.slide--conclusion, .slide.active.slide--section,
+      .slide.active .demo-item, .slide.active .nombres li, .slide.active .pg li,
+      .slide.active.slide--visual svg > *, .slide.active .ficha-celda, .slide.active .celda,
+      .slide.active .par-col, .slide.active .pauta li, .slide.active .mapa-item,
+      .slide.active .diagram-mobile > * { animation: none; opacity: 1; transform: none; }
+      .progress-fill { transition: none; }
+    }
+
+    /* Los tres niveles de fidelidad: horizontal en pantalla ancha;
+       en pantalla angosta se cambia por la versión apilada, que se recorre
+       con desplazamiento vertical en vez de encogerse hasta lo ilegible.
+       La regla base va ANTES del bloque responsive para que el media query
+       la pueda pisar por orden de aparición. */
+    .wmp-v { display: none; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .slide { padding: 2.5rem; }
+      .slide--parrafo { padding: 2.5rem 3rem; }
+      .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa { padding: 2.5rem 3rem; }
+      .rejilla { gap: 1.6rem; }
+      .ficha-celdas { gap: 0 2rem; }
+      .ficha-celda + .ficha-celda { padding-left: 2rem; }
+    }
+    @media (max-width: 700px) {
+      .rejilla--3, .rejilla--2x2, .par { grid-template-columns: 1fr; gap: 1.6rem; }
+      .ficha-celdas { grid-template-columns: 1fr; gap: 1.6rem; }
+      .ficha-celda + .ficha-celda { border-left: none; padding-left: 0; border-top: 1px solid #e5e5e5; padding-top: 1.6rem; }
+      .ficha-def { max-width: none; }
+      .slide--visual svg { display: none; }
+      .slide--visual .diagram-mobile { display: flex; }
+      /* Ningún slide queda cortado en un celular: si el contenido no cabe, se
+         desplaza. `safe center` evita que centrar esconda el inicio. */
+      .slide { overflow-y: auto; overscroll-behavior: contain; justify-content: safe center; }
+      .slide > * { flex-shrink: 0; }
+    }
+    @media (max-width: 600px) {
+      /* El pie de la pantalla lo ocupan el menú de secciones y la pista táctil. */
+      .slide { padding: 1.5rem 1.5rem 3.5rem; }
+      .slide--parrafo { padding: 1.5rem 1.5rem 3.5rem; }
+      .rejilla { gap: 1.4rem; }
+      .compuesto-titulo { margin-bottom: 1.4rem; }
+      .compuesto-pie { margin-top: 1.4rem; }
+      .slide--ficha, .slide--rejilla, .slide--par, .slide--pauta, .slide--mapa { padding: 1.5rem 1.5rem 3.5rem; }
+      .slide-title { max-width: 100%; }
+      .cita-texto { max-width: 92%; }
+      .slide-image { max-width: 90%; }
+      .refs-list, .slide-concept-body { max-width: 100%; }
+      .ph { max-width: 88%; padding: 2rem; }
+      .pauta li { gap: 0.9rem; }
+      .wmp-h { display: none; }
+      .wmp-v { display: block; width: 100%; max-width: 380px; }
+      .section-theme, .tema-central, .section-kicker { max-width: 100%; }
+      .qr { width: min(26vh, 190px); }
+      .slide-link { font-size: 0.95rem; }
+    }
+    /* Celulares angostos: los titulares grandes son lo primero que desborda. */
+    @media (max-width: 420px) {
+      .slide-title { font-size: 1.55rem; line-height: 1.28; }
+      .portada-bottom { font-size: 3rem; }
+      .section-theme { font-size: 1.75rem; }
+      .tema-central { font-size: 1.9rem; }
+      .ficha-def { font-size: 1.15rem; }
+      .mapa-item { font-size: 1.05rem; }
+      .pauta li { font-size: 0.95rem; }
+      .rejilla { gap: 1.1rem; }
+      .celda { padding-top: 0.8rem; }
+      .celda-titulo { font-size: 1.05rem; margin-bottom: 0.45rem; }
+      .celda-cuerpo { font-size: 0.88rem; line-height: 1.45; }
+      .compuesto-titulo { font-size: 1rem; margin-bottom: 1.1rem; }
+      .compuesto-pie { font-size: 0.82rem; margin-top: 1.1rem; }
+    }
+    /* Proyectar en horizontal desde un celular: la altura es lo escaso. */
+    @media (max-height: 460px) and (orientation: landscape) {
+      .slide {
+        padding: 1.25rem 2rem 2.5rem;
+        overflow-y: auto; overscroll-behavior: contain; justify-content: safe center;
+      }
+      .slide > * { flex-shrink: 0; }
+      .slide-title { font-size: clamp(1.1rem, 3.2vw, 1.9rem); }
+      .mapa-item { font-size: clamp(1rem, 2.4vw, 1.4rem); padding: 0.35rem 0; }
+      .mapa-item .q { font-size: 0.55em; }
+      .mapa-pie { margin-top: 1rem; padding-top: 0.8rem; }
+      .qr { width: min(38vh, 190px); }
+    }
+
+    .nav-hint-touch { display: none; }
+    @media (hover: none) {
+      .nav-hint { display: none; }
+      .nav-hint-touch { display: block; position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.7rem; color: #ccc; text-align: right; max-width: 45%; }
+      .deck-nav-toggle { padding: 0.6rem 0.3rem; font-size: 0.8rem; }
+      .deck-nav-menu button { padding: 0.7rem 1rem; font-size: 0.8rem; }
+    }
+
+    /* ── titular sobre un diagrama ─────────────────────────────
+       El diagrama es la herramienta; el titular dice qué se está
+       mirando para que el profesor pueda señalar sin explicar antes. */
+    .slide--visual { gap: 0.4rem; }
+    .visual-titulo {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1rem, 2.1vw, 1.45rem);
+      font-weight: 900;
+      color: #444;
+      line-height: 1.3;
+      max-width: 60ch;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── fuente al pie de un slide de párrafo ── */
+    .slide-fuente {
+      font-size: 0.82rem;
+      color: #6f6f6f;
+      max-width: 60%;
+      margin-top: 1.4rem;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    /* ── los nombres de las personas inventadas ── */
+    .slide--nombres { align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem; }
+    .nombres-titulo {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #6f6f6f;
+      max-width: 60rem; margin: 0 auto 1.6rem; width: 100%;
+    }
+    .nombres { list-style: none; width: 100%; max-width: 60rem; margin: 0 auto; }
+    .nombres li {
+      display: flex; gap: 1.5rem; align-items: baseline;
+      padding: 0.8rem 0; border-bottom: 1px solid #e5e5e5;
+    }
+    .nombres li:last-child { border-bottom: none; }
+    .nombres li strong {
+      font-size: clamp(1.3rem, 2.8vw, 2rem); font-weight: 900; color: #111;
+      flex: 0 0 8.5rem; line-height: 1.15;
+    }
+    .nombres li span { font-size: clamp(0.95rem, 1.5vw, 1.1rem); color: #6f6f6f; line-height: 1.4; }
+
+    /* ── preguntas grandes: un slide que solo provoca mirar ──
+       No lleva número ni viñeta: no es una lista operativa, son
+       preguntas para hacer en voz alta mientras se mira otra cosa. */
+    .slide--preguntas-grandes { align-items: stretch; justify-content: center; text-align: left; padding: 4rem 6rem; }
+    .pg-titulo {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #6f6f6f;
+      max-width: 56rem; margin: 0 auto 1.8rem; width: 100%;
+    }
+    .pg { list-style: none; width: 100%; max-width: 56rem; margin: 0 auto; }
+    .pg li {
+      font-size: clamp(1.25rem, 2.9vw, 2rem); font-weight: 900; color: #444;
+      line-height: 1.25; padding: 0.7rem 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .pg li:last-child { border-bottom: none; }
+    .pg--compacta li { font-size: clamp(1rem, 2.2vw, 1.5rem); padding: 0.5rem 0; }
+
+    .slide.active .nombres li, .slide.active .pg li {
+      opacity: 0; animation: drawIn 0.18s ease-out forwards;
+    }
+    .nombres li:nth-child(1), .pg li:nth-child(1) { animation-delay: 0.04s; }
+    .nombres li:nth-child(2), .pg li:nth-child(2) { animation-delay: 0.08s; }
+    .nombres li:nth-child(3), .pg li:nth-child(3) { animation-delay: 0.12s; }
+    .nombres li:nth-child(4), .pg li:nth-child(4) { animation-delay: 0.16s; }
+    .nombres li:nth-child(5), .pg li:nth-child(5) { animation-delay: 0.20s; }
+    .pg li:nth-child(n+6) { animation-delay: 0.24s; }
+
+    @media (max-width: 900px) {
+      .slide--nombres, .slide--preguntas-grandes { padding: 2.5rem 3rem; }
+    }
+    @media (max-width: 700px) {
+      .nombres li { flex-direction: column; gap: 0.2rem; }
+      .nombres li strong { flex: none; }
+      .slide-fuente { max-width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .slide--nombres, .slide--preguntas-grandes { padding: 1.5rem 1.5rem 3rem; overflow-y: auto; }
+    }
+
+    /* ── tira de componentes reales ────────────────────────────
+       La diapositiva afirma que las convenciones visuales se
+       aprenden mirando. Proyectarla sin mostrarlas era pedir un
+       acto de fe: acá los componentes funcionan de verdad —el
+       cursor cambia, el slider se arrastra, el deshabilitado no
+       responde—, así que la afirmación se puede comprobar en vivo. */
+    .slide--demo { align-items: stretch; justify-content: center; text-align: left; padding: 3rem 5rem; }
+    .demo-titulo {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1rem, 2.1vw, 1.45rem);
+      font-weight: 900; color: #444; line-height: 1.3;
+      max-width: 62rem; margin: 0 auto 2.2rem; width: 100%; text-align: center;
+    }
+    .demo-tira {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem 2.5rem; width: 100%; max-width: 62rem; margin: 0 auto;
+    }
+    .demo-item { border-top: 3px solid #444; padding-top: 1rem; }
+    .demo-pieza {
+      min-height: 5.2rem; display: flex; align-items: center;
+      justify-content: flex-start; margin-bottom: 0.9rem;
+    }
+    .demo-nota { font-size: 0.95rem; color: #555; line-height: 1.5; }
+    .demo-nota b { color: #111; font-weight: 700; }
+
+    /* botón */
+    .demo-boton {
+      font-family: 'Roboto', sans-serif; font-size: 1rem; font-weight: 700;
+      color: #111; background: #eeff41; border: 2px solid #111;
+      padding: 0.7rem 1.6rem; cursor: pointer;
+      box-shadow: 4px 4px 0 #111; transition: transform 0.06s, box-shadow 0.06s;
+    }
+    .demo-boton:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #111; }
+    .demo-boton:active { transform: translate(4px, 4px); box-shadow: 0 0 0 #111; }
+
+    /* botón desactivado */
+    .demo-boton[disabled] {
+      color: #999; background: #f2f2f2; border-color: #d5d5d5;
+      box-shadow: 4px 4px 0 #e5e5e5; cursor: not-allowed;
+    }
+    .demo-boton[disabled]:hover { transform: none; box-shadow: 4px 4px 0 #e5e5e5; }
+
+    /* slider real */
+    .demo-slider { width: 100%; max-width: 15rem; accent-color: #111; cursor: grab; }
+    .demo-slider:active { cursor: grabbing; }
+
+    /* enlace */
+    .demo-enlace {
+      font-family: 'Roboto', sans-serif; font-size: 1.05rem; font-weight: 700;
+      color: #1a9e9e; text-decoration: underline; text-underline-offset: 4px;
+      text-decoration-thickness: 2px; cursor: pointer;
+    }
+    .demo-enlace:hover { color: #111; background: #eeff41; }
+
+    /* campo de texto */
+    .demo-campo {
+      font-family: 'Roboto', sans-serif; font-size: 1rem; color: #111;
+      border: none; border-bottom: 2px solid #444; background: #f7f7f7;
+      padding: 0.6rem 0.8rem; width: 100%; max-width: 15rem; cursor: text;
+    }
+    .demo-campo:focus { outline: 2px solid #eeff41; border-bottom-color: #111; }
+
+    /* tarjeta arrastrable */
+    .demo-arrastra {
+      font-family: 'Roboto', sans-serif; font-size: 0.9rem; font-weight: 700;
+      color: #111; background: #fff; border: 2px solid #111;
+      padding: 0.9rem 1.2rem; cursor: grab; box-shadow: 5px 5px 0 #e5e5e5;
+      user-select: none;
+    }
+    .demo-arrastra:active { cursor: grabbing; box-shadow: 2px 2px 0 #e5e5e5; }
+
+    .demo-pie {
+      font-size: 0.95rem; color: #6f6f6f; text-align: center;
+      max-width: 60ch; margin: 2.2rem auto 0; line-height: 1.5;
+    }
+
+    .slide.active .demo-item { opacity: 0; animation: drawIn 0.18s ease-out forwards; }
+    .demo-item:nth-child(1) { animation-delay: 0.04s; }
+    .demo-item:nth-child(2) { animation-delay: 0.08s; }
+    .demo-item:nth-child(3) { animation-delay: 0.12s; }
+    .demo-item:nth-child(4) { animation-delay: 0.16s; }
+    .demo-item:nth-child(5) { animation-delay: 0.20s; }
+    .demo-item:nth-child(6) { animation-delay: 0.24s; }
+
+    @media (max-width: 900px) {
+      .slide--demo { padding: 2.5rem 3rem; }
+      .demo-tira { grid-template-columns: repeat(2, 1fr); gap: 1.6rem; }
+    }
+    @media (max-width: 600px) {
+      .slide--demo { padding: 1.5rem 1.5rem 3rem; overflow-y: auto; }
+      .demo-tira { grid-template-columns: 1fr; }
+      .demo-pieza { min-height: 0; }
+    }
+
+    /* ── diapositiva con video ─────────────────────────────────
+       El video es el argumento: la instalación no se puede contar,
+       hay que verla moverse. El enlace de abajo no es decoración:
+       es el respaldo si el iframe no carga (abrir el deck como
+       archivo local bloquea los embebidos de YouTube). */
+    .slide--video { gap: 1rem; }
+    .video-titulo {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(1rem, 2.1vw, 1.4rem);
+      font-weight: 900; color: #444; line-height: 1.3; max-width: 62ch;
+    }
+    .video-marco {
+      width: 62%; aspect-ratio: 16 / 9; background: #111;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .video-marco > video, .video-marco > iframe { width: 100%; height: 100%; display: block; border: 0; }
+    .video-credito { font-size: 0.85rem; color: #6f6f6f; }
+    .video-credito a { font-weight: 700; }
+    @media (max-width: 900px) { .video-marco { width: 88%; } }
+  
+    /* Clase 5 — layouts añadidos */
+    .slide { padding:4.5rem 5.5rem; }
+    .slide-title { font-size:clamp(2.5rem,5vw,4.4rem); line-height:1.14; max-width:84%; }
+    .slide-subtitle { font-size:clamp(1.5rem,2.3vw,2rem); }
+    .section-kicker { font-size:clamp(1.1rem,1.8vw,1.35rem); }
+    .section-theme { font-size:clamp(3rem,7vw,5.4rem); line-height:1.06; max-width:88%; }
+    .tema-sub { font-size:clamp(1.45rem,2.2vw,1.9rem); max-width:46ch; }
+    .slide--parrafo { padding:5.5rem 8rem; }
+    .slide-concept-title { font-size:clamp(2rem,3.6vw,2.8rem); margin-bottom:1.8rem; }
+    .slide-concept-body { font-size:clamp(1.5rem,2.15vw,1.8rem); line-height:1.55; max-width:55ch; }
+    .pauta { max-width:62rem; }
+    .pauta-titulo { font-size:clamp(1.8rem,3vw,2.3rem); max-width:62rem; }
+    .pauta li { font-size:clamp(1.5rem,2.2vw,1.85rem); line-height:1.4; padding:1.05rem 0; }
+    .pauta .n { font-size:1rem; flex-basis:2.2rem; }
+    .compuesto-pie { font-size:clamp(1.1rem,1.55vw,1.3rem); max-width:62rem; }
+    .slide--prompt,.slide--agenda,.slide--matrix,.slide--distribution,.slide--verbs,.slide--balance,
+    .slide--reading,.slide--assign,.slide--wall,.slide--formula,.slide--three,.slide--sentence,
+    .slide--badgood,.slide--sheet,.slide--sources,.slide--content-note {
+      align-items:stretch; text-align:left; padding:4.5rem 7rem;
+    }
+    .prompt-title,.agenda-title,.matrix-title,.wall-title,.three-title,.sentence-title,.assign-title {
+      font-size:clamp(1.9rem,3vw,2.5rem); font-weight:900; color:#444; margin-bottom:2rem;
+    }
+    .prompt-list { list-style:none; max-width:58rem; margin:auto 0; }
+    .prompt-list li { font-size:clamp(1.5rem,2.6vw,2rem); font-weight:700; color:#333; padding:.85rem 0; border-bottom:1px solid #ddd; }
+    .prompt-list li::before { content:'→'; color:#b2bd00; margin-right:.8rem; }
+    .prompt-footer { color:#6f6f6f; margin-top:1.6rem; font-size:clamp(1.15rem,1.6vw,1.35rem); }
+    .slide--agenda ol { list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#ddd; max-width:66rem; width:100%; margin:auto; }
+    .slide--agenda li { background:#fff; padding:2rem; display:grid; grid-template-columns:auto 1fr; grid-template-rows:auto auto; column-gap:1rem; }
+    .slide--agenda li span { grid-row:1/3; font-size:1.05rem; color:#777; font-weight:900; }
+    .slide--agenda li strong { font-size:clamp(1.8rem,3.2vw,2.5rem); color:#222; }
+    .slide--agenda li em { font-style:normal; color:#666; margin-top:.25rem; font-size:1.3rem; }
+    .slide--timer { background:#111; color:#fff; gap:.5rem; }
+    .timer-number { font-size:clamp(5rem,18vw,11rem); font-weight:900; line-height:.85; color:#eeff41; font-variant-numeric:tabular-nums; }
+    .timer-label { font-size:clamp(1.5rem,3vw,2.2rem); font-weight:900; }
+    .timer-note { color:#aaa; margin-top:1.2rem; font-size:1.4rem; }
+    .matrix-wrap { overflow-x:auto; }
+    .slide--matrix table { border-collapse:collapse; width:100%; min-width:760px; }
+    .slide--matrix th,.slide--matrix td { border:1px solid #bbb; padding:.8rem; height:3.2rem; text-align:left; }
+    .slide--matrix th { background:#eeff41; font-size:1.05rem; text-transform:uppercase; letter-spacing:.04em; }
+    .slide--matrix td { font-size:1.3rem; }
+    .slide--matrix td:first-child { font-weight:900; text-align:center; }
+    .matrix-note { color:#666; margin-top:1rem; font-size:1.2rem; }
+    .slide--distribution { justify-content:center; }
+    .distribution-title { font-size:clamp(1.5rem,3vw,2.2rem); font-weight:900; text-align:center; }
+    .distribution-line { display:flex; align-items:center; gap:1rem; margin:4rem auto 2rem; width:min(50rem,90%); }
+    .distribution-line span { font-weight:900; font-size:clamp(1.5rem,2.3vw,1.9rem); }
+    .distribution-line i { height:8px; flex:1; background:#222; position:relative; }
+    .distribution-line i::before { content:''; position:absolute; inset:0 52% 0 0; background:#eeff41; }
+    .distribution-words { display:flex; flex-wrap:wrap; justify-content:center; gap:.8rem; }
+    .distribution-words b { border:1px solid #bbb; padding:.65rem 1rem; font-size:clamp(1.25rem,1.8vw,1.5rem); }
+    .verbs-lead { text-align:center; color:#666; font-size:1.45rem; }
+    .verbs-cloud { margin:auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.7rem 1.1rem; max-width:70rem; }
+    .verbs-cloud span { font-size:clamp(1.2rem,3.4vw,2.8rem); font-weight:900; color:#444; }
+    .verbs-cloud span:nth-child(3n) { background:#eeff41; padding:.05em .2em; }
+    .slide--balance { flex-direction:row; gap:2rem; }
+    .slide--balance div { width:38%; text-align:left; }
+    .slide--balance span { font-size:1.05rem; letter-spacing:.15em; font-weight:900; color:#777; }
+    .slide--balance strong { display:block; font-size:clamp(2rem,4vw,3.2rem); color:#333; margin-top:.8rem; line-height:1.1; }
+    .slide--balance i { width:3px; height:45%; background:#eeff41; }
+    .slide--case { position:relative; background:#111 center/cover no-repeat; background-image:var(--case-image); align-items:flex-start; justify-content:flex-end; text-align:left; overflow:hidden; }
+    .case-shade { position:absolute; inset:0; background:rgba(0,0,0,.66); }
+    .case-copy { position:relative; z-index:1; width:min(48rem,62%); color:#fff; }
+    .case-meta { color:#eeff41; font-size:1.05rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .case-copy h2 { font-size:clamp(2.3rem,7vw,5.5rem); line-height:.95; margin:.7rem 0 1rem; }
+    .case-question { font-size:clamp(1.55rem,2.8vw,2.15rem); font-weight:700; line-height:1.32; max-width:35ch; }
+    .case-actions { display:flex; flex-wrap:wrap; gap:.8rem; margin-top:1.6rem; }
+    .case-actions a { color:#fff; border:1px solid rgba(255,255,255,.75); padding:.7rem 1rem; font-size:1.15rem; font-weight:900; text-decoration:none; }
+    .case-actions a:first-child { background:#eeff41; color:#111; border-color:#eeff41; }
+    .case-qr { position:absolute; bottom:1.5rem; right:1.5rem; width:min(16vh,140px); height:auto; background:#fff; padding:.45rem; z-index:2; }
+    .slide--video { gap:1rem; padding:2.5rem 4rem; }
+    .video-title { font-size:clamp(1.55rem,2.4vw,1.9rem); font-weight:900; color:#444; }
+    .video-credito { font-size:1.05rem; }
+    .slide--reading h2 { font-size:clamp(2rem,5vw,3.8rem); color:#222; margin:.4rem 0 2.5rem; }
+    .reading-kicker { color:#777; text-transform:uppercase; letter-spacing:.12em; font-size:1rem; font-weight:900; }
+    .reading-flow { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:1.5rem; max-width:64rem; }
+    .reading-flow div { border-top:5px solid #444; padding-top:1rem; }
+    .reading-flow div:last-child { border-top-color:#eeff41; }
+    .reading-flow span { display:block; color:#777; text-transform:uppercase; letter-spacing:.08em; font-size:.95rem; font-weight:900; }
+    .reading-flow strong { display:block; color:#333; font-size:clamp(1.45rem,2.4vw,1.9rem); line-height:1.3; margin-top:.6rem; }
+    .reading-flow b { font-size:2rem; }
+    .reading-question { margin-top:2.5rem; font-size:clamp(1.45rem,2.3vw,1.85rem); font-weight:900; color:#444; max-width:56ch; }
+    .slide--assign ol { list-style:none; width:min(64rem,100%); margin:auto; }
+    .slide--assign li { display:grid; grid-template-columns:3rem 1fr; padding:1rem 0; border-bottom:1px solid #ddd; }
+    .slide--assign li b { color:#aab500; }
+    .slide--assign strong { font-size:clamp(1.55rem,2.5vw,2rem); }
+    .slide--assign em { display:block; color:#666; font-style:normal; margin-top:.15rem; font-size:1.25rem; }
+    .content-note-kicker { color:#777; text-transform:uppercase; letter-spacing:.12em; font-size:1rem; font-weight:900; }
+    .content-note-title { font-size:clamp(1.7rem,4vw,3rem); font-weight:900; line-height:1.2; max-width:28ch; margin:auto 0 1.4rem; }
+    .content-note-body { max-width:52ch; color:#555; font-size:clamp(1.4rem,2vw,1.7rem); line-height:1.55; }
+    .wall-grid { margin:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; width:100%; max-width:70rem; }
+    .wall-grid span { background:#f1f1ed; padding:1.8rem 1rem; font-size:clamp(1.45rem,2.5vw,2rem); font-weight:900; text-align:center; }
+    .wall-grid span:nth-child(2n) { background:#eeff41; }
+    .slide--formula { flex-direction:row; flex-wrap:wrap; gap:1rem; }
+    .slide--formula p,.slide--formula b { font-size:clamp(1.6rem,4vw,3rem); font-weight:900; color:#444; }
+    .slide--formula .accent { background:#eeff41; padding:.05em .2em; color:#111; }
+    .slide--formula small { flex-basis:100%; color:#666; font-size:1.3rem; margin-top:1rem; }
+    .slide--three { background:#f4f3ee; }
+    .slide--three > div { display:grid; grid-template-columns:12rem 1fr; gap:1.5rem; border-top:1px solid #bbb; padding:1.4rem 0; }
+    .slide--three span { color:#666; letter-spacing:.1em; font-size:1rem; font-weight:900; }
+    .slide--three strong { font-size:clamp(1.55rem,2.6vw,2.1rem); }
+    .sentence-body { font-size:clamp(1.3rem,3vw,2.2rem); font-weight:900; line-height:1.5; margin:1rem 0; }
+    .sentence-body span { background:#eeff41; padding:.05em .2em; }
+    .slide--badgood { flex-direction:row; gap:2rem; }
+    .slide--badgood > div { width:42%; border-top:6px solid #aaa; padding-top:1.2rem; }
+    .slide--badgood .good { border-color:#eeff41; }
+    .slide--badgood span { color:#777; font-size:1rem; font-weight:900; letter-spacing:.1em; }
+    .slide--badgood p { font-size:clamp(1.55rem,2.7vw,2.2rem); font-weight:900; line-height:1.35; margin-top:1rem; }
+    .sheet-kicker { color:#777; letter-spacing:.12em; text-transform:uppercase; font-weight:900; font-size:1rem; }
+    .slide--sheet h2 { font-size:clamp(2rem,4vw,3rem); margin:.6rem 0 1.5rem; }
+    .slide--sheet ol { list-style:none; counter-reset:sheet; }
+    .slide--sheet li { counter-increment:sheet; border-bottom:1px solid #ccc; padding:.8rem 0; font-size:clamp(1.45rem,2.3vw,1.85rem); font-weight:700; }
+    .slide--sheet li::before { content:'0' counter(sheet); color:#aab500; display:inline-block; width:3rem; font-size:.75em; }
+    .slide--sources h2 { font-size:clamp(1.7rem,3vw,2.4rem); color:#444; margin-bottom:1.3rem; }
+    .slide--sources ul { list-style:none; columns:2; column-gap:3rem; }
+    .slide--sources li { break-inside:avoid; padding:.55rem 0; color:#555; line-height:1.4; font-size:1.15rem; }
+    .slide--sources p { color:#666; margin-top:1.4rem; max-width:70ch; line-height:1.5; font-size:1.1rem; }
+    @media (max-width:900px) {
+      .slide { padding:3.5rem 1.5rem 4.5rem; }
+      .slide-title { font-size:clamp(2rem,9vw,3rem); max-width:100%; }
+      .slide-subtitle { font-size:1.25rem; }
+      .section-theme { font-size:clamp(2.35rem,11vw,3.6rem); max-width:100%; }
+      .slide--parrafo { padding:4rem 1.5rem 5rem; overflow-y:auto; justify-content:flex-start; }
+      .slide-concept-title { font-size:1.75rem; }
+      .slide-concept-body { font-size:1.25rem; line-height:1.5; }
+      .pauta li { font-size:1.2rem; }
+      .slide--prompt,.slide--agenda,.slide--matrix,.slide--distribution,.slide--verbs,.slide--reading,.slide--assign,.slide--wall,.slide--three,.slide--sentence,.slide--sheet,.slide--sources,.slide--content-note { padding:4rem 1.5rem 5rem; overflow-y:auto; justify-content:flex-start; }
+      .slide--agenda ol { grid-template-columns:1fr; }
+      .case-copy { width:100%; }
+      .case-shade { background:rgba(0,0,0,.78); }
+      .case-qr { width:96px; bottom:1rem; right:1rem; padding:.3rem; }
+      .slide--case { padding:2rem 1.5rem 5rem; }
+      .slide--balance,.slide--badgood { flex-direction:column; padding:4rem 1.5rem; align-items:stretch; }
+      .slide--balance div,.slide--badgood > div { width:100%; }
+      .slide--balance i { width:100%; height:3px; }
+      .reading-flow { grid-template-columns:1fr; }
+      .reading-flow > b { transform:rotate(90deg); justify-self:start; }
+      .wall-grid { grid-template-columns:1fr 1fr; }
+      .slide--three > div { grid-template-columns:1fr; gap:.4rem; }
+      .slide--sources ul { columns:1; }
+      .video-marco { width:100%; }
+    }
+  
+  
+/* S06/S07: consignas autónomas y relaciones editables, sobre el shell de S05. */
+.slide--conclusion .tema-central {font-size:clamp(2rem,5.5vw,4.2rem);text-transform:none;max-width:23ch;line-height:1.15;}
+.unit-story {display:flex;flex-direction:column;align-items:center;gap:.2rem;}
+.unit-story div {border:1px solid #444;padding:.6rem 1rem;max-width:700px;width:100%;}
+.unit-story b {font-size:1rem;color:#6f6f6f;}
+.unit-story p {font-size:1.4rem;color:#222;line-height:1.3;}
+.unit-story span {color:#444;}
+.unit-time a {color:#246b70;border-color:#246b70;font-size:.95em;}
+.unit-heading {font-size:clamp(1.6rem,3vw,2.6rem);line-height:1.2;color:#222;max-width:1100px;width:100%;margin-bottom:1.3rem;font-weight:900;}
+.unit-support {font-size:clamp(1rem,1.6vw,1.35rem);line-height:1.5;color:#6f6f6f;max-width:68ch;margin-top:1.2rem;}
+.unit-activity,.unit-compare,.unit-sources {text-align:left;align-items:stretch;padding:3.2rem 6vw 4rem;}
+.unit-activity {justify-content:flex-start;}
+.unit-time {font-size:clamp(1.1rem,1.65vw,1.4rem);font-weight:700;color:#444;margin-bottom:1rem;}
+.unit-activity ol {list-style:none;counter-reset:step;max-width:1120px;width:100%;}
+.unit-activity li {counter-increment:step;display:flex;gap:1.2rem;border-top:1px solid #e5e5e5;padding:.85rem 0;font-size:clamp(1.1rem,1.85vw,1.6rem);line-height:1.4;color:#444;}
+.unit-activity li:before {content:counter(step,decimal-leading-zero);font-size:1rem;font-weight:700;color:#6f6f6f;padding-top:.25rem;}
+.unit-columns {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem 2.8rem;}
+.unit-columns.three {grid-template-columns:repeat(3,minmax(0,1fr));}
+.unit-column {border-top:3px solid #444;padding-top:1rem;}
+.unit-column h3 {font-size:clamp(1.2rem,2vw,1.8rem);color:#222;margin-bottom:.8rem;line-height:1.25;}
+.unit-column p {font-size:clamp(1.05rem,1.7vw,1.5rem);line-height:1.5;color:#444;}
+.unit-definition {max-width:42ch;font-size:clamp(1.5rem,2.6vw,2.25rem);line-height:1.5;color:#444;text-align:left;}
+.unit-sources li {font-size:clamp(1rem,1.6vw,1.35rem);line-height:1.5;margin:.75rem 0;color:#444;list-style:none;}
+.unit-sources a,.unit-compare a {color:#246b70;border-color:#246b70;}
+.unit-flow svg {width:90%;max-height:60vh;}
+.unit-flow .diagram-mobile {max-width:500px;}
+.unit-flow .dm-box strong {font-size:1.2rem;}
+.unit-table {text-align:left;align-items:stretch;padding:3rem 6vw 4rem;}
+.unit-table-scroll {overflow-x:auto;width:100%;}
+.unit-table table {border-collapse:collapse;width:100%;color:#444;table-layout:fixed;}
+.unit-table th,.unit-table td {text-align:left;vertical-align:top;padding:1rem;border-bottom:1px solid #e5e5e5;font-size:clamp(1.05rem,1.7vw,1.45rem);line-height:1.4;overflow-wrap:anywhere;}
+.unit-table th {color:#222;font-weight:900;border-bottom:3px solid #444;}
+.unit-table-scroll:focus-visible {outline:3px solid #222;outline-offset:3px;}
+@media(max-width:700px) {
+ .unit-table {padding:2rem 1.5rem 5rem;overflow-y:auto;justify-content:flex-start;}
+ .unit-table table {min-width:640px;}
+ .unit-table th,.unit-table td {font-size:1rem;padding:.8rem;}
+ .unit-activity,.unit-compare,.unit-sources,.unit-flow {padding:2rem 1.5rem 5rem;justify-content:flex-start;overflow-y:auto;}
+ .unit-columns,.unit-columns.three {grid-template-columns:1fr;gap:1.3rem;}
+ .unit-definition {font-size:1.25rem;}
+ .unit-flow .diagram-mobile {display:flex;}
+ .unit-flow svg {display:none;}
+ .unit-heading {font-size:1.65rem;}
+}
+@media(max-height:650px) and (min-width:701px){
+ .unit-activity,.unit-compare,.unit-sources {padding-top:1.5rem;padding-bottom:3rem;}
+ .unit-heading{font-size:1.9rem;margin-bottom:.7rem;}
+ .unit-activity li{font-size:1.15rem;padding:.55rem 0;}
+ .unit-column p{font-size:1.1rem;}
+ .unit-time{font-size:1rem;}
+}
+
+</style>
+</head>
+<body>
+  <div class="slides-container">
+<div class="slide" style="gap:2rem;"><img src="../shared/espera.gif" style="max-width:40%;max-height:52vh;" alt="Un gato espera frente a un computador"><p class="slide-title">Gracias por la puntualidad</p><p class="slide-subtitle">En breve comenzamos</p></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="portada-top" style="color:#333">Pensamiento</p><p class="portada-bottom" style="color:#111">SENSORIAL</p></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Clase 7 · Jueves 17 de septiembre de 2026</p><p class="section-theme">¿Podemos defender este territorio?</p></div>
+
+<div class="slide unit-resource"><h2 class="unit-heading">El tablero de trabajo</h2><img src="../shared/qr-clase7.png" alt="Código QR: Defender el territorio" style="width:240px;max-width:60vw;image-rendering:pixelated"><p class="unit-support"><a href="https://catedra.dejesumensaje.com/pensamiento-sensorial/defender-el-territorio/" target="_blank" rel="noopener">Defender el territorio</a></p><p class="unit-support">Abran esta consigna y manténganla a mano.</p></div>
+
+<div class="slide"><p class="slide-title">Hoy ponemos a prueba el argumento y la identidad provisional del proyecto.</p><p class="unit-support">Retomamos «Hacer perceptible una intención», iniciada en clase 6 y continuada en casa. Mañana, viernes 18, presentamos el anteproyecto.</p></div>
+
+<div class="slide"><p class="slide-title">Hoy vamos a conectar lo construido, escuchar objeciones y ensayar la defensa.</p><p class="unit-support">Al salir, cada grupo debe poder presentar su anteproyecto de principio a fin.</p></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Integración · 35 min</p><p class="section-theme">Reconstruir el argumento</p></div>
+
+<div class="slide"><p class="slide-title">El anteproyecto es un argumento: cada decisión debe poder conectarse con lo que investigamos.</p></div>
+
+<div class="slide slide--visual unit-flow"><h2 class="unit-heading">El recorrido del argumento</h2><svg viewBox="0 0 900 310" role="img" aria-label="Vimos esto → Interpretamos esto → Nos preguntamos esto → Exploramos esta relación"><rect x="220" y="45" width="460" height="50" fill="#fff" stroke="#444"/><text x="450" y="77" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Vimos esto</text><path d="M450 95v17m-5 -5 5 5 5 -5" fill="none" stroke="#444" stroke-width="2"/><rect x="220" y="115" width="460" height="50" fill="#fff" stroke="#444"/><text x="450" y="147" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Interpretamos esto</text><path d="M450 165v17m-5 -5 5 5 5 -5" fill="none" stroke="#444" stroke-width="2"/><rect x="220" y="185" width="460" height="50" fill="#fff" stroke="#444"/><text x="450" y="217" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Nos preguntamos esto</text><path d="M450 235v17m-5 -5 5 5 5 -5" fill="none" stroke="#444" stroke-width="2"/><rect x="220" y="255" width="460" height="50" fill="#eeff41" stroke="#444"/><text x="450" y="287" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Exploramos esta relación</text></svg><div class="diagram-mobile"><div class="dm-box neutral"><strong>Vimos esto</strong></div><span class="dm-arrow">↓</span><div class="dm-box neutral"><strong>Interpretamos esto</strong></div><span class="dm-arrow">↓</span><div class="dm-box neutral"><strong>Nos preguntamos esto</strong></div><span class="dm-arrow">↓</span><div class="dm-box accent"><strong>Exploramos esta relación</strong></div></div></div>
+
+<div class="slide slide--visual unit-flow"><h2 class="unit-heading">La propuesta y lo que sigue abierto</h2><svg viewBox="0 0 900 310" role="img" aria-label="Exploramos esta relación → Proponemos esta experiencia → La identidad la hace perceptible → Falta investigar esto"><rect x="220" y="45" width="460" height="50" fill="#fff" stroke="#444"/><text x="450" y="77" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Exploramos esta relación</text><path d="M450 95v17m-5 -5 5 5 5 -5" fill="none" stroke="#444" stroke-width="2"/><rect x="220" y="115" width="460" height="50" fill="#fff" stroke="#444"/><text x="450" y="147" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Proponemos esta experiencia</text><path d="M450 165v17m-5 -5 5 5 5 -5" fill="none" stroke="#444" stroke-width="2"/><rect x="220" y="185" width="460" height="50" fill="#fff" stroke="#444"/><text x="450" y="217" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">La identidad la hace perceptible</text><path d="M450 235v17m-5 -5 5 5 5 -5" fill="none" stroke="#444" stroke-width="2"/><rect x="220" y="255" width="460" height="50" fill="#eeff41" stroke="#444"/><text x="450" y="287" text-anchor="middle" font-family="Roboto, sans-serif" font-size="23" font-weight="700" fill="#222">Falta investigar esto</text></svg><div class="diagram-mobile"><div class="dm-box neutral"><strong>Exploramos esta relación</strong></div><span class="dm-arrow">↓</span><div class="dm-box neutral"><strong>Proponemos esta experiencia</strong></div><span class="dm-arrow">↓</span><div class="dm-box neutral"><strong>La identidad la hace perceptible</strong></div><span class="dm-arrow">↓</span><div class="dm-box accent"><strong>Falta investigar esto</strong></div></div></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Una frase por conexión</h2><p class="unit-time">20 min · En su grupo · <a href="/pensamiento-sensorial/defender-el-territorio/#argumento" target="_blank" rel="noopener">Guía: reconstruir el argumento</a></p><ol><li>Ordenen evidencia, interpretación, tensión, pregunta, relación, experiencia, identidad e incertidumbre.</li><li>Escriban una frase que explique el paso entre cada pieza y la siguiente.</li><li>Localicen el salto más débil. «Encontramos X, por lo tanto haremos una app» necesita explicar la relación.</li><li>Salida: argumento completo y una conexión prioritaria para revisar.</li></ol></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Territorio y pregunta de interacción · Igual peso</p><p class="section-theme">Los cuatro criterios</p></div>
+
+<div class="slide unit-compare"><h2 class="unit-heading">Cuatro dimensiones, 25 % cada una</h2><div class="unit-columns"><div class="unit-column"><h3>Personas y contexto · 25 %</h3><p>¿Identificamos para quién o con quién y qué sabemos realmente? ¿Mostramos la evidencia y su alcance?</p></div><div class="unit-column"><h3>Claridad de la intención · 25 %</h3><p>¿Se entiende qué relación queremos explorar y por qué es pertinente?</p></div><div class="unit-column"><h3>Nombre e identidad inicial · 25 %</h3><p>¿El nombre y las decisiones perceptibles expresan esa relación?</p></div><div class="unit-column"><h3>Pregunta de interacción · 25 %</h3><p>¿La pregunta permanece abierta y explica qué necesitamos descubrir mediante la participación?</p></div></div></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Revisión con los criterios</h2><p class="unit-time">10 min · En su grupo · <a href="/pensamiento-sensorial/defender-el-territorio/#criterios" target="_blank" rel="noopener">Guía: los cuatro criterios</a></p><ol><li>Localicen la diapositiva o registro que permite revisar cada criterio.</li><li>Marquen cada dimensión como sustentada, parcial o pendiente y escriban la razón.</li><li>En personas/contexto, separen registros reales de supuestos. Una persona ficticia no cuenta como evidencia.</li><li>Salida: cuatro observaciones verificables. Estos estados orientan la revisión, no reemplazan la calificación.</li></ol></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Borradores · 60 min</p><p class="section-theme">Mesa de crítica</p></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Cada grupo presenta, otro grupo revisa</h2><p class="unit-time">60 min · Cinco grupos · 12 min por grupo · <a href="/pensamiento-sensorial/defender-el-territorio/#critica" target="_blank" rel="noopener">Guía: mesa de crítica</a></p><ol><li>5 min: presenten el borrador completo.</li><li>4 min: el grupo siguiente revisa los cuatro criterios del expositor. Cuando presenta el grupo 5, revisa el grupo 1.</li><li>3 min: el grupo expositor registra una fortaleza sustentada y dos problemas prioritarios.</li><li>Salida: una ficha de crítica por grupo. Hablen de decisiones y evidencia, no de gustos.</li></ol></div>
+
+<div class="slide slide--preguntas-grandes"><p class="pg-titulo">Mientras escuchamos: fundamento</p><ul class="pg"><li>¿Qué afirmación está respaldada por evidencia?</li><li>¿Dónde aparece una interpretación presentada como certeza?</li><li>¿Cuál es la tensión y qué sabemos de las personas involucradas?</li></ul></div>
+
+<div class="slide slide--preguntas-grandes"><p class="pg-titulo">Mientras escuchamos: interacción</p><ul class="pg"><li>¿La pregunta sigue abierta o ya contiene la solución?</li><li>¿Qué hace la persona, qué hace el sistema y qué relación aparece?</li><li>¿Qué se perdería si la persona dejara de intervenir?</li></ul></div>
+
+<div class="slide slide--preguntas-grandes"><p class="pg-titulo">Mientras escuchamos: identidad</p><ul class="pg"><li>¿Qué decisión perceptible expresa la relación?</li><li>¿El nombre abre ese territorio o promete otra cosa?</li><li>¿Qué sigue abierto y qué tendría sentido prototipar después?</li></ul></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Una crítica que se pueda usar</h2><p class="unit-time">Pauta visible durante los 4 min de retroalimentación · Grupo revisor</p><ol><li>Citen una frase, imagen o decisión concreta del borrador.</li><li>Nombren el criterio al que afecta.</li><li>Expliquen qué se comprende o qué conexión falta.</li><li>Propongan un ajuste acotado. Entreguen sus observaciones al grupo expositor.</li></ol></div>
+
+<div class="slide unit-compare"><h2 class="unit-heading">Un registro que evite «me gusta» y «no me gusta»</h2><div class="unit-columns"><div class="unit-column"><h3>Se sostiene</h3><p>Citen una decisión y la evidencia que permite defenderla.</p></div><div class="unit-column"><h3>Revisar</h3><p>Señalen una afirmación o conexión que todavía no se sostiene.</p></div><div class="unit-column"><h3>Pregunta</h3><p>Escriban una duda que el argumento dejó abierta.</p></div><div class="unit-column"><h3>Posibilidad</h3><p>Propongan un ajuste acotado. El grupo decide si tiene sentido.</p></div></div><p class="unit-support">Adaptación de Feedback Capture Grid, d.school. Se usa dentro de los 4 min de crítica, vinculando cada observación con uno de los cuatro criterios.</p></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">10 min · Guarden la ficha de crítica antes de levantarse</p><p class="section-theme">Pausa</p></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Revisión argumentativa · 10 min</p><p class="section-theme">Defender, no vender</p></div>
+
+<div class="slide unit-compare"><h2 class="unit-heading">La posición desde la que presentamos</h2><div class="unit-columns"><div class="unit-column"><h3>Vender</h3><p>Intentar demostrar que la propuesta ya es correcta.</p></div><div class="unit-column"><h3>Defender</h3><p>Mostrar por qué las decisiones actuales tienen sentido desde lo investigado y reconocer qué permanece abierto.</p></div></div></div>
+
+<div class="slide"><p class="slide-title">Una buena defensa permite seguir el razonamiento incluso cuando todavía no conocemos el resultado.</p><p class="unit-support">Priorizamos la trazabilidad sobre la espectacularidad y la certeza aparente.</p></div>
+
+<div class="slide unit-compare"><h2 class="unit-heading">Cómo responder una objeción</h2><div class="unit-columns three"><div class="unit-column"><h3>Objeción</h3><p>«¿Cómo saben que esta experiencia va a producir confianza?»</p></div><div class="unit-column"><h3>Respuesta defendible</h3><p>«Todavía no lo sabemos. Esta evidencia nos llevó a proponer que decidir cuánto revelar podría cambiar la relación. Después del anteproyecto probaremos esa decisión».</p></div><div class="unit-column"><h3>Lo que falta</h3><p>Sustituir «esta evidencia» por el registro real del grupo. El ejemplo es una estructura de respuesta, no un resultado de investigación.</p></div></div></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Ajustes prioritarios · 25 min</p><p class="section-theme">Edición del borrador</p></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Dos correcciones antes de ensayar</h2><p class="unit-time">25 min · En su grupo · <a href="/pensamiento-sensorial/defender-el-territorio/#editar" target="_blank" rel="noopener">Guía: editar</a></p><ol><li>Revisen las observaciones de la mesa y elijan las dos que más afectan el argumento.</li><li>Corrijan esas conexiones. Si falta evidencia, declaren el límite y reformulen la afirmación.</li><li>Revisen que texto, imágenes y jerarquía permitan comprenderlas.</li><li>Salida: versión completa para ensayar y un registro breve de las dos correcciones.</li></ol></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">10 min · Al volver, empezamos el ensayo con la presentación lista</p><p class="section-theme">Pausa</p></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Presentación cronometrada · 50 min</p><p class="section-theme">Ensayo general</p></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Una defensa completa en versión breve</h2><p class="unit-time">50 min · Cinco grupos · 10 min por grupo · <a href="/pensamiento-sensorial/defender-el-territorio/#ensayo" target="_blank" rel="noopener">Guía: ensayo general</a></p><ol><li>6 min: defensa completa con la presentación real. Una persona del grupo revisor lleva el cronómetro y avisa al minuto 5.</li><li>2 min: una objeción y la respuesta del equipo.</li><li>2 min: retroalimentación y registro de hasta dos ajustes prioritarios.</li><li>Salida: anteproyecto ensayado de principio a fin. Los 6 min son una pauta de ensayo, no la duración oficial del viernes.</li></ol></div>
+
+<div class="slide unit-compare"><h2 class="unit-heading">Dos capas de revisión</h2><div class="unit-columns"><div class="unit-column"><h3>Argumento</h3><p>¿Seguimos el camino desde la evidencia hasta la propuesta? ¿Se entiende por qué debe ser interactiva?</p></div><div class="unit-column"><h3>Presentación</h3><p>¿La jerarquía, el texto, las imágenes y la identidad nos permiten comprender ese camino?</p></div></div></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Una ruta posible para los 6 minutos</h2><p class="unit-time">Pauta para quien presenta · Dentro del ensayo</p><ol><li>0:00–1:30: territorio, pertinencia, personas/contexto y evidencia.</li><li>1:30–3:00: interpretación, tensión y pregunta de interacción.</li><li>3:00–4:30: hipótesis, relación y necesidad de participación.</li><li>4:30–6:00: nombre, identidad inicial, referentes e incertidumbres.</li></ol></div>
+
+<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Revisión final · 15 min</p><p class="section-theme">El anteproyecto del viernes 18</p></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Lo que la presentación debe permitir responder</h2><p class="unit-time">En su grupo · Usen esta lista durante los 10 min de «Las horas que quedan».</p><ol><li>Territorio y pertinencia: ¿qué investigamos y por qué vale la pena?</li><li>Personas/contexto y evidencia: ¿con quién, qué conocemos y de dónde salió?</li><li>Intención y pregunta: ¿qué relación exploramos y qué falta descubrir?</li><li>Forma: ¿por qué es pertinente que la persona intervenga?</li></ol></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Cómo empieza a reconocerse y qué falta saber</h2><p class="unit-time">Continuación de la misma lista · Dentro de los 10 min de cierre.</p><ol><li>Nombre: ¿cómo se presenta y qué territorio abre?</li><li>Identidad inicial: ¿qué decisiones expresan la relación?</li><li>Referentes: ¿qué aprendemos de ellos y qué no trasladamos?</li><li>Incertidumbre: ¿qué sigue abierto y cómo pensamos investigarlo?</li></ol></div>
+
+<div class="slide unit-activity"><h2 class="unit-heading">Las horas que quedan</h2><p class="unit-time">10 min · En su grupo · <a href="/pensamiento-sensorial/defender-el-territorio/#salida" target="_blank" rel="noopener">Guía: cierre y lista para el viernes</a></p><ol><li>Escriban hasta dos ajustes prioritarios del ensayo, con responsable y hora de cierre.</li><li>Comprueben las cuatro dimensiones de evaluación y conserven visibles las incertidumbres.</li><li>Acuerden quién explica cada parte y prueben la presentación y sus medios en el equipo que usarán.</li><li>Salida: versión para el viernes y plan acotado de cierre. Eviten reconstruir el proyecto desde cero.</li></ol></div>
+
+<div class="slide slide--conclusion" style="background:#111"><p class="tema-central">Esto sabemos. Esto proponemos. Esto podemos defender. Esto todavía necesitamos descubrir.</p></div>
+
+<div class="slide"><p class="slide-title">Después del anteproyecto ya no investigaremos “el proyecto entero”. Empezaremos a aislar fragmentos de la interacción y experimentar con ellos.</p><p class="unit-support">Esta es la entrada a los Laboratorios de experimentación II.</p></div>
+
+<div class="slide unit-sources"><h2 class="unit-heading">Referencias y materiales de trabajo</h2><ul><li><a href="https://dschool.stanford.edu/s/METHODCARDS-v3-slim.pdf" target="_blank" rel="noopener">Stanford d.school · Feedback Capture Grid</a> · Adaptado a la crítica con los cuatro criterios del curso.</li><li><a href="/presentaciones/ps3/s05/" target="_blank" rel="noopener">Clase 5: pregunta e hipótesis de experiencia</a></li><li><a href="/presentaciones/ps3/s06/" target="_blank" rel="noopener">Clase 6: ¿Qué forma toma una idea?</a></li><li><a href="/pensamiento-sensorial/hacer-perceptible-una-intencion/" target="_blank" rel="noopener">Preparación: Hacer perceptible una intención</a></li><li><a href="/pensamiento-sensorial" target="_blank" rel="noopener">Programa y evaluación de Pensamiento Sensorial</a> · Hito «Territorio y pregunta de interacción». Cuatro criterios con igual peso.</li><li><a href="/pensamiento-sensorial/s07" target="_blank" rel="noopener">Sesión 7: guion y consignas</a></li></ul><p class="unit-support">Las preguntas de crítica, el protocolo de ensayo y las estructuras de respuesta son pautas docentes de esta unidad. Los registros que sustentan cada anteproyecto deben provenir de la investigación real del grupo.</p></div>
+</div>
+<div class="nav-hint">← →</div>
+  <div class="nav-hint-touch">desliza o toca para continuar</div>
+  <nav class="deck-nav" aria-label="Navegación de la presentación">
+    <button class="deck-nav-toggle" aria-expanded="false">Secciones ↑</button>
+    <ul class="deck-nav-menu"></ul>
+  </nav>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <script>
+    let current = 0;
+    let lastShowTime = 0;
+    const slides = [...document.querySelectorAll('.slide')];
+    const progressFill = document.getElementById('progressFill');
+
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', () => {
+        const d = document.createElement('div');
+        d.className = 'ph';
+        d.textContent = img.getAttribute('alt') || 'Material pendiente';
+        img.replaceWith(d);
+      }, { once: true });
+    });
+
+    // Los videos se montan solo en la diapositiva activa: así el deck no abre
+    // dos reproductores de YouTube al arrancar, y sobre todo, al pasar de
+    // diapositiva el audio se corta en vez de seguir sonando de fondo.
+    function montarMedios(activa) {
+      document.querySelectorAll('iframe[data-src]').forEach(f => {
+        if (f.closest('.slide') === activa) {
+          if (!f.src) f.src = f.dataset.src;
+        } else if (f.src) {
+          f.removeAttribute('src');
+        }
+      });
+      document.querySelectorAll('video').forEach(v => {
+        if (v.closest('.slide') !== activa && !v.paused) v.pause();
+      });
+    }
+
+    function loadImages(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('img[data-src]').forEach(img => {
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+      });
+    }
+
+    function show(n) {
+      const now = performance.now();
+      const fastNav = (now - lastShowTime) < 180;
+      lastShowTime = now;
+
+      const prevActive = slides[current];
+      if (prevActive) prevActive.classList.remove('active', 'no-anim');
+
+      current = (n + slides.length) % slides.length;
+      const next = slides[current];
+
+      if (fastNav) {
+        next.classList.add('no-anim');
+      } else {
+        void next.offsetWidth;
+      }
+      next.classList.add('active');
+      // Un slide que se dejó desplazado en el celular no debe reaparecer a media altura.
+      next.scrollTop = 0;
+
+      if (progressFill) {
+        progressFill.style.width = ((current + 1) / slides.length * 100) + '%';
+      }
+
+      loadImages(next);
+      loadImages(slides[(current + 1) % slides.length]);
+      montarMedios(next);
+    }
+
+    document.addEventListener('keydown', e => {
+      // Si el foco está en un control de la tira de componentes, las teclas son
+      // para él: escribir en el campo o mover el slider con flechas no puede
+      // cambiar de diapositiva.
+      const t = e.target;
+      if (t && (t.matches('input, textarea, select') || t.isContentEditable)) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); show(current - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+
+    document.addEventListener('click', e => {
+      if (e.target.closest('.deck-nav, a, button, .demo, video, iframe')) return;
+      show(current + 1);
+    });
+
+    document.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', e => e.stopPropagation());
+    });
+
+    let touchStartX = 0, touchStartY = 0, touchMoved = false;
+    document.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchMoved = false;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+      const target = e.target;
+      if (target.closest('a') || target.closest('.deck-nav')) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      // Desplazar un slide largo con el dedo no puede contar como pasar de slide.
+      if (touchMoved && Math.abs(dy) > Math.abs(dx)) return;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        e.preventDefault();
+        if (dx < 0) show(current + 1); else show(current - 1);
+      }
+    }, { passive: false });
+
+    const deckNav = document.querySelector('.deck-nav');
+    const navToggle = document.querySelector('.deck-nav-toggle');
+    const navMenu = document.querySelector('.deck-nav-menu');
+
+    slides.forEach((slide, index) => {
+      const label = slide.querySelector('.section-theme, .tema-central');
+      if (!label || !navMenu) return;
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.dataset.goto = String(index);
+      const clone = label.cloneNode(true);
+      clone.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+      const kicker = slide.querySelector('.section-kicker');
+      const texto = clone.textContent.replace(/\s+/g, ' ').trim();
+      const crudo = kicker ? kicker.textContent.trim() + ' · ' + texto : texto;
+      button.textContent = crudo.length > 52 ? crudo.slice(0, 51).trimEnd() + '…' : crudo;
+      item.appendChild(button);
+      navMenu.appendChild(item);
+    });
+
+    navToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = deckNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open);
+    });
+
+    document.querySelectorAll('.deck-nav-menu button').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        show(parseInt(b.dataset.goto, 10));
+        deckNav.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', () => deckNav.classList.remove('open'));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') deckNav.classList.remove('open');
+    });
+
+    show(0);
+  </script>
+</body>
+</html>
