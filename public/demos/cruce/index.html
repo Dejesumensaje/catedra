@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El cruce — cinco puntos de vista</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --tinte: #ff4a3d; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #2b3a61; }
+  body { font-family: Roboto, system-ui, -apple-system, sans-serif; color: #fff; }
+  canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  body.sobre canvas { cursor: pointer; }
+  body.arrastrando canvas { cursor: grabbing; }
+
+  /* ---------- capas por punto de vista */
+  .capa { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity .9s ease; }
+  body.llego[data-vista="semaforo"] .tinte { opacity: 1; }
+  .tinte { box-shadow: inset 0 0 22vmin 4vmin var(--tinte); mix-blend-mode: screen; transition: opacity .9s ease, box-shadow .5s linear; }
+  body.llego[data-vista="buzon"] .ranura { opacity: 1; }
+  .ranura::before, .ranura::after { content: ""; position: absolute; left: 0; right: 0; height: 13vh; background: #0d0f16; }
+  .ranura::before { top: 0; }
+  .ranura::after { bottom: 0; }
+  body.llego[data-vista="charco"] .agua { opacity: 1; }
+  .agua { background: rgba(70, 110, 180, .16); }
+  .agua i { position: absolute; width: 30vmin; height: 30vmin; margin: -15vmin 0 0 -15vmin; border: 2px solid rgba(220, 235, 255, .35); border-radius: 50%; transform: scale(0); animation: onda 3.6s linear infinite; }
+  .agua i:nth-child(1) { left: 24%; top: 70%; }
+  .agua i:nth-child(2) { left: 71%; top: 58%; animation-delay: 1.2s; }
+  .agua i:nth-child(3) { left: 48%; top: 84%; animation-delay: 2.3s; }
+  .agua i:nth-child(4) { left: 86%; top: 88%; animation-delay: .6s; }
+  @keyframes onda { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+  .corte { background: #0d0f16; transition: opacity .25s ease; }
+  body.cortando .corte { opacity: 1; }
+
+  /* ---------- interfaz */
+  #volver {
+    position: fixed; top: 20px; left: 20px; z-index: 3;
+    font: 500 16px/1 Roboto, system-ui, sans-serif; color: #222;
+    background: #fff; border: 0; padding: 12px 16px; cursor: pointer;
+    box-shadow: 4px 4px 0 #0d0f16;
+    opacity: 0; transform: translateY(-6px); transition: opacity .4s, transform .4s;
+  }
+  body.en-vista #volver { opacity: 1; transform: none; }
+  #volver kbd { font: inherit; color: #6f6f6f; margin-left: 8px; }
+  #volver:focus-visible, .atajos button:focus-visible { outline: 3px solid #eeff41; outline-offset: 3px; }
+
+  #rotulo {
+    position: fixed; left: 24px; bottom: 22px; z-index: 3; margin: 0;
+    font: 400 clamp(18px, 2.3vw, 30px)/1.1 Roboto, system-ui, sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .7), 0 0 18px rgba(0, 0, 0, .45);
+    opacity: 0; transition: opacity .8s ease;
+  }
+  body.llego #rotulo { opacity: 1; }
+  body[data-vista="buzon"] #rotulo { bottom: calc(13vh + 18px); }
+
+  #pista {
+    position: fixed; left: 50%; bottom: 26px; z-index: 3; margin: 0; transform: translateX(-50%);
+    font: 400 clamp(15px, 1.6vw, 20px)/1.2 Roboto, system-ui, sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .7), 0 0 16px rgba(0, 0, 0, .5);
+    transition: opacity 1s ease;
+  }
+  body.visto #pista, body.en-vista #pista { opacity: 0; }
+
+  .atajos { position: fixed; top: 20px; right: 20px; z-index: 3; display: flex; gap: 8px; }
+  .atajos button {
+    font: 500 14px/1 Roboto, system-ui, sans-serif; color: #222; background: #fff; border: 0;
+    padding: 10px 12px; cursor: pointer;
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+  }
+  .atajos:focus-within button { position: static; width: auto; height: auto; clip-path: none; }
+
+  #sin-webgl { position: fixed; inset: 0; display: none; place-items: center; padding: 24px; text-align: center; font-size: 18px; }
+  body.sin-webgl #sin-webgl { display: grid; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .agua i { animation: none; opacity: .5; transform: scale(1); }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+</head>
+<body data-vista="general">
+  <canvas id="escena" aria-label="Un cruce peatonal al borde de un parque, al anochecer, bajo una llovizna. Algunos objetos se pueden tocar para ver la escena desde ellos."></canvas>
+
+  <div class="capa tinte" aria-hidden="true"></div>
+  <div class="capa ranura" aria-hidden="true"></div>
+  <div class="capa agua" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="capa corte" aria-hidden="true"></div>
+
+  <button id="volver" type="button" tabindex="-1">Vista general<kbd>Esc</kbd></button>
+  <p id="rotulo" aria-live="polite"></p>
+  <p id="pista">Toca lo que parece vivo.</p>
+
+  <nav class="atajos" aria-label="Puntos de vista">
+    <button type="button" data-ir="semaforo">1 Semáforo</button>
+    <button type="button" data-ir="buzon">2 Buzón</button>
+    <button type="button" data-ir="banca">3 Banca</button>
+    <button type="button" data-ir="charco">4 Charco</button>
+    <button type="button" data-ir="ventana">5 Ventana</button>
+  </nav>
+
+  <p id="sin-webgl">Este navegador no puede mostrar la escena en 3D (falta WebGL).</p>
+
+  <script type="module" src="./cruce.js"></script>
+</body>
+</html>
