@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Lluvia al tacto | Pensamiento Sensorial</title>
+<meta name="description" content="Demo interactivo: el gesto de scroll controla el clima. Despacio llovizna, rápido se desata la tormenta, hacia arriba escampa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noche: #0b1220;
+    --texto: #eef1f4;
+    --texto-suave: rgba(238, 241, 244, 0.74);
+    --panel: rgba(8, 11, 16, 0.55);
+    --borde: rgba(238, 241, 244, 0.3);
+    --amarillo: #eeff41;
+    --sans: 'Roboto', Helvetica, Arial, sans-serif;
+    --serif: 'PT Serif', Georgia, 'Times New Roman', serif;
+    color-scheme: dark;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background: var(--noche);
+    color: var(--texto);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #escena {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
+  /* Invitación */
+  .invitacion {
+    position: fixed;
+    left: clamp(16px, 7vw, 96px);
+    top: max(14vh, calc(env(safe-area-inset-top, 0px) + 24px));
+    max-width: min(34ch, calc(100vw - 32px));
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 1.1rem;
+    pointer-events: none;
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .invitacion.oculta { opacity: 0; transform: translateY(-8px); }
+  .invitacion h1 {
+    grid-column: 2;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .invitacion p {
+    grid-column: 2;
+    font-family: var(--serif);
+    font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+    line-height: 1.5;
+    color: var(--texto-suave);
+    margin-top: 0.8rem;
+  }
+  .invitacion .nota {
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+    margin-top: 1.2rem;
+  }
+  .gesto {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    width: 1px;
+    height: 100%;
+    min-height: 120px;
+    background: var(--borde);
+    position: relative;
+    overflow: hidden;
+  }
+  .gesto span {
+    position: absolute;
+    left: -1px;
+    top: -30%;
+    width: 3px;
+    height: 28%;
+    background: var(--texto);
+    animation: caer 2.4s cubic-bezier(.55, 0, .75, .4) infinite;
+  }
+  @keyframes caer {
+    0%   { top: -30%; }
+    70%  { top: 100%; }
+    100% { top: 100%; }
+  }
+
+  /* Lectura del estado */
+  .lectura {
+    position: fixed;
+    left: clamp(16px, 7vw, 96px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+    max-width: calc(100vw - 32px);
+    display: grid;
+    gap: 0.25rem;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .lectura .estado {
+    font-family: var(--serif);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+  }
+  .lectura .dato {
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+    font-variant-numeric: tabular-nums;
+  }
+  .lectura .trueno { min-height: 1.2em; }
+
+  /* Pluviómetro */
+  .pluviometro {
+    position: fixed;
+    right: calc(env(safe-area-inset-right, 0px) + 20px);
+    top: 20vh;
+    height: 38vh;
+    width: 64px;
+    pointer-events: none;
+    font-size: 0.68rem;
+    color: var(--texto-suave);
+    font-variant-numeric: tabular-nums;
+  }
+  .pluviometro .tubo {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    border: 1px solid var(--borde);
+  }
+  .pluviometro .nivel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0;
+    background: rgba(200, 214, 232, 0.55);
+  }
+  .pluviometro .marca-actual {
+    position: absolute;
+    right: -4px;
+    width: 14px;
+    height: 2px;
+    background: var(--amarillo);
+    bottom: 0;
+  }
+  .pluviometro .tick {
+    position: absolute;
+    right: 12px;
+    transform: translateY(50%);
+    white-space: nowrap;
+    text-align: right;
+  }
+  .pluviometro .unidad {
+    position: absolute;
+    right: 0;
+    top: -1.8em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Controles */
+  .controles {
+    position: fixed;
+    right: calc(env(safe-area-inset-right, 0px) + 16px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .controles button {
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--texto);
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    padding: 0.6rem 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .controles button:hover { border-color: var(--texto); }
+  .controles button:focus-visible { outline: 2px solid var(--amarillo); outline-offset: 2px; }
+  .controles button[aria-pressed="true"] { background: var(--texto); color: #10141b; }
+  .controles kbd {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    border: 1px solid currentColor;
+    padding: 0 0.3rem;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 640px) {
+    .pluviometro { top: 44vh; height: 26vh; }
+    .lectura { bottom: calc(env(safe-area-inset-bottom, 0px) + 76px); }
+    .controles kbd { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gesto span { animation: none; top: 36%; }
+    .invitacion { transition: opacity 0.4s linear; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="escena" aria-label="Paisaje nocturno con una farola; la lluvia cambia con el scroll" role="img"></canvas>
+
+<section class="invitacion" id="invitacion">
+  <div class="gesto" aria-hidden="true"><span></span></div>
+  <h1>Lluvia al tacto</h1>
+  <p>Desliza hacia abajo para que llueva. Despacio cae una llovizna; con un gesto rápido se desata la tormenta. Hacia arriba, escampa.</p>
+  <p class="nota">Rueda, trackpad o pantalla táctil. Activa el sonido abajo.</p>
+</section>
+
+<div class="lectura" aria-live="polite">
+  <p class="estado" id="estado">Cielo despejado</p>
+  <p class="dato"><span id="mmh">0</span> mm/h</p>
+  <p class="dato trueno" id="trueno"></p>
+</div>
+
+<div class="pluviometro" id="pluviometro" aria-hidden="true">
+  <span class="unidad">mm/h</span>
+  <div class="tubo"><div class="nivel" id="nivel"></div><div class="marca-actual" id="marca"></div></div>
+</div>
+
+<nav class="controles" aria-label="Controles">
+  <button id="btn-sonido" type="button" aria-pressed="false">Activar sonido <kbd>M</kbd></button>
+  <button id="btn-reiniciar" type="button">Reiniciar <kbd>R</kbd></button>
+</nav>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---------- utilidades ----------
+  const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const smooth = (e0, e1, x) => { const t = clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+  const mix = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+  const rgb = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+  const ease = (cur, tgt, tau, dt) => cur + (tgt - cur) * (1 - Math.exp(-dt / tau));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const fmt = (n, d = 1) => n.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // ---------- paleta ----------
+  const C = {
+    skyTopClear: [14, 28, 56], skyHorClear: [62, 90, 128],
+    skyTopStorm: [8, 10, 14], skyHorStorm: [34, 40, 49],
+    farHillClear: [24, 34, 50], farHillStorm: [20, 24, 29],
+    nearHillClear: [12, 17, 25], nearHillStorm: [11, 13, 16],
+    groundClear: [15, 19, 26], groundStorm: [10, 12, 15],
+    mist: [66, 74, 86],
+    drop: [182, 197, 218],
+    sodium: [255, 190, 110],
+    flash: [190, 205, 245]
+  };
+
+  // ---------- estado ----------
+  const S = {
+    target: 0,       // a dónde lleva el gesto
+    I: 0,            // intensidad de lluvia visible (0..1)
+    cover: 0,        // nubosidad
+    wet: 0,          // suelo mojado (se seca despacio)
+    wind: 0,
+    bucket: 0,       // energía del gesto, px
+    gesture: 0,      // rapidez del último gesto (0..1)
+    swept: 0,        // recorrido acumulado para esconder la invitación
+    resetting: 0,
+    time: 0,
+    lamp: 1, lampFlicker: 0,
+    lastStrike: -10,
+    pendingStrike: -1
+  };
+  const BUCKET_TAU = 0.16;
+
+  // ---------- lienzo ----------
+  const canvas = document.getElementById('escena');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, DPR = 1, s = 1, horizon = 0;
+  let lamp = {};
+  let stars = [], farHill = [], nearHill = [], houses = [], clouds = [];
+  let drops = [], buckets = [[], [], [], []];
+  const ripples = [], sparks = [];
+  const MAX_RIPPLES = 420, MAX_SPARKS = 260;
+
+  function ridgeAt(profile, x) {
+    const i = clamp(Math.round(x / 8), 0, profile.length - 1);
+    return profile[i];
+  }
+
+  function makeCloudLayer(w, h, count, shade, light) {
+    const tw = Math.max(64, Math.ceil(w * 0.3));
+    const th = Math.max(32, Math.ceil(h * 0.3));
+    const c = document.createElement('canvas');
+    c.width = tw; c.height = th;
+    const g = c.getContext('2d');
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * tw;
+      const y = th * (0.25 + Math.random() * 0.55);
+      const r = th * (0.22 + Math.random() * 0.4);
+      for (const ox of [-tw, 0, tw]) {
+        g.save();
+        g.translate(x + ox, y);
+        g.scale(2.1, 1);
+        let gr = g.createRadialGradient(0, 0, 0, 0, 0, r);
+        gr.addColorStop(0, rgb(shade, 0.6));
+        gr.addColorStop(0.55, rgb(shade, 0.32));
+        gr.addColorStop(1, rgb(shade, 0));
+        g.fillStyle = gr;
+        g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.fill();
+        gr = g.createRadialGradient(0, -r * 0.35, 0, 0, -r * 0.35, r * 0.6);
+        gr.addColorStop(0, rgb(light, 0.22));
+        gr.addColorStop(1, rgb(light, 0));
+        g.fillStyle = gr;
+        g.beginPath(); g.arc(0, -r * 0.35, r * 0.6, 0, Math.PI * 2); g.fill();
+        g.restore();
+      }
+    }
+    // difuminar los bordes superior e inferior para que la capa no deje franjas
+    const fade = g.createLinearGradient(0, 0, 0, th);
+    fade.addColorStop(0, 'rgba(0,0,0,0)');
+    fade.addColorStop(0.25, 'rgba(0,0,0,1)');
+    fade.addColorStop(0.7, 'rgba(0,0,0,1)');
+    fade.addColorStop(1, 'rgba(0,0,0,0)');
+    g.globalCompositeOperation = 'destination-in';
+    g.fillStyle = fade;
+    g.fillRect(0, 0, tw, th);
+    return c;
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    s = clamp(Math.min(W, H) / 800, 0.55, 1.4);
+    horizon = H * 0.66;
+
+    const lx = W * (W < 700 ? 0.7 : 0.68);
+    const base = horizon + (H - horizon) * 0.5;
+    const h = Math.min(H * 0.42, 340 * s + 60);
+    lamp = { x: lx, base, top: base - h, hx: lx - 36 * s, hy: base - h + 12 * s };
+
+    // estrellas
+    const n = Math.round(clamp(W * H / 4500, 80, 420));
+    stars = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.pow(Math.random(), 1.4) * horizon * 0.85,
+      r: rand(0.4, 1.3), p: Math.random() * 6.28, a: rand(0.35, 0.95)
+    }));
+
+    // colinas
+    const ph = [rand(0, 6), rand(0, 6), rand(0, 6), rand(0, 6), rand(0, 6), rand(0, 6)];
+    farHill = []; nearHill = [];
+    for (let x = 0; x <= W + 8; x += 8) {
+      farHill.push(horizon - s * (34 + 22 * Math.sin(x * 0.0035 + ph[0]) + 12 * Math.sin(x * 0.011 + ph[1]) + 5 * Math.sin(x * 0.031 + ph[2])));
+      nearHill.push(horizon + 2 - s * (10 + 9 * Math.sin(x * 0.006 + ph[3]) + 5 * Math.sin(x * 0.017 + ph[4]) + 2 * Math.sin(x * 0.05 + ph[5])));
+    }
+    houses = [];
+    for (let i = 0; i < 9; i++) {
+      const x = rand(0.04, 0.96) * W;
+      const top = ridgeAt(farHill, x), bot = ridgeAt(nearHill, x);
+      if (bot - top > 10 * s) houses.push({ x, y: lerp(top, bot, rand(0.35, 0.7)), a: rand(0.5, 1) });
+    }
+
+    // nubes
+    const wl = W * 1.5;
+    clouds = [
+      { c: makeCloudLayer(wl, H * 0.55, 60, [74, 84, 100], [110, 120, 136]), y: -H * 0.06, h: H * 0.55, w: wl, speed: 6, th: 0.0, a: 0.85, off: Math.random() * wl },
+      { c: makeCloudLayer(wl, H * 0.55, 70, [50, 57, 68], [84, 92, 106]), y: H * 0.02, h: H * 0.58, w: wl, speed: 11, th: 0.22, a: 0.9, off: Math.random() * wl },
+      { c: makeCloudLayer(wl, H * 0.4, 70, [30, 34, 42], [58, 64, 74]), y: horizon - H * 0.42, h: H * 0.45, w: wl, speed: 20, th: 0.45, a: 0.95, off: Math.random() * wl }
+    ];
+
+    // gotas: cada ranura conserva su profundidad
+    const max = Math.round(clamp(W * H / 650, 500, 2400));
+    drops = [];
+    buckets = [[], [], [], []];
+    for (let i = 0; i < max; i++) {
+      const fg = Math.random() < 0.03;
+      const z = fg ? rand(1.05, 1.4) : 0.15 + Math.pow(Math.random(), 0.75) * 0.84;
+      const d = { i, z, x: 0, y: 0, alive: false, gy: 0 };
+      d.gy = z < 1 ? horizon + (H - horizon) * (0.04 + 0.96 * z) : H + 40;
+      drops.push(d);
+      buckets[z < 0.4 ? 0 : z < 0.7 ? 1 : z < 1 ? 2 : 3].push(d);
+    }
+    ripples.length = 0; sparks.length = 0;
+  }
+
+  // ---------- gesto ----------
+  const invitacion = document.getElementById('invitacion');
+
+  function gesture(dy) {
+    if (!dy) return;
+    S.resetting = 0;
+    S.bucket += Math.abs(dy);
+    const speed = S.bucket / BUCKET_TAU;             // px/s
+    const g = clamp((speed - 250) / 3200, 0, 1);    // 0 despacio, 1 muy rápido
+    S.gesture = Math.max(S.gesture, g);
+    if (dy > 0) {
+      const ceiling = 0.2 + 0.8 * Math.pow(g, 0.85);
+      if (S.target < ceiling) S.target = Math.min(ceiling, S.target + dy * (0.0005 + 0.0014 * g));
+      if (g > 0.72 && S.I > 0.45 && S.time - S.lastStrike > 1.4 && S.pendingStrike < 0) {
+        S.pendingStrike = S.time + rand(0.08, 0.35);
+      }
+    } else {
+      S.target = Math.max(0, S.target + dy * (0.0006 + 0.001 * g));
+    }
+    S.swept += Math.abs(dy);
+    if (S.swept > 160) invitacion.classList.add('oculta');
+  }
+
+  window.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (e.ctrlKey) return; // pellizco de zoom en trackpad
+    let dy = e.deltaY;
+    if (e.deltaMode === 1) dy *= 33;
+    else if (e.deltaMode === 2) dy *= H;
+    gesture(dy);
+  }, { passive: false });
+
+  let touchY = null;
+  window.addEventListener('touchstart', (e) => { if (e.touches.length === 1) touchY = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (touchY === null || e.touches.length !== 1) return;
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    gesture((touchY - y) * 2.4);
+    touchY = y;
+  }, { passive: false });
+  window.addEventListener('touchend', () => { touchY = null; });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (k === 'ArrowDown') { gesture(45); e.preventDefault(); }
+    else if (k === 'ArrowUp') { gesture(-45); e.preventDefault(); }
+    else if (k === 'PageDown' || (k === ' ' && !e.shiftKey)) { gesture(320); e.preventDefault(); }
+    else if (k === 'PageUp' || (k === ' ' && e.shiftKey)) { gesture(-320); e.preventDefault(); }
+    else if (k === 'm' || k === 'M') toggleSound();
+    else if (k === 'r' || k === 'R') reset();
+  });
+
+  // ---------- relámpagos ----------
+  const flash = { t: -1, pulses: [], d: 0, x: 0, bolt: null };
+
+  function buildBolt(x0, y0, x1, y1, rough, depth) {
+    let pts = [[x0, y0], [x1, y1]];
+    for (let k = 0; k < depth; k++) {
+      const next = [pts[0]];
+      for (let i = 0; i < pts.length - 1; i++) {
+        const [ax, ay] = pts[i], [bx, by] = pts[i + 1];
+        const len = Math.hypot(bx - ax, by - ay);
+        next.push([(ax + bx) / 2 + (Math.random() - 0.5) * len * rough, (ay + by) / 2 + (Math.random() - 0.5) * len * rough * 0.25]);
+        next.push(pts[i + 1]);
+      }
+      pts = next;
+    }
+    return pts;
+  }
+
+  function strike() {
+    const d = Math.random() * (0.35 + 0.65 * (1 - S.gesture * 0.5));
+    const x = W * rand(0.08, 0.92);
+    flash.t = 0; flash.d = d; flash.x = x;
+    const soft = reduceMotion.matches;
+    flash.pulses = soft
+      ? [{ at: 0, dur: 0.6, amp: 0.45 }]
+      : [{ at: 0, dur: 0.07, amp: 1 }, { at: 0.11, dur: 0.05, amp: 0.65 }, { at: 0.19, dur: rand(0.25, 0.45), amp: rand(0.45, 0.8) }];
+    if (d < 0.8) {
+      const endY = ridgeAt(farHill, x) + 20 * s;
+      const main = buildBolt(x, H * 0.06, x + rand(-0.12, 0.12) * W, endY, 0.55, 7);
+      const branches = [];
+      for (let b = 0; b < 4; b++) {
+        const p = main[Math.floor(rand(0.15, 0.7) * main.length)];
+        const len = rand(0.08, 0.2) * H;
+        const ang = rand(0.3, 1.0) * (Math.random() < 0.5 ? -1 : 1);
+        branches.push(buildBolt(p[0], p[1], p[0] + Math.sin(ang) * len, p[1] + Math.cos(ang) * len, 0.6, 5));
+      }
+      flash.bolt = { main, branches };
+    } else flash.bolt = null;
+    S.lastStrike = S.time;
+
+    const delay = 0.25 + d * 6;
+    const t = setTimeout(() => {
+      thunder(d);
+      const km = delay * 0.343;
+      document.getElementById('trueno').textContent =
+        `Trueno ${fmt(delay)} s después del destello · a unos ${fmt(km)} km`;
+    }, delay * 1000);
+    thunderTimers.push(t);
+  }
+  const thunderTimers = [];
+
+  function flashLevel() {
+    if (flash.t < 0) return 0;
+    let b = 0, alive = false;
+    for (const p of flash.pulses) {
+      const u = (flash.t - p.at) / p.dur;
+      if (u < 1) alive = true;
+      if (u >= 0 && u < 1) b = Math.max(b, p.amp * Math.pow(1 - u, 0.7));
+    }
+    if (!alive) flash.t = -1;
+    return b * (1 - 0.6 * flash.d);
+  }
+
+  // ---------- sonido ----------
+  const A = { ac: null, on: false, master: null, layers: null, thunderBus: null, white: null, brown: null, tick: null, lastUpdate: 0 };
+  const btnSonido = document.getElementById('btn-sonido');
+
+  function noiseBuffer(ac, secs, kind) {
+    const len = Math.floor(ac.sampleRate * secs);
+    const buf = ac.createBuffer(2, len, ac.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = buf.getChannelData(ch);
+      let last = 0;
+      for (let i = 0; i < len; i++) {
+        const w = Math.random() * 2 - 1;
+        if (kind === 'brown') { last = (last + 0.02 * w) / 1.02; data[i] = last * 3.5; }
+        else data[i] = w;
+      }
+    }
+    return buf;
+  }
+
+  function initAudio() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    const ac = new AC();
+    const master = ac.createGain(); master.gain.value = 0;
+    const comp = ac.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 4;
+    comp.attack.value = 0.004; comp.release.value = 0.3;
+    master.connect(comp); comp.connect(ac.destination);
+
+    const white = noiseBuffer(ac, 4, 'white');
+    const brown = noiseBuffer(ac, 9, 'brown');
+    const loop = (buf, type, freq, q) => {
+      const src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
+      const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+      const g = ac.createGain(); g.gain.value = 0;
+      src.connect(f); f.connect(g); g.connect(master);
+      src.start(0, Math.random() * buf.duration);
+      return { f, g };
+    };
+    const layers = {
+      light: loop(white, 'highpass', 3200, 0.5),
+      mid: loop(white, 'bandpass', 1400, 0.45),
+      heavy: loop(white, 'lowpass', 2300, 0.3),
+      body: loop(brown, 'lowpass', 520, 0.4),
+      wind: loop(brown, 'bandpass', 380, 1.4)
+    };
+    const lfo = ac.createOscillator(); lfo.frequency.value = 0.07;
+    const lfoG = ac.createGain(); lfoG.gain.value = 170;
+    lfo.connect(lfoG); lfoG.connect(layers.wind.f.frequency); lfo.start();
+
+    const thunderBus = ac.createGain(); thunderBus.gain.value = 1; thunderBus.connect(master);
+
+    const tl = Math.floor(ac.sampleRate * 0.03);
+    const tick = ac.createBuffer(1, tl, ac.sampleRate);
+    const td = tick.getChannelData(0);
+    for (let i = 0; i < tl; i++) td[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ac.sampleRate * 0.0025));
+
+    Object.assign(A, { ac, master, layers, thunderBus, white, brown, tick });
+    return true;
+  }
+
+  function playTick() {
+    const ac = A.ac;
+    const src = ac.createBufferSource(); src.buffer = A.tick; src.playbackRate.value = rand(0.5, 1.6);
+    const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = rand(1600, 5200); f.Q.value = 1.8;
+    const g = ac.createGain(); g.gain.value = rand(0.1, 0.35) * (1 - 0.5 * S.I);
+    let out = g;
+    if (ac.createStereoPanner) { const p = ac.createStereoPanner(); p.pan.value = rand(-0.9, 0.9); g.connect(p); out = p; }
+    src.connect(f); f.connect(g); out.connect(A.master);
+    src.start();
+  }
+
+  function thunder(d) {
+    if (!A.ac || !A.on) return;
+    const ac = A.ac, t0 = ac.currentTime;
+    const loud = 1 - 0.65 * d;
+    const dur = rand(5, 8);
+
+    // estruendo grave
+    const src = ac.createBufferSource(); src.buffer = A.brown;
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(d < 0.3 ? 1400 : 600, t0);
+    lp.frequency.exponentialRampToValueAtTime(120, t0 + 2.2);
+    const g = ac.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(loud * (d < 0.3 ? 1.1 : 0.55), t0 + (d < 0.3 ? 0.03 : 0.35));
+    let t = t0 + 0.4;
+    for (let k = 0; k < 4; k++) {
+      t += rand(0.4, 1.2);
+      g.gain.linearRampToValueAtTime(loud * rand(0.25, 0.75), t);
+    }
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(lp); lp.connect(g); g.connect(A.thunderBus);
+    src.start(t0, Math.random() * 2); src.stop(t0 + dur + 0.1);
+
+    // chasquido del rayo cercano
+    if (d < 0.35) {
+      const c = ac.createBufferSource(); c.buffer = A.white;
+      const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+      const cg = ac.createGain();
+      cg.gain.setValueAtTime(0.0001, t0);
+      cg.gain.linearRampToValueAtTime(0.7 * loud, t0 + 0.006);
+      cg.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+      c.connect(hp); hp.connect(cg); cg.connect(A.thunderBus);
+      c.start(t0, Math.random()); c.stop(t0 + 0.5);
+    }
+  }
+
+  function updateAudio(dt) {
+    if (!A.ac || !A.on) return;
+    const now = A.ac.currentTime, I = S.I, L = A.layers;
+    if (now - A.lastUpdate > 0.06) {
+      A.lastUpdate = now;
+      L.light.g.gain.setTargetAtTime(0.1 * smooth(0, 0.25, I), now, 0.2);
+      L.mid.g.gain.setTargetAtTime(0.16 * smooth(0.1, 0.55, I), now, 0.2);
+      L.heavy.g.gain.setTargetAtTime(0.2 * smooth(0.35, 1, I), now, 0.2);
+      L.body.g.gain.setTargetAtTime(0.5 * smooth(0.45, 1, I), now, 0.25);
+      L.wind.g.gain.setTargetAtTime(0.5 * smooth(0.55, 1, I) * (0.7 + 0.3 * Math.sin(S.time * 0.4)), now, 0.4);
+    }
+    const rate = 55 * smooth(0, 0.18, I) * (1 - 0.75 * smooth(0.4, 1, I));
+    let n = rate * dt;
+    while (n > 0) { if (Math.random() < n) playTick(); n -= 1; }
+  }
+
+  function toggleSound() {
+    if (!A.ac && !initAudio()) {
+      btnSonido.textContent = 'Sin sonido en este navegador';
+      btnSonido.disabled = true;
+      return;
+    }
+    A.on = !A.on;
+    const now = A.ac.currentTime;
+    if (A.on) {
+      A.ac.resume();
+      A.master.gain.cancelScheduledValues(now);
+      A.master.gain.setTargetAtTime(0.9, now, 0.3);
+    } else {
+      A.master.gain.cancelScheduledValues(now);
+      A.master.gain.setTargetAtTime(0, now, 0.12);
+    }
+    btnSonido.setAttribute('aria-pressed', String(A.on));
+    btnSonido.innerHTML = (A.on ? 'Silenciar' : 'Activar sonido') + ' <kbd>M</kbd>';
+  }
+  btnSonido.addEventListener('click', toggleSound);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!A.ac) return;
+    if (document.hidden) A.ac.suspend();
+    else if (A.on) A.ac.resume();
+  });
+
+  // ---------- reiniciar ----------
+  function reset() {
+    S.target = 0; S.gesture = 0; S.bucket = 0; S.swept = 0;
+    S.resetting = 1; S.pendingStrike = -1;
+    thunderTimers.forEach(clearTimeout); thunderTimers.length = 0;
+    flash.t = -1;
+    document.getElementById('trueno').textContent = '';
+    invitacion.classList.remove('oculta');
+  }
+  document.getElementById('btn-reiniciar').addEventListener('click', reset);
+
+  // ---------- lectura y pluviómetro ----------
+  const elEstado = document.getElementById('estado');
+  const elMmh = document.getElementById('mmh');
+  const elNivel = document.getElementById('nivel');
+  const elMarca = document.getElementById('marca');
+  const MM_MAX = 100;
+  const gaugePos = (mm) => Math.log10(1 + mm) / Math.log10(1 + MM_MAX);
+  (() => {
+    const tubo = document.getElementById('pluviometro');
+    for (const [mm, label] of [[0, '0'], [2.5, '2,5'], [7.6, '7,6'], [50, '50'], [100, '100']]) {
+      const el = document.createElement('span');
+      el.className = 'tick';
+      el.style.bottom = (gaugePos(mm) * 100) + '%';
+      el.textContent = label;
+      tubo.appendChild(el);
+    }
+  })();
+
+  const mmPerHour = (I) => (I < 0.015 ? 0 : 0.3 * Math.exp(I * 5.6));
+  let lastLabel = '', lastMm = '';
+  function updateReadout() {
+    const mm = mmPerHour(S.I);
+    let label;
+    if (mm < 0.1) label = S.cover > 0.3 ? 'Nublado, sin lluvia' : 'Cielo despejado';
+    else if (mm < 2.5) label = 'Lluvia ligera';
+    else if (mm < 7.6) label = 'Lluvia moderada';
+    else if (mm < 50) label = 'Lluvia fuerte';
+    else label = 'Lluvia torrencial';
+    if (S.I > 0.55) label += ' con tormenta eléctrica';
+    if (label !== lastLabel) { elEstado.textContent = label; lastLabel = label; }
+    const txt = mm < 0.1 ? '0' : mm < 10 ? fmt(mm) : fmt(mm, 0);
+    if (txt !== lastMm) { elMmh.textContent = txt; lastMm = txt; }
+    const p = gaugePos(mm) * 100;
+    elNivel.style.height = p + '%';
+    elMarca.style.bottom = `calc(${p}% - 1px)`;
+  }
+
+  // ---------- dibujo ----------
+  function drawSky(b) {
+    const c = S.cover;
+    const top = mix(C.skyTopClear, C.skyTopStorm, c);
+    const hor = mix(C.skyHorClear, C.skyHorStorm, c);
+    const g = ctx.createLinearGradient(0, 0, 0, horizon);
+    g.addColorStop(0, rgb(top));
+    g.addColorStop(1, rgb(hor));
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, horizon + 2);
+
+    // estrellas y luna: desaparecen bajo las nubes
+    const sa = Math.pow(1 - smooth(0, 0.55, c), 1.5);
+    if (sa > 0.01) {
+      ctx.fillStyle = '#e8eefc';
+      for (const st of stars) {
+        const tw = reduceMotion.matches ? 1 : 0.75 + 0.25 * Math.sin(S.time * 1.7 + st.p);
+        ctx.globalAlpha = st.a * sa * tw * (1 - st.y / horizon * 0.6);
+        ctx.fillRect(st.x, st.y, st.r, st.r);
+      }
+      ctx.globalAlpha = 1;
+      const mx = W * 0.2, my = H * 0.16, mr = 13 * s;
+      const ma = Math.pow(1 - smooth(0, 0.45, c), 1.4);
+      const mg = ctx.createRadialGradient(mx, my, mr, mx, my, mr * 9);
+      mg.addColorStop(0, `rgba(200,215,240,${0.22 * ma})`);
+      mg.addColorStop(1, 'rgba(200,215,240,0)');
+      ctx.fillStyle = mg;
+      ctx.fillRect(mx - mr * 9, my - mr * 9, mr * 18, mr * 18);
+      ctx.fillStyle = `rgba(236,240,248,${ma})`;
+      ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = rgb(top, ma * 0.9);
+      ctx.beginPath(); ctx.arc(mx + mr * 0.45, my - mr * 0.2, mr * 0.9, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function drawClouds(dt, lit) {
+    for (const L of clouds) {
+      const a = smooth(L.th, L.th + 0.45, S.cover) * L.a;
+      if (!lit) L.off = (L.off + L.speed * s * (0.4 + 2.2 * S.wind) * dt) % L.w;
+      if (a < 0.01) continue;
+      ctx.globalAlpha = lit ? a * lit : a;
+      ctx.drawImage(L.c, -L.off, L.y, L.w, L.h);
+      ctx.drawImage(L.c, -L.off + L.w, L.y, L.w, L.h);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawBolt(b) {
+    if (!flash.bolt || b < 0.2) return;
+    const w = (1 - 0.55 * flash.d);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(170,190,255,0.9)';
+    ctx.shadowBlur = 22 * s;
+    const line = (pts, lw, a) => {
+      ctx.strokeStyle = `rgba(215,225,255,${a})`;
+      ctx.lineWidth = lw;
+      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+      ctx.stroke();
+    };
+    for (const br of flash.bolt.branches) line(br, 1 * s * w, b * 0.55);
+    line(flash.bolt.main, 2.6 * s * w, b);
+    ctx.shadowBlur = 0;
+    line(flash.bolt.main, 1 * s, Math.min(1, b * 1.2));
+    ctx.restore();
+  }
+
+  function drawHill(profile, color, bottom) {
+    ctx.fillStyle = rgb(color);
+    ctx.beginPath();
+    ctx.moveTo(0, bottom);
+    for (let i = 0; i < profile.length; i++) ctx.lineTo(i * 8, profile[i]);
+    ctx.lineTo(W, bottom);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawLandscape(b) {
+    const c = S.cover, I = S.I;
+    const litUp = (col, k) => mix(col, [110, 122, 150], b * k);
+
+    drawHill(farHill, litUp(mix(C.farHillClear, C.farHillStorm, c), 0.35), horizon + 4);
+
+    // casas lejanas: ventanas cálidas que la bruma apaga
+    const ha = 1 - smooth(0.3, 0.95, I);
+    if (ha > 0.02) {
+      for (const h of houses) {
+        ctx.fillStyle = rgb(C.sodium, 0.75 * h.a * ha);
+        ctx.fillRect(h.x, h.y, 2.2 * s, 1.8 * s);
+      }
+    }
+
+    // bruma sobre el horizonte
+    const mistA = 0.6 * smooth(0.15, 1, I);
+    if (mistA > 0.01) {
+      const mg = ctx.createLinearGradient(0, horizon - 90 * s, 0, horizon + 30 * s);
+      mg.addColorStop(0, rgb(C.mist, 0));
+      mg.addColorStop(0.7, rgb(mix(C.mist, [150, 160, 190], b), mistA));
+      mg.addColorStop(1, rgb(C.mist, mistA * 0.6));
+      ctx.fillStyle = mg;
+      ctx.fillRect(0, horizon - 90 * s, W, 120 * s);
+    }
+
+    drawHill(nearHill, litUp(mix(C.nearHillClear, C.nearHillStorm, c), 0.2), horizon + 6);
+
+    // suelo
+    ctx.fillStyle = rgb(litUp(mix(C.groundClear, C.groundStorm, c), 0.12));
+    ctx.fillRect(0, horizon + 4, W, H - horizon);
+
+    // reflejo del cielo sobre el suelo mojado
+    const wa = 0.4 * S.wet;
+    if (wa > 0.01) {
+      const hor = mix(mix(C.skyHorClear, C.skyHorStorm, c), C.flash, b * 0.8);
+      const rg = ctx.createLinearGradient(0, horizon + 4, 0, H);
+      rg.addColorStop(0, rgb(hor, wa));
+      rg.addColorStop(0.55, rgb(hor, wa * 0.25));
+      rg.addColorStop(1, rgb(hor, 0));
+      ctx.fillStyle = rg;
+      ctx.fillRect(0, horizon + 4, W, H - horizon);
+    }
+  }
+
+  function drawLamp(b) {
+    const I = S.I, on = S.lamp;
+    const { x, base, top, hx, hy } = lamp;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+
+    // charco de luz en el suelo
+    const pr = (base - hy) * 0.75;
+    ctx.save();
+    ctx.translate(hx, base + 6 * s);
+    ctx.scale(1, 0.2);
+    const pg = ctx.createRadialGradient(0, 0, 0, 0, 0, pr);
+    pg.addColorStop(0, rgb(C.sodium, (0.2 + 0.2 * S.wet) * on));
+    pg.addColorStop(1, rgb(C.sodium, 0));
+    ctx.fillStyle = pg;
+    ctx.beginPath(); ctx.arc(0, 0, pr, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    // reflejo vertical sobre el asfalto mojado
+    if (S.wet > 0.02) {
+      const jitter = 0.3 + 1.4 * I;
+      for (let y = base + 8 * s; y < H; y += 3 * s) {
+        const t = (y - base) / (H - base);
+        const wv = (7 + 46 * t) * s * (0.55 + 0.45 * Math.sin(y * 0.13 + S.time * (2 + 5 * I)));
+        const off = (Math.sin(y * 0.31 + S.time * 7) * 3 + (Math.random() - 0.5) * 6 * I) * s * jitter;
+        ctx.fillStyle = rgb(C.sodium, S.wet * 0.32 * Math.pow(1 - t, 1.6) * on);
+        ctx.fillRect(hx - wv / 2 + off, y, wv, 1.6 * s);
+      }
+    }
+
+    // cono: se hace visible con el agua en el aire
+    const coneA = (0.035 + 0.2 * smooth(0, 0.8, I)) * on;
+    const endY = base + 10 * s;
+    const hw = (endY - hy) * 0.55;
+    const cg = ctx.createLinearGradient(0, hy, 0, endY);
+    cg.addColorStop(0, rgb(C.sodium, coneA));
+    cg.addColorStop(1, rgb(C.sodium, coneA * 0.12));
+    ctx.fillStyle = cg;
+    ctx.beginPath();
+    ctx.moveTo(hx - 7 * s, hy); ctx.lineTo(hx + 7 * s, hy);
+    ctx.lineTo(hx + hw, endY); ctx.lineTo(hx - hw, endY);
+    ctx.closePath(); ctx.fill();
+
+    // halo: la lluvia lo ensancha
+    const hr = 20 * s * (1 + 1.6 * I);
+    const hg = ctx.createRadialGradient(hx, hy + 4 * s, 0, hx, hy + 4 * s, hr * 3);
+    hg.addColorStop(0, `rgba(255,232,190,${0.95 * on})`);
+    hg.addColorStop(0.18, rgb(C.sodium, 0.45 * on));
+    hg.addColorStop(1, rgb(C.sodium, 0));
+    ctx.fillStyle = hg;
+    ctx.fillRect(hx - hr * 3, hy + 4 * s - hr * 3, hr * 6, hr * 6);
+    ctx.restore();
+
+    // poste
+    const post = mix([7, 8, 10], [70, 78, 96], b * 0.5);
+    ctx.strokeStyle = rgb(post);
+    ctx.lineCap = 'butt';
+    ctx.lineWidth = 5 * s;
+    ctx.beginPath(); ctx.moveTo(x, base + 4 * s); ctx.lineTo(x, top + 6 * s);
+    ctx.quadraticCurveTo(x, top - 4 * s, x - 14 * s, top - 2 * s);
+    ctx.lineTo(hx + 6 * s, hy - 6 * s);
+    ctx.stroke();
+    ctx.fillStyle = rgb(post);
+    ctx.beginPath();
+    ctx.moveTo(hx - 12 * s, hy + 1 * s); ctx.lineTo(hx + 12 * s, hy + 1 * s);
+    ctx.lineTo(hx + 6 * s, hy - 8 * s); ctx.lineTo(hx - 6 * s, hy - 8 * s);
+    ctx.closePath(); ctx.fill();
+    ctx.fillRect(x - 5 * s, base - 4 * s, 10 * s, 8 * s);
+    ctx.fillStyle = `rgba(255,236,200,${on})`;
+    ctx.fillRect(hx - 8 * s, hy, 16 * s, 2.4 * s);
+  }
+
+  function lampLight(x, y) {
+    if (y < lamp.hy) return 0;
+    const hw = (y - lamp.hy) * 0.55 + 8 * s;
+    const dx = Math.abs(x - lamp.hx);
+    if (dx > hw) {
+      const dist = Math.hypot(x - lamp.hx, y - lamp.hy);
+      return dist < 60 * s ? (1 - dist / (60 * s)) * 0.8 : 0;
+    }
+    return (1 - dx / hw) * (1 - clamp((y - lamp.hy) / (lamp.base - lamp.hy + 40 * s), 0, 1) * 0.55);
+  }
+
+  const bucketStyle = [
+    { lw: 0.8, a: 0.2 },
+    { lw: 1.1, a: 0.3 },
+    { lw: 1.45, a: 0.42 },
+    { lw: 2.8, a: 0.13 }
+  ];
+
+  function updateDrawRain(dt, b) {
+    const I = S.I;
+    const active = I < 0.01 ? 0 : Math.round(drops.length * Math.pow(I, 1.2));
+    const slant = 0.05 + 0.34 * S.wind + 0.06 * S.wind * Math.sin(S.time * 0.8);
+    const vScale = (H / 800) * (0.88 + 0.28 * I);
+    const litPath = new Path2D(), litStrong = new Path2D();
+    const on = S.lamp;
+
+    for (let k = 0; k < 4; k++) {
+      const st = bucketStyle[k];
+      ctx.beginPath();
+      let any = false;
+      for (const d of buckets[k]) {
+        const isActive = d.i < active;
+        if (!d.alive) {
+          if (!isActive) continue;
+          d.alive = true;
+          d.y = -rand(0, H * 0.35) - 20;
+          d.x = rand(-slant * H * 1.1, W + 20);
+        }
+        const v = (620 + 1300 * Math.min(d.z, 1.2)) * vScale;
+        d.y += v * dt;
+        d.x += v * slant * dt;
+        if (d.y > d.gy || d.x > W + 60) {
+          if (d.z < 1 && d.y > d.gy && d.x > -10 && d.x < W + 10) splash(d);
+          d.alive = false;
+          if (isActive) {
+            d.alive = true;
+            d.y = -rand(0, 60);
+            d.x = rand(-slant * H * 1.1, W + 20);
+          }
+          continue;
+        }
+        const len = v * (k === 3 ? 0.036 : 0.026);
+        const x2 = d.x - slant * len, y2 = d.y - len;
+        ctx.moveTo(d.x, d.y); ctx.lineTo(x2, y2);
+        any = true;
+        if (k < 3 && on > 0.2) {
+          const l = lampLight(d.x, d.y);
+          if (l > 0.55) { litStrong.moveTo(d.x, d.y); litStrong.lineTo(x2, y2); }
+          else if (l > 0.18) { litPath.moveTo(d.x, d.y); litPath.lineTo(x2, y2); }
+        }
+      }
+      if (!any) continue;
+      ctx.lineWidth = st.lw * (k === 3 ? s : Math.max(0.8, s));
+      ctx.strokeStyle = rgb(mix(C.drop, C.flash, b), clamp(st.a * (1 + 1.8 * b), 0, 0.9));
+      ctx.stroke();
+    }
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineWidth = 1.3 * Math.max(0.8, s);
+    ctx.strokeStyle = rgb(C.sodium, 0.35 * on);
+    ctx.stroke(litPath);
+    ctx.strokeStyle = `rgba(255,220,165,${0.75 * on})`;
+    ctx.stroke(litStrong);
+    ctx.restore();
+  }
+
+  function splash(d) {
+    if (ripples.length < MAX_RIPPLES && Math.random() < 0.75) {
+      ripples.push({ x: d.x, y: d.gy, t: 0, life: 0.3 + 0.35 * d.z, max: (2.5 + 11 * d.z) * s, lit: lampLight(d.x, d.gy - 20 * s) > 0.15 });
+    }
+    if (d.z > 0.5 && sparks.length < MAX_SPARKS && Math.random() < 0.6) {
+      for (let n = 0; n < 2; n++) {
+        sparks.push({ x: d.x, y: d.gy, vx: rand(-60, 60) * d.z * s, vy: -rand(90, 190) * d.z * s, t: 0, life: rand(0.2, 0.35), g: 900 * s });
+      }
+    }
+  }
+
+  function drawSplashes(dt, b) {
+    const paths = [new Path2D(), new Path2D(), new Path2D(), new Path2D()];
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const r = ripples[i];
+      r.t += dt;
+      const u = r.t / r.life;
+      if (u >= 1) { ripples.splice(i, 1); continue; }
+      const rad = r.max * Math.sqrt(u);
+      const p = paths[(r.lit ? 2 : 0) + (u < 0.5 ? 0 : 1)];
+      p.moveTo(r.x + rad, r.y);
+      p.ellipse(r.x, r.y, rad, rad * 0.26, 0, 0, Math.PI * 2);
+    }
+    ctx.lineWidth = Math.max(0.7, 0.9 * s);
+    const cool = mix([160, 175, 198], C.flash, b);
+    ctx.strokeStyle = rgb(cool, 0.34 + 0.3 * b); ctx.stroke(paths[0]);
+    ctx.strokeStyle = rgb(cool, 0.14 + 0.2 * b); ctx.stroke(paths[1]);
+    ctx.strokeStyle = rgb(C.sodium, 0.6 * S.lamp); ctx.stroke(paths[2]);
+    ctx.strokeStyle = rgb(C.sodium, 0.28 * S.lamp); ctx.stroke(paths[3]);
+
+    ctx.fillStyle = rgb(mix(C.drop, C.flash, b), 0.5);
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const p = sparks[i];
+      p.t += dt;
+      if (p.t > p.life) { sparks.splice(i, 1); continue; }
+      p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+      ctx.fillRect(p.x, p.y, 1.3 * s, 1.3 * s);
+    }
+  }
+
+  function drawOverlay(b) {
+    const vg = ctx.createRadialGradient(W * 0.5, H * 0.55, Math.min(W, H) * 0.3, W * 0.5, H * 0.55, Math.max(W, H) * 0.8);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, `rgba(2,3,6,${0.35 + 0.3 * S.cover})`);
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, W, H);
+    if (b > 0.01) {
+      ctx.fillStyle = rgb(C.flash, b * 0.12);
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  // ---------- bucle ----------
+  let last = performance.now();
+  let readoutTimer = 0;
+
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    S.time += dt;
+
+    // gesto: la energía se disipa sola
+    S.bucket *= Math.exp(-dt / BUCKET_TAU);
+    S.gesture = ease(S.gesture, 0, 0.6, dt);
+
+    // el clima sigue al gesto con inercia
+    const r = S.resetting;
+    const T = S.target;
+    S.I = ease(S.I, T, r ? 0.45 : (T > S.I ? 0.7 : 1.1), dt);
+    S.cover = ease(S.cover, Math.min(1, T * 1.35), r ? 0.9 : (T * 1.35 > S.cover ? 1.6 : 2.4), dt);
+    S.wet = ease(S.wet, Math.min(1, S.I * 1.7), r ? 1.2 : (S.I * 1.7 > S.wet ? 2.5 : 9), dt);
+    S.wind = ease(S.wind, Math.pow(S.I, 1.5), r ? 0.8 : 1.6, dt);
+    if (r && S.I < 0.01 && S.wet < 0.02) S.resetting = 0;
+
+    // la farola chisporrotea en la tormenta
+    if (S.lampFlicker > 0) {
+      S.lampFlicker -= dt;
+      S.lamp = reduceMotion.matches ? 0.8 : rand(0.25, 0.9);
+    } else {
+      S.lamp = 1;
+      if (S.I > 0.8 && Math.random() < dt * 0.12) S.lampFlicker = rand(0.1, 0.35);
+    }
+
+    // relámpagos: por azar en tormenta, o de inmediato tras un gesto violento
+    if (S.pendingStrike > 0 && S.time >= S.pendingStrike) { S.pendingStrike = -1; strike(); }
+    else if (S.I > 0.55 && S.time - S.lastStrike > 1.3) {
+      const rate = Math.pow((S.I - 0.55) / 0.45, 1.4) * 0.5;
+      if (Math.random() < rate * dt) strike();
+    }
+    if (flash.t >= 0) flash.t += dt;
+    const b = flashLevel();
+
+    // escena
+    drawSky(b);
+    drawClouds(dt, 0);
+    if (b > 0.01) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const fg = ctx.createRadialGradient(flash.x, H * 0.18, 0, flash.x, H * 0.18, Math.max(W, H) * 0.9);
+      fg.addColorStop(0, rgb(C.flash, b * 0.6));
+      fg.addColorStop(1, rgb(C.flash, b * 0.12));
+      ctx.fillStyle = fg;
+      ctx.fillRect(0, 0, W, horizon + 4);
+      drawClouds(0, b * 0.7);
+      ctx.restore();
+    }
+    drawBolt(b);
+    drawLandscape(b);
+    drawLamp(b);
+    drawSplashes(dt, b);
+    updateDrawRain(dt, b);
+    drawOverlay(b);
+
+    updateAudio(dt);
+    readoutTimer -= dt;
+    if (readoutTimer <= 0) { updateReadout(); readoutTimer = 0.1; }
+
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame((t) => { last = t; frame(t); });
+})();
+</script>
+</body>
+</html>
