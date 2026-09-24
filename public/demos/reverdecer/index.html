@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Reverdecer | Pensamiento Sensorial</title>
+<meta name="description" content="Instalación interactiva: junta el pulgar y el índice frente a la cámara y sostén el gesto para que un bosque seco reverdezca.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tinta: #222222;
+    --papel: #ffffff;
+    --amarillo: #eeff41;
+    --panel: rgba(22, 20, 14, 0.52);
+    --panel-borde: rgba(255, 255, 255, 0.22);
+    --texto-claro: #f4f1e8;
+    --texto-suave: rgba(244, 241, 232, 0.78);
+    --sans: 'Roboto', Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #d9c7a0;
+    font-family: var(--sans);
+    color: var(--texto-claro);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body.sin-cursor, body.sin-cursor * { cursor: none !important; }
+
+  #bosque {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--amarillo);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Entrada ---------- */
+
+  #entrada {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    transition: opacity 1.4s ease;
+    z-index: 20;
+  }
+  #entrada.oculta { opacity: 0; pointer-events: none; }
+
+  .entrada-caja {
+    max-width: 34rem;
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    padding: 2.25rem 2.25rem 2rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .entrada-caja h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+  }
+  .entrada-caja .gesto {
+    margin-top: 1rem;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--texto-claro);
+  }
+  .entrada-caja .nota {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--texto-suave);
+  }
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .boton {
+    border: 1px solid var(--texto-claro);
+    background: transparent;
+    padding: 0.8rem 1.2rem;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  .boton.principal {
+    background: var(--texto-claro);
+    color: var(--tinta);
+  }
+  .boton:hover { background: rgba(255, 255, 255, 0.14); }
+  .boton.principal:hover { background: var(--papel); }
+
+  /* ---------- Estado de participación ---------- */
+
+  #estado {
+    position: fixed;
+    left: 50%;
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 17rem;
+    max-width: calc(100vw - 2rem);
+    padding: 0.6rem 1.1rem 0.6rem 0.6rem;
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: opacity 0.8s ease;
+    z-index: 10;
+  }
+  #estado.oculto { opacity: 0; }
+  #estado.tenue { opacity: 0.55; }
+  #icono { width: 64px; height: 64px; flex: none; display: block; }
+  .estado-textos { min-width: 0; }
+  #estado-titulo {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  #estado-reloj { font-weight: 400; font-variant-numeric: tabular-nums; }
+  #estado-detalle {
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: var(--texto-suave);
+    margin-top: 0.15rem;
+  }
+  .modo {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.35rem;
+    margin-right: 0.4rem;
+    border: 1px solid currentColor;
+    vertical-align: 0.15em;
+  }
+
+  /* ---------- Encuadre (espejo de la cámara) ---------- */
+
+  #encuadre {
+    position: fixed;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    width: 168px;
+    z-index: 10;
+    transition: opacity 0.8s ease;
+  }
+  #encuadre.oculto { opacity: 0; pointer-events: none; }
+  #encuadre canvas {
+    display: block;
+    width: 168px;
+    height: 126px;
+    background: rgba(22, 20, 14, 0.38);
+  }
+  #encuadre p {
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--texto-claro);
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  }
+  #video { display: none; }
+
+  /* ---------- Controles del docente ---------- */
+
+  #docente {
+    position: fixed;
+    top: max(1rem, env(safe-area-inset-top));
+    right: max(1rem, env(safe-area-inset-right));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    max-width: calc(100vw - 2rem);
+    z-index: 15;
+    transition: opacity 0.6s ease;
+  }
+  #docente.oculto { opacity: 0; pointer-events: none; }
+  #docente button {
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    padding: 0.45rem 0.7rem;
+    font-size: 0.85rem;
+  }
+  #docente button:hover { background: rgba(22, 20, 14, 0.75); }
+  #docente button[aria-pressed="true"] {
+    border-color: var(--amarillo);
+    box-shadow: inset 0 -3px 0 var(--amarillo);
+  }
+  kbd {
+    font-family: var(--sans);
+    font-size: 0.75em;
+    font-weight: 700;
+    padding: 0 0.3em;
+    border: 1px solid currentColor;
+    margin-left: 0.35em;
+    opacity: 0.8;
+  }
+
+  #aviso {
+    position: fixed;
+    bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 6.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel);
+    border: 1px solid var(--panel-borde);
+    padding: 0.45rem 0.9rem;
+    font-size: 0.9rem;
+    z-index: 16;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  #aviso.visible { opacity: 1; }
+
+  #ayuda {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 30;
+  }
+  #ayuda.visible { display: flex; }
+  #ayuda .entrada-caja { max-width: 30rem; max-height: 100%; overflow-y: auto; }
+  #ayuda h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+  #ayuda dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.45rem 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  #ayuda dt { font-weight: 700; white-space: nowrap; }
+  #ayuda dd { color: var(--texto-suave); }
+  #ayuda .nota { margin-top: 1.25rem; }
+
+  .sr {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    #encuadre { width: 112px; bottom: 7.5rem; }
+    #encuadre canvas { width: 112px; height: 84px; }
+    #estado { min-width: 0; width: calc(100vw - 2rem); }
+    #estado-titulo { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bosque" aria-hidden="true"></canvas>
+
+<div id="entrada">
+  <div class="entrada-caja">
+    <h1>Reverdecer</h1>
+    <p class="gesto">Junta el pulgar y el índice de una mano frente a la cámara. Sostén el gesto. Mientras permanezcas, el bosque vuelve.</p>
+    <p class="nota">La imagen de la cámara se procesa en este equipo y no se guarda ni se envía.</p>
+    <div class="acciones">
+      <button class="boton principal" id="btn-camara">Encender cámara</button>
+      <button class="boton" id="btn-ensayo">Ensayar sin cámara</button>
+    </div>
+  </div>
+</div>
+
+<div id="estado" class="oculto" role="status">
+  <canvas id="icono" width="128" height="128" aria-hidden="true"></canvas>
+  <div class="estado-textos">
+    <p id="estado-titulo"><span id="estado-modo"></span><span id="estado-nombre">Cámara apagada</span><span id="estado-reloj" aria-hidden="true"></span></p>
+    <p id="estado-detalle"></p>
+  </div>
+</div>
+
+<div id="encuadre" class="oculto" aria-hidden="true">
+  <canvas id="encuadre-lienzo" width="336" height="252"></canvas>
+  <p id="encuadre-texto">Encuadre de la cámara</p>
+</div>
+<video id="video" playsinline muted></video>
+
+<nav id="docente" class="oculto" aria-label="Controles">
+  <button id="c-reiniciar">Reiniciar<kbd>R</kbd></button>
+  <button id="c-camara" aria-pressed="false">Cámara<kbd>C</kbd></button>
+  <button id="c-sonido" aria-pressed="true">Sonido<kbd>M</kbd></button>
+  <button id="c-encuadre">Encuadre<kbd>V</kbd></button>
+  <button id="c-acelerar" aria-pressed="false">Ensayo rápido<kbd>A</kbd></button>
+  <button id="c-pantalla">Pantalla completa<kbd>F</kbd></button>
+  <button id="c-ayuda">Atajos<kbd>H</kbd></button>
+</nav>
+
+<div id="aviso" aria-live="polite"></div>
+
+<div id="ayuda" role="dialog" aria-modal="true" aria-labelledby="ayuda-titulo">
+  <div class="entrada-caja">
+    <h2 id="ayuda-titulo">Atajos</h2>
+    <dl>
+      <dt>Espacio</dt><dd>Mantener pulsado: sostiene el gesto sin cámara.</dd>
+      <dt>Clic sostenido</dt><dd>Lo mismo con el mouse o el dedo; la vida brota desde donde presionas.</dd>
+      <dt>R</dt><dd>Vuelve al bosque seco del comienzo.</dd>
+      <dt>C</dt><dd>Enciende o apaga la cámara.</dd>
+      <dt>A</dt><dd>Ensayo rápido: la transformación va seis veces más rápido.</dd>
+      <dt>V</dt><dd>Encuadre: esqueleto de la mano, imagen de la cámara u oculto.</dd>
+      <dt>M</dt><dd>Sonido encendido o apagado.</dd>
+      <dt>F</dt><dd>Pantalla completa.</dd>
+      <dt>H</dt><dd>Muestra u oculta esta ayuda.</dd>
+    </dl>
+    <p class="nota">Sostener el gesto unos 90 segundos lleva el bosque a su plenitud. Si se suelta, se seca despacio.</p>
+    <div class="acciones"><button class="boton principal" id="ayuda-cerrar">Cerrar</button></div>
+  </div>
+</div>
+
+<script type="module">
+// =====================================================================
+// Reverdecer. Todo el ajuste fino vive en CFG.
+// =====================================================================
+
+const CFG = {
+  // Tiempo sosteniendo el gesto para llegar a la plenitud (segundos).
+  tiempoPleno: 90,
+  // Tiempo que tarda el bosque pleno en secarse del todo sin el gesto.
+  tiempoSecar: 150,
+  // Cuánto espera el bosque antes de empezar a secarse.
+  esperaConManoAbierta: 2.5,
+  esperaSinMano: 6,
+  // Distancia pulgar–índice dividida por el largo de la palma.
+  // Por debajo de `cerrar` el gesto se reconoce; por encima de `abrir` se suelta.
+  // La franja intermedia es la tolerancia al temblor natural de la mano.
+  cerrar: 0.36,
+  abrir: 0.58,
+  confirmarCierre: 0.15,   // s por debajo de `cerrar` antes de reconocer
+  confirmarApertura: 0.45, // s por encima de `abrir` antes de soltar
+  graciaManoPerdida: 1.0,  // s sin ver la mano en que el gesto se da por sostenido
+  suavizado: 0.09,         // constante de tiempo del filtro de la distancia (s)
+  duracionReconocido: 1.4, // s que dura el aviso «Gesto reconocido»
+  aceleracionEnsayo: 6,
+  // MediaPipe, versión fija para que el demo no cambie solo.
+  mediapipe: 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35',
+  modelo: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+};
+
+const reducirMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------------------------------------------------------------------
+// Utilidades
+// ---------------------------------------------------------------------
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const hex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mezcla = (c1, c2, t) => [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)];
+const rgb = (c, a = 1) => a >= 1
+  ? `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`
+  : `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a.toFixed(3)})`;
+const aclarar = (c, k) => [c[0] + (255 - c[0]) * k, c[1] + (255 - c[1]) * k, c[2] + (255 - c[2]) * k];
+const oscurecer = (c, k) => [c[0] * (1 - k), c[1] * (1 - k), c[2] * (1 - k)];
+
+const PALETA = {
+  cieloArriba:  [hex('#e8d8b6'), hex('#a9cbd3')],
+  cieloAbajo:   [hex('#f3e7cc'), hex('#e9efdc')],
+  colinaLejos:  [hex('#d3bb93'), hex('#a8c0b8')],
+  colinaMedia:  [hex('#c3a276'), hex('#7fa183')],
+  colinaCerca:  [hex('#ae8a5a'), hex('#5f8454')],
+  suelo:        [hex('#bd9762'), hex('#577a40')],
+  sueloFrente:  [hex('#a8814f'), hex('#3f5e30')],
+  tronco:       [hex('#8c7c68'), hex('#4b3a2c')],
+  conifera:     [hex('#9d8a6c'), hex('#3f6b4f')],
+  hojaJoven:    hex('#b7c763'),
+  hojaMadura:   hex('#4f7d3a'),
+  hojaHonda:    hex('#355f33'),
+  rastrojo:     hex('#c2a36d'),
+  hojaSeca:     hex('#a8743f'),
+  lecho:        hex('#dcc9a0'),
+  agua:         hex('#7da9b0'),
+  flores: [hex('#f5e27a'), hex('#fbf6ea'), hex('#c7a6e0'), hex('#f2a98c'), hex('#f6c9d6')],
+};
+
+// ---------------------------------------------------------------------
+// Escena
+// ---------------------------------------------------------------------
+
+const lienzo = document.getElementById('bosque');
+const ctx = lienzo.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+let escena = null;
+
+function construirEscena() {
+  const r = mulberry32(20260924);
+  const e = { colinas: [], coniferas: [], grietas: [], hojasSecas: [], piedras: [], cauce: [], lista: [], polvo: [], luciernagas: [], mariposas: [], nubes: [] };
+
+  // Colinas: tres capas con perfil de senos.
+  const capas = [
+    { base: 0.47, amp: 0.05, pal: 'colinaLejos' },
+    { base: 0.54, amp: 0.045, pal: 'colinaMedia' },
+    { base: 0.60, amp: 0.035, pal: 'colinaCerca' },
+  ];
+  for (const c of capas) {
+    const ondas = [0, 1, 2].map((k) => ({ f: (0.8 + r() * 1.6) * (k + 1) * Math.PI / W, fase: r() * 6.28, amp: c.amp * H / (k + 1.2) }));
+    const pts = [];
+    for (let x = -20; x <= W + 20; x += 8) {
+      let y = c.base * H;
+      for (const o of ondas) y += Math.sin(x * o.f + o.fase) * o.amp;
+      pts.push([x, y]);
+    }
+    e.colinas.push({ pts, pal: c.pal });
+  }
+  const alturaEn = (capa, x) => {
+    const pts = e.colinas[capa].pts;
+    const i = clamp(Math.floor((x + 20) / 8), 0, pts.length - 1);
+    return pts[i][1];
+  };
+
+  // Coníferas lejanas sobre las crestas.
+  for (let capa = 0; capa < 2; capa++) {
+    const n = Math.floor(W / (capa === 0 ? 9 : 13));
+    for (let i = 0; i < n; i++) {
+      if (r() < 0.35) continue;
+      const x = r() * W;
+      const y = alturaEn(capa, x) + r() * H * 0.03;
+      const h = (capa === 0 ? 7 : 12) * (0.7 + r() * 0.7) * (H / 800);
+      e.coniferas.push({ x, y, h, capa, t: 0.1 + r() * 0.55, tono: r() });
+    }
+  }
+
+  // Suelo del primer plano.
+  const sueloY = (x) => 0.655 * H + Math.sin(x * 2.1 / W + 1.3) * H * 0.018 + Math.sin(x * 5.3 / W) * H * 0.008;
+  e.sueloPts = [];
+  for (let x = -20; x <= W + 20; x += 8) e.sueloPts.push([x, sueloY(x)]);
+
+  // Cauce: baja desde la colina cercana hasta el borde inferior.
+  const x0 = W * 0.6, x1 = W * 0.34;
+  for (let i = 0; i <= 60; i++) {
+    const t = i / 60;
+    const y = lerp(alturaEn(2, x0) + 6, H + 20, Math.pow(t, 1.35));
+    const x = lerp(x0, x1, t) + Math.sin(t * 7.5 + 0.4) * W * 0.05 * t + Math.sin(t * 17) * W * 0.008;
+    const ancho = lerp(1.5, W * 0.085, Math.pow(t, 1.6));
+    e.cauce.push({ x, y, ancho, t });
+  }
+
+  // Grietas del suelo seco.
+  for (let i = 0; i < Math.floor(W / 40); i++) {
+    let x = r() * W, y = lerp(0.68, 0.98, r()) * H;
+    const escala = (y / H - 0.6) * 2.4;
+    const seg = [[x, y]];
+    let ang = r() * 6.28;
+    for (let k = 0; k < 5; k++) {
+      ang += (r() - 0.5) * 1.6;
+      x += Math.cos(ang) * 16 * escala; y += Math.sin(ang) * 6 * escala;
+      seg.push([x, y]);
+    }
+    e.grietas.push({ seg, ancho: 0.6 + escala * 0.8 });
+  }
+
+  // Hojas caídas.
+  for (let i = 0; i < Math.floor(W / 7); i++) {
+    const y = lerp(0.67, 1.0, Math.pow(r(), 0.7)) * H;
+    const escala = (y / H - 0.6) * 2.5;
+    e.hojasSecas.push({ x: r() * W, y, s: (2 + r() * 2.5) * escala, a: r() * 3.14, tono: r() });
+  }
+
+  // Árboles.
+  const nArboles = Math.max(5, Math.round(W / 150));
+  for (let i = 0; i < nArboles; i++) {
+    const y = lerp(0.63, 0.93, Math.pow((i + r() * 0.8) / nArboles, 0.9)) * H;
+    let x = r() * W;
+    // Que no crezcan en medio del cauce.
+    const c = e.cauce.reduce((m, p) => Math.abs(p.y - y) < Math.abs(m.y - y) ? p : m);
+    if (Math.abs(x - c.x) < c.ancho + 40) x = (x + W * 0.35) % W;
+    const escala = lerp(0.45, 1.25, (y / H - 0.63) / 0.3) * (H / 800);
+    e.lista.push({ tipo: 'arbol', y, arbol: crearArbol(r, x, y, escala, i % 3 === 1) });
+  }
+
+  // Pasto: un rastrojo seco que siempre está y briznas nuevas que crecen.
+  const nPasto = Math.floor(W * 1.1);
+  for (let i = 0; i < nPasto; i++) {
+    const x = r() * W;
+    const y = sueloY(x) + Math.pow(r(), 0.8) * (H - sueloY(x)) + 4;
+    if (enCauce(e.cauce, x, y, 4)) continue;
+    const escala = clamp((y / H - 0.62) * 2.6, 0.12, 1.1) * (H / 800);
+    e.lista.push({ tipo: 'brizna', x, y, h: (10 + r() * 24) * escala, inc: (r() - 0.5) * 0.8, t: r() * 0.7, tono: r(), fase: r() * 6.28, seca: r() < 0.35 });
+  }
+
+  // Flores.
+  for (let i = 0; i < Math.floor(W / 9); i++) {
+    const x = r() * W;
+    const y = sueloY(x) + Math.pow(r(), 0.7) * (H - sueloY(x));
+    if (enCauce(e.cauce, x, y, 10)) continue;
+    const escala = clamp((y / H - 0.62) * 2.6, 0.15, 1.1) * (H / 800);
+    e.lista.push({ tipo: 'flor', x, y, h: (10 + r() * 18) * escala, s: (3.2 + r() * 2.6) * escala, t: 0.5 + r() * 0.42, color: PALETA.flores[Math.floor(r() * PALETA.flores.length)], fase: r() * 6.28 });
+  }
+
+  // Piedras junto al cauce.
+  for (let i = 0; i < 14; i++) {
+    const p = e.cauce[20 + Math.floor(r() * 40)];
+    const lado = r() < 0.5 ? -1 : 1;
+    const escala = (p.y / H - 0.6) * 2.5;
+    e.lista.push({ tipo: 'piedra', x: p.x + lado * (p.ancho * 0.55 + r() * 12), y: p.y + r() * 6, rx: (6 + r() * 12) * escala, ry: (3 + r() * 5) * escala, tono: r(), t: 0.3 + r() * 0.4 });
+  }
+
+  e.lista.sort((a, b) => a.y - b.y);
+
+  // Partículas.
+  for (let i = 0; i < 70; i++) e.polvo.push({ x: r() * W, y: lerp(0.3, 1, r()) * H, v: 6 + r() * 18, s: 0.8 + r() * 1.8, fase: r() * 6.28 });
+  for (let i = 0; i < 46; i++) e.luciernagas.push({ x: r() * W, y: lerp(0.58, 0.97, r()) * H, fase: r() * 6.28, vel: 0.2 + r() * 0.4, t: 0.62 + r() * 0.3 });
+  for (let i = 0; i < 4; i++) e.mariposas.push({ x: r() * W, y: lerp(0.62, 0.85, r()) * H, fase: r() * 6.28, color: PALETA.flores[(i * 2) % PALETA.flores.length], t: 0.78 + i * 0.04 });
+  for (let i = 0; i < 5; i++) e.nubes.push({ x: r() * W, y: lerp(0.08, 0.3, r()) * H, w: (80 + r() * 140) * (W / 1200), v: 3 + r() * 5 });
+
+  e.sueloY = sueloY;
+  return e;
+}
+
+function enCauce(cauce, x, y, margen) {
+  for (const p of cauce) if (Math.abs(p.y - y) < 10 && Math.abs(p.x - x) < p.ancho / 2 + margen) return true;
+  return false;
+}
+
+function crearArbol(r, x, y, escala, florece) {
+  const ramas = [];
+  const anclas = [];
+  const largo0 = 105 * escala;
+  function rama(x1, y1, ang, largo, ancho, prof) {
+    const x2 = x1 + Math.cos(ang) * largo;
+    const y2 = y1 + Math.sin(ang) * largo;
+    ramas.push({ x1: x1 - x, y1: y1 - y, x2: x2 - x, y2: y2 - y, ancho, prof });
+    if (prof >= 6 || largo < 6 * escala) {
+      anclas.push([x2 - x, y2 - y, prof]);
+      return;
+    }
+    if (prof >= 3 && r() < 0.5) anclas.push([x2 - x, y2 - y, prof]);
+    const hijos = prof === 0 ? 3 : (r() < 0.35 ? 3 : 2);
+    for (let k = 0; k < hijos; k++) {
+      const abre = (k - (hijos - 1) / 2) * (0.42 + r() * 0.3) + (r() - 0.5) * 0.3;
+      rama(x2, y2, ang + abre, largo * (0.66 + r() * 0.14), ancho * 0.66, prof + 1);
+    }
+  }
+  rama(x, y, -Math.PI / 2 + (r() - 0.5) * 0.12, largo0, 7.5 * escala + 1.5, 0);
+
+  const hojas = [];
+  for (const [ax, ay, prof] of anclas) {
+    const n = 4 + Math.floor(r() * 5);
+    for (let k = 0; k < n; k++) {
+      const rad = (5 + r() * 13) * escala;
+      const a = r() * 6.28;
+      hojas.push({
+        x: ax + Math.cos(a) * rad, y: ay + Math.sin(a) * rad * 0.8,
+        s: (3.2 + r() * 3.2) * escala + 0.6,
+        ang: r() * 3.14,
+        t: 0.1 + r() * 0.5 + (6 - prof) * 0.02,
+        tono: r(),
+        fase: r() * 6.28,
+      });
+    }
+  }
+  const flores = [];
+  if (florece) {
+    for (let k = 0; k < hojas.length / 3; k++) {
+      const h = hojas[Math.floor(r() * hojas.length)];
+      flores.push({ x: h.x + (r() - 0.5) * 4 * escala, y: h.y + (r() - 0.5) * 4 * escala, s: (1.6 + r() * 1.4) * escala + 0.4, t: 0.62 + r() * 0.3, color: r() < 0.5 ? hex('#f6d6e1') : hex('#fff7ea') });
+    }
+  }
+  return { x, y, escala, ramas, hojas, flores, fase: r() * 6.28 };
+}
+
+// ---------------------------------------------------------------------
+// Estado de la vida del bosque
+// ---------------------------------------------------------------------
+
+let vida = 0;        // lo acumulado: 0 seco, 1 pleno
+let vidaVis = 0;     // lo que se ve: persigue a `vida` sin saltos
+let origen = { x: 0, y: 0 };      // desde dónde brota la vida
+let origenMeta = { x: 0, y: 0 };
+let acelerado = false;
+let tiempo = 0;
+
+function vidaEn(x, y) {
+  const diag = Math.hypot(W, H);
+  const d = Math.hypot(x - origen.x, y - origen.y) / diag;
+  // Cerca del punto de origen la vida llega antes: los primeros segundos
+  // del gesto ya se notan alrededor de la mano.
+  const cerca = Math.exp(-Math.pow(d / 0.13, 2)) * 0.22 * smooth(0, 0.12, vidaVis);
+  return clamp(vidaVis * 1.35 - d * 0.35 + cerca);
+}
+
+// ---------------------------------------------------------------------
+// Dibujo
+// ---------------------------------------------------------------------
+
+function pintar(dt) {
+  const e = escena;
+  const v = vidaVis;
+  const mov = reducirMovimiento ? 0.25 : 1;
+  const viento = (0.6 + 0.4 * Math.sin(tiempo * 0.23)) * mov;
+
+  // Cielo.
+  const g = ctx.createLinearGradient(0, 0, 0, H * 0.62);
+  g.addColorStop(0, rgb(mezcla(PALETA.cieloArriba[0], PALETA.cieloArriba[1], smooth(0, 0.7, v))));
+  g.addColorStop(1, rgb(mezcla(PALETA.cieloAbajo[0], PALETA.cieloAbajo[1], smooth(0, 0.7, v))));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  // Sol: duro y blanco en la sequía, tibio después.
+  const sx = W * 0.74, sy = H * lerp(0.17, 0.22, v);
+  const sr = Math.min(W, H) * lerp(0.05, 0.04, v);
+  ctx.fillStyle = rgb(mezcla(hex('#fffaf0'), hex('#fff1c9'), v), lerp(0.18, 0.12, v));
+  ctx.beginPath(); ctx.arc(sx, sy, sr * 2.6, 0, 6.29); ctx.fill();
+  ctx.fillStyle = rgb(mezcla(hex('#fffdf6'), hex('#fff4d2'), v), lerp(0.95, 0.8, v));
+  ctx.beginPath(); ctx.arc(sx, sy, sr, 0, 6.29); ctx.fill();
+
+  // Nubes: solo cuando hay humedad.
+  const aNubes = smooth(0.35, 0.8, v) * 0.75;
+  if (aNubes > 0.01) {
+    ctx.fillStyle = rgb([255, 255, 255], aNubes);
+    for (const n of e.nubes) {
+      n.x += n.v * dt * mov;
+      if (n.x - n.w > W) n.x = -n.w * 1.5;
+      ctx.beginPath();
+      ctx.ellipse(n.x, n.y, n.w * 0.62, n.w * 0.1, 0, 0, 6.29);
+      ctx.ellipse(n.x - n.w * 0.18, n.y - n.w * 0.07, n.w * 0.26, n.w * 0.13, 0, 0, 6.29);
+      ctx.ellipse(n.x + n.w * 0.14, n.y - n.w * 0.09, n.w * 0.2, n.w * 0.14, 0, 0, 6.29);
+      ctx.fill();
+    }
+  }
+
+  // Aves: a partir de la mitad del camino.
+  pintarAves(dt, smooth(0.5, 0.7, v));
+
+  // Colinas y coníferas.
+  e.colinas.forEach((c, i) => {
+    const vc = clamp(v * 1.2 - (2 - i) * 0.08);
+    ctx.fillStyle = rgb(mezcla(PALETA[c.pal][0], PALETA[c.pal][1], smooth(0, 0.85, vc)));
+    ctx.beginPath();
+    ctx.moveTo(c.pts[0][0], H);
+    for (const p of c.pts) ctx.lineTo(p[0], p[1]);
+    ctx.lineTo(W + 20, H);
+    ctx.fill();
+    if (i < 2) pintarConiferas(i);
+  });
+
+  // Suelo.
+  const ve0 = vidaEn(W / 2, H * 0.8);
+  const gs = ctx.createLinearGradient(0, H * 0.64, 0, H);
+  gs.addColorStop(0, rgb(mezcla(PALETA.suelo[0], PALETA.suelo[1], smooth(0.05, 0.75, ve0))));
+  gs.addColorStop(1, rgb(mezcla(PALETA.sueloFrente[0], PALETA.sueloFrente[1], smooth(0.05, 0.75, ve0))));
+  ctx.fillStyle = gs;
+  ctx.beginPath();
+  ctx.moveTo(-20, H);
+  for (const p of e.sueloPts) ctx.lineTo(p[0], p[1]);
+  ctx.lineTo(W + 20, H);
+  ctx.fill();
+
+  // Grietas: se cierran con la humedad.
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  for (const gr of e.grietas) {
+    const a = 1 - smooth(0.02, 0.28, vidaEn(gr.seg[0][0], gr.seg[0][1]));
+    if (a <= 0.01) continue;
+    ctx.strokeStyle = rgb(hex('#7d5f3a'), a * 0.55);
+    ctx.lineWidth = gr.ancho;
+    ctx.beginPath();
+    ctx.moveTo(gr.seg[0][0], gr.seg[0][1]);
+    for (const p of gr.seg) ctx.lineTo(p[0], p[1]);
+    ctx.stroke();
+  }
+
+  // Hojas secas en el suelo.
+  for (const h of e.hojasSecas) {
+    const a = 1 - smooth(0.1, 0.45, vidaEn(h.x, h.y));
+    if (a <= 0.01) continue;
+    ctx.fillStyle = rgb(mezcla(PALETA.hojaSeca, hex('#c79a5a'), h.tono), a * 0.8);
+    ctx.beginPath(); ctx.ellipse(h.x, h.y, h.s, h.s * 0.45, h.a, 0, 6.29); ctx.fill();
+  }
+
+  // Humedad: una mancha oscura que se abre en el suelo desde el origen.
+  const hum = smooth(0, 0.08, v) * (1 - smooth(0.35, 0.7, v));
+  if (hum > 0.01) {
+    const rad = Math.min(W, H) * lerp(0.16, 0.45, smooth(0, 0.4, v));
+    const gh = ctx.createRadialGradient(origen.x, origen.y, 0, origen.x, origen.y, rad);
+    gh.addColorStop(0, rgb(hex('#6f6a3c'), 0.5 * hum));
+    gh.addColorStop(1, rgb(hex('#6f6a3c'), 0));
+    ctx.fillStyle = gh;
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(-20, H);
+    for (const p of e.sueloPts) ctx.lineTo(p[0], p[1]);
+    ctx.lineTo(W + 20, H); ctx.clip();
+    ctx.fillRect(origen.x - rad, origen.y - rad, rad * 2, rad * 2);
+    ctx.restore();
+  }
+
+  pintarCauce(v);
+
+  // Todo lo que tiene profundidad, de atrás hacia adelante.
+  for (const it of e.lista) {
+    if (it.tipo === 'brizna') pintarBrizna(it, viento);
+    else if (it.tipo === 'arbol') pintarArbol(it.arbol, viento);
+    else if (it.tipo === 'flor') pintarFlor(it, viento);
+    else pintarPiedra(it);
+  }
+
+  // Luz desde el punto donde brota la vida.
+  pintarSemilla();
+
+  // Polvo en la sequía; luciérnagas y mariposas en la plenitud.
+  pintarParticulas(dt, v, mov);
+
+  // Velo de calor que se retira.
+  const velo = (1 - smooth(0, 0.5, v)) * 0.12;
+  if (velo > 0.005) { ctx.fillStyle = rgb(hex('#f1dcb0'), velo); ctx.fillRect(0, 0, W, H); }
+}
+
+function pintarConiferas(capa) {
+  for (const c of escena.coniferas) {
+    if (c.capa !== capa) continue;
+    const g = smooth(c.t, c.t + 0.18, vidaEn(c.x, c.y));
+    const col = mezcla(PALETA.conifera[0], oscurecer(PALETA.conifera[1], c.tono * 0.2), g);
+    const colL = capa === 0 ? aclarar(col, 0.25) : col;
+    // En la sequía es un tronco pelado; al reverdecer, copa.
+    ctx.strokeStyle = rgb(colL, 0.9);
+    ctx.lineWidth = Math.max(0.8, c.h * 0.08);
+    ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(c.x, c.y - c.h); ctx.stroke();
+    if (g > 0.01) {
+      const w = c.h * 0.32 * g, h = c.h * (0.4 + 0.6 * g);
+      ctx.fillStyle = rgb(colL);
+      ctx.beginPath();
+      ctx.moveTo(c.x, c.y - c.h - 1);
+      ctx.lineTo(c.x - w, c.y - c.h + h);
+      ctx.lineTo(c.x + w, c.y - c.h + h);
+      ctx.fill();
+    }
+  }
+}
+
+function pintarCauce(v) {
+  const c = escena.cauce;
+  // Lecho seco.
+  trazarCauce(c, 1, rgb(PALETA.lecho));
+  // Agua: el cauce se llena de arriba hacia abajo.
+  const vc = vidaEn(c[30].x, c[30].y);
+  const lleno = smooth(0.18, 0.55, vc);
+  if (lleno > 0.01) {
+    const hasta = Math.max(2, Math.floor(c.length * clamp(lleno * 1.3)));
+    trazarCauce(c.slice(0, hasta), lerp(0.2, 0.78, lleno), rgb(PALETA.agua, 0.35 + 0.6 * lleno));
+    // Brillos que bajan con la corriente.
+    ctx.strokeStyle = rgb([255, 255, 255], 0.45 * lleno);
+    ctx.lineWidth = 1.2;
+    for (let i = 3; i < hasta - 1; i += 3) {
+      const p = c[i];
+      const fase = (tiempo * 0.9 + i * 0.37) % 1;
+      const off = Math.sin(i * 12.9 + tiempo * 0.5) * p.ancho * 0.25;
+      const largo = p.ancho * 0.18 * Math.sin(fase * Math.PI);
+      ctx.beginPath();
+      ctx.moveTo(p.x + off - largo, p.y);
+      ctx.lineTo(p.x + off + largo, p.y);
+      ctx.stroke();
+    }
+  }
+}
+
+function trazarCauce(c, factor, color) {
+  if (c.length < 2) return;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  c.forEach((p, i) => (i ? ctx.lineTo : ctx.moveTo).call(ctx, p.x - p.ancho / 2 * factor, p.y));
+  for (let i = c.length - 1; i >= 0; i--) ctx.lineTo(c[i].x + c[i].ancho / 2 * factor, c[i].y);
+  ctx.fill();
+}
+
+function pintarBrizna(b, viento) {
+  const ve = vidaEn(b.x, b.y);
+  const sway = Math.sin(tiempo * 1.3 + b.fase + b.x * 0.01) * viento;
+  if (b.seca) {
+    // El rastrojo se va cubriendo cuando llega el verde.
+    const a = 1 - smooth(0.3, 0.7, ve) * 0.7;
+    ctx.strokeStyle = rgb(mezcla(PALETA.rastrojo, hex('#9f8a5a'), b.tono), a);
+    ctx.lineWidth = Math.max(0.6, b.h * 0.06);
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y);
+    ctx.lineTo(b.x + b.inc * b.h * 0.5 + sway, b.y - b.h * 0.35);
+    ctx.stroke();
+    return;
+  }
+  const g = smooth(b.t, b.t + 0.22, ve);
+  if (g <= 0.01) return;
+  const h = b.h * g;
+  const col = mezcla(mezcla(PALETA.hojaJoven, PALETA.hojaMadura, smooth(0.2, 0.8, ve)), PALETA.hojaHonda, b.tono * 0.5);
+  ctx.strokeStyle = rgb(col);
+  ctx.lineWidth = Math.max(0.7, b.h * 0.07);
+  ctx.beginPath();
+  ctx.moveTo(b.x, b.y);
+  ctx.quadraticCurveTo(b.x + b.inc * h * 0.3, b.y - h * 0.6, b.x + b.inc * h * 0.6 + sway * 2.2 * g, b.y - h);
+  ctx.stroke();
+}
+
+function pintarFlor(f, viento) {
+  const ve = vidaEn(f.x, f.y);
+  const g = smooth(f.t, f.t + 0.12, ve);
+  if (g <= 0.01) return;
+  const sway = Math.sin(tiempo * 1.1 + f.fase) * viento * 1.6;
+  const tx = f.x + sway * g, ty = f.y - f.h * g;
+  ctx.strokeStyle = rgb(PALETA.hojaMadura);
+  ctx.lineWidth = Math.max(0.6, f.s * 0.3);
+  ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(tx, ty); ctx.stroke();
+  const abre = smooth(f.t + 0.05, f.t + 0.16, ve);
+  const s = f.s * (0.4 + 0.6 * abre);
+  ctx.fillStyle = rgb(f.color);
+  for (let k = 0; k < 5; k++) {
+    const a = k * 1.2566 + f.fase;
+    ctx.beginPath(); ctx.arc(tx + Math.cos(a) * s * 0.7 * abre, ty + Math.sin(a) * s * 0.7 * abre, s * 0.55, 0, 6.29); ctx.fill();
+  }
+  ctx.fillStyle = rgb(hex('#e0a43a'));
+  ctx.beginPath(); ctx.arc(tx, ty, s * 0.35, 0, 6.29); ctx.fill();
+}
+
+function pintarPiedra(p) {
+  const ve = vidaEn(p.x, p.y);
+  ctx.fillStyle = rgb(mezcla(hex('#b4a38a'), hex('#8e8c80'), p.tono));
+  ctx.beginPath(); ctx.ellipse(p.x, p.y, p.rx, p.ry, 0, Math.PI, 0); ctx.fill();
+  const musgo = smooth(p.t, p.t + 0.2, ve);
+  if (musgo > 0.01) {
+    ctx.fillStyle = rgb(mezcla(PALETA.hojaJoven, PALETA.hojaMadura, 0.5), musgo * 0.85);
+    ctx.beginPath(); ctx.ellipse(p.x - p.rx * 0.15, p.y - p.ry * 0.55, p.rx * 0.55 * musgo, p.ry * 0.4, 0, 0, 6.29); ctx.fill();
+  }
+}
+
+function pintarArbol(a, viento) {
+  const ve = vidaEn(a.x, a.y - 60 * a.escala);
+  const vivo = smooth(0.05, 0.5, ve);
+  const sway = Math.sin(tiempo * 0.7 + a.fase) * 0.012 * viento;
+  ctx.save();
+  ctx.translate(a.x, a.y);
+  ctx.transform(1, 0, sway, 1, 0, 0);
+
+  // Ramas.
+  ctx.strokeStyle = rgb(mezcla(PALETA.tronco[0], PALETA.tronco[1], vivo));
+  ctx.lineCap = 'round';
+  for (const b of a.ramas) {
+    ctx.lineWidth = b.ancho;
+    ctx.beginPath(); ctx.moveTo(b.x1, b.y1); ctx.lineTo(b.x2, b.y2); ctx.stroke();
+  }
+
+  // Hojas.
+  const madurez = smooth(0.3, 0.9, ve);
+  for (const h of a.hojas) {
+    const g = smooth(h.t, h.t + 0.16, ve);
+    if (g <= 0.02) continue;
+    const col = mezcla(mezcla(PALETA.hojaJoven, PALETA.hojaMadura, madurez), PALETA.hojaHonda, h.tono * 0.55 * madurez);
+    const dx = Math.sin(tiempo * 1.6 + h.fase) * viento * 0.9;
+    ctx.fillStyle = rgb(col);
+    ctx.beginPath();
+    ctx.ellipse(h.x + dx, h.y, h.s * g, h.s * 0.62 * g, h.ang + dx * 0.2, 0, 6.29);
+    ctx.fill();
+  }
+  for (const f of a.flores) {
+    const g = smooth(f.t, f.t + 0.1, ve);
+    if (g <= 0.02) continue;
+    ctx.fillStyle = rgb(f.color);
+    ctx.beginPath(); ctx.arc(f.x, f.y, f.s * g, 0, 6.29); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// Aves: bandadas que cruzan de vez en cuando.
+let aves = [];
+let proximaBandada = 4;
+function pintarAves(dt, presencia) {
+  if (presencia > 0.05 && !reducirMovimiento) {
+    proximaBandada -= dt;
+    if (proximaBandada <= 0 && aves.length === 0) {
+      const n = 3 + Math.floor(Math.random() * 4);
+      const y = H * (0.12 + Math.random() * 0.2);
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      for (let i = 0; i < n; i++) aves.push({ x: dir > 0 ? -40 - i * 26 : W + 40 + i * 26, y: y + (i % 2) * 14 + Math.random() * 10, dir, fase: Math.random() * 6.28, s: 5 + Math.random() * 3 });
+      proximaBandada = 14 + Math.random() * 16;
+      sonido.pajaros();
+    }
+  }
+  if (!aves.length) return;
+  ctx.strokeStyle = rgb(hex('#4a4a44'), 0.7);
+  ctx.lineWidth = 1.4;
+  for (const a of aves) {
+    a.x += a.dir * 42 * dt;
+    const ala = Math.sin(tiempo * 7 + a.fase) * a.s * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(a.x - a.s, a.y - ala);
+    ctx.quadraticCurveTo(a.x - a.s * 0.4, a.y - ala * 0.2, a.x, a.y);
+    ctx.quadraticCurveTo(a.x + a.s * 0.4, a.y - ala * 0.2, a.x + a.s, a.y - ala);
+    ctx.stroke();
+  }
+  aves = aves.filter((a) => a.x > -300 && a.x < W + 300);
+}
+
+function pintarParticulas(dt, v, mov) {
+  const e = escena;
+  const aPolvo = (1 - smooth(0.05, 0.4, v)) * 0.5;
+  if (aPolvo > 0.01) {
+    ctx.fillStyle = rgb(hex('#fff3dc'), aPolvo);
+    for (const p of e.polvo) {
+      p.x += p.v * dt * mov;
+      p.y += Math.sin(tiempo * 0.8 + p.fase) * 0.15 * mov;
+      if (p.x > W + 5) p.x = -5;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 6.29); ctx.fill();
+    }
+  }
+  for (const l of e.luciernagas) {
+    const a = smooth(l.t, l.t + 0.12, v);
+    if (a <= 0.01) continue;
+    l.x += Math.cos(tiempo * l.vel + l.fase) * 8 * dt * mov;
+    l.y += Math.sin(tiempo * l.vel * 1.3 + l.fase) * 5 * dt * mov;
+    const brillo = (0.55 + 0.45 * Math.sin(tiempo * 1.7 + l.fase * 3)) * a;
+    ctx.fillStyle = rgb(hex('#fff6b0'), brillo * 0.18);
+    ctx.beginPath(); ctx.arc(l.x, l.y, 7, 0, 6.29); ctx.fill();
+    ctx.fillStyle = rgb(hex('#fffbe0'), brillo * 0.9);
+    ctx.beginPath(); ctx.arc(l.x, l.y, 1.6, 0, 6.29); ctx.fill();
+  }
+  for (const m of e.mariposas) {
+    const a = smooth(m.t, m.t + 0.08, v);
+    if (a <= 0.01) continue;
+    m.x += Math.cos(tiempo * 0.3 + m.fase) * 22 * dt * mov;
+    m.y += Math.sin(tiempo * 0.5 + m.fase * 2) * 12 * dt * mov;
+    if (m.x < 0) m.x = W; if (m.x > W) m.x = 0;
+    const ala = Math.abs(Math.sin(tiempo * (reducirMovimiento ? 2 : 9) + m.fase));
+    ctx.fillStyle = rgb(m.color, a);
+    ctx.beginPath(); ctx.ellipse(m.x - 3.2 * ala, m.y, 3.4 * ala + 0.4, 2.6, -0.4, 0, 6.29); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(m.x + 3.2 * ala, m.y, 3.4 * ala + 0.4, 2.6, 0.4, 0, 6.29); ctx.fill();
+  }
+}
+
+// La semilla: un punto de luz tenue que ayuda a ubicarse sin tapar nada.
+function pintarSemilla() {
+  const p = participacion;
+  if (p.nombre === 'apagada' && !p.sostiene) return;
+  let x = origen.x, y = origen.y;
+  if (mano.presente) { x = mano.sx; y = clamp(mano.sy, H * 0.6, H * 0.95); }
+  else if (!p.sostiene) return;
+  const respira = reducirMovimiento ? 0.5 : 0.5 + 0.5 * Math.sin(tiempo * 2 * Math.PI / 5.5);
+  if (p.sostiene) {
+    ctx.fillStyle = rgb(hex('#fffbe6'), 0.10 + 0.08 * respira);
+    ctx.beginPath(); ctx.arc(x, y, 34 + 10 * respira, 0, 6.29); ctx.fill();
+    ctx.fillStyle = rgb(hex('#fffbe6'), 0.75);
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, 6.29); ctx.fill();
+  } else if (mano.presente) {
+    // Dos puntos: pulgar e índice, a la distancia real entre ellos.
+    ctx.fillStyle = rgb(hex('#fffbe6'), 0.5);
+    ctx.beginPath(); ctx.arc(mano.px, mano.py, 3, 0, 6.29); ctx.fill();
+    ctx.beginPath(); ctx.arc(mano.ix, mano.iy, 3, 0, 6.29); ctx.fill();
+    ctx.strokeStyle = rgb(hex('#fffbe6'), 0.2);
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(mano.px, mano.py); ctx.lineTo(mano.ix, mano.iy); ctx.stroke();
+  }
+}
+
+// ---------------------------------------------------------------------
+// Sonido
+// ---------------------------------------------------------------------
+
+const sonido = {
+  ac: null, maestro: null, activo: true,
+  iniciar() {
+    if (this.ac) { this.ac.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    const ac = this.ac = new AC();
+    this.maestro = ac.createGain();
+    this.maestro.gain.value = 0;
+    const comp = ac.createDynamicsCompressor();
+    this.maestro.connect(comp).connect(ac.destination);
+    this.maestro.gain.setTargetAtTime(this.activo ? 0.9 : 0, ac.currentTime, 1.5);
+
+    // Ruido marrón compartido.
+    const largo = ac.sampleRate * 4;
+    const buf = ac.createBuffer(1, largo, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    let ult = 0;
+    for (let i = 0; i < largo; i++) { const w = Math.random() * 2 - 1; ult = (ult + 0.02 * w) / 1.02; d[i] = ult * 3.5; }
+    const ruido = (tasa = 1) => { const s = ac.createBufferSource(); s.buffer = buf; s.loop = true; s.playbackRate.value = tasa; s.start(); return s; };
+
+    // Viento seco.
+    this.vientoF = ac.createBiquadFilter(); this.vientoF.type = 'bandpass'; this.vientoF.frequency.value = 600; this.vientoF.Q.value = 0.8;
+    this.vientoG = ac.createGain(); this.vientoG.gain.value = 0;
+    ruido(1).connect(this.vientoF).connect(this.vientoG).connect(this.maestro);
+
+    // Agua.
+    this.aguaF = ac.createBiquadFilter(); this.aguaF.type = 'bandpass'; this.aguaF.frequency.value = 1100; this.aguaF.Q.value = 2.5;
+    this.aguaG = ac.createGain(); this.aguaG.gain.value = 0;
+    ruido(3.1).connect(this.aguaF).connect(this.aguaG).connect(this.maestro);
+
+    // Acorde sostenido: re mayor abierto, entra nota por nota.
+    this.acordeF = ac.createBiquadFilter(); this.acordeF.type = 'lowpass'; this.acordeF.frequency.value = 700;
+    this.acordeG = ac.createGain(); this.acordeG.gain.value = 0;
+    this.acordeF.connect(this.acordeG).connect(this.maestro);
+    this.voces = [146.83, 220.0, 293.66, 369.99, 440.0].map((f, i) => {
+      const o = ac.createOscillator(); o.type = i < 2 ? 'triangle' : 'sine'; o.frequency.value = f;
+      o.detune.value = (Math.random() - 0.5) * 8;
+      const g = ac.createGain(); g.gain.value = 0;
+      o.connect(g).connect(this.acordeF); o.start();
+      return { g, umbral: [0.02, 0.12, 0.3, 0.5, 0.72][i] };
+    });
+    this.ultimoBurbujeo = 0;
+  },
+  alternar() {
+    this.activo = !this.activo;
+    if (this.ac) this.maestro.gain.setTargetAtTime(this.activo ? 0.9 : 0, this.ac.currentTime, 0.3);
+    return this.activo;
+  },
+  actualizar(v, sostiene) {
+    if (!this.ac) return;
+    const t = this.ac.currentTime;
+    const rafaga = 0.55 + 0.45 * Math.sin(tiempo * 0.31) * Math.sin(tiempo * 0.13 + 1);
+    this.vientoG.gain.setTargetAtTime((0.05 + 0.2 * (1 - v)) * rafaga, t, 0.5);
+    this.vientoF.frequency.setTargetAtTime(lerp(750, 320, v) + rafaga * 180, t, 0.5);
+    this.aguaG.gain.setTargetAtTime(0.09 * smooth(0.2, 0.6, v), t, 0.8);
+    if (tiempo - this.ultimoBurbujeo > 0.09) {
+      this.ultimoBurbujeo = tiempo;
+      this.aguaF.frequency.setTargetAtTime(700 + Math.random() * 1100, t, 0.04);
+    }
+    this.acordeG.gain.setTargetAtTime(0.06 + (sostiene ? 0.02 : 0), t, 1.2);
+    this.acordeF.frequency.setTargetAtTime(lerp(500, 1400, v), t, 1.5);
+    for (const voz of this.voces) voz.g.gain.setTargetAtTime(0.5 * smooth(voz.umbral, voz.umbral + 0.15, v), t, 1.5);
+  },
+  campana(frecuencias, vol = 0.12) {
+    if (!this.ac || !this.activo) return;
+    const ac = this.ac;
+    frecuencias.forEach((f, i) => {
+      const t0 = ac.currentTime + i * 0.28;
+      [1, 2.76, 5.4].forEach((m, k) => {
+        const o = ac.createOscillator(); o.type = 'sine'; o.frequency.value = f * m;
+        const g = ac.createGain();
+        g.gain.setValueAtTime(0, t0);
+        g.gain.linearRampToValueAtTime(vol / (k * 2 + 1), t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 2.8 / (k + 1));
+        o.connect(g).connect(this.maestro); o.start(t0); o.stop(t0 + 3);
+      });
+    });
+  },
+  pajaros() {
+    if (!this.ac || !this.activo) return;
+    const ac = this.ac;
+    const pan = ac.createStereoPanner ? ac.createStereoPanner() : null;
+    if (pan) { pan.pan.value = Math.random() * 1.6 - 0.8; pan.connect(this.maestro); }
+    let t0 = ac.currentTime + 0.1;
+    const notas = 3 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < notas; i++) {
+      const o = ac.createOscillator(); o.type = 'sine';
+      const f = 2600 + Math.random() * 1600;
+      o.frequency.setValueAtTime(f, t0);
+      o.frequency.exponentialRampToValueAtTime(f * (Math.random() < 0.5 ? 1.35 : 0.75), t0 + 0.09);
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(0.025, t0 + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.12);
+      o.connect(g).connect(pan || this.maestro); o.start(t0); o.stop(t0 + 0.15);
+      t0 += 0.12 + Math.random() * 0.12;
+    }
+  },
+};
+
+// ---------------------------------------------------------------------
+// Mano: cámara + MediaPipe, con histéresis y tolerancia al temblor
+// ---------------------------------------------------------------------
+
+const video = document.getElementById('video');
+const camara = { estado: 'apagada', detector: null, flujo: null, ultimoTiempo: -1, error: '' };
+const mano = {
+  presente: false, ultimaVista: -99,
+  r: 1, rSuave: 1,
+  cerrada: false, tBajo: 0, tAlto: 0,
+  sx: 0, sy: 0, px: 0, py: 0, ix: 0, iy: 0,
+  puntos: null, pista: '',
+};
+
+async function cargarDetector() {
+  const mod = await import(`${CFG.mediapipe}/vision_bundle.mjs`);
+  const archivos = await mod.FilesetResolver.forVisionTasks(`${CFG.mediapipe}/wasm`);
+  const opciones = (delegado) => ({
+    baseOptions: { modelAssetPath: CFG.modelo, delegate: delegado },
+    runningMode: 'VIDEO',
+    numHands: 2,
+    minHandDetectionConfidence: 0.5,
+    minHandPresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
+  });
+  try {
+    return await mod.HandLandmarker.createFromOptions(archivos, opciones('GPU'));
+  } catch {
+    return await mod.HandLandmarker.createFromOptions(archivos, opciones('CPU'));
+  }
+}
+
+async function encenderCamara() {
+  if (camara.estado === 'iniciando' || camara.estado === 'activa') return;
+  sonido.iniciar();
+  camara.estado = 'iniciando';
+  camara.error = '';
+  actualizarBotones();
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) throw Object.assign(new Error(), { name: 'SinSoporte' });
+    const [flujo, detector] = await Promise.all([
+      navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }, audio: false }),
+      camara.detector ? Promise.resolve(camara.detector) : cargarDetector().catch((err) => { err.name = 'Modelo'; throw err; }),
+    ]);
+    camara.flujo = flujo;
+    camara.detector = detector;
+    video.srcObject = flujo;
+    await video.play();
+    camara.estado = 'activa';
+  } catch (err) {
+    apagarCamara(true);
+    camara.estado = 'error';
+    camara.error = ({
+      NotAllowedError: 'El navegador no dio permiso para usar la cámara.',
+      SecurityError: 'El navegador no dio permiso para usar la cámara.',
+      NotFoundError: 'No se encontró ninguna cámara conectada.',
+      NotReadableError: 'Otra aplicación está usando la cámara.',
+      SinSoporte: 'Este navegador no permite usar la cámara aquí.',
+      Modelo: 'No se pudo cargar el reconocimiento de manos. ¿Hay internet?',
+    })[err?.name] || 'No se pudo encender la cámara.';
+    console.warn(err);
+  }
+  actualizarBotones();
+}
+
+function apagarCamara(silencioso) {
+  if (camara.flujo) camara.flujo.getTracks().forEach((t) => t.stop());
+  camara.flujo = null;
+  video.srcObject = null;
+  if (!silencioso) { camara.estado = 'apagada'; camara.error = ''; }
+  mano.presente = false;
+  mano.cerrada = false;
+  actualizarBotones();
+}
+
+const dist = (a, b, vw, vh) => Math.hypot((a.x - b.x) * vw, (a.y - b.y) * vh);
+const dist3 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z);
+
+function detectar(ahora, dt) {
+  if (camara.estado !== 'activa' || !camara.detector || video.readyState < 2) return;
+  if (video.currentTime === camara.ultimoTiempo) { seguirSinDato(ahora); return; }
+  camara.ultimoTiempo = video.currentTime;
+  // El filtro y la histéresis cuentan el tiempo real entre cuadros de la
+  // cámara, no el del dibujo: la cámara suele ir más lenta que la pantalla.
+  dt = clamp(ahora - (camara.ultimaDeteccion ?? ahora - dt), 0.001, 0.25);
+  camara.ultimaDeteccion = ahora;
+  let res;
+  try { res = camara.detector.detectForVideo(video, performance.now()); } catch (err) { console.warn(err); return; }
+  const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
+
+  // Si hay dos manos, manda la que está más cerca de juntar los dedos.
+  // La razón se mide con las coordenadas 3D del modelo (en metros) cuando
+  // existen: así no cambia si la mano gira o se inclina frente a la cámara.
+  let mejor = null;
+  (res.landmarks || []).forEach((lm, i) => {
+    const palma = Math.max(dist(lm[0], lm[9], vw, vh), dist(lm[5], lm[17], vw, vh) * 1.25, 1);
+    const w3 = res.worldLandmarks?.[i];
+    const r = w3 ? dist3(w3[4], w3[8]) / Math.max(dist3(w3[0], w3[9]), 1e-3)
+                 : dist(lm[4], lm[8], vw, vh) / palma;
+    if (!mejor || r < mejor.r) mejor = { lm, r, palma };
+  });
+
+  if (!mejor) { seguirSinDato(ahora); mano.presente = ahora - mano.ultimaVista < 0.25 && mano.presente; return; }
+
+  const { lm, r, palma } = mejor;
+  mano.presente = true;
+  mano.ultimaVista = ahora;
+  mano.puntos = lm;
+  mano.r = r;
+  // Filtro exponencial: una oscilación de la mano no mueve el estado.
+  mano.rSuave += (r - mano.rSuave) * (1 - Math.exp(-dt / CFG.suavizado));
+
+  // Posición en pantalla, en espejo.
+  const aPantalla = (p) => [(1 - p.x) * W, p.y * H];
+  [mano.px, mano.py] = aPantalla(lm[4]);
+  [mano.ix, mano.iy] = aPantalla(lm[8]);
+  mano.sx = (mano.px + mano.ix) / 2;
+  mano.sy = (mano.py + mano.iy) / 2;
+
+  // Histéresis con confirmación en el tiempo.
+  if (!mano.cerrada) {
+    mano.tBajo = mano.rSuave < CFG.cerrar ? mano.tBajo + dt : 0;
+    if (mano.tBajo >= CFG.confirmarCierre) { mano.cerrada = true; mano.tAlto = 0; }
+  } else {
+    mano.tAlto = mano.rSuave > CFG.abrir ? mano.tAlto + dt : 0;
+    if (mano.tAlto >= CFG.confirmarApertura) { mano.cerrada = false; mano.tBajo = 0; }
+  }
+
+  // Pistas de encuadre.
+  const cx = (lm[0].x + lm[9].x) / 2, cy = (lm[0].y + lm[9].y) / 2;
+  const tam = palma / vh;
+  mano.bordes = { izq: cx > 0.9, der: cx < 0.1, arriba: cy < 0.1, abajo: cy > 0.92 };
+  if (tam < 0.09) mano.pista = 'Acerca la mano a la cámara';
+  else if (tam > 0.5) mano.pista = 'Aleja un poco la mano';
+  else if (mano.bordes.izq || mano.bordes.der || mano.bordes.arriba || mano.bordes.abajo) mano.pista = 'Lleva la mano hacia el centro';
+  else mano.pista = '';
+}
+
+function seguirSinDato(ahora) {
+  if (ahora - mano.ultimaVista > 0.25) mano.presente = false;
+  // Si la mano se pierde un instante con el gesto hecho, el gesto sigue.
+  if (mano.cerrada && ahora - mano.ultimaVista > CFG.graciaManoPerdida) mano.cerrada = false;
+}
+
+// ---------------------------------------------------------------------
+// Participación: qué ve la persona en el indicador
+// ---------------------------------------------------------------------
+
+const ensayo = { tecla: false, puntero: false, px: 0, py: 0 };
+const participacion = { nombre: 'apagada', sostiene: false, desde: 0, fuente: '', sinGesto: 0, anterior: '' };
+
+function actualizarParticipacion(ahora, dt) {
+  const conMano = camara.estado === 'activa' && mano.cerrada && (mano.presente || ahora - mano.ultimaVista < CFG.graciaManoPerdida);
+  const conEnsayo = ensayo.tecla || ensayo.puntero;
+  const sostiene = conMano || conEnsayo;
+  const p = participacion;
+
+  if (sostiene && !p.sostiene) {
+    p.desde = ahora;
+    p.fuente = conMano ? 'mano' : 'ensayo';
+    sonido.iniciar();
+    sonido.campana([587.33, 880]);
+  }
+  if (sostiene) p.fuente = conMano ? 'mano' : 'ensayo';
+  p.sostiene = sostiene;
+
+  let nombre;
+  if (sostiene) nombre = ahora - p.desde < CFG.duracionReconocido ? 'reconocido' : 'sosteniendo';
+  else if (camara.estado === 'iniciando') nombre = 'iniciando';
+  else if (camara.estado === 'error') nombre = 'error';
+  else if (camara.estado !== 'activa') nombre = 'apagada';
+  else if (mano.presente) nombre = 'mano';
+  else nombre = 'buscando';
+  p.nombre = nombre;
+
+  // Vida: crece al sostener; al acercar los dedos empieza a moverse;
+  // sin gesto, espera y luego se seca despacio.
+  const k = acelerado ? CFG.aceleracionEnsayo : 1;
+  const cercania = mano.presente ? clamp((CFG.abrir - mano.rSuave) / (CFG.abrir - CFG.cerrar)) : 0;
+  if (sostiene) {
+    vida += dt / CFG.tiempoPleno * k;
+    p.sinGesto = 0;
+  } else if (camara.estado === 'activa' && mano.presente && cercania > 0) {
+    vida += dt / CFG.tiempoPleno * k * 0.3 * cercania;
+    p.sinGesto = 0;
+  } else {
+    p.sinGesto += dt;
+    const espera = mano.presente ? CFG.esperaConManoAbierta : CFG.esperaSinMano;
+    if (p.sinGesto > espera) vida -= dt / CFG.tiempoSecar * k;
+  }
+  vida = clamp(vida);
+  vidaVis += (vida - vidaVis) * (1 - Math.exp(-dt / 1.2));
+
+  // Origen de la vida: donde está la mano o el puntero, siempre sobre el suelo.
+  if (ensayo.puntero) origenMeta = { x: ensayo.px, y: ensayo.py };
+  else if (mano.presente) origenMeta = { x: mano.sx, y: mano.sy };
+  const ym = clamp(origenMeta.y, H * 0.6, H * 0.95);
+  const ko = 1 - Math.exp(-dt / 2.5);
+  origen.x += (origenMeta.x - origen.x) * ko;
+  origen.y += (ym - origen.y) * ko;
+}
+
+const FASES = [
+  [0.1, 'La tierra se humedece'],
+  [0.3, 'Brotan las primeras hojas'],
+  [0.5, 'El agua vuelve al cauce'],
+  [0.7, 'Las copas se cierran'],
+  [0.88, 'Aparecen las flores'],
+  [1.01, 'El bosque respira'],
+];
+let faseAnterior = 0;
+
+const el = {
+  estado: document.getElementById('estado'),
+  modo: document.getElementById('estado-modo'),
+  nombre: document.getElementById('estado-nombre'),
+  reloj: document.getElementById('estado-reloj'),
+  detalle: document.getElementById('estado-detalle'),
+  icono: document.getElementById('icono'),
+  encuadre: document.getElementById('encuadre'),
+  encuadreLienzo: document.getElementById('encuadre-lienzo'),
+  encuadreTexto: document.getElementById('encuadre-texto'),
+};
+const ictx = el.icono.getContext('2d');
+const ectx = el.encuadreLienzo.getContext('2d');
+let textoAnterior = '';
+
+function textosEstado(ahora) {
+  const p = participacion;
+  const esEnsayo = p.sostiene && p.fuente === 'ensayo';
+  const faseI = FASES.findIndex(([u]) => vida < u);
+  switch (p.nombre) {
+    case 'apagada': return ['Cámara apagada', 'Enciéndela con C, o mantén Espacio para ensayar'];
+    case 'iniciando': return ['Encendiendo la cámara', 'Si el navegador pregunta, permite el acceso'];
+    case 'error': return ['Cámara no disponible', camara.error + ' Mantén Espacio para ensayar.'];
+    case 'buscando': return ['Buscando una mano', 'Muéstrala frente a la cámara'];
+    case 'mano': {
+      const cerca = mano.rSuave < CFG.abrir;
+      return [cerca ? 'Casi' : 'Mano encontrada', mano.pista || (cerca ? 'Termina de juntar los dedos' : 'Junta el pulgar y el índice')];
+    }
+    case 'reconocido': return ['Gesto reconocido', 'Sostenlo'];
+    case 'sosteniendo': return ['Sosteniendo', FASES[Math.max(0, faseI)][1]];
+  }
+  return ['', ''];
+}
+
+function actualizarIndicador(ahora) {
+  const p = participacion;
+  const [titulo, detalle] = textosEstado(ahora);
+  const esEnsayo = p.sostiene && p.fuente === 'ensayo';
+  const modo = esEnsayo ? 'Ensayo' : (acelerado ? 'Rápido' : '');
+  const clave = modo + titulo + detalle;
+  if (clave !== textoAnterior) {
+    textoAnterior = clave;
+    el.modo.innerHTML = modo ? `<span class="modo">${modo}</span>` : '';
+    el.nombre.textContent = titulo;
+    el.detalle.textContent = detalle;
+  }
+  if (p.nombre === 'sosteniendo') {
+    const s = Math.floor(ahora - p.desde);
+    el.reloj.textContent = ` · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  } else el.reloj.textContent = '';
+
+  // Cuando la persona sostiene, el panel se aparta un poco para dejar ver el bosque.
+  el.estado.classList.toggle('tenue', p.nombre === 'sosteniendo' && ahora - p.desde > 8);
+
+  // Campana suave al cruzar cada fase mientras se sostiene.
+  const fase = FASES.findIndex(([u]) => vida < u);
+  if (fase > faseAnterior && p.sostiene) sonido.campana([[587.33, 659.25, 739.99, 880, 987.77, 1174.66][fase % 6]], 0.07);
+  faseAnterior = fase;
+
+  pintarIcono(ahora);
+  pintarEncuadre();
+}
+
+function pintarIcono(ahora) {
+  const c = ictx, S = 128, m = S / 2;
+  c.clearRect(0, 0, S, S);
+  const p = participacion;
+  const blanco = '#f4f1e8', tenue = 'rgba(244,241,232,0.35)', amarillo = '#eeff41';
+  const R = 46;
+  c.lineCap = 'round';
+  const respira = reducirMovimiento ? 0.5 : 0.5 + 0.5 * Math.sin(ahora * 2 * Math.PI / 5.5);
+
+  if (p.nombre === 'apagada' || p.nombre === 'error') {
+    c.setLineDash([6, 9]); c.strokeStyle = tenue; c.lineWidth = 4;
+    c.beginPath(); c.arc(m, m, R, 0, 6.29); c.stroke();
+    c.setLineDash([]);
+    c.strokeStyle = blanco; c.lineWidth = 5;
+    c.beginPath(); c.moveTo(m - 22, m + 22); c.lineTo(m + 22, m - 22); c.stroke();
+    return;
+  }
+  if (p.nombre === 'iniciando' || p.nombre === 'buscando') {
+    c.strokeStyle = tenue; c.lineWidth = 4;
+    c.beginPath(); c.arc(m, m, R, 0, 6.29); c.stroke();
+    // Un arco que recorre el círculo: está buscando.
+    const a = reducirMovimiento ? 0 : ahora * (p.nombre === 'iniciando' ? 3 : 1.4);
+    c.strokeStyle = blanco; c.lineWidth = 6;
+    c.beginPath(); c.arc(m, m, R, a, a + 1.1); c.stroke();
+    if (p.nombre === 'buscando') {
+      c.fillStyle = tenue;
+      c.beginPath(); c.arc(m, m, 5, 0, 6.29); c.fill();
+    }
+    return;
+  }
+  if (p.nombre === 'mano') {
+    c.strokeStyle = blanco; c.lineWidth = 4;
+    c.beginPath(); c.arc(m, m, R, 0, 6.29); c.stroke();
+    // Dos puntos que se acercan a medida que los dedos se juntan.
+    const sep = clamp((mano.rSuave - 0.15) / 0.95) * 30;
+    c.strokeStyle = tenue; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(m - sep, m); c.lineTo(m + sep, m); c.stroke();
+    c.fillStyle = blanco;
+    c.beginPath(); c.arc(m - sep, m, 9, 0, 6.29); c.fill();
+    c.beginPath(); c.arc(m + sep, m, 9, 0, 6.29); c.fill();
+    return;
+  }
+  // Reconocido y sosteniendo: un solo punto, el anillo muestra la vida.
+  const t = ahora - p.desde;
+  if (p.nombre === 'reconocido') {
+    const k = clamp(t / CFG.duracionReconocido);
+    c.fillStyle = `rgba(238,255,65,${(0.55 * (1 - k)).toFixed(3)})`;
+    c.beginPath(); c.arc(m, m, R, 0, 6.29); c.fill();
+    c.strokeStyle = `rgba(238,255,65,${(1 - k).toFixed(3)})`; c.lineWidth = 3;
+    c.beginPath(); c.arc(m, m, R + k * 14, 0, 6.29); c.stroke();
+  }
+  c.strokeStyle = tenue; c.lineWidth = 6;
+  c.beginPath(); c.arc(m, m, R, 0, 6.29); c.stroke();
+  c.strokeStyle = amarillo; c.lineWidth = 6;
+  c.beginPath(); c.arc(m, m, R, -Math.PI / 2, -Math.PI / 2 + Math.max(0.02, vida) * Math.PI * 2); c.stroke();
+  c.fillStyle = blanco;
+  const rr = p.nombre === 'sosteniendo' ? 10 + 6 * respira : 12;
+  c.beginPath(); c.arc(m, m, rr, 0, 6.29); c.fill();
+}
+
+let modoEncuadre = 0; // 0 esqueleto, 1 imagen, 2 oculto
+const HUESOS = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
+
+function pintarEncuadre() {
+  const visible = camara.estado === 'activa' && modoEncuadre !== 2;
+  el.encuadre.classList.toggle('oculto', !visible);
+  if (!visible) return;
+  const c = ectx, Wc = el.encuadreLienzo.width, Hc = el.encuadreLienzo.height;
+  c.clearRect(0, 0, Wc, Hc);
+  if (modoEncuadre === 1 && video.readyState >= 2) {
+    c.save(); c.translate(Wc, 0); c.scale(-1, 1);
+    c.globalAlpha = 0.85; c.drawImage(video, 0, 0, Wc, Hc); c.restore();
+  }
+  // Bordes: se marcan en amarillo cuando la mano está por salirse.
+  const b = mano.presente && mano.bordes ? mano.bordes : {};
+  const lado = (on, x1, y1, x2, y2) => {
+    c.strokeStyle = on ? '#eeff41' : 'rgba(244,241,232,0.55)';
+    c.lineWidth = on ? 8 : 2;
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+  };
+  lado(b.arriba, 0, 1, Wc, 1); lado(b.abajo, 0, Hc - 1, Wc, Hc - 1);
+  lado(b.izq, 1, 0, 1, Hc); lado(b.der, Wc - 1, 0, Wc - 1, Hc);
+
+  if (mano.presente && mano.puntos) {
+    const P = mano.puntos.map((q) => [(1 - q.x) * Wc, q.y * Hc]);
+    c.strokeStyle = 'rgba(244,241,232,0.8)'; c.lineWidth = 3;
+    for (const [a, z] of HUESOS) { c.beginPath(); c.moveTo(...P[a]); c.lineTo(...P[z]); c.stroke(); }
+    const junta = participacion.sostiene;
+    c.fillStyle = junta ? '#eeff41' : '#ffffff';
+    for (const i of [4, 8]) { c.beginPath(); c.arc(P[i][0], P[i][1], 8, 0, 6.29); c.fill(); }
+  }
+  const texto = mano.presente ? (mano.pista || 'Encuadre de la cámara') : 'Encuadre de la cámara · sin mano';
+  if (el.encuadreTexto.textContent !== texto) el.encuadreTexto.textContent = texto;
+}
+
+// ---------------------------------------------------------------------
+// Controles
+// ---------------------------------------------------------------------
+
+const entrada = document.getElementById('entrada');
+const ayuda = document.getElementById('ayuda');
+const docente = document.getElementById('docente');
+const aviso = document.getElementById('aviso');
+const botones = {
+  reiniciar: document.getElementById('c-reiniciar'),
+  camara: document.getElementById('c-camara'),
+  sonido: document.getElementById('c-sonido'),
+  encuadre: document.getElementById('c-encuadre'),
+  acelerar: document.getElementById('c-acelerar'),
+  pantalla: document.getElementById('c-pantalla'),
+  ayuda: document.getElementById('c-ayuda'),
+};
+
+let tAviso = 0;
+function avisar(texto) {
+  aviso.textContent = texto;
+  aviso.classList.add('visible');
+  clearTimeout(tAviso);
+  tAviso = setTimeout(() => aviso.classList.remove('visible'), 1800);
+}
+
+function comenzar() {
+  entrada.classList.add('oculta');
+  el.estado.classList.remove('oculto');
+  sonido.iniciar();
+}
+
+function reiniciar() {
+  vida = 0; vidaVis = 0; faseAnterior = 0; aves = [];
+  participacion.sinGesto = 0;
+  origen = { x: W * 0.5, y: H * 0.8 }; origenMeta = { ...origen };
+  escena = construirEscena();
+  avisar('Bosque reiniciado');
+}
+
+function actualizarBotones() {
+  botones.camara.setAttribute('aria-pressed', String(camara.estado === 'activa' || camara.estado === 'iniciando'));
+  botones.sonido.setAttribute('aria-pressed', String(sonido.activo));
+  botones.acelerar.setAttribute('aria-pressed', String(acelerado));
+}
+
+const acciones = {
+  reiniciar,
+  camara() {
+    comenzar();
+    if (camara.estado === 'activa' || camara.estado === 'iniciando') { apagarCamara(); avisar('Cámara apagada'); }
+    else encenderCamara();
+  },
+  sonido() { sonido.iniciar(); avisar(sonido.alternar() ? 'Sonido encendido' : 'Sonido apagado'); actualizarBotones(); },
+  encuadre() {
+    modoEncuadre = (modoEncuadre + 1) % 3;
+    avisar(['Encuadre: esqueleto de la mano', 'Encuadre: imagen de la cámara', 'Encuadre oculto'][modoEncuadre]);
+  },
+  acelerar() { acelerado = !acelerado; avisar(acelerado ? 'Ensayo rápido: seis veces más rápido' : 'Velocidad normal'); actualizarBotones(); },
+  pantalla() {
+    if (document.fullscreenElement) document.exitFullscreen?.();
+    else document.documentElement.requestFullscreen?.().catch(() => {});
+  },
+  ayuda() {
+    const abre = !ayuda.classList.contains('visible');
+    ayuda.classList.toggle('visible', abre);
+    if (abre) document.getElementById('ayuda-cerrar').focus();
+  },
+};
+
+for (const [k, b] of Object.entries(botones)) b.addEventListener('click', () => acciones[k]());
+document.getElementById('ayuda-cerrar').addEventListener('click', () => acciones.ayuda());
+document.getElementById('btn-camara').addEventListener('click', () => { comenzar(); encenderCamara(); });
+document.getElementById('btn-ensayo').addEventListener('click', () => { comenzar(); avisar('Mantén Espacio o presiona el bosque'); });
+
+addEventListener('keydown', (ev) => {
+  if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+  const k = ev.key.toLowerCase();
+  if (ev.code === 'Space') {
+    // El espacio sobre un botón lo activaría: aquí siempre es el gesto.
+    ev.preventDefault();
+    if (!ev.repeat) { comenzar(); ensayo.tecla = true; }
+    return;
+  }
+  if (k === 'escape' && ayuda.classList.contains('visible')) { acciones.ayuda(); return; }
+  const mapa = { r: 'reiniciar', c: 'camara', m: 'sonido', v: 'encuadre', a: 'acelerar', f: 'pantalla', h: 'ayuda', '?': 'ayuda' };
+  if (mapa[k]) { ev.preventDefault(); acciones[mapa[k]](); }
+});
+addEventListener('keyup', (ev) => { if (ev.code === 'Space') { ev.preventDefault(); ensayo.tecla = false; } });
+addEventListener('blur', () => { ensayo.tecla = false; ensayo.puntero = false; });
+
+lienzo.addEventListener('pointerdown', (ev) => {
+  comenzar();
+  ensayo.puntero = true; ensayo.px = ev.clientX; ensayo.py = ev.clientY;
+  lienzo.setPointerCapture(ev.pointerId);
+});
+lienzo.addEventListener('pointermove', (ev) => { if (ensayo.puntero) { ensayo.px = ev.clientX; ensayo.py = ev.clientY; } });
+for (const t of ['pointerup', 'pointercancel']) lienzo.addEventListener(t, () => { ensayo.puntero = false; });
+
+// Los controles aparecen al mover el mouse y se van solos; el cursor también.
+let tQuieto = 0;
+addEventListener('pointermove', (ev) => {
+  if (ev.pointerType !== 'mouse') return;
+  docente.classList.remove('oculto');
+  document.body.classList.remove('sin-cursor');
+  clearTimeout(tQuieto);
+  tQuieto = setTimeout(() => {
+    if (docente.contains(document.activeElement)) return;
+    docente.classList.add('oculto');
+    if (entrada.classList.contains('oculta')) document.body.classList.add('sin-cursor');
+  }, 2600);
+});
+docente.addEventListener('focusin', () => docente.classList.remove('oculto'));
+
+document.addEventListener('visibilitychange', () => {
+  if (!sonido.ac) return;
+  if (document.hidden) sonido.ac.suspend(); else sonido.ac.resume();
+});
+
+// ---------------------------------------------------------------------
+// Ciclo
+// ---------------------------------------------------------------------
+
+function ajustar() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  lienzo.width = Math.round(W * DPR); lienzo.height = Math.round(H * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  escena = construirEscena();
+  if (!origen.x) { origen = { x: W * 0.5, y: H * 0.8 }; origenMeta = { ...origen }; }
+}
+let tAjuste = 0;
+addEventListener('resize', () => { clearTimeout(tAjuste); tAjuste = setTimeout(ajustar, 150); });
+ajustar();
+
+let ultimo = performance.now() / 1000;
+function ciclo(ms) {
+  const ahora = ms / 1000;
+  const dt = Math.min(0.1, ahora - ultimo);
+  ultimo = ahora;
+  tiempo += dt;
+  detectar(ahora, dt);
+  actualizarParticipacion(ahora, dt);
+  sonido.actualizar(vidaVis, participacion.sostiene);
+  pintar(dt);
+  actualizarIndicador(ahora);
+  requestAnimationFrame(ciclo);
+}
+requestAnimationFrame(ciclo);
+
+// Para probar sin cámara desde la consola: __reverdecer.vida = 0.7
+window.__reverdecer = { mano, get vida() { return vida; }, set vida(v) { vida = clamp(v); vidaVis = vida; } };
+</script>
+</body>
+</html>
