@@ -836,6 +836,32 @@
  .unit-time{font-size:1rem;}
 }
 
+/* Demos: captura a un lado, mecanismo en las cuatro preguntas al otro */
+.demo {grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:3.5vw;align-items:center;text-align:left;padding:3rem 5vw;}
+.demo.demo--vertical {grid-template-columns:minmax(0,1.6fr) minmax(0,.75fr);}
+.demo.active {display:grid;}
+.demo-kicker {color:#6f6f6f;text-transform:uppercase;letter-spacing:.12em;font-size:1rem;font-weight:900;}
+.demo h2 {font-size:clamp(2rem,4vw,3.4rem);line-height:1.05;color:#222;margin:.5rem 0 1.4rem;}
+.demo dl {display:grid;grid-template-columns:auto 1fr;border-top:3px solid #444;}
+.demo dt,.demo dd {padding:.6rem 0;border-bottom:1px solid #e5e5e5;font-size:clamp(1rem,1.45vw,1.3rem);line-height:1.4;}
+.demo dt {font-weight:900;color:#222;padding-right:1.2rem;}
+.demo dd {color:#444;}
+.demo-acceso {display:flex;align-items:center;gap:1.2rem;margin-top:1.4rem;}
+.demo-acceso img {width:min(24vh,200px);height:auto;flex:none;}
+.demo-acceso a {font-size:clamp(1rem,1.5vw,1.25rem);font-weight:700;border-bottom:0;text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:2px;}
+.demo-captura {width:100%;max-height:78vh;object-fit:contain;box-shadow:0 0 0 1px #ddd;}
+.demo--vertical .demo-captura {max-height:82vh;justify-self:start;width:auto;max-width:100%;}
+@media(max-width:900px) {
+ .demo,.demo.demo--vertical {grid-template-columns:minmax(0,1fr);padding:2rem 1.5rem 5rem;overflow-y:auto;align-content:start;}
+ .demo-captura,.demo--vertical .demo-captura {order:-1;max-height:40vh;justify-self:center;}
+ .demo-acceso img {width:120px;}
+ .demo-acceso a {overflow-wrap:anywhere;}
+}
+@media(max-height:650px) and (min-width:901px) {
+ .demo {padding:1.5rem 4vw;}
+ .demo h2 {margin-bottom:.8rem;}
+ .demo dt,.demo dd {padding-top:.35rem;padding-bottom:.35rem;font-size:1rem;}
+}
 </style>
 </head>
 <body>
@@ -849,6 +875,16 @@
 <div class="slide"><p class="slide-title">Una clase corta para <span class="hl">ponernos al día</span> y alistarnos</p><p class="unit-support">Paso por cada grupo para definir juntos el mecanismo de interacción principal.</p></div>
 
 <div class="slide unit-compare" data-nav-label="Cuatro preguntas"><h2 class="unit-heading">El mecanismo de interacción principal</h2><div class="unit-columns"><div class="unit-column"><h3>¿Qué percibe la persona?</h3></div><div class="unit-column"><h3>¿Qué hace?</h3></div><div class="unit-column"><h3>¿Qué cambia en el sistema?</h3></div><div class="unit-column"><h3>¿Qué queremos que interprete?</h3></div></div></div>
+
+<div class="slide" data-nav-label="Cuatro demos"><p class="slide-title">Cuatro demos, <span class="hl">un mecanismo</span> cada una</p><p class="slide-subtitle">Las leemos con las mismas cuatro preguntas.</p></div>
+
+<div class="slide demo" data-nav-label="Demo · Reverdecer"><div><p class="demo-kicker">Demo 1 de 4 · Cámara y mano</p><h2>Reverdecer</h2><dl><dt>Percibe</dt><dd>Un bosque seco y, en una esquina, su mano vista por la cámara.</dd><dt>Hace</dt><dd>Junta el pulgar y el índice frente a la cámara y sostiene el gesto.</dd><dt>Cambia</dt><dd>Mientras sostiene, el bosque reverdece desde donde está la mano. Si suelta, se seca despacio.</dd><dt>Interpreta</dt><dd>Que el bosque vuelve solo mientras alguien permanece.</dd></dl><div class="demo-acceso"><img data-src="assets/qr-reverdecer.svg" alt="Código QR hacia la demo Reverdecer"><a href="/demos/reverdecer/" target="_blank" rel="noopener">catedra.dejesumensaje.com<wbr>/demos/reverdecer/</a></div></div><img class="demo-captura" data-src="assets/demo-reverdecer.jpg" alt="Captura de la demo Reverdecer"></div>
+
+<div class="slide demo demo--vertical" data-nav-label="Demo · ¿Cuánta hambre tienes?"><div><p class="demo-kicker">Demo 2 de 4 · Pellizco en el celular</p><h2>¿Cuánta hambre tienes?</h2><dl><dt>Percibe</dt><dd>Un plato servido en la pantalla del celular.</dd><dt>Hace</dt><dd>Separa dos dedos sobre el plato para servirse más; los junta para servirse menos.</dd><dt>Cambia</dt><dd>El plato sube por siete niveles, de una empanada a una salchipapa gigante. Al soltar, queda servido.</dd><dt>Interpreta</dt><dd>Que el tamaño del gesto es el tamaño del hambre.</dd></dl><div class="demo-acceso"><img data-src="assets/qr-cuanta-hambre.svg" alt="Código QR hacia la demo ¿Cuánta hambre tienes?"><a href="/demos/cuanta-hambre/" target="_blank" rel="noopener">catedra.dejesumensaje.com<wbr>/demos/cuanta-hambre/</a></div></div><img class="demo-captura" data-src="assets/demo-cuanta-hambre.jpg" alt="Captura de la demo ¿Cuánta hambre tienes?"></div>
+
+<div class="slide demo" data-nav-label="Demo · El cruce"><div><p class="demo-kicker">Demo 3 de 4 · Tocar un objeto</p><h2>El cruce</h2><dl><dt>Percibe</dt><dd>Un cruce lleno de gente bajo la lluvia, visto desde arriba. Algunos objetos se mueven como si estuvieran vivos.</dd><dt>Hace</dt><dd>Toca uno: el semáforo, el buzón, la banca, el charco o la ventana.</dd><dt>Cambia</dt><dd>La cámara vuela al punto de vista de ese objeto. La multitud es la misma, en el mismo instante.</dd><dt>Interpreta</dt><dd>Que cada lugar ve algo que la vista general no muestra.</dd></dl><div class="demo-acceso"><img data-src="assets/qr-cruce.svg" alt="Código QR hacia la demo El cruce"><a href="/demos/cruce/" target="_blank" rel="noopener">catedra.dejesumensaje.com<wbr>/demos/cruce/</a></div></div><img class="demo-captura" data-src="assets/demo-cruce.jpg" alt="Captura de la demo El cruce"></div>
+
+<div class="slide demo" data-nav-label="Demo · Lluvia al tacto"><div><p class="demo-kicker">Demo 4 de 4 · Deslizar</p><h2>Lluvia al tacto</h2><dl><dt>Percibe</dt><dd>Un paisaje de noche bajo un farol y un medidor de lluvia en milímetros por hora.</dd><dt>Hace</dt><dd>Desliza hacia abajo, despacio o rápido. Hacia arriba, escampa.</dd><dt>Cambia</dt><dd>Un gesto lento trae llovizna; uno rápido, tormenta. El suelo se moja y después se seca.</dd><dt>Interpreta</dt><dd>Que la fuerza del gesto es la fuerza del clima.</dd></dl><div class="demo-acceso"><img data-src="assets/qr-lluvia.svg" alt="Código QR hacia la demo Lluvia al tacto"><a href="/demos/lluvia/" target="_blank" rel="noopener">catedra.dejesumensaje.com<wbr>/demos/lluvia/</a></div></div><img class="demo-captura" data-src="assets/demo-lluvia.jpg" alt="Captura de la demo Lluvia al tacto"></div>
 
 <div class="slide unit-activity" data-nav-label="Para la próxima clase"><h2 class="unit-heading">Para la próxima clase</h2><p class="slide-title" style="text-align:left;max-width:100%;margin-bottom:1.5rem">Un prototipo del <span class="hl">mecanismo de interacción principal</span></p><p class="unit-support">En papel, representado o con inteligencia artificial. Sencillo y al punto: una primera versión para empezar a iterar.</p><p class="unit-support">Jueves 1 de octubre.</p></div>
 
