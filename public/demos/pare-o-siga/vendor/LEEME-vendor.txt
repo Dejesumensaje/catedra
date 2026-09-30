@@ -1,0 +1,10 @@
+Copias locales (respaldo cuando no hay internet o la red bloquea los CDN):
+
+three.module.min.js           three.js 0.169.0            MIT (LICENSE-three.txt)
+cannon-es.js                  cannon-es 0.20.0            MIT (LICENSE-cannon-es.txt)
+vision_bundle.mjs, wasm/      @mediapipe/tasks-vision 1.0.1   Apache-2.0 (Google)
+hand_landmarker.task          MediaPipe HandLandmarker, float16   Apache-2.0 (Google)
+blaze_face_short_range.tflite MediaPipe BlazeFace short range     Apache-2.0 (Google)
+archivo-latin.woff2           Archivo (Google Fonts)       SIL Open Font License 1.1
+
+Son los mismos archivos que el juego pide a cdn.jsdelivr.net y storage.googleapis.com.

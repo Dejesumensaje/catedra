@@ -1,0 +1,1646 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FACE OFF</title>
+<meta name="description" content="FACE OFF: hockey de mesa para 2 jugadores que se controla con la nariz frente a la webcam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,600..900&display=swap">
+<style>
+:root{
+  --p1:#FF3CF0; --p1l:#FFB8F8; --p1rgb:255,60,240;
+  --p2:#1FF4FF; --p2l:#C4FCFF; --p2rgb:31,244,255;
+  --puck:#FFF04D; --gold:#FFD23F; --ink:#F7F6FF; --soft:#B7B9E6; --bg:#05061A;
+  --panel:rgba(6,7,26,.84);
+  --font:"Archivo","Arial Black","Helvetica Neue",Arial,system-ui,sans-serif;
+  /* one motion system: three curves, three durations */
+  --e-pop:cubic-bezier(.2,1.5,.4,1); --e-out:cubic-bezier(.16,.84,.3,1); --e-in:cubic-bezier(.6,0,.8,.4);
+  --d1:.18s; --d2:.45s; --d3:.8s;
+  --rink-top:15vh; --rink-bottom:95vh; --rink-left:3vw; --rink-w:94vw;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden}
+body{
+  background:radial-gradient(1100px 680px at 50% 42%,#16185a 0%,#0a0b28 45%,var(--bg) 75%);
+  color:var(--ink);font-family:var(--font);font-weight:800;
+  -webkit-font-smoothing:antialiased;user-select:none;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(140,150,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(140,150,255,.07) 1px,transparent 1px);
+  background-size:56px 56px;background-position:center}
+body.cam::before{opacity:0}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0;transition:opacity var(--d3)}
+body.cam #cam{opacity:1}
+#dim{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity var(--d3);
+  background:radial-gradient(ellipse at 50% 45%,rgba(5,6,26,.5) 0%,rgba(5,6,26,.72) 70%,rgba(5,6,26,.88) 100%)}
+body.cam #dim{opacity:1}
+#cv,#rinkcv{position:fixed;inset:0;width:100%;height:100%;display:block}
+#rinkcv{opacity:0;transition:opacity var(--d2)}
+#rinkcv.on{opacity:1}
+#rinkcv.on.dim{opacity:.3}
+#flash{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:7}
+#flash.go{animation:flash .55s var(--e-out)}
+@keyframes flash{0%{opacity:.8}100%{opacity:0}}
+
+/* shared title language: white core, player-colour stroke and glow */
+.ttl{font-weight:900;font-stretch:125%;line-height:.9;color:#fff;-webkit-text-stroke:3px var(--c);text-shadow:0 0 16px var(--c),0 0 34px var(--c);white-space:nowrap;letter-spacing:.01em}
+.pill{font-size:clamp(10px,1vw,13px);letter-spacing:.14em;font-weight:900;padding:3px 9px;border-radius:999px;color:#fff;box-shadow:inset 0 0 0 2px var(--c),0 0 12px var(--c);white-space:nowrap}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;top:0;left:var(--rink-left);width:var(--rink-w);height:var(--rink-top);z-index:6;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(12px,2vw,32px);pointer-events:none}
+#hud .side{display:flex;flex-direction:column;gap:4px;min-width:0}
+#hud .side.p1{align-items:flex-start;--c:var(--p1)}
+#hud .side.p2{align-items:flex-end;--c:var(--p2)}
+#hud .who{display:flex;align-items:center;gap:12px;max-width:100%}
+#hud .p2 .who{flex-direction:row-reverse}
+#hud .av{width:clamp(38px,5vw,60px);height:clamp(38px,5vw,60px);border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 3px var(--c),0 0 16px var(--c)}
+#hud .nm{font-size:clamp(22px,3vw,44px);font-weight:900;font-stretch:118%;line-height:1;white-space:nowrap;color:var(--c);text-shadow:0 0 16px var(--c)}
+#hud .tagrow{display:flex;gap:8px;align-items:center}
+#hud .p2 .tagrow{flex-direction:row-reverse}
+#hud .tag{font-size:clamp(10px,.9vw,13px);letter-spacing:.22em;color:var(--soft);font-weight:800}
+#hud .score{display:flex;align-items:center;gap:clamp(8px,1.2vw,18px);font-variant-numeric:tabular-nums;position:relative}
+#hud .score b{font-size:clamp(44px,6.6vw,98px);font-weight:900;font-stretch:112%;line-height:.9;display:inline-block;min-width:1.1ch;text-align:center}
+#sc1{color:var(--p1);text-shadow:0 0 22px rgba(var(--p1rgb),.9),0 0 2px #fff}
+#sc2{color:var(--p2);text-shadow:0 0 22px rgba(var(--p2rgb),.9),0 0 2px #fff}
+#hud .score i{font-style:normal;font-size:clamp(24px,3vw,46px);color:var(--soft)}
+#hud .score small{position:absolute;left:50%;top:100%;transform:translate(-50%,-4px);font-size:clamp(10px,.9vw,13px);letter-spacing:.24em;color:var(--soft);white-space:nowrap}
+.flip{animation:flip var(--d3) var(--e-pop)}
+@keyframes flip{0%{transform:perspective(500px) rotateX(-100deg) scale(2.2);filter:brightness(3)}55%{transform:perspective(500px) rotateX(12deg) scale(.94)}100%{transform:none;filter:none}}
+.xfer{position:fixed;z-index:9;font-size:clamp(28px,3.4vw,48px);font-weight:900;font-stretch:118%;color:#fff;-webkit-text-stroke:2px var(--c);text-shadow:0 0 16px var(--c);pointer-events:none;transform:translate(-50%,-50%)}
+
+/* ---------- big overlays (enter pop · hold · fade) ---------- */
+#big{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:8}
+.big{grid-area:1/1;text-align:center;will-change:transform,opacity;display:flex;flex-direction:column;align-items:center;gap:2vh;animation:life var(--life,2.4s) linear forwards}
+@keyframes life{0%{opacity:0}6%{opacity:1}88%{opacity:1;transform:none}100%{opacity:0;transform:scale(1.05)}}
+.big .ttl{animation:pop var(--d2) var(--e-pop) .08s both}
+.big .s{font-size:clamp(18px,2.4vw,36px);letter-spacing:.14em;font-stretch:110%;font-weight:900;color:var(--ink);animation:rise var(--d2) var(--e-out) .3s both}
+.big .s b{color:var(--c2,var(--c));text-shadow:0 0 14px var(--c2,var(--c))}
+@keyframes pop{0%{transform:scale(1.9);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes rise{0%{transform:translateY(16px);opacity:0}100%{transform:none;opacity:1}}
+.big.count .ttl{font-size:clamp(110px,22vw,320px);--c:var(--puck);animation:punch .8s var(--e-pop) both}
+@keyframes punch{0%{transform:scale(1.9);opacity:0}18%{transform:scale(1);opacity:1}75%{opacity:1}100%{transform:scale(.85);opacity:0}}
+.gface{position:relative;width:min(34vh,28vw);aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 7px var(--c),0 0 0 12px rgba(255,255,255,.9),0 0 50px 8px var(--c);background:#0b0c2a;animation:pop var(--d2) var(--e-pop) both}
+.gface img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;display:block;object-fit:cover}
+/* own goal: the culprit's colour drains out in a short flicker, the title arrives reversed and glitched */
+.big.owng .gface{box-shadow:0 0 0 7px var(--c),0 0 0 12px rgba(255,255,255,.55),0 0 40px rgba(0,0,0,.5)}
+.big.owng .gface .c{animation:drain .7s steps(1) .15s forwards}
+@keyframes drain{0%,20%,40%{opacity:1}10%,30%,50%,100%{opacity:0}}
+.big.owng .ttl{animation:glitch .55s var(--e-out) .1s both}
+@keyframes glitch{0%{transform:translateX(18vw) skewX(-24deg);opacity:0;text-shadow:-14px 0 var(--c2),14px 0 var(--c)}
+  35%{transform:translateX(-2vw) skewX(10deg);opacity:1;text-shadow:-8px 0 var(--c2),8px 0 var(--c)}
+  55%{transform:translateX(1vw);text-shadow:4px 0 var(--c2),-4px 0 var(--c)}
+  100%{transform:none;text-shadow:0 0 16px var(--c),0 0 34px var(--c)}}
+.big .streak{--c:var(--puck);font-size:clamp(24px,3.4vw,48px)}
+.big.mpx{flex-direction:row;gap:28px;text-align:left}
+.big.mpx .gface{width:min(20vh,16vw)}
+.big.mpx .col{display:flex;flex-direction:column;gap:1.2vh;align-items:flex-start}
+.big.mpx .ttl{font-size:clamp(46px,7vw,104px)}
+.big.mpx.r{flex-direction:row-reverse;text-align:right}
+.big.mpx.r .col{align-items:flex-end}
+.big.mpx.gold{flex-direction:column;text-align:center}
+.big.mpx.gold .col{align-items:center}
+.faces2{display:flex;gap:24px}
+.faces2 .gface{width:min(16vh,13vw)}
+.faces2 .gface:first-child{--c:var(--p1)} .faces2 .gface:last-child{--c:var(--p2)}
+.big.micro{align-self:start;margin-top:calc(var(--rink-top) + 10px);--life:1.5s}
+.big.micro .ttl{font-size:clamp(18px,2.2vw,30px);letter-spacing:.2em;-webkit-text-stroke:2px var(--c)}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:20px 16px;overflow:auto}
+.stack{display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,24px);text-align:center;max-width:100%}
+.eyebrow{font-size:clamp(11px,1.1vw,15px);letter-spacing:.32em;color:var(--soft);font-weight:800}
+.logo{margin:0;font-size:clamp(64px,min(13.5vw,24vh),236px);font-weight:900;font-stretch:125%;line-height:.82;letter-spacing:-.035em;white-space:nowrap}
+.logo .a{color:var(--p1);text-shadow:0 0 30px rgba(var(--p1rgb),.85),0 0 3px #fff}
+.logo .b{color:var(--p2);text-shadow:0 0 30px rgba(var(--p2rgb),.85),0 0 3px #fff}
+.tagline{font-size:clamp(15px,2vw,28px);letter-spacing:.26em;font-weight:900;font-stretch:110%}
+.tagline em{font-style:normal;color:var(--puck)}
+.lede{font-size:clamp(14px,1.4vw,19px);color:var(--soft);font-weight:700;letter-spacing:.02em;max-width:54ch;line-height:1.45;margin:0}
+.lede b{color:var(--ink)}
+.hint{font-size:12px;letter-spacing:.2em;color:var(--soft);font-weight:700}
+kbd{font-family:var(--font);font-weight:900;font-size:.92em;padding:2px 7px;border-radius:5px;border:1px solid rgba(200,205,255,.35);color:var(--ink);letter-spacing:.04em}
+.btn{font-family:var(--font);font-weight:900;font-stretch:112%;font-size:clamp(18px,1.9vw,26px);letter-spacing:.1em;text-transform:uppercase;
+  border:0;border-radius:14px;padding:.8em 1.8em;cursor:pointer;background:var(--puck);color:#15122a;
+  box-shadow:0 0 0 3px rgba(255,240,77,.25),0 0 36px rgba(255,240,77,.4);transition:transform var(--d1) var(--e-out)}
+.btn:hover{transform:scale(1.04)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,.seg button:focus-visible,.link:focus-visible,.ico:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px rgba(220,222,255,.45)}
+.btn.big1{font-size:clamp(22px,2.4vw,34px)}
+.link{font-family:var(--font);background:none;border:0;color:var(--soft);font-weight:800;font-size:14px;letter-spacing:.1em;cursor:pointer;text-decoration:underline;text-underline-offset:4px;padding:4px}
+.link:hover{color:var(--ink)}
+.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.loader{display:inline-block;width:.8em;height:.8em;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:currentColor;animation:spin .8s linear infinite;vertical-align:-.08em;margin-right:.4em}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#icon{width:min(400px,80vw,50vh);height:auto;overflow:visible}
+.hA{animation:hA 2.2s ease-in-out infinite alternate}
+.pA{animation:pA 2.2s ease-in-out infinite alternate}
+.hB{animation:hB 1.7s ease-in-out infinite alternate}
+.pB{animation:pB 1.7s ease-in-out infinite alternate}
+@keyframes hA{from{transform:translate(-12px,-5px)}to{transform:translate(12px,6px)}}
+@keyframes pA{from{transform:translate(-44px,-24px)}to{transform:translate(44px,26px)}}
+@keyframes hB{from{transform:translate(10px,6px)}to{transform:translate(-12px,-5px)}}
+@keyframes pB{from{transform:translate(38px,26px)}to{transform:translate(-46px,-24px)}}
+.pk{animation:pk 1.1s linear infinite alternate}
+@keyframes pk{from{transform:translate(-78px,-14px)}to{transform:translate(78px,16px)}}
+
+/* faces + names */
+.title2{margin:0;font-size:clamp(34px,5vw,64px);font-weight:900;font-stretch:122%;letter-spacing:-.01em;line-height:1}
+.sub{font-size:clamp(13px,1.3vw,18px);color:var(--soft);font-weight:700;letter-spacing:.04em}
+.slots{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,48px);align-items:center;width:min(1100px,100%)}
+.slot{display:flex;flex-direction:column;align-items:center;gap:12px}
+.slot.p1{--c:var(--p1);--cl:var(--p1l);--crgb:var(--p1rgb)}
+.slot.p2{--c:var(--p2);--cl:var(--p2l);--crgb:var(--p2rgb)}
+.face{position:relative;width:clamp(140px,29vh,230px);aspect-ratio:1}
+.face canvas{width:100%;height:100%;border-radius:50%;display:block;background:#0b0c2a;box-shadow:0 0 0 4px rgba(var(--crgb),.5),0 0 30px rgba(var(--crgb),.35);transition:box-shadow var(--d2) var(--e-out)}
+.slot.live .face canvas{box-shadow:0 0 0 5px var(--c),0 0 0 9px rgba(255,255,255,.85),0 0 46px 6px var(--c)}
+.fst{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);background:rgba(10,11,40,.95);color:var(--cl);box-shadow:inset 0 0 0 2px var(--c);font-weight:900;font-size:13px;letter-spacing:.14em;padding:6px 13px;border-radius:999px;white-space:nowrap}
+.slot.live .fst{background:var(--c);color:#0b0a22}
+.slot label{font-size:12px;letter-spacing:.24em;color:var(--soft);margin-top:6px}
+.slot input{font-family:var(--font);font-weight:900;font-stretch:115%;font-size:clamp(24px,3vw,40px);text-transform:uppercase;text-align:center;
+  width:min(300px,30vw);background:transparent;border:0;border-bottom:3px solid var(--c);color:var(--cl);padding:4px 0;border-radius:0}
+.slot input::placeholder{color:rgba(255,255,255,.3)}
+.slot .keys{font-size:12px;color:var(--soft);letter-spacing:.08em}
+.mid{display:flex;flex-direction:column;gap:18px;align-items:center}
+.opt{display:flex;flex-direction:column;gap:9px;align-items:center}
+.opt>span{font-size:12px;letter-spacing:.24em;color:var(--soft)}
+.seg{display:flex;gap:8px}
+.seg button{font-family:var(--font);font-weight:900;cursor:pointer;border:0;border-radius:12px;color:var(--ink);font-size:clamp(28px,3.4vw,44px);width:2.1em;height:1.7em;font-stretch:112%;
+  background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 2px rgba(220,222,255,.25);transition:transform var(--d1) var(--e-out)}
+.seg button[aria-pressed="true"]{background:var(--puck);color:#15122a;box-shadow:0 0 26px rgba(255,240,77,.5)}
+.seg button:hover{transform:translateY(-2px)}
+.privacy{font-size:12px;color:var(--soft);letter-spacing:.06em;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+
+/* calibration */
+#s-calib{place-items:start center;padding-top:0;pointer-events:none}
+#s-calib .top{margin-top:max(6px,calc(var(--rink-top)*.08));display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+#s-calib h2{margin:0;white-space:nowrap;font-size:clamp(26px,min(4.4vw,8.5vh),68px);font-weight:900;font-stretch:125%;line-height:.95;letter-spacing:-.01em;text-shadow:0 0 26px rgba(255,240,77,.35)}
+#s-calib h2 span{color:var(--puck)}
+.ccard{position:fixed;bottom:calc(100vh - var(--rink-bottom) + 12px);width:min(36vw,400px);border-radius:16px;padding:12px 16px;background:var(--panel);
+  display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;transform:translateX(-50%)}
+.ccard .av{grid-row:1/4;width:60px;height:60px;border-radius:50%;object-fit:cover}
+.ccard.p1{left:calc(var(--rink-left) + var(--rink-w)*.25);box-shadow:inset 0 0 0 2px rgba(var(--p1rgb),.85)}
+.ccard.p2{left:calc(var(--rink-left) + var(--rink-w)*.75);box-shadow:inset 0 0 0 2px rgba(var(--p2rgb),.85)}
+.ccard.p1 .av{box-shadow:0 0 0 3px var(--p1)} .ccard.p2 .av{box-shadow:0 0 0 3px var(--p2)}
+.ccard b{font-size:clamp(18px,2.2vw,30px);font-weight:900;font-stretch:118%;white-space:nowrap}
+.ccard.p1 b{color:var(--p1)} .ccard.p2 b{color:var(--p2)}
+.ccard .st{font-size:clamp(14px,1.5vw,20px);font-weight:900;letter-spacing:.05em;min-height:1.3em}
+.ccard .st2{font-size:12px;color:var(--soft);font-weight:700;letter-spacing:.04em;min-height:1.3em}
+.ccard.ok{animation:okpop var(--d2) var(--e-pop)}
+.ccard.ok .st{color:var(--puck)}
+@keyframes okpop{0%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1)}}
+#calibFoot{position:fixed;bottom:max(2px,calc((100vh - var(--rink-bottom))/2 - 9px));left:0;right:0;text-align:center;font-size:12px;letter-spacing:.1em;color:var(--soft);font-weight:700}
+#calibFoot.loud{color:var(--ink);font-size:14px}
+
+/* victory */
+#s-win{place-items:start center;padding-top:calc(var(--rink-top) + 1.5vh)}
+.wincard{--c:var(--p1);display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);text-align:center;padding:clamp(14px,2.4vh,26px) clamp(20px,3.4vw,48px);border-radius:24px;background:var(--panel);box-shadow:inset 0 0 0 3px var(--c),0 0 70px rgba(0,0,0,.5);max-width:100%;animation:pop var(--d2) var(--e-pop)}
+.wrow{display:flex;align-items:center;gap:clamp(16px,2.6vw,36px)}
+.wface{width:clamp(110px,24vh,190px);aspect-ratio:1;border-radius:50%;flex:none;box-shadow:0 0 0 6px var(--c),0 0 0 11px #fff,0 0 60px 8px var(--c)}
+.wface img,.lface img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.wtxt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left}
+.wtxt .k{font-size:clamp(14px,1.6vw,22px);letter-spacing:.4em;color:var(--puck)}
+.wtxt .n{font-size:clamp(50px,8vw,120px)}
+.wtxt .fs{font-size:clamp(28px,3.6vw,52px);font-variant-numeric:tabular-nums;font-stretch:112%}
+.wtxt .fs .a{color:var(--p1)} .wtxt .fs .b{color:var(--p2)}
+.lface{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.85}
+.lface div{width:clamp(56px,10vh,84px);aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 3px #8a8fa8}
+.lface span{font-size:11px;letter-spacing:.14em;color:var(--soft);max-width:12ch}
+.wincard .stat{font-size:clamp(12px,1.2vw,15px);letter-spacing:.12em;color:var(--soft)}
+.wincard .stat b{color:var(--ink)}
+.wincard .re{font-size:13px;letter-spacing:.04em;color:var(--soft);font-weight:700}
+
+.panel{background:var(--panel);border-radius:24px;padding:clamp(22px,4vh,40px) clamp(22px,4vw,48px);box-shadow:inset 0 0 0 2px rgba(220,222,255,.25);max-width:680px}
+.panel h2{margin:0;font-size:clamp(30px,4.2vw,58px);font-weight:900;font-stretch:122%;line-height:1}
+.panel p{margin:0;font-size:clamp(14px,1.4vw,18px);line-height:1.5;color:var(--soft);font-weight:700;max-width:52ch}
+.panel p b{color:var(--ink)}
+.panel ol{margin:0;text-align:left;color:var(--soft);font-weight:700;line-height:1.6;font-size:15px;padding-left:1.3em}
+.panel ol b{color:var(--ink)}
+#s-pause{pointer-events:none}
+#s-pause .panel{pointer-events:auto}
+#pauseWho{color:var(--c)}
+#pauseAv{width:110px;height:110px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 5px var(--c),0 0 40px var(--c)}
+
+#replayTag{position:fixed;z-index:9;left:calc(var(--rink-left) + 40px);top:calc(var(--rink-top) + 16px);font-size:clamp(16px,1.8vw,24px);letter-spacing:.24em;font-weight:900;color:#fff;background:rgba(6,7,26,.8);padding:8px 16px 8px 12px;border-radius:10px;box-shadow:inset 0 0 0 2px #fff;display:flex;gap:10px;align-items:center;pointer-events:none}
+#replayTag i{width:.7em;height:.7em;border-radius:50%;background:#FF3B3B}
+#replayTag small{font-size:.55em;letter-spacing:.14em;color:var(--soft)}
+
+#corner{position:fixed;right:14px;bottom:8px;z-index:30;display:flex;gap:8px}
+.ico{font-family:var(--font);font-weight:900;font-size:12px;letter-spacing:.12em;color:var(--soft);background:rgba(8,9,30,.6);border:1px solid rgba(200,205,255,.25);border-radius:10px;padding:7px 10px;cursor:pointer}
+.ico:hover{color:var(--ink)}
+.ico[aria-pressed="true"]{color:var(--puck)}
+#fo-debug{position:fixed;left:10px;bottom:10px;z-index:40;font:600 12px/1.45 ui-monospace,Menlo,Consolas,monospace;color:#d8ffd8;background:rgba(0,0,0,.72);padding:8px 10px;border-radius:8px;white-space:pre;pointer-events:none}
+
+@media (max-width:760px){
+  .slots{grid-template-columns:1fr}
+  .slot input{width:min(300px,80vw)}
+  .ccard{width:46vw;padding:8px 10px}
+  .ccard .av{width:40px;height:40px}
+  .wrow{flex-direction:column}
+  .wtxt{align-items:center;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  .hA,.pA,.hB,.pB,.pk{animation:none}
+}
+</style>
+</head>
+<body>
+<video id="cam" playsinline muted autoplay></video>
+<div id="dim"></div>
+<canvas id="rinkcv"></canvas>
+<canvas id="cv"></canvas>
+<div id="flash"></div>
+
+<div id="hud" hidden>
+  <div class="side p1"><div class="tagrow"><span class="tag">JUGADOR 1</span><span class="pill" id="mp1" hidden>MATCH POINT</span><span class="pill" id="fire1" hidden>EN RACHA</span></div>
+    <div class="who"><img class="av" id="hav1" alt=""><span class="nm" id="n1">ROSA</span></div></div>
+  <div class="score"><b id="sc1">0</b><i>:</i><b id="sc2">0</b><small id="tgt">A 5 GOLES</small></div>
+  <div class="side p2"><div class="tagrow"><span class="tag">JUGADOR 2</span><span class="pill" id="mp2" hidden>MATCH POINT</span><span class="pill" id="fire2" hidden>EN RACHA</span></div>
+    <div class="who"><img class="av" id="hav2" alt=""><span class="nm" id="n2">CIAN</span></div></div>
+</div>
+<div id="big"></div>
+<div id="replayTag" hidden><i></i>REPETICIÓN <small>ENTER PARA SALTAR</small></div>
+
+<!-- TITLE -->
+<section class="screen" id="s-title">
+  <div class="stack">
+    <div class="eyebrow">HOCKEY ARCADE · SE JUEGA CON LA NARIZ</div>
+    <h1 class="logo"><span class="a">FACE</span> <span class="b">OFF</span></h1>
+    <div class="tagline">2 PLAYERS. 1 CAMERA. <em>NO HANDS.</em></div>
+    <svg id="icon" viewBox="0 0 440 250" aria-label="Dos caras mueven la nariz y cada nariz mueve una paleta">
+      <defs>
+        <filter id="gl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g class="hA"><g transform="translate(110 62)">
+        <circle r="36" fill="rgba(255,60,240,.08)" stroke="#FF3CF0" stroke-width="3"/>
+        <circle cx="-12" cy="-8" r="3.5" fill="#F4F3FF"/><circle cx="12" cy="-8" r="3.5" fill="#F4F3FF"/>
+        <path d="M-9 18 Q0 24 9 18" stroke="#F4F3FF" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle r="13" fill="none" stroke="#FF3CF0" stroke-width="2" class="nz"/>
+        <circle r="10" fill="rgba(255,60,240,.35)"/><circle r="6.5" fill="#FF3CF0"/><circle r="2.5" fill="#fff"/>
+      </g></g>
+      <g class="hB"><g transform="translate(330 62)">
+        <circle r="36" fill="rgba(31,244,255,.08)" stroke="#1FF4FF" stroke-width="3"/>
+        <circle cx="-12" cy="-8" r="3.5" fill="#F4F3FF"/><circle cx="12" cy="-8" r="3.5" fill="#F4F3FF"/>
+        <path d="M-9 18 Q0 24 9 18" stroke="#F4F3FF" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle r="13" fill="none" stroke="#1FF4FF" stroke-width="2" class="nz"/>
+        <circle r="10" fill="rgba(31,244,255,.35)"/><circle r="6.5" fill="#1FF4FF"/><circle r="2.5" fill="#fff"/>
+      </g></g>
+      <rect x="20" y="130" width="200" height="110" rx="18" fill="rgba(255,60,240,.10)"/>
+      <rect x="220" y="130" width="200" height="110" rx="18" fill="rgba(31,244,255,.10)"/>
+      <rect x="20" y="130" width="400" height="110" rx="18" fill="none" stroke="rgba(236,236,255,.55)" stroke-width="2"/>
+      <line x1="220" y1="130" x2="220" y2="240" stroke="rgba(236,236,255,.55)" stroke-width="2"/>
+      <circle cx="220" cy="185" r="22" fill="none" stroke="rgba(236,236,255,.4)" stroke-width="2"/>
+      <line x1="20" y1="163" x2="20" y2="207" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" filter="url(#gl)"/>
+      <line x1="420" y1="163" x2="420" y2="207" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" filter="url(#gl)"/>
+      <g class="pk"><circle cx="220" cy="185" r="12" fill="rgba(255,240,77,.3)"/><circle cx="220" cy="185" r="7" fill="#FFF04D"/></g>
+      <g class="pA"><circle cx="110" cy="185" r="19" fill="none" stroke="rgba(255,60,240,.3)" stroke-width="6"/><circle cx="110" cy="185" r="15" fill="rgba(255,60,240,.25)" stroke="#FF3CF0" stroke-width="4"/><circle cx="110" cy="185" r="3" fill="#fff"/></g>
+      <g class="pB"><circle cx="330" cy="185" r="19" fill="none" stroke="rgba(31,244,255,.3)" stroke-width="6"/><circle cx="330" cy="185" r="15" fill="rgba(31,244,255,.25)" stroke="#1FF4FF" stroke-width="4"/><circle cx="330" cy="185" r="3" fill="#fff"/></g>
+    </svg>
+    <p class="lede">Tu <b>nariz</b> es la paleta. Muévete para empujar el disco y anotar en la <b>portería blanca</b> del rival.</p>
+    <button class="btn big1" id="bPlay">JUGAR</button>
+    <div class="hint"><kbd>ENTER</kbd> JUGAR &nbsp;·&nbsp; <kbd>F</kbd> PANTALLA COMPLETA &nbsp;·&nbsp; <kbd>M</kbd> SONIDO</div>
+  </div>
+</section>
+
+<!-- FACES + NAMES -->
+<section class="screen" id="s-faces" hidden>
+  <form class="stack" id="facesForm" autocomplete="off">
+    <h2 class="title2">¿QUIÉNES JUEGAN?</h2>
+    <div class="sub" id="facesSub">Siéntense lado a lado, a 1 metro de la cámara, con la cara de frente.</div>
+    <div class="slots">
+      <div class="slot p1" id="slot1">
+        <div class="face"><canvas id="fc1" width="240" height="240"></canvas><span class="fst" id="fs1">BUSCANDO…</span></div>
+        <label for="name1">JUGADOR 1 · IZQUIERDA</label>
+        <input id="name1" maxlength="10" placeholder="ROSA" spellcheck="false">
+        <span class="keys">Teclado: <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span>
+      </div>
+      <div class="mid">
+        <div class="opt"><span>GOLES PARA GANAR</span>
+          <div class="seg goals" role="group" aria-label="Goles para ganar">
+            <button type="button" id="g3" data-g="3" aria-pressed="false">3</button>
+            <button type="button" id="g5" data-g="5" aria-pressed="true">5</button>
+            <button type="button" id="g7" data-g="7" aria-pressed="false">7</button>
+          </div>
+        </div>
+      </div>
+      <div class="slot p2" id="slot2">
+        <div class="face"><canvas id="fc2" width="240" height="240"></canvas><span class="fst" id="fs2">BUSCANDO…</span></div>
+        <label for="name2">JUGADOR 2 · DERECHA</label>
+        <input id="name2" maxlength="10" placeholder="CIAN" spellcheck="false">
+        <span class="keys">Teclado: <kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd></span>
+      </div>
+    </div>
+    <button class="btn big1" id="bGo" type="submit">¡A CALIBRAR!</button>
+    <div class="privacy"><span>Las fotos solo existen en este computador mientras juegan: no se suben ni se guardan.</span><button class="link" id="bKb" type="button">Jugar sin cámara (teclado)</button></div>
+  </form>
+</section>
+
+<!-- CALIBRATION -->
+<section class="screen" id="s-calib" hidden>
+  <div class="top">
+    <h2 id="calibTitle">PON LA <span>NARIZ</span> EN EL CÍRCULO</h2>
+    <div class="sub" id="calibSub">Muévete hasta que tu nariz quede dentro del círculo de tu color y quédate quieto.</div>
+  </div>
+  <div class="ccard p1" id="cc1"><img class="av" id="cav1" alt=""><b id="cn1">ROSA</b><div class="st" id="cs1">BUSCANDO…</div><div class="st2" id="cx1"></div></div>
+  <div class="ccard p2" id="cc2"><img class="av" id="cav2" alt=""><b id="cn2">CIAN</b><div class="st" id="cs2">BUSCANDO…</div><div class="st2" id="cx2"></div></div>
+  <div id="calibFoot">¿Poca luz o sin cámara? También pueden jugar con <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> y <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></div>
+</section>
+
+<!-- PAUSE -->
+<section class="screen" id="s-pause" hidden>
+  <div class="panel stack">
+    <img id="pauseAv" alt="">
+    <h2>¿DÓNDE ESTÁS, <span id="pauseWho">ROSA</span>?</h2>
+    <p>Vuelve frente a la cámara y el juego sigue solo. Si prefieres, usa el teclado.</p>
+  </div>
+</section>
+
+<!-- VICTORY -->
+<section class="screen" id="s-win" hidden>
+  <div class="wincard" id="wincard">
+    <div class="wrow">
+      <div class="wface"><img id="wImg" alt=""></div>
+      <div class="wtxt"><div class="k">¡CAMPEÓN!</div><div class="n ttl" id="wName">ROSA</div>
+        <div class="fs"><span class="a" id="wS1">5</span> <span style="color:var(--soft)">—</span> <span class="b" id="wS2">3</span></div></div>
+      <div class="lface"><div><img id="lImg" alt=""></div><span id="lName">CIAN · ¡LA PRÓXIMA!</span></div>
+    </div>
+    <div class="stat" id="wStat"></div>
+    <div class="row">
+      <button class="btn big1" id="bAgain">REVANCHA</button>
+      <button class="btn ghost" id="bChange">NUEVOS JUGADORES</button>
+    </div>
+    <div class="re">Cualquier tecla = revancha · <button class="link" id="bRecal">Volver a calibrar</button> · o los dos lleven su paleta al círculo</div>
+  </div>
+</section>
+
+<!-- ERROR -->
+<section class="screen" id="s-error" hidden>
+  <div class="panel stack">
+    <div class="eyebrow" id="errEye">CÁMARA</div>
+    <h2 id="errTitle">NECESITAMOS TU CÁMARA</h2>
+    <div id="errBody"></div>
+    <div class="row">
+      <button class="btn" id="bRetry">REINTENTAR</button>
+      <button class="btn ghost" id="bErrKb">JUGAR CON TECLADO</button>
+    </div>
+    <button class="link" id="bErrBack">Volver al inicio</button>
+  </div>
+</section>
+
+<div id="corner">
+  <button class="ico" id="bMute" aria-pressed="false" title="Sonido (M)">SONIDO: SÍ</button>
+  <button class="ico" id="bFull" title="Pantalla completa (F)">PANTALLA COMPLETA</button>
+</div>
+<div id="fo-debug" hidden></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   FACE OFF v3 — hockey de mesa para 2 personas controlado con la nariz.
+   Tracking: MediaPipe FaceLandmarker (punta de la nariz = landmark 1),
+   con FaceDetector (BlazeFace) como respaldo liviano para equipos lentos.
+   La paleta está EXACTAMENTE sobre la nariz: nariz (video) → pantalla →
+   proyección inversa al plano inclinado de la cancha → física.
+   Las fotos de las caras viven solo en memoria: nunca se guardan ni suben.
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const params = new URLSearchParams(location.search);
+const DEBUG = params.has('debug');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MP_VER = '1.0.1'; // pinned; ./vendor holds the same files as a fallback
+const CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@' + MP_VER;
+const MODELS = {
+  lm: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
+  det: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'
+};
+const LOCAL_MODELS = { lm: 'vendor/face_landmarker.task', det: 'vendor/blaze_face_short_range.tflite' };
+
+/* ---------- rink plane (plane units) ---------- */
+const RW = 1000, RH = 560, GOAL = 230, CR = 64, PR = 18, MR = 42;
+const GT = RH / 2 - GOAL / 2, GB = RH / 2 + GOAL / 2;
+const BASE_SPEED = 1400, WALL_E = 0.9, HIT_E = 0.92, FRICTION = 0.24;
+const COL = [
+  { hex: '#FF3CF0', light: '#FFB8F8', rgb: '255,60,240', side: 'izquierda', word: 'rosa' },
+  { hex: '#1FF4FF', light: '#C4FCFF', rgb: '31,244,255', side: 'derecha', word: 'cian' }
+];
+const PUCK_HEX = '#FFF04D';
+const HOME = [[RW * 0.25, RH / 2], [RW * 0.75, RH / 2]]; // calibration circles = each paddle's home spot
+const FONT = '"Archivo","Arial Black",Arial,sans-serif';
+const LOADER = '<span class="loader"></span>';
+
+const S = {
+  state: 'title', names: ['ROSA', 'CIAN'], target: 5, score: [0, 0], stateT: 0, kbOnly: false, camOn: false,
+  shake: 0, playT: 0, playTotal: 0, speedLvl: 0, maxShot: [0, 0], ownGoals: [0, 0], streak: { who: -1, n: 0 },
+  winner: -1, resume: false, rematch: 0, cdStep: -1, visibleT: 0, fps: 0, calibT: 0, calibStart: 0, calibOkT: 0,
+  timeScale: 1, slowT: 0, slowCool: 0, slowVis: 0, hitStop: 0, rec: [], recT: 0, goalRec: null, rp: null,
+  heart: false, mpKey: '', lastUuy: 0, lastCanon: 0, lastGoalBy: -1, lastOwn: false, lastGoalSide: 0, pausedWho: 0
+};
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const maxSp = () => BASE_SPEED * (1 + 0.07 * S.speedLvl);
+const kmh = sp => Math.round(sp * 0.075);
+
+/* ---------- One Euro filter ---------- */
+class LowPass { constructor() { this.y = null; } f(x, a) { this.y = this.y === null ? x : a * x + (1 - a) * this.y; return this.y; } }
+class OneEuro {
+  constructor(minCutoff, beta, dCutoff) { this.minCutoff = minCutoff; this.beta = beta; this.dCutoff = dCutoff; this.reset(); }
+  reset() { this.x = new LowPass(); this.dx = new LowPass(); this.dx.y = 0; this.t = null; }
+  a(cutoff, dt) { const tau = 1 / (2 * Math.PI * cutoff); return 1 / (1 + tau / dt); }
+  filter(x, t) {
+    if (this.t === null) { this.t = t; return this.x.f(x, 1); }
+    const dt = Math.max(1e-3, t - this.t); this.t = t;
+    const d = (x - this.x.y) / dt;
+    const ed = this.dx.f(d, this.a(this.dCutoff, dt));
+    return this.x.f(x, this.a(this.minCutoff + this.beta * Math.abs(ed), dt));
+  }
+  get v() { return this.dx.y || 0; }
+}
+// tuned for responsiveness: low lag in motion, still steady at rest (units: fraction of frame)
+const EURO = { minCutoff: +(params.get('mc') || 1.6), beta: +(params.get('beta') || 18), dCutoff: 1.5 };
+
+function mkPlayer(i) {
+  const [x, y] = HOME[i];
+  return {
+    i, x, y, prevX: x, prevY: y, vx: 0, vy: 0, tx: x, ty: y, kbx: x, kby: y, kbLast: -1e9,
+    fu: new OneEuro(EURO.minCutoff, EURO.beta, EURO.dCutoff), fv: new OneEuro(EURO.minCutoff, EURO.beta, EURO.dCutoff),
+    raw: null, sm: null, bbS: null, lastSeen: -1e9, size: 0, clampD: 0, err: -1,
+    locked: false, fill: 0, tick: 0, lockFx: -1e9, slotMode: '', pulse: 0, lastHit: 0
+  };
+}
+const players = [mkPlayer(0), mkPlayer(1)];
+const puck = { x: RW / 2, y: RH / 2, vx: 0, vy: 0, visible: false, active: false, spawn: 0, trail: [], hitter: -1, slowT: 0, jamT: 0, ghost: 0, ghostOf: -1, near: -1, hold: 0, deflect: false, hot: 0, hotKmh: 0 };
+const AV = [null, null]; // avatars: {cv, url, sad, live} — memory only
+
+/* =====================================================================
+   AUDIO — tiny WebAudio synth + music bed
+   ===================================================================== */
+let actx = null, master = null, musicGain = null, noiseBuf = null, muted = false;
+function audioInit() {
+  if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
+  try {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    const comp = actx.createDynamicsCompressor(); comp.connect(actx.destination);
+    master = actx.createGain(); master.gain.value = muted ? 0 : 0.5; master.connect(comp);
+    musicGain = actx.createGain(); musicGain.gain.value = 0.55; musicGain.connect(master);
+    noiseBuf = actx.createBuffer(1, actx.sampleRate * 2.2, actx.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  } catch (e) { actx = null; }
+}
+function toneAt(t, f, dur, type = 'square', vol = 0.18, to = null, dest = master, att = 0.006) {
+  if (!actx || muted) return;
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t); if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + att); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.03);
+}
+function tone(f, dur, type, vol, to, when = 0) { if (actx) toneAt(actx.currentTime + when, f, dur, type, vol, to); }
+function noiseAt(t, dur, vol = 0.2, freq = 1200, ftype = 'bandpass', q = 0.8, to = null, att = 0.004, dest = master) {
+  if (!actx || muted) return;
+  const s = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
+  s.buffer = noiseBuf; f.type = ftype; f.frequency.setValueAtTime(freq, t); f.Q.value = q;
+  if (to) f.frequency.exponentialRampToValueAtTime(to, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + att); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(dest); s.start(t, Math.random() * 0.2); s.stop(t + dur + 0.02);
+}
+function noise(dur, vol, freq, when = 0, ftype, q, to, att) { if (actx) noiseAt(actx.currentTime + when, dur, vol, freq, ftype, q, to, att); }
+let lastHitSnd = 0, lastWallSnd = 0;
+const sfx = {
+  hit(sp, k) { const n = performance.now(); if (n - lastHitSnd < 55) return; lastHitSnd = n; const q = clamp(sp / maxSp(), 0, 1); tone(240 + q * 760, 0.09, 'square', 0.11 + k * 0.14, 110 + q * 220); noise(0.06, 0.08 + k * 0.2, 2600); if (k > 0.5) tone(95, 0.16, 'sine', 0.35 * k, 45); },
+  wall(sp) { const n = performance.now(); if (n - lastWallSnd < 70 || sp < 150) return; lastWallSnd = n; tone(150, 0.06, 'triangle', 0.1 * clamp(sp / 800, 0.3, 1)); },
+  tick(step) { tone(420 + step * 95, 0.06, 'square', 0.08); },
+  lock() { [660, 880, 1320].forEach((f, i) => tone(f, 0.16, 'square', 0.13, null, i * 0.06)); noise(0.3, 0.12, 3000, 0, 'highpass', 0.7); },
+  slam(n) { tone(140, 0.5, 'sine', 0.6, 36); noise(0.2, 0.3, 380, 0, 'lowpass', 0.7); tone([440, 494, 523][n] || 440, 0.2, 'square', 0.1); },
+  go() { [523, 659, 784, 1047].forEach(f => tone(f, 0.6, 'sawtooth', 0.07, f * 1.01)); noise(0.6, 0.25, 900, 0, 'bandpass', 0.5, 3000, 0.05); tone(110, 0.5, 'sine', 0.5, 40); },
+  roar(len = 2) { noise(len, 0.34, 750, 0, 'bandpass', 0.45, 600, 0.14); noise(len * 0.8, 0.2, 2300, 0.05, 'bandpass', 0.7, 1500, 0.2); },
+  goal() { this.roar(2.1); [220, 277, 330, 440].forEach((f, i) => tone(f, 0.9, 'sawtooth', 0.08, f * 1.02, 0.02 * i)); tone(440, 0.6, 'square', 0.08, 880, 0.45); tone(70, 0.6, 'sine', 0.6, 30); },
+  // own goal: same synth family as the goal horn, but falling and stuttered (a "system error")
+  own() { [659, 523, 440, 330].forEach((f, i) => tone(f, 0.14, 'square', 0.12, f * 0.94, 0.12 + i * 0.1)); tone(330, 0.7, 'sawtooth', 0.1, 82, 0.55); [0, 0.07, 0.14].forEach(w => noise(0.04, 0.2, 3000, 0.1 + w, 'bandpass', 2)); this.roar(1.3); },
+  gasp() { noise(0.9, 0.3, 1100, 0, 'bandpass', 1.1, 350, 0.08); },
+  whoosh() { tone(800, 0.6, 'sine', 0.14, 80); noise(0.6, 0.2, 2400, 0, 'lowpass', 0.7, 200, 0.03); },
+  canon() { tone(90, 0.4, 'sine', 0.6, 30); noise(0.3, 0.25, 600, 0, 'lowpass'); tone(1400, 0.25, 'sawtooth', 0.05, 400); },
+  up() { tone(220, 0.35, 'sawtooth', 0.1, 1400); tone(330, 0.35, 'square', 0.06, 1800, 0.05); },
+  mp() { [523, 659, 523, 784].forEach((f, i) => tone(f, 0.12, 'square', 0.11, null, i * 0.12)); },
+  rewind() { tone(1600, 0.3, 'square', 0.05, 200); tone(1200, 0.3, 'square', 0.05, 150, 0.15); },
+  win() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i === 5 ? 0.7 : 0.14, 'square', 0.13, null, i * 0.13)); this.roar(2.4); },
+  click() { tone(520, 0.05, 'square', 0.08); },
+  spawn() { tone(300, 0.22, 'sine', 0.12, 800); }
+};
+const CHORDS = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]];
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+const music = { on: false, step: 0, next: 0, timer: 0 };
+function curBpm() { return Math.min(162, 118 + 5 * (S.score[0] + S.score[1])) + (S.heart ? 14 : 0); }
+function musicStart() { if (!actx || music.on) return; music.on = true; music.step = 0; music.next = actx.currentTime + 0.06; music.timer = setInterval(musicTick, 40); }
+function musicStop() { music.on = false; clearInterval(music.timer); }
+function duck(on) { if (musicGain) musicGain.gain.setTargetAtTime(on ? 0.12 : 0.55, actx.currentTime, 0.08); }
+function musicTick() {
+  if (!actx || !music.on) return;
+  const st = 60 / curBpm() / 4;
+  while (music.next < actx.currentTime + 0.14) {
+    const s = music.step, t = music.next, i = s % 16, ch = CHORDS[Math.floor(s / 16) % 4], mg = musicGain;
+    if (i % 4 === 0) toneAt(t, 150, 0.18, 'sine', 0.5, 40, mg);
+    if (i % 4 === 2) noiseAt(t, 0.05, 0.12, 7000, 'highpass', 0.7, null, 0.002, mg);
+    if (i % 2 === 0) toneAt(t, mtof(ch[0] - 24 + (i % 4 === 2 ? 12 : 0)), st * 1.7, 'triangle', 0.28, null, mg);
+    toneAt(t, mtof(ch[[0, 1, 2, 1][i % 4]] + (i >= 8 ? 24 : 12)), st * 0.9, 'square', 0.045, null, mg);
+    if (S.heart && i % 8 === 0) { toneAt(t, 70, 0.14, 'sine', 0.7, 40, master); toneAt(t + 0.2, 64, 0.14, 'sine', 0.55, 38, master); }
+    music.next += st; music.step++;
+  }
+}
+
+/* =====================================================================
+   TRACKING — FaceLandmarker (default) or FaceDetector (fallback), VIDEO mode
+   ===================================================================== */
+const video = $('#cam');
+const T = { tracker: null, kind: '', mp: null, fileset: null, delegate: '', src: '', ms: 0, n: 0, hz: 0, hzN: 0, int: 0,
+  lastDet: 0, lastTs: 0, faces: 0, small: null, smallCtx: null, errs: 0, rvfc: 'requestVideoFrameCallback' in HTMLVideoElement.prototype, lastVT: -1, stream: null, loadMs: 0, switching: false };
+const WANT_KIND = params.get('tracker') === 'detector' ? 'det' : 'lm'; // ?tracker=landmarker|detector forces one (no auto fallback)
+
+async function createTracker(kind, delegate) {
+  const models = [MODELS[kind]];
+  if (/^https?:/.test(location.protocol)) models.push(new URL(LOCAL_MODELS[kind], location.href).href);
+  if (params.has('local')) models.reverse();
+  let err = null;
+  for (const model of models) {
+    try {
+      const base = { baseOptions: { modelAssetPath: model, delegate }, runningMode: 'VIDEO' };
+      const t = kind === 'lm'
+        ? await T.mp.FaceLandmarker.createFromOptions(T.fileset, { ...base, numFaces: 3, minFaceDetectionConfidence: 0.5, minFacePresenceConfidence: 0.5, minTrackingConfidence: 0.5 })
+        : await T.mp.FaceDetector.createFromOptions(T.fileset, { ...base, minDetectionConfidence: 0.5, minSuppressionThreshold: 0.3 });
+      return { t, model };
+    } catch (e) { err = e; console.warn('tracker', kind, delegate, model, e); }
+  }
+  throw err || new Error('tracker');
+}
+async function loadVision() {
+  const t0 = performance.now();
+  const libs = [{ lib: CDN + '/vision_bundle.mjs', wasm: CDN + '/wasm' }];
+  if (/^https?:/.test(location.protocol)) libs.push({ lib: new URL('vendor/vision_bundle.mjs', location.href).href, wasm: new URL('vendor/wasm', location.href).href });
+  if (params.has('local')) libs.reverse();
+  const delegates = params.get('delegate') ? [params.get('delegate').toUpperCase()] : ['GPU', 'CPU'];
+  let lastErr = null;
+  for (const L of libs) {
+    try {
+      T.mp = await import(L.lib); T.fileset = await T.mp.FilesetResolver.forVisionTasks(L.wasm); T.src = L.lib.includes('jsdelivr') ? 'cdn' : 'local';
+      for (const kind of WANT_KIND === 'lm' ? ['lm', 'det'] : ['det']) for (const delegate of delegates) {
+        try { const r = await createTracker(kind, delegate); T.tracker = r.t; T.kind = kind; T.delegate = delegate; T.loadMs = performance.now() - t0; return; }
+        catch (e) { lastErr = e; }
+      }
+    } catch (e) { lastErr = e; console.warn('No se pudo cargar', L.lib, e); }
+  }
+  throw lastErr || new Error('vision');
+}
+let visionPromise = null;
+function ensureVision() { if (!visionPromise) visionPromise = loadVision().catch(e => { visionPromise = null; throw e; }); return visionPromise; }
+/* slow machine? GPU → CPU first; then FaceLandmarker → the lighter FaceDetector */
+async function downgrade(kind, delegate) {
+  if (T.switching) return; T.switching = true;
+  try {
+    const r = await createTracker(kind, delegate), old = T.tracker;
+    T.tracker = r.t; T.kind = kind; T.delegate = delegate; T.errs = 0; T.ms = 0; T.n = 0; T.lastTs = 0;
+    try { old && old.close(); } catch (e) { }
+  } catch (e) { console.warn('downgrade', e); }
+  T.switching = false;
+}
+async function openCamera() {
+  if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { const e = new Error('insecure'); e.name = 'InsecureError'; throw e; }
+  if (T.stream && T.stream.active) return;
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 }, facingMode: 'user' } });
+  T.stream = stream; video.srcObject = stream;
+  await video.play().catch(() => { });
+  if (!video.videoWidth) await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+  S.camOn = true; document.body.classList.add('cam');
+  stream.getVideoTracks()[0].addEventListener('ended', () => { S.camOn = false; document.body.classList.remove('cam'); });
+  if (T.rvfc) video.requestVideoFrameCallback(onVideoFrame);
+}
+function onVideoFrame() { runDetect(performance.now()); if (S.camOn) video.requestVideoFrameCallback(onVideoFrame); }
+function wantDetect() { return !['title', 'error'].includes(S.state) && !S.kbOnly; }
+function makeSmall() {
+  const w = 320, h = Math.round(320 * video.videoHeight / video.videoWidth) || 240;
+  T.small = document.createElement('canvas'); T.small.width = w; T.small.height = h;
+  T.smallCtx = T.small.getContext('2d', { alpha: false });
+}
+function runDetect(now) {
+  if (!T.tracker || !S.camOn || !wantDetect() || video.readyState < 2) return; // keeps using the old tracker while a downgrade builds
+  if (now - T.lastDet < 28) return;
+  if (!T.small && params.get('input') !== 'full') makeSmall(); // 320px input: cheaper, and enough for faces at 1 m
+  let src = video, iw = video.videoWidth, ih = video.videoHeight;
+  if (T.small) { T.smallCtx.drawImage(video, 0, 0, T.small.width, T.small.height); src = T.small; iw = T.small.width; ih = T.small.height; }
+  const t0 = performance.now(); let res;
+  try { const ts = Math.max(t0, T.lastTs + 1); T.lastTs = ts; res = T.tracker.detectForVideo(src, ts); }
+  catch (e) { console.warn(e); if (++T.errs > 3) downgrade(T.kind, 'CPU'); return; }
+  const ms = performance.now() - t0; T.ms = T.n ? T.ms * 0.9 + ms * 0.1 : ms; T.n++;
+  if ((T.n === 10 || T.n === 60) && !params.get('delegate') && !params.get('tracker')) { // quick check first, then a settled one
+    if (T.delegate === 'GPU' && T.ms > (T.n === 10 ? 60 : 25)) downgrade(T.kind, 'CPU');
+    else if (T.n === 60 && T.kind === 'lm' && T.ms > 70) downgrade('det', 'CPU'); // FaceLandmarker too slow here (<14 Hz): lighter FaceDetector
+  }
+  if (T.lastDet) T.int = T.int ? T.int * 0.9 + (now - T.lastDet) * 0.1 : now - T.lastDet;
+  T.lastDet = now; T.hzN++;
+  const faces = [];
+  if (T.kind === 'lm') {
+    for (const l of (res && res.faceLandmarks) || []) {
+      let x0 = 1, y0 = 1, x1 = 0, y1 = 0;
+      for (let k = 0; k < l.length; k += 5) { const q = l[k]; if (q.x < x0) x0 = q.x; if (q.x > x1) x1 = q.x; if (q.y < y0) y0 = q.y; if (q.y > y1) y1 = q.y; }
+      faces.push({ u: 1 - l[1].x, v: l[1].y, size: x1 - x0, bb: { x: x0, y: y0, w: x1 - x0, h: y1 - y0 } });
+    }
+  } else {
+    for (const d of (res && res.detections) || []) {
+      const k = d.keypoints, bb = d.boundingBox; if (!k || k.length < 3 || !bb) continue;
+      faces.push({ u: 1 - k[2].x, v: k[2].y, size: bb.width / iw, bb: { x: bb.originX / iw, y: bb.originY / ih, w: bb.width / iw, h: bb.height / ih } });
+    }
+  }
+  handleFaces(faces, now);
+}
+/* identity: each slot follows its own face (nearest to its predicted position); an empty slot
+   (lost > 300 ms) re-binds only to a free, large face on ITS side; every other face is ignored */
+const HOLD_MS = 300;
+function handleFaces(all, now) {
+  const faces = all.filter(f => f.size >= 0.06).sort((a, b) => b.size - a.size);
+  const big = faces.length ? faces[0].size : 0;
+  T.faces = faces.length;
+  const assign = [null, null], used = new Set(), pairs = [];
+  players.forEach((p, i) => {
+    const age = now - p.lastSeen; if (!p.sm || age > 1200) return;
+    const dt = Math.min(age, 200) / 1000, pu = p.sm.u + p.fu.v * dt, pv = p.sm.v + p.fv.v * dt;
+    const gate = 0.012 + 0.04 * Math.min(1, age / 1000);
+    faces.forEach((f, j) => { const d = (f.u - pu) ** 2 + (f.v - pv) ** 2; if (d < gate) pairs.push([d, i, j]); });
+  });
+  pairs.sort((a, b) => a[0] - b[0]);
+  for (const [, i, j] of pairs) { if (assign[i] || used.has(j)) continue; assign[i] = faces[j]; used.add(j); }
+  for (const i of [0, 1]) {
+    const p = players[i]; if (assign[i] || now - p.lastSeen < HOLD_MS) continue;
+    const o = players[1 - i], ou = assign[1 - i] ? assign[1 - i].u : (now - o.lastSeen < 1200 && o.sm ? o.sm.u : 0.5);
+    const j = faces.findIndex((f, k) => !used.has(k) && f.size > big * 0.55 && (i === 0 ? f.u < Math.min(0.5, ou) : f.u > Math.max(0.5, ou)));
+    if (j >= 0) { assign[i] = faces[j]; used.add(j); }
+  }
+  const ts = now / 1000;
+  players.forEach((p, i) => {
+    const f = assign[i]; if (!f) return;
+    if (now - p.lastSeen > 400) { p.fu.reset(); p.fv.reset(); }
+    p.raw = { u: f.u, v: f.v };
+    p.sm = { u: p.fu.filter(f.u, ts), v: p.fv.filter(f.v, ts) };
+    p.size = f.size;
+    const b = p.bbS; if (!b || now - p.lastSeen > 400) p.bbS = { ...f.bb }; else for (const k in b) b[k] += (f.bb[k] - b[k]) * 0.45;
+    p.lastSeen = now;
+  });
+}
+const visWin = () => clamp((T.int || 33) * 2.5, HOLD_MS, 900);
+const visible = (p, now) => now - p.lastSeen < visWin();
+
+/* =====================================================================
+   ONE TRANSFORM FOR THE NOSE: video pixel → screen pixel (mirrored cover-fit,
+   exactly how the <video> background is drawn) → rink plane (inverse projection)
+   ===================================================================== */
+function coverScale() { const vw = video.videoWidth || 640, vh = video.videoHeight || 480; return Math.max(W / vw, H / vh); }
+function videoToScreen(u, v) { // u is already mirrored (display) — 0 = left edge of what the players see
+  const vw = video.videoWidth || 640, vh = video.videoHeight || 480, s = coverScale(), dw = vw * s, dh = vh * s;
+  return [(W - dw) / 2 + u * dw, (H - dh) / 2 + v * dh];
+}
+function noseScreen(p, now) { // smoothed + a short prediction to hide detector latency
+  const dtp = Math.min((now - p.lastSeen) / 1000, 0.06);
+  return videoToScreen(p.sm.u + p.fu.v * dtp, p.sm.v + p.fv.v * dtp);
+}
+
+/* ---------- tilted rink: a homography from the plane to the screen ---------- */
+let Hm = [1, 0, 0, 0, 1, 0, 0, 0], Hi = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+function solveH(src, dst) {
+  const A = [], b = [];
+  for (let i = 0; i < 4; i++) { const [x, y] = src[i], [u, v] = dst[i]; A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u); A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v); }
+  for (let c = 0; c < 8; c++) {
+    let pv = c; for (let r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[pv][c])) pv = r;
+    [A[c], A[pv]] = [A[pv], A[c]]; [b[c], b[pv]] = [b[pv], b[c]];
+    for (let r = 0; r < 8; r++) { if (r === c) continue; const f = A[r][c] / A[c][c]; if (!f) continue; for (let k = c; k < 8; k++) A[r][k] -= f * A[c][k]; b[r] -= f * b[c]; }
+  }
+  return b.map((v, i) => v / A[i][i]);
+}
+function inv3(h) {
+  const [a, b, c, d, e, f, g, k] = h, i = 1;
+  const A = e * i - f * k, B = -(d * i - f * g), C = d * k - e * g, det = a * A + b * B + c * C;
+  const r = [A, -(b * i - c * k), b * f - c * e, B, a * i - c * g, -(a * f - c * d), C, -(a * k - b * g), a * e - b * d].map(v => v / det);
+  return r.map(v => v / r[8]);
+}
+function proj(x, y) { const h = Hm, w = h[6] * x + h[7] * y + 1; return [(h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w]; }
+function unproj(x, y) { const h = Hi, w = h[6] * x + h[7] * y + h[8]; return [(h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w]; }
+function local(x, y) { const p = proj(x, y), a = proj(x + 10, y), b = proj(x, y + 10); return [p[0], p[1], Math.hypot(a[0] - p[0], a[1] - p[1]) / 10, Math.hypot(b[0] - p[0], b[1] - p[1]) / 10]; }
+
+/* =====================================================================
+   AVATARS (memory only)
+   ===================================================================== */
+function nameOf(i) { return (($('#name' + (i + 1)).value || '').trim() || ['ROSA', 'CIAN'][i]).toUpperCase().slice(0, 10); }
+function drawCrop(p, c) {
+  const vw = video.videoWidth, vh = video.videoHeight, b = p.bbS; if (!b || !vw) return false;
+  const side = Math.min(Math.max(b.w * vw, b.h * vh) * 1.7, vh, vw);
+  const cx = (b.x + b.w / 2) * vw, cy = (b.y + b.h * 0.45) * vh;
+  const sx = clamp(cx - side / 2, 0, vw - side), sy = clamp(cy - side / 2, 0, vh - side);
+  const g = c.getContext('2d'); g.save(); g.setTransform(-1, 0, 0, 1, c.width, 0);
+  g.drawImage(video, sx, sy, side, side, 0, 0, c.width, c.height); g.restore(); return true;
+}
+function drawInitial(c, i, name) {
+  const g = c.getContext('2d'), s = c.width, col = COL[i];
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const gr = g.createRadialGradient(s * 0.5, s * 0.4, s * 0.05, s * 0.5, s * 0.5, s * 0.7);
+  gr.addColorStop(0, `rgba(${col.rgb},.55)`); gr.addColorStop(1, '#0a0b28'); g.fillStyle = gr; g.fillRect(0, 0, s, s);
+  g.fillStyle = col.light; g.font = `900 ${Math.round(s * 0.52)}px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText((name || '?').charAt(0), s / 2, s * 0.54);
+}
+function drawSearching(c, i) {
+  const g = c.getContext('2d'), s = c.width; g.setTransform(1, 0, 0, 1, 0, 0);
+  g.fillStyle = '#0a0b28'; g.fillRect(0, 0, s, s);
+  g.fillStyle = `rgba(${COL[i].rgb},.28)`;
+  g.beginPath(); g.arc(s / 2, s * 0.42, s * 0.17, 0, Math.PI * 2); g.fill();
+  g.beginPath(); g.ellipse(s / 2, s * 0.95, s * 0.33, s * 0.28, 0, 0, Math.PI * 2); g.fill();
+}
+function makeAvatar(i, src) {
+  const c = document.createElement('canvas'); c.width = c.height = 160;
+  if (src) c.getContext('2d').drawImage(src, 0, 0, 160, 160); else drawInitial(c, i, S.names[i]);
+  const s = document.createElement('canvas'); s.width = s.height = 160; const h = s.getContext('2d');
+  h.filter = 'grayscale(1) contrast(1.1) brightness(.8)'; h.drawImage(c, 0, 0); h.filter = 'none';
+  AV[i] = { cv: c, url: c.toDataURL('image/jpeg', 0.88), sad: s.toDataURL('image/jpeg', 0.85), live: !!src };
+  ['#hav', '#cav'].forEach(k => { $(k + (i + 1)).src = AV[i].url; });
+}
+const faceImg = (i, sad) => AV[i] ? (sad ? AV[i].sad : AV[i].url) : '';
+
+/* =====================================================================
+   INPUT — keyboard fallback (works any time)
+   ===================================================================== */
+const keys = new Set();
+const KB = [{ up: 'w', down: 's', left: 'a', right: 'd' }, { up: 'arrowup', down: 'arrowdown', left: 'arrowleft', right: 'arrowright' }];
+const isMove = k => KB.some(m => k === m.up || k === m.down || k === m.left || k === m.right);
+const kbActive = (p, now) => S.kbOnly || now - p.kbLast < 3500;
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (e.target && e.target.tagName === 'INPUT') return;
+  if (e.target && e.target.tagName === 'BUTTON' && (k === 'enter' || k === ' ')) return;
+  if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) e.preventDefault();
+  keys.add(k);
+  KB.forEach((m, i) => { if (k === m.up || k === m.down || k === m.left || k === m.right) { const p = players[i]; if (!kbActive(p, performance.now())) { p.kbx = p.x; p.kby = p.y; } p.kbLast = performance.now(); } });
+  if (e.repeat) return;
+  if (k === 'f') toggleFull();
+  else if (k === 'm') toggleMute();
+  else if (k === 'escape') { if (S.state === 'faces') goTitle(); else if (S.state !== 'title') goFaces(S.kbOnly); }
+  else if (S.state === 'title' && (k === 'enter' || k === ' ')) { e.preventDefault(); audioInit(); goFaces(false); }
+  else if (S.state === 'replay' && (k === 'enter' || k === ' ')) endReplay();
+  else if (S.state === 'victory' && S.stateT > 1 && !isMove(k) && !['tab', 'shift', 'control', 'alt', 'meta', 'n'].includes(k)) { e.preventDefault(); rematch(false); }
+});
+addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+addEventListener('blur', () => keys.clear());
+addEventListener('pointerdown', () => { if (S.state === 'replay') endReplay(); });
+function updateKeyboard(dt, now) {
+  players.forEach((p, i) => {
+    const m = KB[i];
+    let dx = (keys.has(m.right) ? 1 : 0) - (keys.has(m.left) ? 1 : 0), dy = (keys.has(m.down) ? 1 : 0) - (keys.has(m.up) ? 1 : 0);
+    if (!dx && !dy) return;
+    p.kbLast = now;
+    const l = Math.hypot(dx, dy); dx /= l; dy /= l;
+    const c = clampHalf(i, p.kbx + dx * 1150 * dt, p.kby + dy * 1150 * dt, MR);
+    p.kbx = c[0]; p.kby = c[1];
+  });
+}
+
+/* =====================================================================
+   PHYSICS (plane coordinates)
+   ===================================================================== */
+function cornerFix(o, r, reflect) {
+  const cs = [[CR, CR, -1, -1], [RW - CR, CR, 1, -1], [CR, RH - CR, -1, 1], [RW - CR, RH - CR, 1, 1]];
+  for (const [cx, cy, sx, sy] of cs) {
+    if ((o.x - cx) * sx > 0 && (o.y - cy) * sy > 0) {
+      const dx = o.x - cx, dy = o.y - cy, d = Math.hypot(dx, dy), lim = CR - r;
+      if (d > lim) {
+        const nx = dx / d, ny = dy / d; o.x = cx + nx * lim; o.y = cy + ny * lim;
+        if (reflect) { const vn = o.vx * nx + o.vy * ny; if (vn > 0) { o.vx -= (1 + WALL_E) * vn * nx; o.vy -= (1 + WALL_E) * vn * ny; sfx.wall(Math.abs(vn)); } }
+      }
+    }
+  }
+}
+function clampHalf(i, x, y, r) {
+  const minX = i ? RW / 2 + r : r, maxX = i ? RW - r : RW / 2 - r;
+  const o = { x: clamp(x, minX, maxX), y: clamp(y, r, RH - r) };
+  cornerFix(o, r, false); return [o.x, o.y];
+}
+function physics(dt) {
+  if (!puck.active) return;
+  if (puck.hold > 0) { puck.hold -= dt; return; }
+  let move = Math.hypot(puck.vx, puck.vy) * dt;
+  for (const p of players) move = Math.max(move, Math.hypot(p.x - p.prevX, p.y - p.prevY));
+  const n = clamp(Math.ceil(move / (PR * 0.5)), 1, 12), h = dt / n;
+  for (let s = 1; s <= n; s++) {
+    puck.x += puck.vx * h; puck.y += puck.vy * h;
+    const fr = s / n;
+    for (const p of players) collideMallet(p, p.prevX + (p.x - p.prevX) * fr, p.prevY + (p.y - p.prevY) * fr);
+    walls();
+    if (!puck.active) return;
+  }
+  const f = Math.exp(-FRICTION * dt); puck.vx *= f; puck.vy *= f;
+  const sp = Math.hypot(puck.vx, puck.vy), ms = maxSp();
+  if (sp > ms) { puck.vx *= ms / sp; puck.vy *= ms / sp; }
+  if (sp < 30) puck.slowT += dt; else puck.slowT = 0;
+  const nearWall = puck.x < PR + 26 || puck.x > RW - PR - 26 || puck.y < PR + 26 || puck.y > RH - PR - 26;
+  if ((nearWall && puck.slowT > 1.6) || puck.slowT > 5) {
+    const ax = (RW / 2 + (puck.x < RW / 2 ? -150 : 150)) - puck.x, ay = RH / 2 - puck.y, l = Math.hypot(ax, ay) || 1;
+    puck.vx = ax / l * 200; puck.vy = ay / l * 200; puck.slowT = 0;
+  }
+  let pinned = -1;
+  for (const p of players) {
+    if (puck.ghost > 0 && puck.ghostOf === p.i) continue;
+    const d = Math.hypot(p.x - puck.x, p.y - puck.y);
+    if (d < PR + MR - 1) { squirt(p, 380); pinned = -1; break; }
+    if (d < PR + MR + 3 && (puck.x < PR + 10 || puck.x > RW - PR - 10 || puck.y < PR + 10 || puck.y > RH - PR - 10)) pinned = p.i;
+  }
+  puck.jamT = pinned >= 0 && Math.hypot(puck.vx, puck.vy) < 260 ? puck.jamT + dt : 0;
+  if (puck.jamT > 0.7) squirt(players[pinned], 300);
+  if (puck.ghost > 0) puck.ghost -= dt;
+  const tow = puck.vx < 0 ? 0 : 1, dist = tow ? RW - puck.x : puck.x;
+  if (dist < 95 && Math.abs(puck.y - RH / 2) < GOAL / 2 + 45 && Math.abs(puck.vx) > 260) puck.near = tow;
+  if (puck.near >= 0 && puck.x > 230 && puck.x < RW - 230) { closeCall(puck.near); puck.near = -1; }
+  if (S.slowT <= 0 && S.slowCool <= 0 && !REDUCED && Math.abs(puck.vx) > 320 && dist < 170) {
+    const t = dist / Math.abs(puck.vx), y = puck.y + puck.vy * t;
+    if (t < 0.13 && y > GT + PR * 0.6 && y < GB - PR * 0.6) { S.slowT = 0.6; S.timeScale = 0.25; sfx.whoosh(); duck(true); }
+  }
+}
+function squirt(p, speed) {
+  puck.ghost = 0.4; puck.ghostOf = p.i; puck.jamT = 0;
+  const ax = RW / 2 - puck.x, ay = RH / 2 - puck.y, l = Math.hypot(ax, ay) || 1;
+  puck.vx = ax / l * speed + p.vx * 0.2; puck.vy = ay / l * speed + p.vy * 0.2;
+}
+function collideMallet(p, mx, my) {
+  if (puck.ghost > 0 && puck.ghostOf === p.i) return;
+  const dx = puck.x - mx, dy = puck.y - my, d = Math.hypot(dx, dy), min = PR + MR;
+  if (d >= min || d < 1e-4) return;
+  const nx = dx / d, ny = dy / d;
+  puck.x = mx + nx * min; puck.y = my + ny * min;
+  const rvx = puck.vx - p.vx, rvy = puck.vy - p.vy, vn = rvx * nx + rvy * ny;
+  if (vn < 0) {
+    // a touch on a shot that was already flying at this player's own goal is a failed save, not an own goal
+    const incoming = p.i ? puck.vx > 250 : puck.vx < -250;
+    puck.vx -= (1 + HIT_E) * vn * nx; puck.vy -= (1 + HIT_E) * vn * ny;
+    const sp = Math.hypot(puck.vx, puck.vy), ms = maxSp();
+    if (sp > ms) { puck.vx *= ms / sp; puck.vy *= ms / sp; }
+    onHit(p, -vn, mx + nx * MR, my + ny * MR, nx, ny);
+    puck.deflect = incoming;
+  }
+}
+function walls() {
+  const inMouth = puck.y > GT && puck.y < GB;
+  if (puck.y < PR) { puck.y = PR; if (puck.vy < 0) { sfx.wall(-puck.vy); puck.vy = -puck.vy * WALL_E; } }
+  if (puck.y > RH - PR) { puck.y = RH - PR; if (puck.vy > 0) { sfx.wall(puck.vy); puck.vy = -puck.vy * WALL_E; } }
+  if (!inMouth) {
+    if (puck.x < PR) { puck.x = PR; if (puck.vx < 0) { sfx.wall(-puck.vx); puck.vx = -puck.vx * WALL_E; } }
+    if (puck.x > RW - PR) { puck.x = RW - PR; if (puck.vx > 0) { sfx.wall(puck.vx); puck.vx = -puck.vx * WALL_E; } }
+  }
+  for (const [px, py] of [[0, GT], [0, GB], [RW, GT], [RW, GB]]) {
+    const dx = puck.x - px, dy = puck.y - py, d = Math.hypot(dx, dy);
+    if (d < PR && d > 1e-4) {
+      const nx = dx / d, ny = dy / d; puck.x = px + nx * PR; puck.y = py + ny * PR;
+      const vn = puck.vx * nx + puck.vy * ny; if (vn < 0) { puck.vx -= (1 + WALL_E) * vn * nx; puck.vy -= (1 + WALL_E) * vn * ny; sfx.wall(-vn); }
+    }
+  }
+  if (puck.x < 0 || puck.x > RW) {
+    if (puck.y < GT + PR) { puck.y = GT + PR; puck.vy = Math.abs(puck.vy) * 0.5; }
+    if (puck.y > GB - PR) { puck.y = GB - PR; puck.vy = -Math.abs(puck.vy) * 0.5; }
+  }
+  cornerFix(puck, PR, true);
+  if (puck.x < -PR * 1.2) goal(0); else if (puck.x > RW + PR * 1.2) goal(1);
+}
+function onHit(p, impulse, cx, cy, nx, ny) {
+  const now = performance.now(); if (now - p.lastHit < 70) return; p.lastHit = now;
+  const sp = Math.hypot(puck.vx, puck.vy), k = clamp(impulse / 1600, 0, 1);
+  puck.hitter = p.i; p.pulse = clamp(0.3 + k, 0, 1);
+  sparks(cx, cy, COL[p.i].rgb, Math.round(6 + k * 28), nx, ny, 220 + impulse * 0.5);
+  rings.push({ x: cx, y: cy, t: 0, ttl: 0.35 + k * 0.2, r0: 14, r1: 40 + k * 70, rgb: COL[p.i].rgb, w: 3 + k * 5 });
+  sfx.hit(sp, k);
+  if (sp > S.maxShot[p.i]) S.maxShot[p.i] = sp;
+  if (S.state === 'play' && sp > maxSp() * 0.8 && impulse > 950 && now - S.lastCanon > 1200) { // CAÑONAZO: shown on the puck itself
+    S.lastCanon = now; puck.hot = 1; puck.hotKmh = kmh(sp);
+    rings.push({ x: cx, y: cy, t: 0, ttl: 0.55, r0: 20, r1: 190, rgb: '255,255,255', w: 9 });
+    sparks(cx, cy, '255,255,255', 16, nx, ny, 700);
+    sfx.canon(); S.shake = Math.max(S.shake, 7);
+  }
+}
+function closeCall(side) {
+  const now = performance.now(); if (now - S.lastUuy < 1800 || S.state !== 'play') return; S.lastUuy = now;
+  floater('¡UUUY!', side ? RW - 190 : 190, GT - 40, COL[1 - side].rgb, 64);
+  sfx.gasp();
+}
+
+/* =====================================================================
+   PARTICLES / RINGS / FLOATERS (pooled, capped; all in plane coordinates)
+   ===================================================================== */
+const SPARK_MAX = 420, sparkPool = [], floaters = [], rings = [], sweeps = [];
+function sparks(x, y, rgb, n, nx = 0, ny = 0, speed = 300) {
+  for (let i = 0; i < n; i++) {
+    if (sparkPool.length >= SPARK_MAX) sparkPool.shift();
+    const a = Math.atan2(ny, nx) + (Math.random() - 0.5) * (nx || ny ? 2.2 : 6.3), s = speed * (0.35 + Math.random());
+    sparkPool.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0, ttl: 0.25 + Math.random() * 0.4, rgb });
+  }
+}
+function floater(text, x, y, rgb, size) { if (floaters.length > 4) floaters.shift(); floaters.push({ text, x, y, rgb, size, t: 0, ttl: 1.0 }); }
+function sweep(from, dir, rgb) { sweeps.push({ x: from, dir, rgb, t: 0 }); }
+const confetti = [];
+function spawnConfetti(hex, light) {
+  const cols = [hex, hex, light, '#FFFFFF', PUCK_HEX], n = REDUCED ? 40 : 160;
+  for (let i = 0; i < n; i++) confetti.push({ x: Math.random() * W, y: -20 - Math.random() * H * 0.6, vx: (Math.random() - 0.5) * 160, vy: 80 + Math.random() * 220,
+    r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 10, w: 7 + Math.random() * 8, h: 4 + Math.random() * 5, c: cols[i % cols.length], life: 0 });
+}
+function updateParticles(dt) {
+  for (let i = sparkPool.length - 1; i >= 0; i--) {
+    const q = sparkPool[i]; q.life += dt; if (q.life > q.ttl) { sparkPool.splice(i, 1); continue; }
+    q.x += q.vx * dt; q.y += q.vy * dt; q.vx *= 0.92; q.vy *= 0.92;
+  }
+  for (const L of [floaters, rings]) for (let i = L.length - 1; i >= 0; i--) { L[i].t += dt; if (L[i].t > L[i].ttl) L.splice(i, 1); }
+  for (let i = sweeps.length - 1; i >= 0; i--) { sweeps[i].t += dt; if (sweeps[i].t > 0.7) sweeps.splice(i, 1); }
+  for (let i = confetti.length - 1; i >= 0; i--) {
+    const c = confetti[i]; c.life += dt; c.x += c.vx * dt + Math.sin(c.life * 3 + c.r) * 0.6; c.y += c.vy * dt; c.r += c.vr * dt;
+    if (c.y > H + 30) { if (S.state === 'victory' && c.life < 7) { c.y = -20; c.x = Math.random() * W; } else confetti.splice(i, 1); }
+  }
+  puck.hot = Math.max(0, puck.hot - dt * 0.9);
+  S.shake = Math.max(0, S.shake - dt * 42);
+}
+
+/* =====================================================================
+   RENDERING — screen space; the rink plane goes through proj()
+   ===================================================================== */
+const cv = $('#cv'), ctx = cv.getContext('2d'), rinkLayer = $('#rinkcv'), hudEl = $('#hud');
+let W = 0, H = 0, DPR = 1, BASE_K = 1, rinkPath = null, halfPaths = [null, null];
+let padSpr = [], glowSpr = {};
+const TILT = +(params.get('tilt') || 0.055); // top edge inset (fraction of width) ≈ a 10° lean back
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+  W = innerWidth; H = innerHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  const hudH = clamp(H * 0.135, 72, 128), bottom = clamp(H * 0.03, 10, 30);
+  const availW = W * 0.95, availH = H - hudH - bottom;
+  const s = Math.min(availW / (RW + 70), availH / (RH * 0.94));
+  const w = RW * s, h = RH * s * 0.94, x0 = (W - w) / 2, y0 = hudH + (availH - h) / 2, inset = w * TILT;
+  Hm = solveH([[0, 0], [RW, 0], [RW, RH], [0, RH]], [[x0 + inset, y0], [x0 + w - inset, y0], [x0 + w, y0 + h], [x0, y0 + h]]);
+  Hi = inv3(Hm);
+  BASE_K = local(RW / 2, RH / 2)[2];
+  const st = document.documentElement.style;
+  st.setProperty('--rink-top', y0 + 'px'); st.setProperty('--rink-bottom', (y0 + h) + 'px');
+  st.setProperty('--rink-left', x0 + 'px'); st.setProperty('--rink-w', w + 'px');
+  rinkPath = new Path2D(); pathRink(rinkPath);
+  halfPaths = [0, 1].map(i => { const p = new Path2D(), a = i ? RW / 2 : 0, b = i ? RW : RW / 2; [[a, 0], [b, 0], [b, RH], [a, RH]].forEach(([x, y], k) => { const q = proj(x, y); k ? p.lineTo(q[0], q[1]) : p.moveTo(q[0], q[1]); }); p.closePath(); return p; });
+  buildSprites(); buildRink();
+}
+/* path helpers: straight lines stay straight under a homography; arcs are sampled */
+function pm(g, x, y) { const p = proj(x, y); g.moveTo(p[0], p[1]); }
+function pl(g, x, y) { const p = proj(x, y); g.lineTo(p[0], p[1]); }
+function pa(g, cx, cy, r, a0, a1, move) {
+  const n = Math.max(6, Math.ceil(Math.abs(a1 - a0) / (Math.PI / 28)));
+  for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n, p = proj(cx + r * Math.cos(a), cy + r * Math.sin(a)); if (i === 0 && move) g.moveTo(p[0], p[1]); else g.lineTo(p[0], p[1]); }
+}
+function pathRink(g) {
+  pm(g, CR, 0); pl(g, RW - CR, 0); pa(g, RW - CR, CR, CR, -Math.PI / 2, 0); pl(g, RW, RH - CR); pa(g, RW - CR, RH - CR, CR, 0, Math.PI / 2);
+  pl(g, CR, RH); pa(g, CR, RH - CR, CR, Math.PI / 2, Math.PI); pl(g, 0, CR); pa(g, CR, CR, CR, Math.PI, Math.PI * 1.5); g.closePath();
+}
+function halfBorder(g, side) {
+  g.beginPath();
+  if (!side) { pm(g, RW / 2, 0); pl(g, CR, 0); pa(g, CR, CR, CR, -Math.PI / 2, -Math.PI); pl(g, 0, GT); pm(g, 0, GB); pl(g, 0, RH - CR); pa(g, CR, RH - CR, CR, Math.PI, Math.PI / 2); pl(g, RW / 2, RH); }
+  else { pm(g, RW / 2, 0); pl(g, RW - CR, 0); pa(g, RW - CR, CR, CR, -Math.PI / 2, 0); pl(g, RW, GT); pm(g, RW, GB); pl(g, RW, RH - CR); pa(g, RW - CR, RH - CR, CR, 0, Math.PI / 2); pl(g, RW / 2, RH); }
+}
+function neon(g, color, w, glow = 16) { // static rink only: halo + blurred core + white centre
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; g.globalCompositeOperation = 'lighter';
+  const a0 = g.globalAlpha;
+  g.strokeStyle = color; g.globalAlpha = a0 * 0.22; g.lineWidth = w * 4.5; g.stroke(); g.globalAlpha = a0;
+  g.shadowColor = color; g.shadowBlur = glow * DPR * 1.4; g.lineWidth = w; g.stroke(); g.stroke();
+  g.shadowBlur = 0; g.strokeStyle = '#FFFFFF'; g.lineWidth = Math.max(1, w * 0.38); g.stroke();
+  g.restore();
+}
+function buildRink() {
+  rinkLayer.width = cv.width; rinkLayer.height = cv.height;
+  const g = rinkLayer.getContext('2d'); g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
+  const K = BASE_K;
+  // table body: the near edge shows its thickness (depth cue)
+  const D = 16 * K / 1.1;
+  g.beginPath(); const edge = []; for (let i = 0; i <= 24; i++) { const a = Math.PI - (Math.PI / 2) * (i / 24); edge.push(proj(CR + CR * Math.cos(a), RH - CR + CR * Math.sin(a))); }
+  for (let i = 0; i <= 24; i++) { const a = Math.PI / 2 - (Math.PI / 2) * (i / 24); edge.push(proj(RW - CR + CR * Math.cos(a), RH - CR + CR * Math.sin(a))); }
+  edge.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); for (let i = edge.length - 1; i >= 0; i--) g.lineTo(edge[i][0], edge[i][1] + D); g.closePath();
+  let gr = g.createLinearGradient(0, edge[0][1], 0, edge[0][1] + D); gr.addColorStop(0, 'rgba(40,42,110,.95)'); gr.addColorStop(1, 'rgba(8,9,30,.95)'); g.fillStyle = gr; g.fill();
+  g.beginPath(); edge.forEach((p, i) => i ? g.lineTo(p[0], p[1] + D) : g.moveTo(p[0], p[1] + D));
+  gr = g.createLinearGradient(edge[0][0], 0, edge[edge.length - 1][0], 0); gr.addColorStop(0, COL[0].hex); gr.addColorStop(0.5, 'rgba(255,255,255,.6)'); gr.addColorStop(1, COL[1].hex);
+  g.strokeStyle = gr; g.lineWidth = 2; g.globalAlpha = 0.7; g.stroke(); g.globalAlpha = 1;
+  // floor
+  g.save(); g.clip(rinkPath);
+  const L = proj(0, RH / 2), M = proj(RW / 2, RH / 2), R = proj(RW, RH / 2);
+  gr = g.createLinearGradient(L[0], 0, M[0], 0); gr.addColorStop(0, `rgba(${COL[0].rgb},.26)`); gr.addColorStop(1, `rgba(${COL[0].rgb},.06)`); g.fillStyle = gr; g.fill(halfPaths[0]);
+  gr = g.createLinearGradient(R[0], 0, M[0], 0); gr.addColorStop(0, `rgba(${COL[1].rgb},.26)`); gr.addColorStop(1, `rgba(${COL[1].rgb},.06)`); g.fillStyle = gr; g.fill(halfPaths[1]);
+  g.fillStyle = 'rgba(5,6,26,.22)'; g.fill(rinkPath);
+  g.strokeStyle = 'rgba(255,255,255,.05)'; g.lineWidth = 1; // scanlines: they compress with distance, which sells the tilt
+  for (let y = 0; y < RH; y += 6) { g.beginPath(); pm(g, 0, y); pl(g, RW, y); g.stroke(); }
+  for (const x0 of [0, RW]) { const c = proj(x0, RH / 2), rg = g.createRadialGradient(c[0], c[1], 5, c[0], c[1], 190 * K); rg.addColorStop(0, 'rgba(255,255,255,.24)'); rg.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = rg; g.fillRect(c[0] - 200 * K, c[1] - 200 * K, 400 * K, 400 * K); }
+  g.restore();
+  for (let side = 0; side < 2; side++) {
+    const x0 = side ? RW : 0, d = side ? 1 : -1, col = COL[side];
+    g.beginPath(); pa(g, x0, RH / 2, 132, side ? Math.PI / 2 : -Math.PI / 2, side ? Math.PI * 1.5 : Math.PI / 2, true);
+    g.globalAlpha = 0.75; neon(g, col.hex, 2, 10); g.globalAlpha = 1;
+    // goal box: bright white fill + white net, owner colour as a thin accent
+    g.beginPath(); pm(g, x0, GT); pl(g, x0 + d * 34, GT + 12); pl(g, x0 + d * 34, GB - 12); pl(g, x0, GB); g.closePath();
+    g.fillStyle = 'rgba(255,255,255,.42)'; g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 1.2;
+    for (let y = GT + 23; y < GB; y += 23) { g.beginPath(); pm(g, x0, y); pl(g, x0 + d * 34, y); g.stroke(); }
+    for (let x = 11; x < 34; x += 11) { g.beginPath(); pm(g, x0 + d * x, GT + 4); pl(g, x0 + d * x, GB - 4); g.stroke(); }
+    g.beginPath(); pm(g, x0, GT); pl(g, x0 + d * 34, GT + 12); pl(g, x0 + d * 34, GB - 12); pl(g, x0, GB); neon(g, '#FFFFFF', 3, 14);
+    g.beginPath(); pm(g, x0 + d * 40, GT + 14); pl(g, x0 + d * 40, GB - 14); g.globalAlpha = 0.9; neon(g, col.hex, 2, 8); g.globalAlpha = 1;
+  }
+  const white = 'rgba(240,238,255,.9)';
+  g.beginPath(); pm(g, RW / 2, 0); pl(g, RW / 2, RH); g.globalAlpha = 0.8; neon(g, white, 3, 12);
+  g.beginPath(); pa(g, RW / 2, RH / 2, 84, 0, Math.PI * 2, true); neon(g, white, 2.5, 12); g.globalAlpha = 1;
+  const c = proj(RW / 2, RH / 2); g.beginPath(); g.ellipse(c[0], c[1], 6 * K, 5 * K, 0, 0, Math.PI * 2); g.fillStyle = white; g.fill();
+  halfBorder(g, 0); neon(g, COL[0].hex, 5.5, 22);
+  halfBorder(g, 1); neon(g, COL[1].hex, 5.5, 22);
+  for (let side = 0; side < 2; side++) { const x0 = side ? RW : 0; g.beginPath(); pm(g, x0, GT); pl(g, x0, GB); neon(g, '#FFFFFF', 10, 30); }
+}
+function makeGlow(rgb) {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gr.addColorStop(0, `rgba(${rgb},1)`); gr.addColorStop(0.25, `rgba(${rgb},.6)`); gr.addColorStop(1, `rgba(${rgb},0)`);
+  g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return c;
+}
+function buildSprites() {
+  padSpr = COL.map(col => {
+    const r = MR * BASE_K * DPR, pad = r * 1.0, size = Math.ceil((r + pad) * 2), c = document.createElement('canvas');
+    c.width = c.height = size; const g = c.getContext('2d'), m = size / 2;
+    const gr = g.createRadialGradient(m, m, r * 0.7, m, m, r + pad); gr.addColorStop(0, `rgba(${col.rgb},.7)`); gr.addColorStop(1, `rgba(${col.rgb},0)`);
+    g.fillStyle = gr; g.fillRect(0, 0, size, size);
+    g.beginPath(); g.arc(m, m, r, 0, Math.PI * 2); g.fillStyle = `rgba(${col.rgb},.34)`; g.fill();
+    g.lineWidth = r * 0.18; g.strokeStyle = col.hex; g.shadowColor = col.hex; g.shadowBlur = r * 0.5; g.stroke(); g.stroke(); g.shadowBlur = 0;
+    g.beginPath(); g.arc(m, m, r * 0.93, 0, Math.PI * 2); g.lineWidth = r * 0.06; g.strokeStyle = '#FFFFFF'; g.stroke();
+    g.beginPath(); g.arc(m, m, r * 0.52, 0, Math.PI * 2); g.lineWidth = r * 0.08; g.strokeStyle = col.light; g.stroke();
+    g.beginPath(); g.arc(m, m, r * 0.21, 0, Math.PI * 2); g.fillStyle = '#FFFFFF'; g.shadowColor = col.hex; g.shadowBlur = r * 0.5; g.fill();
+    return { c, plane: size / (BASE_K * DPR) };
+  });
+  glowSpr = { puck: makeGlow('255,240,77'), p0: makeGlow(COL[0].rgb), p1: makeGlow(COL[1].rgb), white: makeGlow('255,255,255') };
+}
+const inRink = () => ['calib', 'countdown', 'play', 'goal', 'paused', 'victory', 'replay'].includes(S.state);
+function ellipseAt(x, y, r) { const [sx, sy, kx, ky] = local(x, y); ctx.beginPath(); ctx.ellipse(sx, sy, Math.max(0.1, r * kx), Math.max(0.1, r * ky), 0, 0, Math.PI * 2); }
+
+function draw(now) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+  const on = inRink(), cls = on ? (S.state === 'calib' ? 'on dim' : 'on') : '';
+  if (rinkLayer.className !== cls) rinkLayer.className = cls;
+  if (!on) { drawConfetti(); return; }
+  let sx = 0, sy = 0; if (S.shake > 0.2 && !REDUCED) { sx = (Math.random() * 2 - 1) * S.shake; sy = (Math.random() * 2 - 1) * S.shake; }
+  const tf = sx || sy ? `translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px)` : '';
+  if (rinkLayer.style.transform !== tf) { rinkLayer.style.transform = tf; hudEl.style.transform = tf; }
+  ctx.setTransform(DPR, 0, 0, DPR, sx * DPR, sy * DPR);
+  drawTension(now);
+  if (S.state === 'goal' && S.stateT < 1) { // light pouring out of the conceded goal
+    const [gx, gy, kx] = local(S.lastGoalSide ? RW : 0, RH / 2), a = 1 - S.stateT, R = (200 + 160 * S.stateT) * kx;
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = a;
+    ctx.drawImage(glowSpr[S.lastOwn ? 'white' : 'p' + S.lastGoalBy], gx - R, gy - R, R * 2, R * 2);
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  }
+  drawSweeps();
+  for (const k of rings) { const q = k.t / k.ttl; ellipseAt(k.x, k.y, k.r0 + (k.r1 - k.r0) * (1 - (1 - q) ** 3)); ctx.lineWidth = k.w * (1 - q) + 0.5; ctx.strokeStyle = `rgba(${k.rgb},${(0.95 * (1 - q)).toFixed(3)})`; ctx.stroke(); }
+  if (puck.visible) drawPuck(now);
+  for (const p of players) {
+    if (S.state === 'calib' && !S.kbOnly && !p.locked && !(p.kbLast > S.calibStart)) continue; // no paddle until the nose is locked
+    drawPaddle(p);
+  }
+  if (sparkPool.length) {
+    ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineWidth = 3;
+    for (const q of sparkPool) {
+      const a = 1 - q.life / q.ttl, p1 = proj(q.x, q.y), p0 = proj(q.x - q.vx * 0.035, q.y - q.vy * 0.035);
+      ctx.strokeStyle = `rgba(${q.rgb},${a.toFixed(3)})`; ctx.beginPath(); ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]); ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  drawFloaters();
+  if (S.state === 'victory') drawRematch();
+  if (S.state === 'replay') { ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.setLineDash([20, 14]); ctx.stroke(rinkPath); ctx.setLineDash([]); }
+  drawDropouts(now);
+  if (S.slowVis > 0.01) { const b = H * 0.075 * S.slowVis; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, b); ctx.fillRect(0, H - b, W, b); }
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (S.camOn && !S.kbOnly && S.state !== 'replay') { if (S.state === 'calib') drawTargets(now); drawNoses(now); }
+  drawConfetti();
+  if (DEBUG) drawDebug(now);
+}
+/* match point: the leader's half breathes slowly (gold on both halves for GOL DE ORO) */
+function drawTension(now) {
+  if (!S.heart || !['play', 'goal', 'countdown'].includes(S.state)) return;
+  const mp0 = S.score[0] === S.target - 1, mp1 = S.score[1] === S.target - 1, a = 0.07 + 0.07 * (0.5 + 0.5 * Math.sin(now / 460));
+  ctx.save(); ctx.clip(rinkPath);
+  if (mp0 && mp1) { ctx.fillStyle = `rgba(255,210,63,${a.toFixed(3)})`; ctx.fill(rinkPath); }
+  else { const i = mp0 ? 0 : 1; ctx.fillStyle = `rgba(${COL[i].rgb},${(a * 1.4).toFixed(3)})`; ctx.fill(halfPaths[i]); }
+  ctx.restore();
+}
+/* goal direction: a light band sweeps from the puck toward the goal to attack */
+function drawSweeps() {
+  if (!sweeps.length) return;
+  ctx.save(); ctx.clip(rinkPath);
+  for (const s of sweeps) {
+    const q = s.t / 0.7, x = s.x + s.dir * q * Math.abs((s.dir > 0 ? RW : 0) - s.x), a = 0.4 * (1 - q);
+    const p = [proj(x, 0), proj(x - s.dir * 70, 0), proj(x - s.dir * 70, RH), proj(x, RH)];
+    ctx.beginPath(); p.forEach((v, i) => i ? ctx.lineTo(v[0], v[1]) : ctx.moveTo(v[0], v[1])); ctx.closePath();
+    ctx.fillStyle = `rgba(${s.rgb},${(a * 0.45).toFixed(3)})`; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(p[0][0], p[0][1]); ctx.lineTo(p[3][0], p[3][1]); ctx.lineWidth = 3; ctx.strokeStyle = `rgba(255,255,255,${a.toFixed(3)})`; ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawPuck(now) {
+  const sp = Math.hypot(puck.vx, puck.vy), k = clamp(sp / BASE_SPEED, 0, 1), hot = puck.hot;
+  const sc = puck.spawn > 0 ? 1 + puck.spawn * 2.2 : 1;
+  const [px, py, kx, ky] = local(puck.x, puck.y);
+  const tr = puck.trail, rgb = puck.hitter >= 0 ? COL[puck.hitter].rgb : '255,240,77';
+  const n = hot > 0 ? Math.min(tr.length, 20) : Math.round(Math.min(tr.length, 14) * clamp(k * 1.7, 0, 1));
+  ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+  for (let i = tr.length - n; i < tr.length; i++) {
+    if (i < 1) continue;
+    const t = (i - (tr.length - n)) / n, a = proj(tr[i - 1][0], tr[i - 1][1]), b = proj(tr[i][0], tr[i][1]);
+    ctx.strokeStyle = `rgba(${rgb},${(t * 0.65).toFixed(3)})`; ctx.lineWidth = PR * 2.1 * t * kx * (1 + hot * 0.4);
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    if (k > 0.45 || hot > 0) { ctx.strokeStyle = `rgba(255,255,235,${(t * (0.5 + hot * 0.5)).toFixed(3)})`; ctx.lineWidth = PR * (0.7 + hot * 0.6) * t * kx; ctx.stroke(); }
+  }
+  const G = PR * (3.4 + k * 2 + hot * 2) * sc * kx;
+  ctx.globalAlpha = puck.spawn > 0 ? 1 - puck.spawn : 1;
+  ctx.drawImage(glowSpr.puck, px - G, py - G * ky / kx, G * 2, G * 2 * ky / kx);
+  if (k > 0.6 || hot > 0) ctx.drawImage(glowSpr.white, px - G * 0.6, py - G * 0.6 * ky / kx, G * 1.2, G * 1.2 * ky / kx);
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.beginPath(); ctx.ellipse(px + 3, py + 6 * ky, PR * kx * sc, PR * ky * sc, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,10,.35)'; ctx.fill(); // shadow on the plane
+  ctx.beginPath(); ctx.ellipse(px, py, PR * kx * sc, PR * ky * sc, 0, 0, Math.PI * 2); ctx.fillStyle = '#FFFFFF'; ctx.fill();
+  ctx.lineWidth = 5 * (1 - hot * 0.5); ctx.strokeStyle = hot > 0.3 ? '#FFFFFF' : PUCK_HEX; ctx.stroke();
+  ctx.globalAlpha = 1;
+  if (hot > 0 && sp > 60) { // speed readout trailing the shot
+    const bx = px - puck.vx / sp * 58 * kx, by = py - puck.vy / sp * 58 * ky - 16;
+    ctx.globalAlpha = Math.min(1, hot * 1.6); ctx.font = `900 ${Math.round(20 * kx / BASE_K)}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.strokeStyle = `rgba(${rgb},.55)`; ctx.strokeText(puck.hotKmh + ' KM/H', bx, by);
+    ctx.fillStyle = '#FFFFFF'; ctx.fillText(puck.hotKmh + ' KM/H', bx, by); ctx.globalAlpha = 1;
+  }
+  if (puck.spawn > 0) { ellipseAt(puck.x, puck.y, PR + (1 - puck.spawn) * 80); ctx.strokeStyle = `rgba(255,240,77,${puck.spawn.toFixed(3)})`; ctx.lineWidth = 4; ctx.stroke(); }
+  if (puck.hold > 0 && puck.active && S.state === 'play') { ellipseAt(puck.x, puck.y, PR + 10 + 6 * Math.sin(now / 90)); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; ctx.stroke(); }
+}
+function drawPaddle(p) {
+  const sp = padSpr[p.i], [sx, sy, kx, ky] = local(p.x, p.y), sc = 1 + p.pulse * 0.28, w = sp.plane * kx * sc, h = sp.plane * ky * sc;
+  ctx.beginPath(); ctx.ellipse(sx + 4, sy + 9 * ky, MR * kx, MR * ky, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,10,.35)'; ctx.fill();
+  ctx.drawImage(sp.c, sx - w / 2, sy - h / 2, w, h);
+}
+function drawFloaters() {
+  for (const f of floaters) {
+    const q = f.t / f.ttl, a = 1 - q * q, sc = f.t < 0.14 ? 1 + (0.14 - f.t) * 5 : 1, [x, y, kx] = local(f.x, f.y);
+    ctx.save(); ctx.translate(x, y - f.t * 30); ctx.scale(sc, sc); ctx.globalAlpha = a;
+    ctx.font = `900 ${Math.round(f.size * kx / BASE_K)}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round'; ctx.lineWidth = 12; ctx.strokeStyle = `rgba(${f.rgb},.35)`; ctx.strokeText(f.text, 0, 0);
+    ctx.lineWidth = 5; ctx.strokeStyle = `rgba(${f.rgb},1)`; ctx.strokeText(f.text, 0, 0);
+    ctx.fillStyle = '#FFFFFF'; ctx.fillText(f.text, 0, 0); ctx.restore();
+  }
+}
+function drawRematch() {
+  for (let i = 0; i < 2; i++) {
+    const cx = i ? RW * 0.8 : RW * 0.2, cy = RH * 0.84, p = players[i], inside = Math.hypot(p.x - cx, p.y - cy) < 34;
+    ellipseAt(cx, cy, 52); ctx.setLineDash([8, 10]); ctx.lineWidth = 3; ctx.strokeStyle = `rgba(${COL[i].rgb},${inside ? 1 : 0.6})`; ctx.stroke(); ctx.setLineDash([]);
+    if (S.rematch > 0 && inside) { const [x, y, kx, ky] = local(cx, cy); ctx.beginPath(); ctx.ellipse(x, y, 52 * kx, 52 * ky, 0, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(S.rematch / 1.2, 0, 1)); ctx.lineWidth = 8; ctx.strokeStyle = PUCK_HEX; ctx.stroke(); }
+  }
+}
+function drawDropouts(now) {
+  if (S.kbOnly || !S.camOn || !['play', 'countdown', 'goal'].includes(S.state)) return;
+  for (const p of players) {
+    if (visible(p, now) || kbActive(p, now)) continue;
+    const [x, y] = proj(p.i ? RW * 0.75 : RW * 0.25, RH * 0.3), a = 0.65 + 0.35 * Math.sin(now / 160);
+    ctx.textAlign = 'center'; ctx.fillStyle = `rgba(${COL[p.i].rgb},${a.toFixed(3)})`;
+    ctx.font = '900 44px ' + FONT; ctx.fillText('¿DÓNDE ESTÁS?', x, y);
+    ctx.fillStyle = 'rgba(247,246,255,.9)'; ctx.font = '800 22px ' + FONT; ctx.fillText(S.names[p.i] + ', vuelve a la cámara', x, y + 34);
+  }
+}
+/* calibration: the circle IS the paddle's home spot on screen; the nose has to physically go there */
+function targetScreen(i) { const [x, y, kx] = local(HOME[i][0], HOME[i][1]); return [x, y, MR * kx * 1.1]; }
+function noseIn(p, now) { const [x, y, R] = targetScreen(p.i), n = noseScreen(p, now); return Math.hypot(n[0] - x, n[1] - y) < R; }
+function drawTargets(now) {
+  for (const p of players) {
+    const [x, y, R] = targetScreen(p.i), col = COL[p.i], since = (now - p.lockFx) / 1000;
+    if (p.locked || p.kbLast > S.calibStart) continue;
+    const pulse = 1 + 0.06 * Math.sin(now / 150);
+    ctx.beginPath(); ctx.arc(x, y, R * pulse, 0, Math.PI * 2); ctx.fillStyle = 'rgba(5,6,26,.35)'; ctx.fill();
+    ctx.lineWidth = 4; ctx.strokeStyle = col.hex; ctx.stroke();
+    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.setLineDash([5, 7]);
+    ctx.beginPath(); ctx.moveTo(x - R * 0.45, y); ctx.lineTo(x + R * 0.45, y); ctx.moveTo(x, y - R * 0.45); ctx.lineTo(x, y + R * 0.45); ctx.stroke(); ctx.setLineDash([]);
+    if (p.fill > 0) { ctx.beginPath(); ctx.arc(x, y, R + 9, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * p.fill); ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.strokeStyle = PUCK_HEX; ctx.stroke(); ctx.lineCap = 'butt'; }
+    ctx.font = `900 ${Math.round(clamp(R * 0.42, 13, 22))}px ${FONT}`; ctx.textAlign = 'center'; ctx.fillStyle = col.light; ctx.textBaseline = 'top'; ctx.fillText('NARIZ AQUÍ', x, y + R + 18); ctx.textBaseline = 'alphabetic';
+    if (p.sm && visible(p, now) && !noseIn(p, now)) { // where your nose is → where it has to go
+      const [nx, ny] = noseScreen(p, now); ctx.setLineDash([4, 8]); ctx.lineWidth = 3; ctx.strokeStyle = `rgba(${col.rgb},.85)`;
+      ctx.beginPath(); ctx.moveTo(nx, ny); ctx.lineTo(x, y); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+}
+function drawNoses(now) {
+  for (const p of players) {
+    if (!p.sm || !visible(p, now) || (kbActive(p, now) && p.kbLast > 0)) continue;
+    const [x, y] = noseScreen(p, now), col = COL[p.i], since = (now - p.lockFx) / 1000;
+    if (p.locked && since < 0.8) { // lock: a ring bursts out of the nose, the paddle is born there
+      const q = since / 0.8; ctx.beginPath(); ctx.arc(x, y, 20 + q * 120, 0, Math.PI * 2); ctx.lineWidth = 8 * (1 - q) + 1; ctx.strokeStyle = `rgba(255,255,255,${(1 - q).toFixed(3)})`; ctx.stroke();
+    }
+    if (p.locked && p.clampD > 6 && !['victory', 'replay'].includes(S.state)) { // tether: why the paddle isn't on the nose right now
+      const [px, py] = proj(p.x, p.y); ctx.lineWidth = 2; ctx.strokeStyle = `rgba(${col.rgb},.7)`;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(px, py); ctx.stroke();
+    }
+    const locked = p.locked && S.state !== 'calib';
+    const R = locked ? 9 : 16 * (1 + 0.1 * Math.sin(now / 180));
+    ctx.globalCompositeOperation = 'lighter'; ctx.drawImage(glowSpr['p' + p.i], x - 28, y - 28, 56, 56); ctx.globalCompositeOperation = 'source-over';
+    ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.lineWidth = 3; ctx.strokeStyle = locked ? '#FFFFFF' : col.hex; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI * 2); ctx.fillStyle = '#FFFFFF'; ctx.fill();
+    if (!locked || S.state === 'countdown') {
+      const label = S.names[p.i]; ctx.font = '900 15px ' + FONT; const tw = ctx.measureText(label).width + 16, ly = y - (locked ? 72 : 52);
+      ctx.fillStyle = col.hex; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - tw / 2, ly, tw, 22, 6) : ctx.rect(x - tw / 2, ly, tw, 22); ctx.fill();
+      ctx.fillStyle = '#12102a'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillText(label, x, ly + 16.5);
+    }
+  }
+}
+function drawConfetti() {
+  if (!confetti.length) return;
+  for (const c of confetti) {
+    const cs = Math.cos(c.r), sn = Math.sin(c.r);
+    ctx.setTransform(cs * DPR, sn * DPR, -sn * DPR, cs * DPR, c.x * DPR, c.y * DPR);
+    ctx.fillStyle = c.c; ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h * Math.abs(Math.sin(c.life * 4 + c.r)) + 1);
+  }
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+const dbgEl = $('#fo-debug'); let dbgT = 0; // (never name a global "dbg": MediaPipe's wasm calls window.dbg as its logger)
+function drawDebug(now) {
+  for (const p of players) {
+    if (!p.raw || !visible(p, now)) continue;
+    const [rx, ry] = videoToScreen(p.raw.u, p.raw.v); ctx.fillStyle = '#fff'; ctx.fillRect(rx - 2, ry - 2, 4, 4);
+  }
+  if (now - dbgT > 250) {
+    dbgT = now;
+    dbgEl.textContent = `FPS render   ${S.fps.toFixed(0)}\ntracker      ${T.kind === 'lm' ? 'FaceLandmarker' : T.kind === 'det' ? 'FaceDetector' : '-'} · ${T.delegate || '-'} · ${T.src || '-'}\ndetección    ${T.ms.toFixed(1)} ms · ${T.hz} Hz · entrada ${T.small ? T.small.width + 'x' + T.small.height : (video.videoWidth + 'x' + video.videoHeight)}\ncaras        ${T.faces}\nestado       ${S.state}  vel+${S.speedLvl}\n` +
+      players.map(p => `P${p.i + 1} ${p.locked ? 'LOCK' : 'fill ' + p.fill.toFixed(2)}  paleta–nariz ${p.err >= 0 ? p.err.toFixed(1) + ' px' : '-'}${p.clampD > 6 ? ' (fuera de su mitad)' : ''}`).join('\n');
+  }
+}
+
+/* =====================================================================
+   GAME FLOW
+   ===================================================================== */
+const screens = ['s-title', 's-faces', 's-calib', 's-pause', 's-win', 's-error'];
+function show(id) { screens.forEach(s => { $('#' + s).hidden = s !== id; }); }
+function setState(st) { S.state = st; S.stateT = 0; }
+function hud(on) { hudEl.hidden = !on; }
+function big(html, cls, dur, color, color2) {
+  const el = document.createElement('div'); el.className = 'big ' + cls; el.innerHTML = html;
+  el.style.setProperty('--life', dur / 1000 + 's');
+  if (color) el.style.setProperty('--c', color); if (color2) el.style.setProperty('--c2', color2);
+  $('#big').appendChild(el); setTimeout(() => el.remove(), dur); return el;
+}
+function clearBig() { $('#big').innerHTML = ''; }
+function flash(color) { const f = $('#flash'); f.style.background = color; f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+function popEl(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function setHeart() { const mp = S.score.some(s => s === S.target - 1); S.heart = mp && ['play', 'goal', 'countdown'].includes(S.state); }
+
+function goTitle() { musicStop(); setState('title'); show('s-title'); hud(false); clearBig(); confetti.length = 0; setHeart(); }
+async function goFaces(kb) {
+  audioInit(); musicStop(); setState('faces'); show('s-faces'); hud(false); clearBig(); confetti.length = 0; puck.visible = false; $('#replayTag').hidden = true;
+  S.kbOnly = !!kb; setHeart();
+  players.forEach(p => { p.locked = false; p.slotMode = ''; });
+  $('#bGo').textContent = S.kbOnly ? '¡A JUGAR!' : '¡A CALIBRAR!';
+  $('#bKb').textContent = S.kbOnly ? 'Usar la cámara' : 'Jugar sin cámara (teclado)';
+  $('#facesSub').textContent = S.kbOnly ? 'Modo teclado: escriban sus nombres.' : 'Siéntense lado a lado, a 1 metro de la cámara, con la cara de frente.';
+  setTimeout(() => { if (S.state === 'faces') $('#bGo').focus({ preventScroll: true }); }, 60);
+  if (S.kbOnly) return;
+  slotMsg = LOADER + 'CÁMARA…';
+  try { await openCamera(); }
+  catch (e) { if (S.state === 'faces') showError(e.name || 'Error'); return; }
+  if (!T.tracker) {
+    slotMsg = LOADER + 'CARGANDO…';
+    try { await ensureVision(); }
+    catch (e) { console.error(e); if (S.state === 'faces') showError('VisionError'); return; }
+  }
+  slotMsg = null;
+}
+let slotMsg = null;
+function updateFaces(now) {
+  players.forEach((p, i) => {
+    const c = $('#fc' + (i + 1)), stEl = $('#fs' + (i + 1)), slot = $('#slot' + (i + 1));
+    let mode, txt;
+    if (S.kbOnly) { mode = 'kb:' + nameOf(i); txt = 'TECLADO'; }
+    else if (slotMsg) { mode = 'msg'; txt = slotMsg; }
+    else if (visible(p, now) && p.bbS && S.camOn) { mode = 'live'; txt = '¡TE VEO!'; }
+    else { mode = 'search'; txt = 'BUSCANDO…'; }
+    if (mode === 'live') drawCrop(p, c);
+    else if (mode !== p.slotMode) { if (S.kbOnly) drawInitial(c, i, nameOf(i)); else drawSearching(c, i); }
+    if (mode !== p.slotMode) { p.slotMode = mode; stEl.innerHTML = txt; slot.classList.toggle('live', mode === 'live'); }
+  });
+}
+function readSetup() {
+  S.names = [nameOf(0), nameOf(1)];
+  $('#n1').textContent = $('#cn1').textContent = S.names[0];
+  $('#n2').textContent = $('#cn2').textContent = S.names[1];
+  $('#tgt').textContent = 'A ' + S.target + ' GOLES';
+}
+function submitFaces() {
+  audioInit(); sfx.click(); readSetup();
+  const now = performance.now();
+  players.forEach((p, i) => { const live = !S.kbOnly && S.camOn && p.bbS && now - p.lastSeen < 1200; makeAvatar(i, live ? $('#fc' + (i + 1)) : null); });
+  startCalib({});
+}
+function resetMatch() {
+  S.score = [0, 0]; S.maxShot = [0, 0]; S.ownGoals = [0, 0]; S.streak = { who: -1, n: 0 }; S.speedLvl = 0; S.playTotal = 0;
+  S.rec = []; S.recT = 0; S.goalRec = null; S.mpKey = ''; S.winner = -1; $('#fire1').hidden = $('#fire2').hidden = true;
+  updateScoreHud(false); setHeart();
+}
+/* opts: resume (keep score), keep (keep existing locks) */
+function startCalib(opts) {
+  musicStop(); setState('calib'); show('s-calib'); hud(false); clearBig(); confetti.length = 0; $('#replayTag').hidden = true;
+  S.calibT = 0; S.calibOkT = 0; S.resume = !!opts.resume; S.calibStart = performance.now();
+  if (!opts.resume) resetMatch();
+  players.forEach(p => { if (!opts.keep) p.locked = false; p.fill = 0; p.tick = 0; });
+  if (!opts.resume) { puck.visible = false; puck.active = false; }
+  sparkPool.length = 0; S.timeScale = 1; S.slowT = 0; S.slowVis = 0;
+  $('#calibTitle').innerHTML = S.kbOnly ? 'MUEVAN SU <span>PALETA</span>' : 'PON LA <span>NARIZ</span> EN EL CÍRCULO';
+  $('#calibSub').textContent = S.kbOnly ? 'Cada jugador toca sus teclas para estar listo.' : 'Muévete hasta que tu nariz quede dentro del círculo de tu color y quédate quieto.';
+  $('#calibFoot').hidden = S.kbOnly;
+  ['#cc1', '#cc2'].forEach(k => { $(k)._ok = null; $(k)._st = null; $(k)._st2 = null; });
+}
+function lockPlayer(p, now) {
+  p.locked = true; p.lockFx = now; p.pulse = 1; p.fill = 1;
+  sfx.lock();
+  if (!AV[p.i] || !AV[p.i].live) { const c = document.createElement('canvas'); c.width = c.height = 240; if (drawCrop(p, c)) makeAvatar(p.i, c); }
+}
+function updateCalib(dt, now) {
+  S.calibT += dt;
+  let allOk = true;
+  players.forEach((p, i) => {
+    const n = i + 1, kbUsed = p.kbLast > S.calibStart; let st, st2, ok = false;
+    if (S.kbOnly) { ok = kbUsed; st = ok ? '✓ ¡LISTO!' : 'MUEVE TU PALETA'; st2 = i ? 'Teclas ↑ ← ↓ →' : 'Teclas W A S D'; }
+    else if (kbUsed && kbActive(p, now)) { ok = true; st = '✓ ¡LISTO! · TECLADO'; st2 = 'Suelta las teclas para volver a la nariz.'; }
+    else if (!T.tracker || !S.camOn) { st = LOADER + 'CARGANDO VISIÓN…'; st2 = ''; }
+    else if (p.locked) {
+      if (visible(p, now)) { ok = true; st = '✓ ¡LISTO!'; st2 = 'Tu paleta está en tu nariz. Muévete.'; }
+      else { st = '¿DÓNDE ESTÁS?'; st2 = 'Vuelve frente a la cámara.'; }
+    } else if (!visible(p, now) || !p.sm) {
+      p.fill = Math.max(0, p.fill - dt * 1.2); st = 'BUSCANDO A ' + esc(S.names[i]) + '…'; st2 = 'Siéntate en la mitad ' + COL[i].side + ' de la cámara.';
+    } else {
+      const inside = noseIn(p, now);
+      p.fill = inside ? Math.min(1, p.fill + dt / 1.0) : Math.max(0, p.fill - dt * 0.9);
+      const step = Math.floor(p.fill * 8); if (step > p.tick) sfx.tick(step); p.tick = step;
+      st = inside ? 'ASÍ… ¡NO TE MUEVAS!' : 'NARIZ AL CÍRCULO';
+      st2 = inside ? 'Confirmando…' : 'Sigue la línea punteada con tu nariz.';
+      if (p.fill >= 1 && S.calibT > 0.3) { lockPlayer(p, now); ok = true; st = '✓ ¡LISTO!'; st2 = 'Tu paleta está en tu nariz. Muévete.'; }
+    }
+    const card = $('#cc' + n);
+    if (card._ok !== ok) { if (card._ok === false && ok && S.kbOnly) sfx.lock(); card._ok = ok; card.classList.toggle('ok', ok); }
+    if (card._st !== st) { card._st = st; $('#cs' + n).innerHTML = st; }
+    if (card._st2 !== st2) { card._st2 = st2; $('#cx' + n).textContent = st2; }
+    if (!ok) allOk = false;
+  });
+  $('#calibFoot').classList.toggle('loud', S.calibT > 12 && !allOk);
+  if (allOk) { S.calibOkT += dt; if (S.calibOkT > 0.8) startCountdown(S.resume); } else S.calibOkT = 0;
+}
+function startCountdown(resume) {
+  S.resume = resume; setState('countdown'); S.cdStep = -1; show(null); hud(true); musicStart(); duck(false); setHeart();
+  if (!resume) {
+    puck.x = RW / 2; puck.y = RH / 2; puck.vx = puck.vy = 0; puck.visible = true; puck.active = false; puck.trail = []; puck.hitter = -1; puck.spawn = 1; puck.hold = 0;
+  }
+}
+function updateCountdown(dt, now) {
+  const step = Math.floor(S.stateT / (S.resume ? 0.55 : 0.75));
+  if (step !== S.cdStep) {
+    S.cdStep = step;
+    if (step < 3) { big(`<span class="ttl">${3 - step}</span>`, 'count', 800, PUCK_HEX); sfx.slam(step); }
+    else {
+      big(`<span class="ttl">${S.resume ? '¡SIGUE!' : 'GO!'}</span>`, 'count', 800, PUCK_HEX); sfx.go(); flash('rgba(255,255,255,.8)');
+      setState('play');
+      if (!S.resume) { S.playT = 0; const d = Math.random() < 0.5 ? -1 : 1; puck.vx = d * 210; puck.vy = (Math.random() - 0.5) * 140; sweep(RW / 2, 1, COL[0].rgb); sweep(RW / 2, -1, COL[1].rgb); }
+      puck.active = true;
+    }
+  }
+  if (!S.kbOnly && S.camOn) for (const p of players) if (!kbActive(p, now) && now - p.lastSeen > 1500) { startCalib({ resume: S.resume, keep: true }); return; }
+}
+function updateScoreHud(popIdx) {
+  $('#sc1').textContent = S.score[0]; $('#sc2').textContent = S.score[1];
+  if (popIdx !== false && popIdx !== undefined) popEl($('#sc' + (popIdx + 1)), 'flip');
+  $('#mp1').hidden = !(S.score[0] === S.target - 1); $('#mp2').hidden = !(S.score[1] === S.target - 1);
+}
+/* own goal: a "+1" leaves the culprit's digit and lands on the rival's */
+function transferPoint(from, to) {
+  const a = $('#sc' + (from + 1)).getBoundingClientRect(), b = $('#sc' + (to + 1)).getBoundingClientRect();
+  const el = document.createElement('div'); el.className = 'xfer'; el.textContent = '+1'; el.style.setProperty('--c', COL[to].hex);
+  el.style.left = (a.left + a.width / 2) + 'px'; el.style.top = (a.top + a.height / 2) + 'px'; document.body.appendChild(el);
+  const anim = el.animate([{ transform: 'translate(-50%,-50%) scale(.6)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(1.2)', opacity: 1, offset: 0.25 },
+    { transform: `translate(calc(-50% + ${b.left - a.left}px),-50%) scale(1)`, opacity: 1 }], { duration: 750, delay: 350, easing: 'cubic-bezier(.16,.84,.3,1)', fill: 'both' });
+  anim.onfinish = () => { el.remove(); updateScoreHud(to); };
+}
+/* side = goal the puck entered (0 = left/P1's goal, 1 = right/P2's) */
+function goal(side) {
+  const scorer = 1 - side, own = puck.hitter === side && !puck.deflect;
+  puck.active = false; puck.visible = false; puck.near = -1; puck.hot = 0; S.timeScale = 1; S.slowT = 0; S.slowCool = 1.5;
+  S.score[scorer]++; S.lastGoalBy = scorer; S.lastOwn = own; S.lastGoalSide = side;
+  if (own) { S.ownGoals[side]++; S.streak = { who: -1, n: 0 }; }
+  else if (S.streak.who === scorer) S.streak.n++; else S.streak = { who: scorer, n: 1 };
+  [0, 1].forEach(i => { const f = $('#fire' + (i + 1)); f.hidden = !(S.streak.who === i && S.streak.n >= 2); f.textContent = 'EN RACHA ×' + S.streak.n; f.style.setProperty('--c', PUCK_HEX); });
+  $('#mp1').style.setProperty('--c', COL[0].hex); $('#mp2').style.setProperty('--c', COL[1].hex);
+  S.goalRec = S.rec.slice(); S.rec = [];
+  setState('goal'); S.hitStop = 0.14;
+  const col = COL[scorer], gx = side ? RW : 0, gy = clamp(puck.y, GT, GB);
+  flash(own ? 'rgba(255,255,255,.55)' : `rgba(${col.rgb},.8)`); S.shake = own ? 12 : 26;
+  sparks(gx, gy, col.rgb, 90, 0, 0, 950); sparks(gx, gy, '255,255,255', 40, 0, 0, 750);
+  rings.push({ x: gx, y: gy, t: 0, ttl: 0.7, r0: 20, r1: 820, rgb: own ? '255,255,255' : col.rgb, w: 18 }, { x: gx, y: gy, t: -0.12, ttl: 0.7, r0: 20, r1: 700, rgb: '255,255,255', w: 10 });
+  duck(true);
+  if (own) {
+    $('#sc' + (scorer + 1)).textContent = S.score[scorer] - 1; transferPoint(side, scorer);
+    big(`<div class="gface"><img class="s" alt="" src="${faceImg(side, true)}"><img class="c" alt="" src="${faceImg(side)}"></div><span class="ttl" style="font-size:${Math.min(W * 0.12, H * 0.2).toFixed(0)}px">AUTOGOL</span><span class="s">DE ${esc(S.names[side])} · PUNTO PARA <b>${esc(S.names[scorer])}</b></span>`, 'owng', 2450, COL[side].hex, col.hex);
+    sfx.own();
+  } else {
+    updateScoreHud(scorer);
+    const txt = '¡GOOOL DE ' + S.names[scorer] + '!', fs = Math.min(W * 0.11, H * 0.17, W * 0.94 / (txt.length * 0.74));
+    const st = S.streak.who === scorer && S.streak.n >= 2 ? `<span class="ttl streak">EN RACHA ×${S.streak.n}</span>` : '';
+    big(`<div class="gface"><img alt="" src="${faceImg(scorer)}"></div><span class="ttl" style="font-size:${fs.toFixed(0)}px">${esc(txt)}</span>${st}`, 'goalx', 2450, col.hex);
+    sfx.goal();
+  }
+  setHeart();
+}
+function updateGoal(dt, now) {
+  const scorer = S.lastGoalBy, win = S.score[scorer] >= S.target;
+  if (S.stateT < (win ? 1.9 : 2.45)) return;
+  if (win) return startReplay();
+  const other = S.lastGoalSide; // the player who conceded restarts with the puck
+  puck.x = other === 0 ? RW * 0.3 : RW * 0.7; puck.y = RH / 2; puck.vx = puck.vy = 0; puck.trail = []; puck.hitter = -1;
+  puck.visible = true; puck.active = true; puck.spawn = 1; puck.hold = 0.6; puck.near = -1; puck.deflect = false; sfx.spawn();
+  sweep(puck.x, other === 0 ? 1 : -1, COL[other].rgb);
+  setState('play'); duck(false);
+  const mp0 = S.score[0] === S.target - 1, mp1 = S.score[1] === S.target - 1, key = (mp0 ? 'a' : '') + (mp1 ? 'b' : '');
+  if (key && key !== S.mpKey) {
+    puck.hold = 1.6;
+    if (mp0 && mp1) big(`<div class="faces2"><div class="gface"><img alt="" src="${faceImg(0)}"></div><div class="gface"><img alt="" src="${faceImg(1)}"></div></div><div class="col"><span class="ttl">GOL DE ORO</span><span class="s">EL PRÓXIMO GOL GANA</span></div>`, 'mpx gold', 2300, '#FFD23F');
+    else { const l = mp0 ? 0 : 1; big(`<div class="gface"><img alt="" src="${faceImg(l)}"></div><div class="col"><span class="ttl">MATCH POINT</span><span class="s">A <b>${esc(S.names[l])}</b> LE FALTA 1 GOL</span></div>`, l ? 'mpx r' : 'mpx', 2300, COL[l].hex); }
+    sfx.mp();
+  }
+  S.mpKey = key; setHeart();
+}
+function updatePlay(dt, now) {
+  S.playT += dt; S.playTotal += dt;
+  const lvl = Math.min(5, Math.floor(S.playTotal / 18));
+  if (lvl > S.speedLvl) { S.speedLvl = lvl; big(`<span class="ttl">DISCO MÁS RÁPIDO</span>`, 'micro', 1500, PUCK_HEX); sfx.up(); }
+  if (S.kbOnly || !S.camOn) return;
+  for (const p of players) {
+    if (!kbActive(p, now) && now - p.lastSeen > 1500) {
+      setState('paused'); S.pausedWho = p.i; S.visibleT = 0; musicStop(); S.timeScale = 1; S.slowT = 0;
+      showPause(p.i); return;
+    }
+  }
+}
+function showPause(i) {
+  $('#pauseWho').textContent = S.names[i]; $('#s-pause').style.setProperty('--c', COL[i].hex); $('#pauseAv').src = faceImg(i); show('s-pause');
+}
+function updatePaused(dt, now) {
+  const miss = players.find(p => !(kbActive(p, now) || visible(p, now)));
+  S.visibleT = miss ? 0 : S.visibleT + dt;
+  if (S.visibleT > 0.7) { show(null); startCountdown(true); return; }
+  if (miss) {
+    if (miss.i !== S.pausedWho) { S.pausedWho = miss.i; showPause(miss.i); }
+    if (now - miss.lastSeen > 4500) { miss.locked = false; startCalib({ resume: true, keep: true }); }
+  }
+}
+function startReplay() {
+  const fr = S.goalRec;
+  if (!fr || fr.length < 8 || REDUCED) return victory(S.lastGoalBy);
+  setState('replay'); clearBig(); hud(true); setHeart(); $('#replayTag').hidden = false; sfx.rewind(); duck(true);
+  S.rp = { fr, i: 0, t: 0, t0: fr[0].t, endT: 0 };
+  puck.trail = []; puck.visible = true; puck.spawn = 0;
+}
+function updateReplay(dt) {
+  const rp = S.rp; rp.t += dt * 0.42; const tt = rp.t0 + rp.t;
+  while (rp.i < rp.fr.length - 1 && rp.fr[rp.i + 1].t <= tt) rp.i++;
+  const f = rp.fr[rp.i], pf = rp.fr[Math.max(0, rp.i - 1)], d = Math.max(1e-3, f.t - pf.t);
+  puck.x = f.x; puck.y = f.y; puck.vx = (f.x - pf.x) / d; puck.vy = (f.y - pf.y) / d; puck.hitter = f.h;
+  players[0].x = f.a; players[0].y = f.b; players[1].x = f.c; players[1].y = f.d;
+  if (rp.i >= rp.fr.length - 1) {
+    if (rp.endT === 0) { const gx = S.lastGoalSide ? RW : 0; sparks(gx, clamp(f.y, GT, GB), COL[S.lastGoalBy].rgb, 60, 0, 0, 800); rings.push({ x: gx, y: RH / 2, t: 0, ttl: 0.7, r0: 20, r1: 820, rgb: COL[S.lastGoalBy].rgb, w: 16 }); flash(`rgba(${COL[S.lastGoalBy].rgb},.5)`); S.shake = 14; sfx.roar(1.2); }
+    rp.endT += dt; if (rp.endT > 0.75) endReplay();
+  }
+}
+function endReplay() { if (S.state !== 'replay') return; $('#replayTag').hidden = true; players.forEach(p => { p.prevX = p.x; p.prevY = p.y; }); victory(S.lastGoalBy); }
+function victory(w) {
+  setState('victory'); S.winner = w; S.rematch = 0; puck.visible = false; puck.active = false; musicStop(); setHeart(); duck(false);
+  const l = 1 - w, col = COL[w], card = $('#wincard');
+  card.style.setProperty('--c', col.hex);
+  $('#mp1').hidden = $('#mp2').hidden = true;
+  $('#wName').textContent = S.names[w]; $('#wS1').textContent = S.score[0]; $('#wS2').textContent = S.score[1];
+  $('#wImg').src = faceImg(w); $('#lImg').src = faceImg(l, true); $('#lName').textContent = S.names[l] + ' · ¡LA PRÓXIMA!';
+  const best = S.maxShot[0] >= S.maxShot[1] ? 0 : 1, k = kmh(S.maxShot[best]);
+  const og = [0, 1].filter(i => S.ownGoals[i]).map(i => esc(S.names[i]) + ' ' + S.ownGoals[i]).join(', ');
+  $('#wStat').innerHTML = `GOLES <b>${S.score[0]}–${S.score[1]}</b> · TIRO MÁS RÁPIDO <b>${k > 0 ? esc(S.names[best]) + ' ' + k + ' KM/H' : '—'}</b> · AUTOGOLES <b>${og || 'NINGUNO'}</b>`;
+  show('s-win'); card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
+  spawnConfetti(col.hex, col.light); sfx.win(); flash(`rgba(${col.rgb},.6)`);
+  setTimeout(() => { if (S.state === 'victory') $('#bAgain').focus({ preventScroll: true }); }, 60);
+}
+function updateVictory(dt) {
+  if (S.stateT < 1.2) return;
+  const inside = players.every((p, i) => Math.hypot(p.x - (i ? RW * 0.8 : RW * 0.2), p.y - RH * 0.84) < 34);
+  S.rematch = inside ? S.rematch + dt : Math.max(0, S.rematch - dt * 2);
+  if (S.rematch > 1.2) rematch(false);
+}
+function rematch(recal) {
+  if (S.state !== 'victory') return;
+  audioInit(); confetti.length = 0; sfx.click();
+  const now = performance.now();
+  if (S.kbOnly) { resetMatch(); startCountdown(false); return; }
+  if (recal) { startCalib({}); return; }
+  if (players.every(p => p.locked && visible(p, now))) { resetMatch(); startCountdown(false); }
+  else startCalib({ keep: true });
+}
+function showError(kind) {
+  setState('error'); show('s-error'); hud(false);
+  const E = {
+    NotAllowedError: ['PERMISO', 'NECESITAMOS TU CÁMARA', '<ol><li>Haz clic en el ícono de <b>cámara</b> o del <b>candado</b> en la barra de direcciones.</li><li>Elige <b>Permitir</b> para la cámara.</li><li>Pulsa <b>REINTENTAR</b> (o recarga la página).</li></ol>'],
+    NotFoundError: ['CÁMARA', 'NO ENCONTRAMOS UNA CÁMARA', '<p>Conecta una webcam y pulsa <b>REINTENTAR</b>. También pueden jugar con el teclado.</p>'],
+    NotReadableError: ['CÁMARA OCUPADA', 'OTRA APP ESTÁ USANDO LA CÁMARA', '<p>Cierra Zoom, Meet, Teams u otras pestañas que usen la cámara y pulsa <b>REINTENTAR</b>.</p>'],
+    InsecureError: ['CONEXIÓN', 'ABRE EL JUEGO CON HTTPS', '<p>El navegador solo permite la cámara en páginas <b>https://</b>, en <b>localhost</b> o abriendo el archivo directamente. Abre el enlace https del juego o el archivo en Chrome/Edge.</p>'],
+    VisionError: ['RECONOCIMIENTO FACIAL', 'NO SE PUDO CARGAR EL DETECTOR', '<p>El detector de caras se descarga de internet la primera vez. Revisa la conexión (o si la red bloquea <b>cdn.jsdelivr.net</b>) y pulsa <b>REINTENTAR</b>. Mientras tanto, pueden jugar con el teclado.</p>']
+  };
+  const e = E[kind] || (kind === 'OverconstrainedError' ? E.NotFoundError : ['CÁMARA', 'NO PUDIMOS ENCENDER LA CÁMARA', '<p>Pulsa <b>REINTENTAR</b>. Si sigue fallando, prueba en Chrome o Edge, o jueguen con el teclado.</p>']);
+  $('#errEye').textContent = e[0]; $('#errTitle').textContent = e[1]; $('#errBody').innerHTML = e[2];
+  setTimeout(() => $('#bRetry').focus({ preventScroll: true }), 50);
+}
+
+/* =====================================================================
+   MAIN LOOP
+   ===================================================================== */
+const ERR = []; // paddle–nose screen error samples (px), for ?debug and tests
+function updatePaddles(dt, now) {
+  for (const p of players) {
+    let tx = p.tx, ty = p.ty, direct = false, nose = null;
+    if (kbActive(p, now) && p.kbLast > 0) { tx = p.kbx; ty = p.kby; }
+    else if (!S.kbOnly && S.camOn && p.locked && p.sm && now - p.lastSeen < 1500) {
+      nose = noseScreen(p, now); const q = unproj(nose[0], nose[1]); tx = q[0]; ty = q[1]; direct = true; p.kbx = p.x; p.kby = p.y;
+    } else { if (!p.locked && !S.kbOnly) { tx = HOME[p.i][0]; ty = HOME[p.i][1]; } p.kbx = p.x; p.kby = p.y; }
+    const c = clampHalf(p.i, tx, ty, MR); p.tx = c[0]; p.ty = c[1];
+    p.prevX = p.x; p.prevY = p.y;
+    if (direct) { p.x = p.tx; p.y = p.ty; } // the paddle IS the nose: no extra easing
+    else { const a = 1 - Math.exp(-dt * 38); p.x += (p.tx - p.x) * a; p.y += (p.ty - p.y) * a; }
+    if (nose) {
+      const s = proj(p.x, p.y); p.clampD = Math.hypot(s[0] - nose[0], s[1] - nose[1]);
+      if (p.clampD < 1 && p.raw) { const r = videoToScreen(p.raw.u, p.raw.v); p.err = Math.hypot(s[0] - r[0], s[1] - r[1]); if (S.state === 'play') { ERR.push(p.err); if (ERR.length > 20000) ERR.shift(); } }
+    } else p.clampD = 0;
+    const ivx = (p.x - p.prevX) / dt, ivy = (p.y - p.prevY) / dt;
+    p.vx += (ivx - p.vx) * 0.6; p.vy += (ivy - p.vy) * 0.6;
+    const ms = Math.hypot(p.vx, p.vy); if (ms > 2600) { p.vx *= 2600 / ms; p.vy *= 2600 / ms; }
+    p.pulse = Math.max(0, p.pulse - dt * 3.5);
+  }
+}
+let last = performance.now(), fpsN = 0, fpsT = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  let dt = (now - last) / 1000; last = now; if (dt > 0.05) dt = 0.05; if (dt <= 0) dt = 0.001;
+  fpsN++; fpsT += dt; if (fpsT >= 1) { S.fps = fpsN / fpsT; fpsN = 0; fpsT = 0; T.hz = T.hzN; T.hzN = 0; }
+  if (!T.rvfc && S.camOn && video.currentTime !== T.lastVT) { T.lastVT = video.currentTime; runDetect(now); }
+  if (S.state === 'faces') updateFaces(now);
+  if (S.hitStop > 0) { S.hitStop -= dt; draw(now); return; }
+  S.stateT += dt;
+  if (S.slowT > 0) { S.slowT -= dt; if (S.slowT <= 0) { S.timeScale = 1; if (S.state === 'play') duck(false); } }
+  if (S.slowCool > 0) S.slowCool -= dt;
+  S.slowVis += ((S.timeScale < 1 ? 1 : 0) - S.slowVis) * Math.min(1, dt * 10);
+  if (inRink()) {
+    updateKeyboard(dt, now);
+    if (S.state !== 'replay') updatePaddles(dt, now);
+    switch (S.state) {
+      case 'calib': updateCalib(dt, now); break;
+      case 'countdown': updateCountdown(dt, now); break;
+      case 'play': updatePlay(dt, now); break;
+      case 'goal': updateGoal(dt, now); break;
+      case 'paused': updatePaused(dt, now); break;
+      case 'replay': updateReplay(dt); break;
+      case 'victory': updateVictory(dt); break;
+    }
+    if (S.state === 'play') {
+      physics(dt * S.timeScale);
+      if (S.state === 'play') {
+        S.recT += dt; S.rec.push({ t: S.recT, x: puck.x, y: puck.y, h: puck.hitter, a: players[0].x, b: players[0].y, c: players[1].x, d: players[1].y });
+        while (S.rec.length && S.rec[0].t < S.recT - 1.35) S.rec.shift();
+      }
+    }
+    if (puck.spawn > 0) puck.spawn = Math.max(0, puck.spawn - dt * 2.2);
+    if (puck.visible) { puck.trail.push([puck.x, puck.y]); if (puck.trail.length > 28) puck.trail.shift(); }
+  }
+  updateParticles(dt);
+  draw(now);
+}
+
+/* ---------- UI wiring ---------- */
+$('#bPlay').onclick = () => { audioInit(); sfx.click(); goFaces(false); };
+$('#facesForm').addEventListener('submit', e => { e.preventDefault(); submitFaces(); });
+$('#bKb').onclick = () => { sfx.click(); goFaces(!S.kbOnly); };
+document.querySelectorAll('.seg.goals button').forEach(b => b.onclick = () => {
+  S.target = +b.dataset.g; document.querySelectorAll('.seg.goals button').forEach(x => x.setAttribute('aria-pressed', x === b)); audioInit(); sfx.click();
+});
+$('#bAgain').onclick = () => rematch(false);
+$('#bRecal').onclick = () => rematch(true);
+$('#bChange').onclick = () => { sfx.click(); goFaces(S.kbOnly); };
+$('#bRetry').onclick = () => goFaces(false);
+$('#bErrKb').onclick = () => goFaces(true);
+$('#bErrBack').onclick = () => goTitle();
+function toggleMute() { muted = !muted; if (master) master.gain.value = muted ? 0 : 0.5; const b = $('#bMute'); b.textContent = 'SONIDO: ' + (muted ? 'NO' : 'SÍ'); b.setAttribute('aria-pressed', muted); }
+function toggleFull() { try { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => { }); else document.exitFullscreen(); } catch (e) { } }
+$('#bMute').onclick = e => { toggleMute(); e.currentTarget.blur(); };
+$('#bFull').onclick = e => { toggleFull(); e.currentTarget.blur(); };
+addEventListener('resize', resize);
+if (DEBUG) dbgEl.hidden = false;
+
+resize();
+requestAnimationFrame(frame);
+if (!params.has('nocam')) setTimeout(() => ensureVision().catch(() => { }), 300);
+window.__fo = { S, players, puck, T, AV, ERR, proj, unproj, noseScreen, videoToScreen, targetScreen }; // for automated tests / debugging
+</script>
+</body>
+</html>
