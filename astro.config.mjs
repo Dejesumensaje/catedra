@@ -14,6 +14,8 @@ export default defineConfig({
       // el salón, tableros que se proyectan— no son material publicado y no
       // van al sitemap. Llevan además `noindex` y una regla en robots.txt.
       filter: (pagina) => !pagina.includes('/bitacora'),
+      // Los demos viven en public/ como HTML estático: Astro no los ve solo.
+      customPages: ['https://catedra.dejesumensaje.com/demos/pare-o-siga/'],
     }),
   ],
 });
