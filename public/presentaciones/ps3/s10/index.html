@@ -1051,7 +1051,7 @@
       .slide--cuna svg { display: none; }
       .slide--cuna .diagram-mobile { display: flex; }
       .niveles th, .niveles td { padding: 0.45rem 0.4rem; font-size: 0.8rem; }
-      .niveles thead th:nth-child(2), .niveles tbody td:nth-of-type(1) { display: none; }
+      .niveles:not(.niveles--dos) thead th:nth-child(2), .niveles:not(.niveles--dos) tbody td:nth-of-type(1) { display: none; }
       .slide-title--larga, .slide-title--media { max-width: 100%; }
     }
   </style>
@@ -1199,7 +1199,22 @@
       <tr><th scope="row">Escenificación</th><td>el espectáculo</td><td>lo que se ve, se oye y se toca</td></tr>
     </tbody>
   </table>
-  <p class="niveles-pregunta" data-paso="1">Para conversar: ¿en qué nivel intervino la decisión de diseño en Blendie, Mimus y Playdate?</p>
+</div>
+
+<div class="slide slide--niveles" data-nav-label="Los seis niveles en PARE O SIGA">
+  <h2 class="compuesto-titulo">Los seis niveles en una partida de PARE O SIGA.</h2>
+  <table class="niveles niveles--dos">
+    <thead><tr><th scope="col">Nivel</th><th scope="col">En PARE O SIGA</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Acción</th><td>una partida: cuatro rondas en las que cada jugador decide si para o sigue, hasta la ronda final</td></tr>
+      <tr><th scope="row">Personaje</th><td>quien se retira pronto y quien se arriesga: se reconocen en cómo elige cada uno</td></tr>
+      <tr><th scope="row">Pensamiento</th><td>lo que lleva a decidir: ¿paro y aseguro lo que llevo, o sigo y arriesgo perderlo?</td></tr>
+      <tr><th scope="row">Lenguaje</th><td>los botones PARE y SIGA, el número, el candado de lo asegurado</td></tr>
+      <tr><th scope="row">Patrón</th><td>el ritmo: sacudir, esperar el resultado, repetir ronda tras ronda</td></tr>
+      <tr><th scope="row">Escenificación</th><td>lo que se ve, se oye y se toca: los dados, el ruido de la mano, la cámara</td></tr>
+    </tbody>
+  </table>
+  <p class="slide-fuente" style="text-align:center;max-width:60ch;align-self:center">Lectura del curso, no de Laurel.</p>
 </div>
 
 <div class="slide slide--visual slide--cuna" data-nav-label="Una película de misterio">
