@@ -1037,6 +1037,9 @@
     .pd-grande { grid-column: 1 / -1; width: 100%; max-height: 40vh; object-fit: cover; display: block; }
     .pd-foto { background: #f4f3ee; display: flex; align-items: center; justify-content: center; height: 100%; }
     .pd-foto img, .pd-pequena { width: 100%; max-height: 26vh; object-fit: contain; display: block; }
+
+    .visual-titulo--grande { font-size: clamp(1.5rem, 3vw, 2.6rem); max-width: 30em; line-height: 1.25; margin-bottom: 1.6rem; }
+    .slide--cuna svg { max-height: 50vh; }
     @media (max-width: 900px) {
       .caso { grid-template-columns: 1fr; gap: 1.5rem; }
       .ejemplos { grid-template-columns: 1fr; gap: 1.6rem; }
@@ -1121,12 +1124,13 @@
   </div>
 </div>
 
-<div class="slide" data-nav-label="Un puente">
-  <p class="slide-title slide-title--media">Hasta hoy habíamos hablado de la interfaz como un puente: todo lo que hacemos para comunicarle a alguien qué puede hacer y qué pasó.</p>
-  <p class="slide-title slide-title--media" data-paso="1" style="margin-top:2.2rem">Con estos dos juegos vimos que cabe más. Me gustaría que la miráramos como <span class="hl">el lugar donde ocurre una relación</span>.</p>
-</div>
+<div class="slide" data-nav-label="Un puente"><p class="slide-title slide-title--media">Hasta hoy habíamos hablado de la interfaz como un puente: todo lo que hacemos para comunicarle a alguien qué puede hacer y qué pasó.</p></div>
 
-<div class="slide slide--cita" data-nav-label="Una interfaz es un lugar"><p class="cita-texto">Una interfaz es el lugar donde ocurre una relación entre una persona y un sistema. Tiene un tiempo, un espacio, unas reglas y un pacto.</p><p class="slide-subtitle" style="max-width:48ch;margin-top:1.8rem">El pacto es lo que las dos partes aceptan para que lo que pasa tenga sentido.</p></div>
+<div class="slide"><p class="slide-title slide-title--media">Con estos dos juegos vimos que cabe más. Me gustaría que la miráramos como <span class="hl">el lugar donde ocurre una relación</span>.</p></div>
+
+<div class="slide slide--cita" data-nav-label="Una interfaz es un lugar"><p class="cita-texto">Una interfaz es el lugar donde ocurre una relación entre una persona y un sistema. Tiene un tiempo, un espacio, unas reglas y un pacto.</p></div>
+
+<div class="slide"><p class="slide-title slide-title--media">El <span class="hl">pacto</span> es lo que las dos partes aceptan para que lo que pasa tenga sentido.</p></div>
 
 <div class="slide slide--caso" data-nav-label="Blendie">
   <div class="caso">
@@ -1178,11 +1182,9 @@
   </div>
 </div>
 
-<div class="slide" data-nav-label="Laurel · la interfaz como teatro">
-  <p class="slide-title slide-title--media">Brenda Laurel propone pensar la interfaz como <span class="hl">un teatro</span>.</p>
-  <p class="slide-subtitle slide-subtitle--ancho" data-paso="1">En <em>Computers as Theatre</em> (1991) toma la Poética de Aristóteles y la aplica al diseño de interacción: usar un computador se parece más a actuar dentro de una representación que a operar una herramienta.</p>
-  <p class="slide-nota" data-paso="1">Paráfrasis del argumento del libro, no una cita.</p>
-</div>
+<div class="slide" data-nav-label="Laurel · la interfaz como teatro"><p class="slide-title slide-title--media">Brenda Laurel propone pensar la interfaz como <span class="hl">un teatro</span>.</p></div>
+
+<div class="slide"><p class="slide-title slide-title--media" style="font-size:clamp(1.5rem,3vw,2.5rem)">En <em>Computers as Theatre</em> (1991), Laurel toma la Poética de Aristóteles y la aplica al diseño de interacción: usar un computador se parece más a actuar dentro de una representación que a operar una herramienta.</p><p class="slide-fuente" style="text-align:center;max-width:60ch">Paráfrasis del argumento del libro, no una cita.</p></div>
 
 <div class="slide slide--niveles" data-nav-label="Los seis niveles">
   <h2 class="compuesto-titulo">Seis niveles, de arriba abajo. Cada uno da forma a los de abajo y es el material de los de arriba.</h2>
@@ -1200,37 +1202,69 @@
   <p class="niveles-pregunta" data-paso="1">Para conversar: ¿en qué nivel intervino la decisión de diseño en Blendie, Mimus y Playdate?</p>
 </div>
 
-<div class="slide slide--visual slide--cuna" data-nav-label="La cuña voladora">
-  <h2 class="visual-titulo">La cuña voladora vive en la acción: al inicio todo puede pasar, y cada incidente va estrechando lo que sigue.</h2>
-  <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una cuña que se estrecha de izquierda a derecha: posibilidad, probabilidad y necesidad. Al final está el cierre.">
-    <polygon points="30,20 870,115 870,135 30,230" fill="#f4f3ee" stroke="#444" stroke-width="2"/>
-    <line x1="310" y1="52" x2="310" y2="198" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="5 5"/>
-    <line x1="590" y1="84" x2="590" y2="166" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="5 5"/>
-    <g font-family="Roboto, sans-serif" font-size="17" font-weight="700" fill="#222" text-anchor="middle" letter-spacing="1.2">
-      <text x="170" y="130">POSIBILIDAD</text>
-      <text x="450" y="130">PROBABILIDAD</text>
-      <text x="725" y="130">NECESIDAD</text>
+<div class="slide slide--visual slide--cuna" data-nav-label="Una película de misterio">
+  <h2 class="visual-titulo visual-titulo--grande">Pensemos en una película de misterio. En el minuto 10 hay cuatro sospechosos y cualquiera puede ser el culpable. En el minuto 80 queda uno.</h2>
+  <svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Minuto 10: cuatro sospechosos, el mayordomo, la heredera, el cónyuge y el detective. Minuto 80: solo queda el verdadero culpable.">
+    <g font-family="Roboto, sans-serif" font-weight="700" fill="#6f6f6f" font-size="14" letter-spacing="1.5">
+      <text x="30" y="30">MINUTO 10</text>
+      <text x="650" y="30">MINUTO 80</text>
     </g>
-    <rect x="808" y="104" width="86" height="32" fill="#eeff41"/>
-    <text x="851" y="125" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#111" letter-spacing="1.2">CIERRE</text>
-    <g font-family="Roboto, sans-serif" font-size="14" fill="#6f6f6f"><text x="30" y="246">tiempo →</text></g>
+    <g fill="#f4f3ee" stroke="#444" stroke-width="2">
+      <circle cx="80" cy="110" r="46"/><circle cx="200" cy="110" r="46"/><circle cx="320" cy="110" r="46"/><circle cx="440" cy="110" r="46"/>
+    </g>
+    <g font-family="Roboto, sans-serif" font-size="13" fill="#222" text-anchor="middle">
+      <text x="80" y="115">mayordomo</text><text x="200" y="115">heredera</text><text x="320" y="115">cónyuge</text><text x="440" y="115">detective</text>
+    </g>
+    <path d="M500 110 H600" stroke="#444" stroke-width="2.5" fill="none"/>
+    <path d="M590 98 L606 110 L590 122" stroke="#444" stroke-width="2.5" fill="none"/>
+    <circle cx="715" cy="110" r="46" fill="#eeff41" stroke="#444" stroke-width="2"/>
+    <text x="715" y="105" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#111">el verdadero</text>
+    <text x="715" y="124" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#111">culpable</text>
   </svg>
   <div class="diagram-mobile">
-    <div class="dm-box neutral"><strong>Posibilidad</strong><em>todo puede pasar</em></div>
+    <div class="dm-box neutral"><strong>Minuto 10</strong><em>mayordomo · heredera · cónyuge · detective</em></div>
     <span class="dm-arrow">↓</span>
-    <div class="dm-box neutral"><strong>Probabilidad</strong><em>unas líneas pesan más que otras</em></div>
-    <span class="dm-arrow">↓</span>
-    <div class="dm-box accent"><strong>Necesidad · cierre</strong><em>queda una sola línea</em></div>
+    <div class="dm-box accent"><strong>Minuto 80</strong><em>el verdadero culpable</em></div>
   </div>
-  <ul class="cuna-notas">
-    <li data-paso="1"><b>Un ejemplo ilustrativo, que no es de Laurel.</b> En el minuto 10 de un misterio hay cuatro sospechosos. En el minuto 80, uno.</li>
-    <li data-paso="2"><b>Lo que estrecha la cuña es la causalidad.</b> Cada incidente hace probables unos siguientes y deja otros por fuera. Para este curso, un incidente que no condiciona nada sobra.</li>
-    <li data-paso="3"><b>Laurel ve dos placeres.</b> La incertidumbre mientras la cuña está abierta, y la satisfacción cuando la acción se completa.</li>
-  </ul>
 </div>
 
+<div class="slide slide--visual slide--cuna" data-nav-label="La cuña voladora">
+  <h2 class="visual-titulo visual-titulo--grande">Cada escena va descartando algo, hasta que solo queda un final posible. Laurel llama a esto la cuña voladora.</h2>
+  <svg viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una cuña que se estrecha de izquierda a derecha en tres tramos: posibilidad, probabilidad y necesidad. Al final está el cierre.">
+    <polygon points="30,20 840,110 840,210 30,300" fill="#f4f3ee" stroke="#444" stroke-width="2"/>
+    <line x1="300" y1="50" x2="300" y2="270" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <line x1="570" y1="80" x2="570" y2="240" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <g font-family="Roboto, sans-serif" text-anchor="middle" fill="#222">
+      <text x="165" y="146" font-size="20" font-weight="700" letter-spacing="1.5">AL INICIO</text>
+      <text x="165" y="176" font-size="17" fill="#444">cualquier cosa puede pasar</text>
+      <text x="165" y="198" font-size="14" fill="#6f6f6f" letter-spacing="1">posibilidad</text>
+      <text x="435" y="146" font-size="20" font-weight="700" letter-spacing="1.5">EN EL MEDIO</text>
+      <text x="435" y="176" font-size="17" fill="#444">unas cosas son más probables</text>
+      <text x="435" y="198" font-size="14" fill="#6f6f6f" letter-spacing="1">probabilidad</text>
+      <text x="705" y="146" font-size="20" font-weight="700" letter-spacing="1.5">AL FINAL</text>
+      <text x="705" y="176" font-size="17" fill="#444">solo queda una</text>
+      <text x="705" y="198" font-size="14" fill="#6f6f6f" letter-spacing="1">necesidad</text>
+    </g>
+    <rect x="846" y="110" width="54" height="100" fill="#eeff41"/>
+    <text x="873" y="170" text-anchor="middle" font-family="Roboto, sans-serif" font-size="32" font-weight="700" fill="#111">&#10003;</text>
+    <text x="873" y="236" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#111" letter-spacing="1.2">EL FINAL</text>
+    <text x="30" y="318" font-family="Roboto, sans-serif" font-size="14" fill="#6f6f6f">tiempo →</text>
+  </svg>
+  <div class="diagram-mobile">
+    <div class="dm-box neutral"><strong>Al inicio</strong><em>cualquier cosa puede pasar</em></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box neutral"><strong>En el medio</strong><em>unas cosas son más probables</em></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box accent"><strong>Al final</strong><em>solo queda una</em></div>
+  </div>
+</div>
+
+<div class="slide" data-nav-label="Qué descarta"><p class="slide-title slide-title--media">Lo que descarta es <span class="hl">la causalidad</span>: lo que pasa en una escena cambia lo que puede pasar en la siguiente. Una escena que no cambia nada sobra.</p></div>
+
+<div class="slide" data-nav-label="Los dos placeres de Laurel"><p class="slide-title slide-title--media">Laurel ve dos placeres en esto: no saber todavía cómo termina, y la satisfacción de que termine.</p></div>
+
 <div class="slide slide--visual slide--cuna" data-nav-label="La persona dirige la cuña">
-  <h2 class="visual-titulo">En una interfaz, la cuña no la dirige quien escribe la obra. La dirige <span class="hl">la persona</span>.</h2>
+  <h2 class="visual-titulo">En una película, quien la escribe decide qué se descarta. En una interfaz lo decide <span class="hl">la persona</span>, con lo que hace.</h2>
   <svg viewBox="0 0 1130 345" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un mismo inicio y tres cuñas distintas: una sesión en que la persona exploró, una en que compró y una en que regresó otro día.">
     <g fill="#f4f3ee" stroke="#444" stroke-width="2" stroke-linejoin="round">
       <polygon points="60,22 60,100 860,48"/>
@@ -1252,18 +1286,18 @@
     <div class="dm-box neutral"><strong>Sesión B</strong><em>compró</em></div>
     <div class="dm-box neutral"><strong>Sesión C</strong><em>regresó otro día</em></div>
   </div>
-  <p class="slide-nota slide-nota--visible">Por eso un mismo programa contiene el potencial de muchas acciones completas.</p>
+  <p class="slide-nota slide-nota--visible">Por eso un mismo programa puede contener muchas historias completas.</p>
 </div>
 
 <div class="slide slide--preguntas-grandes" data-nav-label="Volvamos a lo que jugamos">
   <h2 class="pg-lead">Me gustaría que volviéramos a lo que jugamos y a lo que vimos. Tres preguntas para mirar cualquiera:</h2>
   <ul class="pg">
     <li>¿Qué es posible al entrar?</li>
-    <li>¿Qué va estrechando lo que sigue?</li>
-    <li>¿Dónde cierra?</li>
+    <li>¿Qué va descartando posibilidades?</li>
+    <li>¿Dónde termina?</li>
   </ul>
-  <p class="pg-ejemplo" data-paso="1"><b>PARE O SIGA.</b> Cada tiro poda: la persona decide si para o sigue. La ronda final cierra. Quien dirige la cuña es la persona.</p>
-  <p class="pg-ejemplo" data-paso="2"><b>FACE OFF.</b> La velocidad del disco sube con el tiempo y cada gol estrecha la partida. Cierra al tercer gol.</p>
+  <p class="pg-ejemplo" data-paso="1"><b>PARE O SIGA.</b> Cada tiro descarta algo: la persona decide si para o sigue. La ronda final termina la partida. Quien dirige la cuña es la persona.</p>
+  <p class="pg-ejemplo" data-paso="2"><b>FACE OFF.</b> La velocidad del disco sube con el tiempo y cada gol deja menos partida. Termina al tercer gol.</p>
 </div>
 
 <div class="slide slide--conclusion" data-nav-label="Un mundo posible"><p class="slide-title">Si la interfaz es un lugar donde ocurre una relación, diseñarla es construir <span class="hl">un mundo posible</span>.</p></div>
@@ -1283,11 +1317,10 @@
 <div class="slide slide--invitacion" data-nav-label="La frase para la próxima clase">
   <p class="slide-title slide-title--media">Para la próxima clase, les propongo traer una frase por grupo:</p>
   <p class="frase">«En nuestro proyecto, la persona y el sistema se encuentran en <span class="hueco">_____</span>, y la regla que nos ponemos es <span class="hueco">_____</span>.»</p>
-  <p class="slide-subtitle slide-subtitle--ancho">La frase puede cambiar. Sirve para tener algo concreto sobre lo que seguir hablando.</p>
 </div>
 
 <div class="slide slide--ejemplos" data-nav-label="Ejemplos de la frase">
-  <h2 class="compuesto-titulo">Algunos ejemplos para empezar.</h2>
+  <h2 class="compuesto-titulo">Algunos ejemplos para empezar. La frase puede cambiar: sirve para tener algo concreto sobre lo que seguir hablando.</h2>
   <div class="ejemplos">
     <div class="ejemplos-col">
       <span class="rotulo">De lo que vimos hoy</span>
