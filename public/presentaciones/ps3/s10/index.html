@@ -957,6 +957,100 @@
       .comparar-comun { justify-content: flex-start; }
       .slide--circuito .diagram-mobile { max-width: 340px; }
     }
+
+    /* ── Sesión 10 · ensayo: casos, niveles de Laurel, cuña, frase ───────── */
+    .slide-title--larga { font-size: clamp(2rem, 4.4vw, 3.6rem); max-width: 80%; }
+    .slide-title--media { font-size: clamp(1.7rem, 3.6vw, 3rem); max-width: 80%; }
+    .slide-subtitle--ancho { max-width: 52ch; line-height: 1.5; font-size: clamp(1.1rem, 2vw, 1.55rem); margin-top: 1.6rem; }
+    .slide-nota { font-size: 0.95rem; color: #6f6f6f; margin-top: 1rem; }
+    .slide-nota--visible { opacity: 1; transform: none; max-width: 60ch; font-size: clamp(0.95rem, 1.5vw, 1.15rem); margin-top: 0.4rem; }
+    .comparar-cierre {
+      grid-column: 1 / -1; margin-top: 1.1rem; font-size: clamp(1rem, 1.7vw, 1.35rem);
+      color: #444; line-height: 1.45; text-align: left; max-width: 62ch;
+    }
+
+    /* Un caso: texto a un lado, el medio al otro */
+    .slide--caso { align-items: stretch; justify-content: center; text-align: left; padding: 2.5rem 5vw; }
+    .caso { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 3.5vw; align-items: center; width: 100%; }
+    .caso h2 { font-size: clamp(2.2rem, 4.6vw, 4rem); line-height: 1.05; color: #222; margin: 0.4rem 0 1.2rem; }
+    .caso-pregunta { font-size: clamp(1.3rem, 2.5vw, 2.1rem); font-weight: 900; color: #111; line-height: 1.2; margin-bottom: 1.3rem; }
+    .caso-cuerpo { font-size: clamp(1rem, 1.55vw, 1.3rem); color: #444; line-height: 1.55; max-width: 44ch; }
+    .caso-cuerpo em { font-style: italic; }
+    .caso-cita {
+      font-size: clamp(0.95rem, 1.4vw, 1.15rem); color: #222; line-height: 1.45; max-width: 44ch;
+      margin-top: 1.1rem; padding-left: 1rem; border-left: 4px solid #eeff41; font-style: italic;
+    }
+    .caso-cita span { display: block; font-style: normal; font-size: 0.82em; color: #6f6f6f; margin-top: 0.4rem; }
+    .caso-medio { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; min-width: 0; }
+    .caso-medio .video-marco { width: 100%; }
+    .caso-medio .video-credito { text-align: center; }
+    .video-marco--vertical { width: auto !important; height: min(68vh, 36rem); aspect-ratio: 9 / 14; }
+    .caso-medio .ph { text-align: center; }
+
+    /* Los seis niveles */
+    .slide--niveles { align-items: stretch; justify-content: center; padding: 2.5rem 6vw; gap: 0.4rem; text-align: left; }
+    .slide--niveles .compuesto-titulo { margin: 0 auto 1.3rem; }
+    .niveles { border-collapse: collapse; width: 100%; max-width: 62rem; margin: 0 auto; }
+    .niveles th, .niveles td { padding: 0.62rem 0.9rem; border-bottom: 1px solid #e5e5e5; font-size: clamp(0.9rem, 1.45vw, 1.2rem); line-height: 1.3; text-align: left; vertical-align: top; }
+    .niveles thead th { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: #6f6f6f; border-bottom: 3px solid #444; }
+    .niveles tbody th { font-weight: 900; color: #111; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+    .niveles td { color: #444; }
+    .niveles td:first-of-type { color: #6f6f6f; }
+    .niveles-pregunta { text-align: center; font-size: clamp(1.2rem, 2.2vw, 1.8rem); font-weight: 900; color: #111; margin-top: 1.1rem; }
+
+    /* Cuña */
+    .slide--cuna svg { width: 78%; max-height: 38vh; }
+    .slide--cuna .visual-titulo { max-width: 52ch; font-size: clamp(1.1rem, 2.1vw, 1.6rem); margin-bottom: 0.8rem; }
+    .cuna-notas { list-style: none; max-width: 62ch; text-align: left; margin-top: 0.8rem; min-height: 9.5rem; }
+    .cuna-notas li { font-size: clamp(0.95rem, 1.45vw, 1.2rem); color: #444; line-height: 1.45; padding: 0.4rem 0; }
+    .cuna-notas b { color: #111; }
+
+    /* Preguntas con ejemplo guiado */
+    .pg-ejemplo { margin: 1.6rem auto 0; max-width: 56rem; text-align: left; font-size: clamp(1rem, 1.6vw, 1.3rem); color: #444; line-height: 1.5; border-left: 4px solid #eeff41; padding-left: 1rem; }
+    .pg-ejemplo b { color: #111; }
+
+    /* Tres actitudes */
+    .slide--tres { align-items: stretch; justify-content: center; padding: 3rem 6vw; text-align: left; }
+    .tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; width: 100%; max-width: 62rem; margin: 0 auto; }
+    .tres-col { border-top: 3px solid #444; padding-top: 1rem; }
+    .tres-col p { font-size: clamp(1.1rem, 1.9vw, 1.5rem); color: #222; line-height: 1.4; margin-top: 0.7rem; }
+
+    /* Invitación y ejemplos */
+    .frase { font-size: clamp(1.4rem, 2.8vw, 2.3rem); font-weight: 900; color: #222; line-height: 1.4; max-width: 30ch; margin-top: 2rem; }
+    .hueco { background: #eeff41; padding: 0 0.5em; }
+    .slide--ejemplos { align-items: stretch; justify-content: center; padding: 2.5rem 6vw; text-align: left; }
+    .ejemplos { display: grid; grid-template-columns: 1fr 1.4fr; gap: 3rem; width: 100%; max-width: 66rem; margin: 0 auto; }
+    .ejemplos-col .rotulo { display: block; border-bottom: 3px solid #444; padding-bottom: 0.5rem; }
+    .ej { list-style: none; }
+    .ej li { font-size: clamp(0.95rem, 1.5vw, 1.2rem); color: #444; line-height: 1.45; padding: 0.7rem 0; border-bottom: 1px solid #e5e5e5; }
+    .ej b { color: #111; }
+
+
+    .pg-lead { font-size: clamp(1.4rem, 2.6vw, 2.2rem); font-weight: 900; color: #111; line-height: 1.25; max-width: 30ch; margin: 0 auto 1.6rem 0; text-align: left; width: 100%; }
+    .slide--preguntas-grandes .pg-lead { max-width: 56rem; margin: 0 auto 1.6rem; }
+    .video-credito a { color: #0f6f6f; border-bottom-color: #0f6f6f; }
+    .slide--caso { justify-content: flex-start; padding-top: 14vh; }
+    .caso { align-items: start; }
+    .caso-medio { padding-top: 0.5rem; }
+
+    .pd-galeria { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; width: 100%; align-items: center; }
+    .pd-grande { grid-column: 1 / -1; width: 100%; max-height: 40vh; object-fit: cover; display: block; }
+    .pd-foto { background: #f4f3ee; display: flex; align-items: center; justify-content: center; height: 100%; }
+    .pd-foto img, .pd-pequena { width: 100%; max-height: 26vh; object-fit: contain; display: block; }
+    @media (max-width: 900px) {
+      .caso { grid-template-columns: 1fr; gap: 1.5rem; }
+      .ejemplos { grid-template-columns: 1fr; gap: 1.6rem; }
+      .tres { grid-template-columns: 1fr; gap: 1.4rem; }
+      .video-marco--vertical { height: 52vh; }
+    }
+    @media (max-width: 700px) {
+      .slide--caso, .slide--niveles, .slide--tres, .slide--ejemplos { justify-content: flex-start; padding: 1.5rem 1rem 3.5rem; }
+      .slide--cuna svg { display: none; }
+      .slide--cuna .diagram-mobile { display: flex; }
+      .niveles th, .niveles td { padding: 0.45rem 0.4rem; font-size: 0.8rem; }
+      .niveles thead th:nth-child(2), .niveles tbody td:nth-of-type(1) { display: none; }
+      .slide-title--larga, .slide-title--media { max-width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -965,7 +1059,7 @@
 
 <div class="slide slide--section" style="background:#eeff41"><p class="portada-top" style="color:#333">Pensamiento</p><p class="portada-bottom" style="color:#111">SENSORIAL</p></div>
 
-<div class="slide"><p class="slide-title">Hola. Como hace dos semanas, hoy les preparé unos demos. Quiero que juguemos y reflexionemos sobre <span class="hl">el alcance de la interfaz</span>.</p></div>
+<div class="slide" data-nav-label="Jugamos con sentido"><p class="slide-title slide-title--larga">Hola. Hoy también les preparé unos demos. Me gustaría que empezáramos esta clase jugando. Pero jugando <span class="hl">con sentido</span>.</p></div>
 
 <div class="slide demo" data-nav-label="Demo · FACE OFF"><div><p class="demo-kicker">Demo 1 de 2 · Dos jugadores, una cámara</p><h2>FACE OFF</h2><div class="demo-acceso"><img data-src="assets/qr-face-off.svg" alt="Código QR hacia la demo FACE OFF"><a href="/demos/face-off/" target="_blank" rel="noopener">catedra.dejesumensaje.com<wbr>/demos/face-off/</a></div></div><img class="demo-captura" data-src="assets/face-off.jpg" alt="FACE OFF en plena jugada: una cancha de hockey dividida en rosa y cian"></div>
 
@@ -1009,7 +1103,7 @@
       <div class="marca abajo" style="left:65%;top:82%" data-paso="1"><span>SIGA</span></div>
     </div>
     <ul class="fuera fuera--der" data-paso="2">
-      <li>los demás mirando</li><li>perder lo acumulado</li><li>la ronda final</li><li>el ritmo</li>
+      <li>los demás mirando</li><li>perder lo que se lleva en la ronda</li><li>la ronda final</li><li>el ritmo</li>
     </ul>
   </div>
   <p class="interfaz-prueba" data-paso="3">¿Y si fuera distinto?</p>
@@ -1023,89 +1117,196 @@
     <div class="comparar-comun"><span class="rotulo">En los dos</span><strong>webcam</strong><strong>cuerpo</strong><strong>visión por computador</strong><strong>pantalla</strong></div>
     <p class="comparar-verbo" data-paso="1">Reaccionar</p>
     <p class="comparar-verbo" data-paso="1">Decidir</p>
+    <p class="comparar-cierre" data-paso="2">Lo que cambia son decisiones de diseño: el ritmo, las reglas, lo que el sistema muestra y lo que calla, lo que se puede perder, quién mira.</p>
   </div>
 </div>
 
-<div class="slide slide--visual slide--circuito" data-nav-label="El circuito">
-  <h2 class="visual-titulo">El circuito</h2>
-  <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Circuito: persona, gesto, sistema, respuesta, consecuencia y de vuelta a la persona. El mecanismo es solo el tramo entre gesto y sistema.">
-    <defs>
-      <marker id="flecha" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#444"/></marker>
-    </defs>
-    <g>
-      <g data-paso="2">
-        <rect x="16" y="16" width="868" height="468" fill="none" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="6 6"/>
-        <text x="868" y="470" text-anchor="end" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#6f6f6f" letter-spacing="1.5">ESPACIO · CONTEXTO SOCIAL</text>
-      </g>
+<div class="slide" data-nav-label="Un puente">
+  <p class="slide-title slide-title--media">Hasta hoy habíamos hablado de la interfaz como un puente: todo lo que hacemos para comunicarle a alguien qué puede hacer y qué pasó.</p>
+  <p class="slide-title slide-title--media" data-paso="1" style="margin-top:2.2rem">Con estos dos juegos vimos que cabe más. Me gustaría que la miráramos como <span class="hl">el lugar donde ocurre una relación</span>.</p>
+</div>
 
-      <text x="450" y="58" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#6f6f6f" letter-spacing="2">EL MECANISMO</text>
-      <rect x="215" y="85" width="170" height="50" rx="4" fill="#222"/>
-      <text x="300" y="111" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">GESTO</text>
-      <rect x="515" y="85" width="170" height="50" rx="4" fill="#222"/>
-      <text x="600" y="111" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#fff">SISTEMA</text>
-      <line x1="387" y1="110" x2="508" y2="110" stroke="#444" stroke-width="2" marker-end="url(#flecha)"/>
+<div class="slide slide--cita" data-nav-label="Una interfaz es un lugar"><p class="cita-texto">Una interfaz es el lugar donde ocurre una relación entre una persona y un sistema. Tiene un tiempo, un espacio, unas reglas y un pacto.</p><p class="slide-subtitle" style="max-width:48ch;margin-top:1.8rem">El pacto es lo que las dos partes aceptan para que lo que pasa tenga sentido.</p></div>
 
-      <g data-paso="1">
-        <rect x="55" y="245" width="170" height="50" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
-        <text x="140" y="271" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#444">PERSONA</text>
-        <rect x="675" y="245" width="170" height="50" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
-        <text x="760" y="271" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#444">RESPUESTA</text>
-        <rect x="355" y="375" width="190" height="50" rx="4" fill="none" stroke="#444" stroke-width="1.5"/>
-        <text x="450" y="401" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#444">CONSECUENCIA</text>
-        <line x1="150" y1="243" x2="222" y2="143" stroke="#444" stroke-width="2" marker-end="url(#flecha)"/>
-        <line x1="650" y1="142" x2="725" y2="238" stroke="#444" stroke-width="2" marker-end="url(#flecha)"/>
-        <line x1="725" y1="298" x2="552" y2="385" stroke="#444" stroke-width="2" marker-end="url(#flecha)"/>
-        <line x1="352" y1="390" x2="182" y2="302" stroke="#444" stroke-width="2" marker-end="url(#flecha)"/>
-        <rect x="355" y="245" width="190" height="46" rx="4" fill="#eeff41"/>
-        <text x="450" y="269" text-anchor="middle" dominant-baseline="middle" font-family="Roboto, sans-serif" font-size="18" font-weight="700" fill="#111">LA INTERFAZ</text>
-      </g>
-
-      <g data-paso="2" font-family="Roboto, sans-serif" font-size="15" fill="#444">
-        <text x="315" y="160" text-anchor="middle">entrada · mapeo</text>
-        <text x="600" y="160" text-anchor="middle">reglas · ritmo</text>
-        <text x="790" y="322" text-anchor="middle">feedback · sonido</text>
-        <text x="790" y="341" text-anchor="middle">información</text>
-        <text x="450" y="447" text-anchor="middle">recompensa · riesgo</text>
-        <text x="140" y="320" text-anchor="middle">expectativa</text>
-      </g>
-    </g>
-  </svg>
-  <div class="diagram-mobile">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:0.55rem;width:100%">
-      <p class="dm-label">El mecanismo es solo un tramo</p>
-      <div class="dm-box neutral" data-paso="1"><strong>Persona</strong><em data-paso="2">expectativa</em></div>
-      <span class="dm-arrow" data-paso="1">↓</span>
-      <div class="dm-box dark"><strong>Gesto</strong><em data-paso="2">entrada · mapeo</em></div>
-      <span class="dm-arrow">↓</span>
-      <div class="dm-box dark"><strong>Sistema</strong><em data-paso="2">reglas · ritmo</em></div>
-      <span class="dm-arrow" data-paso="1">↓</span>
-      <div class="dm-box neutral" data-paso="1"><strong>Respuesta</strong><em data-paso="2">feedback · sonido · información</em></div>
-      <span class="dm-arrow" data-paso="1">↓</span>
-      <div class="dm-box neutral" data-paso="1"><strong>Consecuencia</strong><em data-paso="2">recompensa · riesgo</em></div>
-      <span class="dm-arrow" data-paso="1">↑ vuelve a la persona</span>
-      <div class="dm-box accent" data-paso="1"><strong>La interfaz</strong><em>el circuito completo</em></div>
-      <p class="dm-note" data-paso="2">Alrededor de todo: el espacio y el contexto social.</p>
+<div class="slide slide--caso" data-nav-label="Blendie">
+  <div class="caso">
+    <div class="caso-texto">
+      <p class="demo-kicker">Caso 1 de 3 · La relación</p>
+      <h2>Blendie</h2>
+      <p class="caso-pregunta">¿Qué relación hay entre la persona y la licuadora?</p>
+      <p class="caso-cuerpo" data-paso="1">Kelly Dobson diseñó una licuadora que se controla con la voz. La persona imita el sonido del motor: si es grave, gira despacio; si es agudo, acelera. La persona hace de motor con la boca y la máquina la escucha.</p>
+    </div>
+    <div class="caso-medio caso-medio--vertical">
+      <div class="video-marco video-marco--vertical"><iframe data-src="https://www.instagram.com/p/DXih9smDM5D/embed" title="Blendie, de Kelly Dobson, en Instagram" loading="lazy" allowfullscreen></iframe></div>
+      <p class="video-credito">Blendie · Kelly Dobson · <a href="https://www.instagram.com/p/DXih9smDM5D/" target="_blank" rel="noopener">ver la publicación en Instagram</a></p>
     </div>
   </div>
 </div>
 
-<div class="slide slide--conclusion"><p class="slide-title">El mecanismo permite hacer algo. La interfaz hace que ese algo <span class="hl">signifique algo</span>.</p></div>
+<div class="slide slide--caso" data-nav-label="Mimus">
+  <div class="caso">
+    <div class="caso-texto">
+      <p class="demo-kicker">Caso 2 de 3 · El movimiento</p>
+      <h2>Mimus</h2>
+      <p class="caso-pregunta">¿Qué cambió, si el robot es el mismo?</p>
+      <p class="caso-cuerpo" data-paso="1">Madeline Gannon rescató un robot industrial de una línea de ensamblaje y solo le cambió cómo se mueve. Durante seis meses, más de cien mil personas fueron a verlo a un museo. Con ese cambio dejaron de ver una máquina de fábrica y vieron algo que las miraba de vuelta.</p>
+      <p class="caso-cita" data-paso="2">«El futuro de la robótica tiene que ver menos con lo que harán los robots y más con cómo nos hacen sentir.»<span>Madeline Gannon · Config 2025 · traducción libre</span></p>
+    </div>
+    <div class="caso-medio">
+      <div class="video-marco"><iframe data-src="https://www.youtube.com/embed/3_3wGrLkTCA?start=551&amp;end=610&amp;rel=0" title="Madeline Gannon presenta a Mimus, Config 2025" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+      <p class="video-credito">Fragmento de la charla · <a href="https://www.youtube.com/watch?v=3_3wGrLkTCA&amp;t=551s" target="_blank" rel="noopener">ver en YouTube</a></p>
+    </div>
+  </div>
+</div>
 
-<div class="slide slide--section" style="background:#eeff41"><p class="section-kicker">Revisión de prototipos</p><p class="section-theme">Intención ↔ efecto percibido</p><p class="slide-subtitle" style="color:#333;margin-top:1.6rem;line-height:1.5">Primero alguien lo usa, sin explicación.<br>Después decimos qué produce.<br>Al final, el grupo dice qué buscaba.</p></div>
+<div class="slide slide--caso" data-nav-label="Playdate">
+  <div class="caso">
+    <div class="caso-texto">
+      <p class="demo-kicker">Caso 3 de 3 · El límite</p>
+      <h2>Playdate</h2>
+      <p class="caso-pregunta">¿Qué hace posible un límite?</p>
+      <p class="caso-cuerpo" data-paso="1">La Playdate, de Panic, tiene una pantalla de un bit y una manivela. Aquí las leemos como límites que se puso quien diseñó la consola. Es una lectura del curso. En <em>Crankin’s Time Travel Adventure</em>, la manivela mueve el tiempo hacia adelante y hacia atrás.</p>
+    </div>
+    <div class="caso-medio">
+      <div class="pd-galeria">
+        <img class="pd-grande" data-src="assets/playdate-manivela.gif" alt="Dos manos sostienen una Playdate y giran con los dedos la manivela que sale del costado">
+        <div class="pd-foto"><img data-src="assets/playdate-consola.png" alt="La Playdate amarilla con la manivela desplegada y un juego en la pantalla en blanco y negro"></div>
+        <img class="pd-pequena" data-src="assets/playdate-pantalla.gif" alt="Animación en blanco y negro de un oso con gafas oscuras detrás de una barra, en la pantalla de un bit de la Playdate">
+      </div>
+      <p class="video-credito">Playdate · Panic · <a href="https://play.date/" target="_blank" rel="noopener">play.date</a> · el GIF de las manos viene de Product Hunt</p>
+    </div>
+  </div>
+</div>
 
-<div class="slide slide--preguntas-grandes" data-nav-label="Mientras lo usan">
-  <h2 class="pg-titulo">Mientras lo usan</h2>
-  <ul class="pg">
-    <li>¿Qué hace la persona?</li>
-    <li>¿Cómo entiende qué puede hacer?</li>
-    <li>¿Qué le devuelve el sistema?</li>
-    <li>¿Qué cambia después de su acción?</li>
-    <li>¿Qué espera que pase ahora?</li>
-    <li>¿Qué efecto está produciendo?</li>
+<div class="slide" data-nav-label="Laurel · la interfaz como teatro">
+  <p class="slide-title slide-title--media">Brenda Laurel propone pensar la interfaz como <span class="hl">un teatro</span>.</p>
+  <p class="slide-subtitle slide-subtitle--ancho" data-paso="1">En <em>Computers as Theatre</em> (1991) toma la Poética de Aristóteles y la aplica al diseño de interacción: usar un computador se parece más a actuar dentro de una representación que a operar una herramienta.</p>
+  <p class="slide-nota" data-paso="1">Paráfrasis del argumento del libro, no una cita.</p>
+</div>
+
+<div class="slide slide--niveles" data-nav-label="Los seis niveles">
+  <h2 class="compuesto-titulo">Seis niveles, de arriba abajo. Cada uno da forma a los de abajo y es el material de los de arriba.</h2>
+  <table class="niveles">
+    <thead><tr><th scope="col">Nivel de Laurel</th><th scope="col">En el teatro</th><th scope="col">En la interfaz</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Acción</th><td>la trama, la obra entera</td><td>la acción completa, que moldean juntos el sistema y la persona</td></tr>
+      <tr><th scope="row">Personaje</th><td>quiénes actúan</td><td>rasgos que se reconocen en cómo eligen la persona y el sistema</td></tr>
+      <tr><th scope="row">Pensamiento</th><td>lo que piensan</td><td>lo que lleva a elegir: razón y emoción</td></tr>
+      <tr><th scope="row">Lenguaje</th><td>las palabras</td><td>los signos que se usan: verbales, visuales y sonoros</td></tr>
+      <tr><th scope="row">Patrón</th><td>la melodía</td><td>el ritmo y la forma que se perciben</td></tr>
+      <tr><th scope="row">Escenificación</th><td>el espectáculo</td><td>lo que se ve, se oye y se toca</td></tr>
+    </tbody>
+  </table>
+  <p class="niveles-pregunta" data-paso="1">Para conversar: ¿en qué nivel intervino la decisión de diseño en Blendie, Mimus y Playdate?</p>
+</div>
+
+<div class="slide slide--visual slide--cuna" data-nav-label="La cuña voladora">
+  <h2 class="visual-titulo">La cuña voladora vive en la acción: al inicio todo puede pasar, y cada incidente va estrechando lo que sigue.</h2>
+  <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una cuña que se estrecha de izquierda a derecha: posibilidad, probabilidad y necesidad. Al final está el cierre.">
+    <polygon points="30,20 870,115 870,135 30,230" fill="#f4f3ee" stroke="#444" stroke-width="2"/>
+    <line x1="310" y1="52" x2="310" y2="198" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <line x1="590" y1="84" x2="590" y2="166" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <g font-family="Roboto, sans-serif" font-size="17" font-weight="700" fill="#222" text-anchor="middle" letter-spacing="1.2">
+      <text x="170" y="130">POSIBILIDAD</text>
+      <text x="450" y="130">PROBABILIDAD</text>
+      <text x="725" y="130">NECESIDAD</text>
+    </g>
+    <rect x="808" y="104" width="86" height="32" fill="#eeff41"/>
+    <text x="851" y="125" text-anchor="middle" font-family="Roboto, sans-serif" font-size="15" font-weight="700" fill="#111" letter-spacing="1.2">CIERRE</text>
+    <g font-family="Roboto, sans-serif" font-size="14" fill="#6f6f6f"><text x="30" y="246">tiempo →</text></g>
+  </svg>
+  <div class="diagram-mobile">
+    <div class="dm-box neutral"><strong>Posibilidad</strong><em>todo puede pasar</em></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box neutral"><strong>Probabilidad</strong><em>unas líneas pesan más que otras</em></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box accent"><strong>Necesidad · cierre</strong><em>queda una sola línea</em></div>
+  </div>
+  <ul class="cuna-notas">
+    <li data-paso="1"><b>Un ejemplo ilustrativo, que no es de Laurel.</b> En el minuto 10 de un misterio hay cuatro sospechosos. En el minuto 80, uno.</li>
+    <li data-paso="2"><b>Lo que estrecha la cuña es la causalidad.</b> Cada incidente hace probables unos siguientes y deja otros por fuera. Para este curso, un incidente que no condiciona nada sobra.</li>
+    <li data-paso="3"><b>Laurel ve dos placeres.</b> La incertidumbre mientras la cuña está abierta, y la satisfacción cuando la acción se completa.</li>
   </ul>
 </div>
 
+<div class="slide slide--visual slide--cuna" data-nav-label="La persona dirige la cuña">
+  <h2 class="visual-titulo">En una interfaz, la cuña no la dirige quien escribe la obra. La dirige <span class="hl">la persona</span>.</h2>
+  <svg viewBox="0 0 1130 345" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un mismo inicio y tres cuñas distintas: una sesión en que la persona exploró, una en que compró y una en que regresó otro día.">
+    <g fill="#f4f3ee" stroke="#444" stroke-width="2" stroke-linejoin="round">
+      <polygon points="60,22 60,100 860,48"/>
+      <polygon points="60,128 60,206 860,172"/>
+      <polygon points="60,234 60,312 860,296"/>
+    </g>
+    <line x1="48" y1="22" x2="48" y2="312" stroke="#222" stroke-width="4"/>
+    <text x="48" y="334" font-family="Roboto, sans-serif" font-size="14" font-weight="700" fill="#222" letter-spacing="1">UN MISMO INICIO</text>
+    <g font-family="Roboto, sans-serif" font-size="16" font-weight="700" fill="#222">
+      <text x="876" y="54" text-anchor="start">sesión A · exploró</text>
+      <text x="876" y="178" text-anchor="start">sesión B · compró</text>
+      <text x="876" y="302" text-anchor="start">sesión C · regresó otro día</text>
+    </g>
+  </svg>
+  <div class="diagram-mobile">
+    <div class="dm-box dark"><strong>Un mismo inicio</strong></div>
+    <span class="dm-arrow">↓</span>
+    <div class="dm-box neutral"><strong>Sesión A</strong><em>exploró</em></div>
+    <div class="dm-box neutral"><strong>Sesión B</strong><em>compró</em></div>
+    <div class="dm-box neutral"><strong>Sesión C</strong><em>regresó otro día</em></div>
+  </div>
+  <p class="slide-nota slide-nota--visible">Por eso un mismo programa contiene el potencial de muchas acciones completas.</p>
+</div>
+
+<div class="slide slide--preguntas-grandes" data-nav-label="Volvamos a lo que jugamos">
+  <h2 class="pg-lead">Me gustaría que volviéramos a lo que jugamos y a lo que vimos. Tres preguntas para mirar cualquiera:</h2>
+  <ul class="pg">
+    <li>¿Qué es posible al entrar?</li>
+    <li>¿Qué va estrechando lo que sigue?</li>
+    <li>¿Dónde cierra?</li>
+  </ul>
+  <p class="pg-ejemplo" data-paso="1"><b>PARE O SIGA.</b> Cada tiro poda: la persona decide si para o sigue. La ronda final cierra. Quien dirige la cuña es la persona.</p>
+  <p class="pg-ejemplo" data-paso="2"><b>FACE OFF.</b> La velocidad del disco sube con el tiempo y cada gol estrecha la partida. Cierra al tercer gol.</p>
+</div>
+
+<div class="slide slide--conclusion" data-nav-label="Un mundo posible"><p class="slide-title">Si la interfaz es un lugar donde ocurre una relación, diseñarla es construir <span class="hl">un mundo posible</span>.</p></div>
+
+<div class="slide slide--tres" data-nav-label="Tres actitudes de Gannon">
+  <h2 class="compuesto-titulo">Madeline Gannon propone tres actitudes para trabajar con máquinas.</h2>
+  <div class="tres">
+    <div class="tres-col"><span class="rotulo">Amateur</span><p>Ver lo que los expertos descartan.</p></div>
+    <div class="tres-col"><span class="rotulo">Jugar</span><p>Preguntar «¿y si?» con una curiosidad abierta.</p></div>
+    <div class="tres-col"><span class="rotulo">Optimismo con ojo crítico</span><p>Reconocer los problemas sin dejar de querer otro futuro.</p></div>
+  </div>
+  
+</div>
+
 <div class="slide slide--conclusion" style="background:#111"><p class="tema-sub" style="margin:0 0 1.4rem;font-size:clamp(1.2rem,2.6vw,2rem);color:#e0e0e0;max-width:none">No diseñamos solamente el gesto.</p><p class="tema-central" style="font-size:clamp(2rem,5vw,4rem)">Diseñamos lo que el gesto pone en movimiento.</p></div>
+
+<div class="slide slide--invitacion" data-nav-label="La frase para la próxima clase">
+  <p class="slide-title slide-title--media">Para la próxima clase, les propongo traer una frase por grupo:</p>
+  <p class="frase">«En nuestro proyecto, la persona y el sistema se encuentran en <span class="hueco">_____</span>, y la regla que nos ponemos es <span class="hueco">_____</span>.»</p>
+  <p class="slide-subtitle slide-subtitle--ancho">La frase puede cambiar. Sirve para tener algo concreto sobre lo que seguir hablando.</p>
+</div>
+
+<div class="slide slide--ejemplos" data-nav-label="Ejemplos de la frase">
+  <h2 class="compuesto-titulo">Algunos ejemplos para empezar.</h2>
+  <div class="ejemplos">
+    <div class="ejemplos-col">
+      <span class="rotulo">De lo que vimos hoy</span>
+      <ul class="ej">
+        <li><b>Blendie.</b> Se encuentran en la voz, y la regla es que para licuar hay que hacer de motor.</li>
+        <li><b>Playdate.</b> Se encuentran en una manivela, y la regla es que todo cabe en una pantalla de un bit.</li>
+      </ul>
+    </div>
+    <div class="ejemplos-col">
+      <span class="rotulo">Inventados para esta clase</span>
+      <ul class="ej">
+        <li><b>Una instalación.</b> Se encuentran en la respiración de la persona, y la regla es que la sala solo cambia al ritmo en que ella respira.</li>
+        <li><b>Un videojuego.</b> Se encuentran en un solo botón, y la regla es que cada partida dura lo que dura una canción.</li>
+        <li><b>Una página web.</b> Se encuentran en una pregunta, y la regla es que la página solo avanza si la persona responde con una palabra.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="compuesto-pie">Los tres últimos no son de ningún grupo.</p>
+</div>
 </div>
 <div class="nav-hint">← →</div>
   <div class="nav-hint-touch">desliza o toca para continuar</div>
