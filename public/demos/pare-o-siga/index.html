@@ -612,6 +612,77 @@ html.mobile .fl{grid-template-columns:1fr}
 html.mobile .fl .r{font-size:2rem}
 html.mobile #toast{font-size:1.8rem}
 
+/* =====================================================================
+   SETUP · ONE GLYPH, ONE MEANING: → only ever means "go to the next step". Moving a person is the swap icon + the
+   letter and colour of the group they go to. The foot is its own region (a solid bar); every step says where it goes.
+   ===================================================================== */
+.setup .head .step{align-items:center}
+.stepn{white-space:nowrap;font-size:1.2rem;font-weight:800;color:var(--muted);margin-right:.6rem;letter-spacing:.02em}
+.setup .foot{background:var(--cream);box-shadow:0 -.15rem 0 var(--line);padding-bottom:max(1.2rem, env(safe-area-inset-bottom))}
+.setup .foot .msg{font-weight:800}
+.setup .foot .next{font-size:1.9rem;padding:1.1rem 2.6rem}
+.setup .foot .next:disabled{opacity:1;background:var(--line);color:var(--muted);box-shadow:none}
+.setup .foot .back{font-size:1.3rem}
+.btn:focus-visible,.seg button:focus-visible,.mv:focus-visible,.ib:focus-visible,.pl-add:focus-visible,.linkb:focus-visible,.paste summary:focus-visible,.switch input:focus-visible+.tr{outline:.3rem solid var(--cobalt);outline-offset:.25rem}
+/* players: the list and its "+" are one block; the paste box is a secondary, collapsible block */
+.pl-grid{grid-template-columns:1fr 26rem}
+.pl-names{display:grid;gap:.9rem;align-content:start}
+.pl-cols{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 2rem}
+.pl-cols.one{grid-template-columns:minmax(0,46rem)}
+.pl-cols.one #plCol2{display:none}
+.pl-add{display:block;text-align:center;font-size:1.4rem;padding:.9rem 1rem;margin-left:3.2rem;width:calc(100% - 6.6rem);max-width:42.6rem}
+.pl-cols:not(.one)+.pl-add{max-width:none}
+.paste summary{cursor:pointer;font-size:1.4rem;font-weight:900;list-style:none;display:flex;align-items:center;gap:.6rem}
+.paste summary::-webkit-details-marker{display:none}
+.paste summary::before{content:"+";display:grid;place-items:center;width:2rem;height:2rem;border-radius:.5rem;background:var(--sky);color:var(--cobalt);flex:none}
+.paste[open] summary::before{content:"–"}
+.paste[open] summary{margin-bottom:.9rem}
+.paste .links{display:flex;gap:1.6rem;flex-wrap:wrap}
+/* assignment: name, then quiet tools, then the move pill (in the destination group's colour) */
+.chip .ib{background:transparent;color:var(--muted)}
+.chip .mv{flex:none;display:inline-flex;align-items:center;gap:.3rem;height:2.4rem;padding:0 .7rem;border-radius:.7rem;font-size:1.2rem;font-weight:900;color:#fff}
+.chip .mv svg{width:1.3rem;height:1.3rem}
+.chip .mv.toA{background:var(--sky);color:var(--cobalt-d)}.chip .mv.toB{background:#FFE1D9;color:#B02A10}
+.pl-add[hidden]{display:none}
+.pl-in input::placeholder{color:var(--muted);opacity:.55;font-weight:700}
+.chip .mv:hover{filter:brightness(1.1)}
+/* order: the game settings live with the order, right before ¡A JUGAR! */
+.opts{display:grid;gap:1.2rem}
+.opts h3{margin:.4rem 0 0}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;padding:.4rem;border-radius:1.1rem;background:var(--cream);box-shadow:inset 0 0 0 .15rem var(--line)}
+.seg button{display:grid;gap:.15rem;padding:.7rem .4rem;border-radius:.8rem;text-align:center}
+.seg button b{font-size:1.4rem}.seg button span{font-size:1rem;color:var(--muted);font-weight:700}
+.seg button.on{background:var(--ink);color:var(--paper)}.seg button.on span{color:var(--line)}
+.switch b{font-size:1.35rem}
+.switch input{display:block;position:absolute;opacity:0;width:1px;height:1px}
+.switch{position:relative;font-weight:700;color:var(--ink2)}
+/* the way out while holding */
+#hint .hintbtn{pointer-events:auto;font-size:2.2rem;padding:1.1rem 3.4rem;animation:up .4s var(--e-out) both}
+/* modo sencillo: bigger words, bigger choices */
+body.easy #hint .big{font-size:3.2rem}
+body.easy .choice .t{font-size:6.4rem}
+body.easy .choice .d{font-size:3.2rem}
+body.easy #turntag .nm{font-size:5.2rem}
+/* phone */
+html.mobile .stepn{font-size:1.5rem}
+html.mobile .chips{grid-template-columns:1fr}
+html.mobile .chip .mv{height:3.6rem;font-size:1.6rem;padding:0 1rem}
+html.mobile .chip .mv svg{width:1.7rem;height:1.7rem}
+html.mobile .pl-grid{grid-template-columns:1fr}
+html.mobile .pl-cols{grid-template-columns:1fr}
+html.mobile .pl-cols.one{grid-template-columns:1fr}
+html.mobile .pl-add{max-width:none;margin-left:3.2rem;width:calc(100% - 7.6rem)}
+html.mobile .paste summary{font-size:1.8rem}
+html.mobile .paste .linkb{font-size:1.6rem}
+html.mobile .setup .foot .next{font-size:2.2rem;flex:1;padding:1.4rem 1rem}
+html.mobile .setup .foot .spacer{display:none}
+html.mobile .setup .foot{flex-wrap:wrap;row-gap:.6rem}
+html.mobile .setup .foot .msg{order:-1;width:100%;font-size:1.6rem}
+html.mobile .setup .foot .msg:empty{display:none}
+html.mobile .setup .foot .back{font-size:1.7rem;padding:1.4rem 1.6rem}
+html.mobile .setup .body{padding-bottom:16rem}
+html.mobile .seg button b{font-size:1.9rem}html.mobile .seg button span{font-size:1.3rem}
+html.mobile .switch b{font-size:1.8rem}html.mobile .switch{font-size:1.5rem}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 body.fast *{animation-duration:.05s!important;animation-delay:0s!important;transition-duration:.05s!important}
 </style>
@@ -643,25 +714,27 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
 
 <!-- PLAYERS -->
 <section id="s-players" class="screen setup">
-  <div class="head"><h2>Jugadores</h2><div class="step" aria-label="paso 1 de 4"><i class="on"></i><i></i><i></i><i></i></div></div>
+  <div class="head"><h2>Jugadores</h2><div class="step"><span class="stepn">Paso 1 de 4</span><i class="on"></i><i></i><i></i><i></i></div></div>
   <div class="body">
     <div class="pl-grid">
-      <div class="pl-col" id="plCol1"></div>
-      <div class="pl-col" id="plCol2"></div>
-      <div class="paste">
-        <textarea id="pasteBox" placeholder="Pegar lista&#10;Ana&#10;Beto&#10;Carla&#10;…"></textarea>
-        <button class="btn cobalt small" id="bPaste">USAR LISTA</button>
-        <button class="linkb" id="bSample">ejemplo</button>
-        <button class="linkb" id="bClearNames">borrar</button>
+      <div class="pl-names">
+        <div class="pl-cols" id="plCols"><div class="pl-col" id="plCol1"></div><div class="pl-col" id="plCol2"></div></div>
+        <button class="pl-add" id="bAddSlot">+ Añadir jugador</button>
       </div>
+      <details class="paste" id="pasteD">
+        <summary>¿Ya tienes la lista? Pégala</summary>
+        <textarea id="pasteBox" aria-label="Lista de nombres, uno por línea" placeholder="Ana&#10;Beto&#10;Carla&#10;…"></textarea>
+        <button class="btn cobalt small" id="bPaste">USAR LISTA</button>
+        <div class="links"><button class="linkb" id="bSample">Nombres de ejemplo</button><button class="linkb" id="bClearNames">Borrar todo</button></div>
+      </details>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small" data-go="title">←</button><span class="msg" id="plMsg"></span><span class="spacer"></span><button class="btn cobalt" id="bPlNext">→</button></div>
+  <div class="foot"><button class="btn ghost small back" data-go="title">← Atrás</button><span class="msg" id="plMsg"></span><span class="spacer"></span><button class="btn cobalt next" id="bPlNext">Grupos →</button></div>
 </section>
 
 <!-- ASSIGN -->
 <section id="s-assign" class="screen setup">
-  <div class="head"><h2>Grupos</h2><div class="step"><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+  <div class="head"><h2>Grupos</h2><div class="step"><span class="stepn">Paso 2 de 4</span><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
   <div class="body">
     <div class="as-tools">
       <button class="btn sun small" id="bRandom" title="Repartir al azar"><svg class="ico"><use href="#i-shuffle"/></svg> AZAR</button>
@@ -674,26 +747,35 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       <div class="gcol gB" data-g="B"><header><span class="tag">B</span><h3 id="hB" class="hidden"></h3><span class="cnt" id="cntB">0/8</span></header><div class="chips" id="chipsB"></div><div class="addrow"><input placeholder="+" data-add="B" maxlength="24" aria-label="Añadir al grupo B"></div></div>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small" data-go="players">←</button><span class="msg" id="asMsg"></span><span class="spacer"></span><button class="btn cobalt" id="bAsNext">→</button></div>
+  <div class="foot"><button class="btn ghost small back" data-go="players">← Atrás</button><span class="msg" id="asMsg"></span><span class="spacer"></span><button class="btn cobalt next" id="bAsNext">Orden →</button></div>
 </section>
 
 <!-- GROUP CHOICE -->
 <section id="s-group" class="screen setup">
-  <div class="head"><h2>¿Qué grupo?</h2><div class="step"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+  <div class="head"><h2>¿Qué grupo?</h2><div class="step"><span class="stepn">Paso 3 de 4</span><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
   <div class="body"><div class="gc-grid" id="gcGrid"></div></div>
-  <div class="foot"><button class="btn ghost small" data-go="assign">←</button><span class="spacer"></span><button class="btn ghost small hidden" id="bSeeBoth">A + B</button></div>
+  <div class="foot"><button class="btn ghost small back" data-go="assign">← Atrás</button><span class="spacer"></span><button class="btn ghost small hidden" id="bSeeBoth">A + B</button></div>
 </section>
 
 <!-- ORDER -->
 <section id="s-order" class="screen setup">
-  <div class="head"><h2 id="orTitle">Orden</h2><div class="step"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+  <div class="head"><h2 id="orTitle">Orden</h2><div class="step"><span class="stepn">Paso 4 de 4</span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
   <div class="body">
     <div class="or-wrap">
       <div class="or-list" id="orList"></div>
-      <div class="opts"><button class="btn sun small" id="bShuffle" style="width:100%"><svg class="ico"><use href="#i-shuffle"/></svg> BARAJAR</button></div>
+      <div class="opts">
+        <button class="btn sun small" id="bShuffle" style="width:100%"><svg class="ico"><use href="#i-shuffle"/></svg> BARAJAR ORDEN</button>
+        <h3 id="rdLbl">Partida</h3>
+        <div class="seg" role="radiogroup" aria-labelledby="rdLbl" id="rdSeg">
+          <button role="radio" data-r="2"><b>Corta</b><span>2 rondas</span></button>
+          <button role="radio" data-r="4"><b>Normal</b><span>4 rondas</span></button>
+          <button role="radio" data-r="6"><b>Larga</b><span>6 rondas</span></button>
+        </div>
+        <label class="switch"><input type="checkbox" id="swEasy"><span class="tr"></span><span><b>Modo sencillo</b><br>Basta cerrar y abrir la mano. Con voz y pistas siempre a la vista.</span></label>
+      </div>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small" id="bOrBack">←</button><span class="spacer"></span><button class="btn tomato" id="bPlay" style="font-size:2rem">¡A JUGAR!</button></div>
+  <div class="foot"><button class="btn ghost small back" id="bOrBack">← Atrás</button><span class="spacer"></span><button class="btn tomato next" id="bPlay">¡A JUGAR!</button></div>
 </section>
 
 <!-- GAME -->
@@ -716,10 +798,12 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       <button class="tb" id="bRank">Ranking <span class="key">R</span></button>
       <button class="tb cam-only" id="bSoplo">Soplo</button>
       <button class="tb cam-only" id="bCam">Cámara</button>
+      <button class="tb" id="bEasy">Sencillo</button>
       <button class="tb" id="bSound">Sonido <span class="key">V</span></button>
       <button class="tb" data-help>Reglas <span class="key">H</span></button>
       <button class="tb" id="bFull">Pantalla <span class="key">F</span></button>
       <button class="tb" id="bMenu">Menú <span class="key">M</span></button>
+      <button class="tb" id="bReport">Reportar problema</button>
     </div>
     <div id="rankov" hidden><div class="rkbox"><div class="rkt" id="rkGrp"></div><div class="rklist" id="rkList"></div></div></div>
     <button id="bGrabar" hidden title="Descargar la grabación del gesto (JSON)"><i></i><span id="grabN">0</span> ⤓</button>
@@ -740,13 +824,13 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
         <li>Tira dos dados y suma.</li>
         <li><b>PARE</b>: lo sumado queda <b>a salvo</b>. <b>SIGA</b>: tiras otra vez.</li>
         <li>Un <b>1</b>: pierdes lo sumado en la ronda. Lo a salvo no se toca.</li>
-        <li>4 rondas. En la <b>ronda 4</b> pasar al líder no te salva: eres <b>líder provisional</b> hasta que dices PARE.</li>
-        <li>El <b>último</b> de la ronda 4 que pasa a todos ya <b>ganó</b> (empatar no basta).</li>
+        <li>Partida corta (2 rondas), normal (4) o larga (6). En la <b>última ronda</b> pasar al líder no te salva: eres <b>líder provisional</b> hasta que dices PARE.</li>
+        <li>El <b>último</b> de la última ronda que pasa a todos ya <b>ganó</b> (empatar no basta).</li>
       </ul>
     </div>
     <div>
       <ul>
-        <li><b>Cámara</b>: cierra la mano, sacude, ábrela.</li>
+        <li><b>Cámara</b>: cierra la mano, sacude, ábrela. En <b>modo sencillo</b> basta cerrarla y abrirla.</li>
         <li><b>Celular</b>: mantén los dados, agita, suelta.</li>
         <li><b>Mouse</b>: arrastra y suelta.</li>
         <li><b>P</b> / <b>S</b> · <b>Enter</b> sigue · <b>Espacio</b> tira · <b>R</b> ranking · <b>M</b> menú · <b>V</b> sonido · <b>F</b> pantalla</li>
@@ -800,7 +884,7 @@ const MODE = (() => {
 const MOBILE = MODE === 'movil', NOCAM = params.has('nocam') || MOBILE; // the phone never loads MediaPipe, the models or the camera
 document.documentElement.classList.toggle('mobile', MOBILE);
 let FAST = /fast/.test(location.hash);
-const D = ms => FAST ? ms * 0.06 : ms;
+const D = ms => FAST ? ms * 0.06 : EZ() ? ms * 1.3 : ms; // modo sencillo: everything a little slower
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -828,11 +912,14 @@ const IS_HTTP = /^https?:/.test(location.protocol);
    RULES ENGINE (pure; no DOM). Mutates the game object in place. No undo:
    "sacaron uno, mala suerte".
    ===================================================================== */
+const RN = G => (G && G.R) || 4; // rounds in this game (corta 2 · normal 4 · larga 6); games saved before this setting had 4
+const isFinal = G => !!G && G.round === RN(G); // the last round is the FINAL: provisional leader, clinch, the dark table
+const rng = n => Array.from({ length: n }, (_, i) => i + 1);
 const Engine = (() => {
-  function create(players, { group = 'A' } = {}) {
+  function create(players, { group = 'A', rounds: R = 4 } = {}) {
     return {
-      v: 1, group,
-      players: players.map(p => ({ id: p.id, name: p.name, secured: 0, rounds: [null, null, null, null] })),
+      v: 1, group, R,
+      players: players.map(p => ({ id: p.id, name: p.name, secured: 0, rounds: Array(R).fill(null) })),
       order: players.map(p => p.id), round: 1, idx: 0, phase: 'round_intro',
       pot: 0, before: 0, throws: [], last: null, seq: 0
     };
@@ -872,11 +959,11 @@ const Engine = (() => {
   /* CLINCH (round 4): the last player still to play round 4 whose TOTAL (a salvo + en juego) is strictly above every other
      player's final score has won — nobody is left to catch them. The pot is consolidated (an automatic PARE), no decision,
      and the group ends. A tie does not clinch: the player still decides. */
-  const lastToPlay = G => G.round === 4 && G.idx === G.order.length - 1;
+  const lastToPlay = G => isFinal(G) && G.idx === G.order.length - 1;
   const bestOther = (G, p) => Math.max(...G.players.filter(q => q.id !== p.id).map(q => q.secured));
   function clinch(G, p, entry) {
-    const amt = G.pot, from = p.secured; p.secured += amt; p.rounds[3] = amt; G.pot = 0;
-    G.last = { type: 'clinch', amount: amt, from, total: p.secured, best: bestOther(G, p), round: 4, entry: !!entry, d: entry ? null : G.throws[G.throws.length - 1].d };
+    const amt = G.pot, from = p.secured; p.secured += amt; p.rounds[RN(G) - 1] = amt; G.pot = 0;
+    G.last = { type: 'clinch', amount: amt, from, total: p.secured, best: bestOther(G, p), round: G.round, entry: !!entry, d: entry ? null : G.throws[G.throws.length - 1].d };
     G.phase = 'turn_over';
   }
   const clinches = G => { const p = cur(G); return !!p && lastToPlay(G) && live(G, p) > bestOther(G, p); };
@@ -916,7 +1003,7 @@ const Engine = (() => {
     need(G, 'turn_over');
     G.pot = 0; G.throws = []; G.last = null;
     G.idx++;
-    if (G.idx >= G.order.length) { G.idx = 0; G.round++; G.phase = G.round > 4 ? 'game_over' : 'round_intro'; if (G.round > 4) G.round = 4, G.idx = G.order.length - 1; }
+    if (G.idx >= G.order.length) { G.idx = 0; G.round++; G.phase = G.round > RN(G) ? 'game_over' : 'round_intro'; if (G.round > RN(G)) G.round = RN(G), G.idx = G.order.length - 1; }
     else G.phase = 'turn_intro';
     G.before = 0; G.seq++; return G;
   }
@@ -1034,23 +1121,25 @@ const MAXP = 16, MINP = 2, GMAX = 8, GMIN = 2;
 function renderPlayers() {
   if (!APP.names.length) APP.names = Array(8).fill('');
   const n = APP.names.length, half = Math.max(8, Math.ceil(n / 2));
-  const mk = i => `<div class="pl-in"><b>${i + 1}</b><input data-i="${i}" maxlength="24" value="${esc(APP.names[i] || '')}" placeholder="…"><button class="rm" data-rm="${i}" title="Quitar">✕</button></div>`;
+  const mk = i => `<div class="pl-in"><b>${i + 1}</b><input data-i="${i}" maxlength="24" value="${esc(APP.names[i] || '')}" placeholder="Nombre" aria-label="Jugador ${i + 1}"><button class="rm" data-rm="${i}" title="Quitar" aria-label="Quitar jugador ${i + 1}">✕</button></div>`;
   const idx = [...Array(n).keys()];
-  $('#plCol1').innerHTML = idx.slice(0, half).map(mk).join('') + (n < MAXP && n < half ? '<button class="pl-add" data-addslot title="Agregar jugador">+</button>' : '');
-  $('#plCol2').innerHTML = idx.slice(half).map(mk).join('') + (n < MAXP && n >= half ? '<button class="pl-add" data-addslot title="Agregar jugador">+</button>' : '');
+  $('#plCol1').innerHTML = idx.slice(0, half).map(mk).join('');
+  $('#plCol2').innerHTML = idx.slice(half).map(mk).join('');
+  $('#plCols').classList.toggle('one', n <= half); $('#bAddSlot').hidden = n >= MAXP;
+  if (!MOBILE) $('#pasteD').open = true;
   $$('#s-players .pl-in input').forEach(inp => {
     inp.oninput = () => { APP.names[+inp.dataset.i] = inp.value; save(); plCheck(); };
     inp.onkeydown = e => { if (e.key === 'Enter') { const i = +inp.dataset.i, nx = $(`#s-players input[data-i="${i + 1}"]`); if (nx) nx.focus(); else if (APP.names.length < MAXP && inp.value.trim()) { APP.names.push(''); save(); renderPlayers(); $(`#s-players input[data-i="${i + 1}"]`).focus(); } else $('#bPlNext').click(); } };
   });
   $$('#s-players [data-rm]').forEach(b => b.onclick = () => { APP.names.splice(+b.dataset.rm, 1); if (APP.names.length < MINP) APP.names.push(''); save(); renderPlayers(); });
-  $$('#s-players [data-addslot]').forEach(b => b.onclick = () => { if (APP.names.length >= MAXP) return; APP.names.push(''); save(); renderPlayers(); $(`#s-players input[data-i="${APP.names.length - 1}"]`).focus(); });
+  $('#bAddSlot').onclick = () => { if (APP.names.length >= MAXP) return; APP.names.push(''); save(); renderPlayers(); $(`#s-players input[data-i="${APP.names.length - 1}"]`).focus(); };
   plCheck();
 }
 function plCheck() {
   const names = APP.names.map(s => (s || '').trim()), filled = names.filter(Boolean).length;
   const low = names.map(s => s.toLowerCase()), dup = new Set(low.filter((s, i) => s && low.indexOf(s) !== i));
   $$('#s-players .pl-in input').forEach(inp => inp.classList.toggle('dup', dup.has(inp.value.trim().toLowerCase())));
-  $('#plMsg').textContent = filled < MINP ? '' : filled <= GMAX ? `${filled}` : `${filled} → A + B`;
+  $('#plMsg').textContent = filled < MINP ? `Faltan ${MINP - filled} ${MINP - filled === 1 ? 'nombre' : 'nombres'}` : filled <= GMAX ? `${filled} jugadores` : `${filled} jugadores · dos grupos`;
   $('#bPlNext').disabled = filled < MINP;
 }
 $('#bPaste').onclick = () => {
@@ -1085,13 +1174,13 @@ let asSel = { A: null, B: null };
 function renderAssign() {
   for (const g of ['A', 'B']) {
     const ids = groupIds(g);
-    $('#chips' + g).innerHTML = ids.map(id => `<div class="chip ${asSel[g] === id ? 'sel' : ''}" draggable="true" data-id="${id}"><span class="nm" title="Clic para corregir">${esc(personName(id))}</span><button class="ib" data-ren title="Corregir">✎</button><button class="ib" data-del title="Quitar">✕</button><button class="ib mv" data-mv title="Mover al grupo ${g === 'A' ? 'B' : 'A'}">${g === 'A' ? '→' : '←'}</button></div>`).join('');
+    $('#chips' + g).innerHTML = ids.map(id => `<div class="chip ${asSel[g] === id ? 'sel' : ''}" draggable="true" data-id="${id}"><span class="nm" title="Doble clic para corregir">${esc(personName(id))}</span><button class="ib" data-ren title="Corregir" aria-label="Corregir ${esc(personName(id))}">✎</button><button class="ib" data-del title="Quitar" aria-label="Quitar ${esc(personName(id))}">✕</button><button class="mv to${g === 'A' ? 'B' : 'A'}" data-mv aria-label="Pasar ${esc(personName(id))} al grupo ${g === 'A' ? 'B' : 'A'}"><svg><use href="#i-swap"/></svg>${g === 'A' ? 'B' : 'A'}</button></div>`).join('');
     const n = ids.length, c = $('#cnt' + g), opt = g === 'B' && n === 0;
     c.textContent = opt ? '—' : n + '/8'; c.classList.toggle('ok', !opt && n >= GMIN && n <= GMAX); c.classList.toggle('opt', opt);
     if (opt) $('#chipsB').innerHTML = '<div class="emptyB">opcional</div>';
   }
   const nA = groupIds('A').length, nB = groupIds('B').length, ok = groupsValid(), total = nA + nB;
-  $('#bAsNext').disabled = !ok;
+  $('#bAsNext').disabled = !ok; $('#bAsNext').textContent = activeGroups().length > 1 ? 'Elegir grupo →' : 'Orden →';
   const bad = g => { const n = groupIds(g).length; return n > GMAX ? `${g}: máx. 8` : n < GMIN && !(g === 'B' && n === 0) && !(g === 'A' && n === 0 && nB) ? `${g}: mín. 2` : ''; };
   $('#asMsg').textContent = ok ? '' : [bad('A'), bad('B')].filter(Boolean).join(' · ');
   $('#bRandom').disabled = total < 4 && !nB;
@@ -1161,7 +1250,7 @@ function renderOrder() {
   const g = APP.playing; $('#orTitle').textContent = 'Orden · ' + g;
   const o = curOrder();
   $('#orList').innerHTML = o.map((id, i) => `<div class="orow" draggable="true" data-id="${id}"><span class="n">${i + 1}</span><span class="nm">${esc(personName(id))}</span><button class="ib" data-up title="Subir">▲</button><button class="ib" data-dn title="Bajar">▼</button></div>`).join('');
-  save();
+  save(); renderSettings();
 }
 $('#orList').addEventListener('click', e => {
   const r = e.target.closest('.orow'); if (!r) return; const o = APP.order[APP.playing], i = o.indexOf(r.dataset.id);
@@ -1179,9 +1268,19 @@ $('#orList').addEventListener('drop', e => {
 });
 $('#bOrBack').onclick = () => show(activeGroups().length > 1 ? 'group' : 'assign');
 $('#bShuffle').onclick = () => { APP.order[APP.playing] = shuffle(curOrder()); save(); renderOrder(); };
+/* the game settings: length (corta / normal / larga) and modo sencillo */
+function renderSettings() {
+  const r = APP.rounds || 4;
+  $$('#rdSeg [data-r]').forEach(b => { const on = +b.dataset.r === r; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+  $('#swEasy').checked = EZ(); document.body.classList.toggle('easy', EZ()); $('#bEasy').classList.toggle('on', EZ());
+}
+$('#rdSeg').onclick = e => { const b = e.target.closest('[data-r]'); if (!b) return; APP.rounds = +b.dataset.r; save(); renderSettings(); };
+function setEasy(on) { APP.easy = !!on; save(); renderSettings(); if (APP.screen === 'game') { toast(on ? 'Modo sencillo' : 'Modo normal'); renderGame(); } }
+$('#swEasy').onchange = e => setEasy(e.target.checked);
+$('#bEasy').onclick = () => setEasy(!EZ());
 $('#bPlay').onclick = () => {
   au(); askMotion(); const g = APP.playing, o = curOrder();
-  APP.game = Engine.create(o.map(id => ({ id, name: personName(id) })), { group: g });
+  APP.game = Engine.create(o.map(id => ({ id, name: personName(id) })), { group: g, rounds: APP.rounds || 4 });
   save(); show('game'); if (!NOCAM) startCamera(true);
 };
 
@@ -1369,6 +1468,8 @@ async function initStage() {
   ST.portrait = isPortrait(); resetDice();
   ST.cam.pos = new T3.Vector3(); ST.cam.look = new T3.Vector3(); ST.portrait = isPortrait(); setCamPose(defaultPose(), true);
   Object.assign(TMP, { q: new T3.Quaternion(), q2: new T3.Quaternion(), e: new T3.Euler(), v: new T3.Vector3(), ray: new T3.Raycaster(), v2: new T3.Vector2() });
+  cv.addEventListener('webglcontextlost', () => bb('gl-lost')); // three.js restores the context by itself; we only log it and redraw
+  cv.addEventListener('webglcontextrestored', () => { bb('gl-restored'); ST.dirty = true; });
   ST.ready = true; resize(); new ResizeObserver(resize).observe($('#stage'));
   bindPointer();
   requestAnimationFrame(frame);
@@ -1486,7 +1587,7 @@ function launch(tp, info = {}) {
   ST.dice.forEach((d, i) => { const L = plan.layouts[i]; d.layout = L; L.forEach((v, k) => { d.mats[k].map = faceTex(v); d.mats[k].needsUpdate = true; }); });
   const drama = !!info.drama;
   const tEnd = Math.max(...rec.stop) * rec.dt;
-  ST.play = { rec, t: 0, values, hitIdx: 0, drama, tEnd, info, tries, slowFrom: drama ? tEnd - CFG.drama.slowLast : 1e9, tp };
+  ST.play = { rec, t: 0, wall: performance.now(), values, hitIdx: 0, drama, tEnd, info, tries, slowFrom: drama ? tEnd - CFG.drama.slowLast : 1e9, tp };
   ST.mode = 'play'; ST.flash = 1; SFX.release(tp.strength);
   lastThrow = { values, tp, tries, dur: tEnd, hits: rec.hits.length, drama, extra: info.extra };
   return true;
@@ -1621,7 +1722,7 @@ HT.fu = new OneEuro(1.4, 12, 1.5); HT.fv = new OneEuro(1.4, 12, 1.5);
 async function createHand(delegate) {
   const models = [MODELS.hand]; if (IS_HTTP) models.push(new URL(LOCAL.hand, location.href).href); if (params.has('local')) models.reverse();
   let err;
-  for (const m of models) { try { return await HT.mp.HandLandmarker.createFromOptions(HT.fileset, { baseOptions: { modelAssetPath: m, delegate }, runningMode: 'VIDEO', numHands: 2, minHandDetectionConfidence: 0.5, minHandPresenceConfidence: 0.5, minTrackingConfidence: 0.5 }); } catch (e) { err = e; console.warn('hand', delegate, m, e); } }
+  for (const m of models) { try { return await HT.mp.HandLandmarker.createFromOptions(HT.fileset, { baseOptions: { modelAssetPath: m, delegate }, runningMode: 'VIDEO', numHands: 2, minHandDetectionConfidence: 0.6, minHandPresenceConfidence: 0.6, minTrackingConfidence: 0.5 }); } catch (e) { err = e; console.warn('hand', delegate, m, e); } }
   throw err;
 }
 async function createFace() {
@@ -1661,7 +1762,8 @@ async function openCamera() {
   HT.stream = s; video.srcObject = s; await video.play().catch(() => { });
   if (!video.videoWidth) await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
   HT.camOn = true; $('#bCam').classList.add('on');
-  s.getVideoTracks()[0].addEventListener('ended', () => { HT.camOn = false; HT.state = 'off'; $('#bCam').classList.remove('on'); });
+  s.getVideoTracks()[0].addEventListener('ended', () => { HT.camOn = false; HT.state = 'off'; $('#bCam').classList.remove('on'); bb('cam-ended');
+    if (!HT.camRetried) { HT.camRetried = true; HT.stream = null; setTimeout(() => startCamera(false), 1200); } }); // the camera dropped (sleep, a cable): try once more
   if ('requestVideoFrameCallback' in video) video.requestVideoFrameCallback(onVideoFrame); else (function loop() { onVideoFrame(); if (HT.camOn) setTimeout(loop, 33); })();
 }
 let camTried = false, mouseOnly = false;
@@ -1715,8 +1817,17 @@ const GEST = {
   // SHAPE per finger (index, middle, ring, pinky): extended if tip→wrist > PIP→wrist × ext AND the finger is straight at the PIP (angle)
   extOn: GP('exton', 1.12), extOff: GP('extoff', 1.0), angOn: GP('angon', 135), angOff: GP('angoff', 110), // hysteresis: on / stay-on thresholds
   partL: GP('partl', 1.8),     // 2 fingers out + a burst at least this strong (while armed) = a release too
-  startR: GP('startr', 1.4)    // a burst that makes the hand vanish (b, c) must START at the fist (within this many palm lengths): a hand passing in front is not a throw
+  startR: GP('startr', 1.4),   // a burst that makes the hand vanish (b, c) must START at the fist (within this many palm lengths): a hand passing in front is not a throw
+  burstMax: GP('burstmax', 1500), // a burst longer than this is closed by force: background motion can never keep one open
+  holdMax: GP('holdmax', 12000),  // dice in the hand this long → they leave by themselves (6 s in modo sencillo)
+  minPalm: GP('minpalm', 0.06), relS: GP('rels', 0.55), // a hand smaller than this (fraction of the frame), or than rels × the biggest one, is somebody in the back
+  zone: GP('zone', 0.7)        // only a hand whose palm is inside this central fraction of the frame can take the focus
 };
+/* modo sencillo (APP.easy): the same gesture, more forgiving */
+const EZ = () => !!(APP && APP.easy);
+const gArm = () => EZ() ? Math.min(GEST.arm, 200) : GEST.arm;
+const gLost = () => EZ() ? Math.max(GEST.lost, 2000) : GEST.lost;
+const gHoldMax = () => EZ() ? Math.min(GEST.holdMax, 6000) : GEST.holdMax;
 const FINGERS = [[5, 6, 8], [9, 10, 12], [13, 14, 16], [17, 18, 20]]; // MCP, PIP, TIP
 /* ---------- the HAND-LOCAL frame (left and right hands read the same): origin at the wrist, +y toward the middle knuckle,
    +x toward the index side (so the thumb side is +x for BOTH hands), unit = palm length (wrist → middle knuckle). z = x × y points
@@ -1776,7 +1887,9 @@ function onVideoFrame() {
   if (HT.camOn && 'requestVideoFrameCallback' in video) video.requestVideoFrameCallback(onVideoFrame);
 }
 function roiBox(now) {
-  const b = HT.box; if (!b || now - HT.boxT > 2500) return { x0: 0, y0: 0, x1: 1, y1: 1, full: true };
+  const b = HT.box, holding = HT.state === 'holding';
+  // while a hand is LOCKED the box never grows to the whole frame: people moving behind would keep a burst alive forever
+  if (!b || (now - HT.boxT > 2500 && !holding)) return { x0: 0, y0: 0, x1: 1, y1: 1, full: true };
   const fresh = now - HT.boxT < GEST.mem, k = fresh ? GEST.roi : GEST.roiLost;
   const cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2, w = Math.max(0.12, b.x1 - b.x0) * k, h = Math.max(0.16, b.y1 - b.y0) * k;
   return { x0: clamp(cx - w / 2, 0, 1), y0: clamp(cy - h / 2, 0, 1), x1: clamp(cx + w / 2, 0, 1), y1: clamp(cy + h / 2, 0, 1), fresh };
@@ -1835,12 +1948,13 @@ function motionGesture(now, p) {
   // BURSTS of motion (a throw is one short burst; a shake is a long one)
   let b = GS.burst;
   if (!b || b.end) {
-    if (L >= GEST.burstL) { GS.burst = b = { start: now, peak: L, integ: 0, low: 0, end: 0, armed: now - GS.holdStart >= GEST.arm, u0: 9, u1: -9, v0: 9, v1: -9, us: NaN, vs: NaN, alt0: GS.alt }; trace('burst+', L.toFixed(1)); }
+    if (L >= GEST.burstL) { GS.burst = b = { start: now, peak: L, integ: 0, low: 0, end: 0, armed: now - GS.holdStart >= gArm(), u0: 9, u1: -9, v0: 9, v1: -9, us: NaN, vs: NaN, alt0: GS.alt }; trace('burst+', L.toFixed(1)); }
   }
   if (b && !b.end) {
     b.peak = Math.max(b.peak, L); b.integ += L * dt / 1000;
     if (L >= GEST.endL && !isNaN(p.u)) { if (isNaN(b.us)) { b.us = p.u; b.vs = p.v; } if (startsAtFist(b)) GS.moC = { u: p.u, v: p.v, t: now }; /* only a burst that started at the fist predicts where the hand went */ b.u0 = Math.min(b.u0, p.u); b.u1 = Math.max(b.u1, p.u); b.v0 = Math.min(b.v0, p.v); b.v1 = Math.max(b.v1, p.v); }
     if (L < GEST.endL) { b.low = b.low || now; if (now - b.low >= GEST.endMs) { b.end = b.low; onBurstEnd(now, b); } } else b.low = 0;
+    if (!b.end && now - b.start > GEST.burstMax) { b.end = now; bb('burst-max', b.peak.toFixed(1)); onBurstEnd(now, b); } // background motion never keeps a burst open
   }
 }
 const burstTravel = b => b.u1 < b.u0 ? 0 : Math.hypot(b.u1 - b.u0, (b.v1 - b.v0) * 0.75);
@@ -1856,7 +1970,12 @@ const startsAtFist = b => { const c = GS.closedPos; if (!b || !c || isNaN(b.us))
 // another hand next to the locked one, or a burst that did not start at the fist: a release then needs a second look (one more landmarker frame)
 const doubtful = (b, now) => now - TRK.otherNear < 700 || (!!b && !startsAtFist(b));
 const partialBurst = (b, now) => !!b && b.armed && b.peak >= GEST.partL && movedOpen(b) && palmMoved() && (!b.end || now - b.end < GEST.after); // a half-open hand counts only after a strong swing that went somewhere
-function trace(...a) { if (TEST || DEBUG) { GS.trace = GS.trace || []; GS.trace.push([Math.round(performance.now()), ...a].join(' ')); if (GS.trace.length > 400) GS.trace.shift(); } }
+function trace(...a) { GS.trace = GS.trace || []; GS.trace.push([Math.round(performance.now()), ...a].join(' ')); if (GS.trace.length > 600) GS.trace.shift(); } // always on (cheap): it goes into the problem report
+/* the BLACK BOX: the few events that explain a stuck game (grab, release + why, lost hand, timeouts, watchdog, errors). ⋯ → Reportar */
+const BB = [];
+function bb(...a) { BB.push([Math.round(performance.now()), ...a]); if (BB.length > 400) BB.shift(); }
+addEventListener('error', e => bb('error', String(e.message || e).slice(0, 200)));
+addEventListener('unhandledrejection', e => bb('reject', String(e.reason && (e.reason.message || e.reason)).slice(0, 200)));
 function onBurstEnd(now, b) {
   trace('burst-', b.peak.toFixed(1), Math.round(b.end - b.start) + 'ms', 'travel', burstTravel(b).toFixed(2), b.armed ? 'armed' : 'not-armed');
   if (HT.state !== 'holding' || !b.armed) return;
@@ -1885,8 +2004,14 @@ function gestureTick(now) {
     if (!news && P.lost && P.dur <= GEST.single && startsAtFist(P.b)) return release('b', now); // the detector stalled after a vanishing burst
     if (!news) { GS.pending = null; GS.info = 'ráfaga sin confirmar'; }
   }
-  if (!GS.pending && GS.last === 'lost' && now - HT.lastSeen > GEST.lost && !(GS.burst && !GS.burst.end)) return cancelHoldHand();
-  ST.armedVis = now - GS.holdStart >= GEST.arm;
+  // the locked hand is gone: a burst may delay the verdict, never forever (people moving behind keep the energy up)
+  if (!GS.pending && GS.last === 'lost') {
+    const lf = now - HT.lastSeen, open = GS.burst && !GS.burst.end;
+    if (lf > gLost() && (!open || lf > gLost() + GEST.burstMax)) { bb('lost', Math.round(lf)); return EZ() ? release('auto', now) : cancelHoldHand(); }
+  }
+  // the dice never stay in the hand: after holdMax they leave by themselves
+  if (now - GS.holdStart > gHoldMax()) { bb('hold-max'); return release('auto', now); }
+  ST.armedVis = now - GS.holdStart >= gArm();
   // squeeze: the longer (and tighter) the fist, the more the dice glow (silently)
   const tight = clamp((CFG.hand.closeT - HT.curl) / 0.35, 0, 1);
   HT.charge = Math.min(1, HT.charge + dt * (0.22 + 0.55 * tight)); ST.charge = HT.charge;
@@ -1932,6 +2057,16 @@ function assignTracks(cands, now) {
     if (now - t.t > 600 && HT.armed && HT.state !== 'holding') t.armed = true; // back after a gap: armed like a new hand
     t.u = c.u; t.v = c.v; t.s = t.s * 0.6 + c.s * 0.4; t.side = clamp(t.side * 0.75 + c.ch.c * 0.25, -1, 1); t.t = now; t.c = c;
   }
+  // RE-LOCK: the locked hand did not come back as itself (its side flickered, or blur changed its size) but exactly ONE unclaimed hand
+  // is near where it was: that is the player. Without this the dice could wait for a hand that already came back as a "new" one.
+  const lockT = HT.state === 'holding' && TRK.lock ? L.find(t => t.id === TRK.lock) : null;
+  if (lockT && !done.includes(lockT) && now - lockT.t > 250) {
+    const free = cands.map((c, k) => k).filter(k => !used.includes(k));
+    if (free.length === 1) {
+      const k = free[0], c = cands[k], d = Math.hypot(c.u - lockT.u, (c.v - lockT.v) * 0.75) / Math.max(lockT.s, 0.05);
+      if (d <= 3.5 && Math.abs(Math.log(c.s / lockT.s)) <= 0.9) { used.push(k); done.push(lockT); lockT.u = c.u; lockT.v = c.v; lockT.du = 0; lockT.dv = 0; lockT.s = c.s; lockT.side = c.ch.c; lockT.t = now; lockT.c = c; trace('relock'); bb('relock', +d.toFixed(2)); }
+    }
+  }
   cands.forEach((c, k) => { if (!used.includes(k)) L.push({ id: TRK.next++, u: c.u, v: c.v, du: 0, dv: 0, s: c.s, side: c.ch.c, t: now, born: now, ext: null, armed: HT.armed && HT.state !== 'holding', c }); });
   TRK.list = L.filter(t => t.id === TRK.lock || now - t.t < 4000); // other hands keep their identity through detection gaps (re-armed when they come back)
 }
@@ -1956,13 +2091,21 @@ function runLandmarker(now) {
   const seen = TRK.list.filter(t => t.t === now), holding = HT.state === 'holding' && TRK.lock;
   for (const t of seen) { const ff = fingerFeatures(t.c.l, t.c.w, ar, t.ext, t.side); t.ext = ff.ext; t.ff = ff; t.curl = handCurl(t.c, ar);
     if (ff.s === 'closed' && t.curl > CFG.hand.openT * 0.8) ff.s = 'mid'; // a blurred OPEN hand can bend every finger at the knuckle while the tips stay far away: a fist also needs the tips pulled in (real fists: curl ≈ 0.3)
+    if (EZ() && ff.s === 'mid') { // modo sencillo: hands that do not close (or open) all the way still count
+      if (HT.state !== 'holding' && t.curl < CFG.hand.openT * 0.85) ff.s = 'closed';
+      else if (HT.state === 'holding' && t.id === TRK.lock && ff.n >= 2 && now - GS.holdStart >= gArm()) ff.s = 'open';
+    }
     t.shape = ff.s; if (ff.s !== 'closed') t.armed = true; }
   let T0 = null;
   if (holding) T0 = seen.find(t => t.id === TRK.lock) || null;
   else { // the focus: the first armed hand to close; else keep the one we follow; else the biggest, most central
     const score = t => t.s * (1.2 - Math.hypot(t.u - 0.5, (t.v - 0.5) * 0.75)), best = a => a.reduce((x, y) => score(y) > score(x) ? y : x);
-    const cur = seen.find(t => t.id === TRK.focus), closed = seen.filter(t => t.shape === 'closed' && t.armed);
-    T0 = cur && closed.includes(cur) ? cur : closed.length ? best(closed) : cur || (seen.length ? best(seen) : null);
+    // only a hand that belongs to the player can take the focus: big enough (people in the back have small hands in the image)
+    // and inside the central zone (people passing by enter from the edges)
+    const big = seen.reduce((m, t) => Math.max(m, t.s), 0), elig = seen.filter(t => t.s >= GEST.minPalm && t.s >= GEST.relS * big && Math.abs(t.u - 0.5) <= GEST.zone / 2);
+    HT.far = seen.length > 0 && !elig.length; // hands in view, none close enough: the hint says «Acércate»
+    const cur = elig.find(t => t.id === TRK.focus), closed = elig.filter(t => t.shape === 'closed' && t.armed);
+    T0 = cur && closed.includes(cur) ? cur : closed.length ? best(closed) : cur || (elig.length ? best(elig) : null);
     if (T0 && T0.id !== TRK.focus) { TRK.focus = T0.id; HT.fist = 0; HT.fu.reset(); HT.fv.reset(); trace('focus', T0.id); }
   }
   // the other hands: their boxes are masked out of the motion energy; one close to the locked hand makes a release need a second look
@@ -2007,7 +2150,7 @@ function onShape(h, now) {
   if (HT.state !== 'holding') {
     HT.state = 'idle';
     if (s !== 'closed') HT.armed = true; // any not-a-fist reading re-arms (a blurred open hand often reads as 'mid')
-    if (HT.armed && s === 'closed' && !(TEST && window.__noGrab)) { if (++HT.fist >= (HT.ms > 90 ? 1 : 2)) startHoldHand(now); } else HT.fist = 0;
+    if (HT.armed && s === 'closed' && !(TEST && window.__noGrab)) { if (!HT.fist++) HT.fistT = now; if (EZ() ? now - HT.fistT >= 350 && HT.fist >= 2 : HT.fist >= (HT.ms > 90 ? 1 : 2)) startHoldHand(now); } else HT.fist = 0; // modo sencillo: a looser fist, held a moment
     return;
   }
   if (ST.mode === 'hold' && ST.holdSrc === 'hand') ST.held = hoverPoint((HT.su * 2 - 1) * 1.25, -(HT.sv * 2 - 1) * 1.3 + 0.12);
@@ -2034,10 +2177,11 @@ function startHoldHand(now) {
   if (!beginHold('hand')) return;
   HT.state = 'holding'; HT.charge = 0; HT.shake = 0; HT.mouthT = 0; HT.open = 0; HT.fist = 0; HT.blown = false;
   TRK.lock = TRK.focus; GS.lockS = HT.hand ? HT.hand.s : 0.12; TRK.otherNear = -1e9;
+  bb('grab', TRK.lock, HT.hand ? +HT.hand.s.toFixed(3) : 0);
   trace('GRAB', 'lock #' + TRK.lock); if (REC) recPush(REC.ev, { t: Math.round(now), ev: 'grab', lock: TRK.lock, side: +(HT.side || 0).toFixed(2) }); Object.assign(GS, { closedPos: HT.hand ? { u: HT.hand.u, v: HT.hand.v } : null, holdStart: now, closedT: now, burst: null, pending: null, shakeRun: 0, alt: 0, lastSign: 0, shaking: false, info: '' }); GS.grabLog.push(now); (GS.grabPos = GS.grabPos || []).push({ t: now, u: HT.hand ? HT.hand.u : null, v: HT.hand ? HT.hand.v : null, lock: TRK.lock });
   updateHint();
 }
-function cancelHoldHand() { TRK.lock = 0; HT.state = HT.hand ? 'idle' : 'nohand'; HT.armed = true; GS.pending = null; ST.armedVis = false; if (REC) recPush(REC.ev, { t: Math.round(performance.now()), ev: 'drop-back' }); cancelHold(); updateHint(); }
+function cancelHoldHand() { bb('drop-back'); TRK.lock = 0; HT.state = HT.hand ? 'idle' : 'nohand'; HT.armed = true; GS.pending = null; ST.armedVis = false; if (REC) recPush(REC.ev, { t: Math.round(performance.now()), ev: 'drop-back' }); cancelHold(); updateHint(); }
 function slope(pts, key) { const n = pts.length; if (n < 2) return 0; const mt = pts.reduce((a, p) => a + p.t, 0) / n, mx = pts.reduce((a, p) => a + p[key], 0) / n; let nu = 0, de = 0; pts.forEach(p => { nu += (p.t - mt) * (p[key] - mx); de += (p.t - mt) ** 2; }); return de > 0 ? nu / de : 0; }
 function motionVector(now) { // strength from the peak and integral of energy; direction from the motion centroid (mirrored)
   // measured on the THROW BURST itself (from just before it started to its end), not on a window ending at the release: the release
@@ -2053,18 +2197,20 @@ function release(reason, now) {
   if (HT.state !== 'holding') return;
   const m = motionVector(now); GS.pending = null; GS.reason = reason;
   let tp;
-  if (reason === 'drop') tp = { strength: 0, dir: [0, -1], down: 0, mag: 0, src: 'hand', gentle: true };
-  else {
+  if (reason === 'drop' && !EZ()) tp = { strength: 0, dir: [0, -1], down: 0, mag: 0, src: 'hand', gentle: true };
+  else if (reason === 'auto' || reason === 'drop') { // a throw nobody swung (time out, the LANZAR button, or an open hand in modo sencillo): a fair medium throw
+    const a = (rnd() - 0.5) * 0.8; tp = { strength: 0.5 + rnd() * 0.15, dir: [Math.sin(a), -Math.cos(a)], down: 0, mag: 1, src: 'hand', gentle: false };
+  } else {
     const x = 0.35 * m.peak + 2.2 * m.integ, strength = clamp(GEST.minS + (1 - GEST.minS) * (1 - Math.exp(-x / GEST.sk)), 0, 1);
     const sp = Math.hypot(m.lat, m.up), fwd = Math.max(0.45 * sp + 0.15, 0.9 * Math.max(0, m.up) + 0.35 * Math.max(0, -m.up) + 0.3 * Math.max(0, m.grow));
     const dx = m.lat + (rnd() - 0.5) * 0.08, dz = -fwd, dl = Math.hypot(dx, dz) || 1;
     tp = { strength, dir: [dx / dl, dz / dl], down: Math.max(0, -m.up) * 0.5, mag: x, src: 'hand', gentle: false };
   }
-  HT.state = 'thrown'; HT.armed = false; ST.armedVis = false; trace('RELEASE', reason); TRK.lock = 0; TRK.list.forEach(t => t.armed = false);
+  HT.state = 'thrown'; HT.armed = false; ST.armedVis = false; trace('RELEASE', reason); bb('release', reason, +tp.strength.toFixed(2)); TRK.lock = 0; TRK.list.forEach(t => t.armed = false);
   if (REC) recPush(REC.ev, { t: Math.round(now), ev: 'release', reason, strength: +tp.strength.toFixed(2) });
   HT.lastThrowVec = { ...Object.fromEntries(Object.entries(m).map(([k, v]) => [k, +(+v).toFixed(2)])), how: reason, strength: +tp.strength.toFixed(2) };
   GS.log.push({ t: now, reason, strength: tp.strength, dir: tp.dir, peak: m.peak, integ: m.integ });
-  GS.info = { a: '(a) mano abierta tras la ráfaga', p: '(p) mano medio abierta + ráfaga fuerte', b: '(b) la mano desapareció en la ráfaga (desenfoque)', c: '(c) ráfaga fuerte sin noticias del detector', drop: 'abrió sin moverse: caída suave' }[reason];
+  GS.info = { a: '(a) mano abierta tras la ráfaga', p: '(p) mano medio abierta + ráfaga fuerte', b: '(b) la mano desapareció en la ráfaga (desenfoque)', c: '(c) ráfaga fuerte sin noticias del detector', drop: 'abrió sin moverse: caída suave', auto: 'lanzamiento automático (tiempo, botón o modo sencillo)' }[reason];
   doThrow(tp, []);
 }
 function doBlow() { if (ST.mode !== 'hold' || HT.blown) return; HT.blown = true; ST.blowFx = 1.6; ST._sparkNew = 1; SFX.blow(); }
@@ -2184,7 +2330,7 @@ const isPractice = g => !!g && g.phase === 'round_intro' && g.round === 1 && g.i
 const canThrow = g => !!g && !busy && (g.phase === 'await_throw' || isPractice(g));
 async function enterGame() {
   const g = G(); if (!g) return show('title');
-  document.body.classList.toggle('r4', g.round === 4);
+  document.body.classList.toggle('r4', isFinal(g));
   renderGame();
   try { await initStage(); resize(); } catch (e) { console.error('3D', e); toast('Sin 3D (three.js)', 6000); }
   if (!camTried && !NOCAM) startCamera(false); else if (NOCAM) mouseOnly = true;
@@ -2197,7 +2343,7 @@ function renderGame(anim) {
   const g = G(); if (!g || !gameEl.classList.contains('on')) return;
   if (g.phase === 'game_over') { finishGroup(); return; }
   const pr = isPractice(g);
-  document.body.classList.toggle('r4', g.round === 4); gameEl.classList.toggle('practice', pr);
+  document.body.classList.toggle('r4', isFinal(g)); gameEl.classList.toggle('practice', pr);
   renderTag(g); renderState(anim); renderLeader(g); if (!$('#rankov').hidden) renderRankOv();
   const c = $('#card');
   if (g.phase === 'round_intro' && !pr) showRoundCard(g);
@@ -2219,7 +2365,7 @@ function renderTag(g) {
   const p = Engine.cur(g);
   if (isPractice(g)) { $('#ttName').innerHTML = '<span class="prac">PRÁCTICA</span>'; $('#ttThrow').innerHTML = ''; return; }
   $('#ttName').textContent = p ? p.name : '—';
-  $('#ttThrow').innerHTML = [1, 2, 3, 4].map(r => `<i class="${r < g.round ? 'done' : r === g.round ? 'cur' : ''}"></i>`).join('');
+  $('#ttThrow').innerHTML = rng(RN(g)).map(r => `<i class="${r < g.round ? 'done' : r === g.round ? 'cur' : ''}"></i>`).join('');
   $('#ttThrow').setAttribute('aria-label', 'ronda ' + g.round);
 }
 /* the hint: only on the practice throw, each player's first turn of round 1 (until the first grab), or after 8 s idle. 2–4 words. */
@@ -2233,14 +2379,46 @@ function updateHint() {
   const g = G(), el = $('#hint'); if (!g) return;
   const st = $('#stage'); st.classList.toggle('grab', canThrow(g)); st.classList.toggle('holding', ST.mode === 'hold');
   const p = Engine.cur(g), first = isPractice(g) || (g.round === 1 && g.phase === 'await_throw' && p && !(APP.ftue || {})[p.id]);
-  const idle = performance.now() - hintT0 > 8000;
-  if (!canThrow(g) || ST.mode === 'play' || ST.mode === 'hold' || !(first || idle)) { if (el.dataset.k) { el.innerHTML = ''; el.dataset.k = ''; } return; }
+  const now = performance.now(), idle = now - hintT0 > 8000;
+  // the dice have been in the hand a while: say what to do, and offer the way out
+  const stuck = canThrow(g) && ST.mode === 'hold' && ST.holdSrc === 'hand' && HT.state === 'holding' && now - GS.holdStart > (EZ() ? 2500 : 4000);
+  if (stuck) {
+    if (el.dataset.k !== 'stuck') { el.dataset.k = 'stuck'; el.innerHTML = `<span class="big">Abre la mano</span><button class="btn sun hintbtn" id="bForce">LANZAR</button>`; $('#bForce').onclick = forceThrow; say('Abre la mano'); }
+    return;
+  }
+  if (!canThrow(g) || ST.mode === 'play' || ST.mode === 'hold' || !(first || idle || EZ())) { if (el.dataset.k) { el.innerHTML = ''; el.dataset.k = ''; } return; }
   const kind = hintKind();
-  const words = kind === 'phone' ? 'Mantén · agita · suelta' : kind === 'cam' ? (HT.state === 'nohand' ? 'Muestra la mano' : 'Cierra · sacude · abre') : 'Arrastra y suelta';
+  const words = kind === 'phone' ? 'Mantén · agita · suelta' : kind === 'cam' ? (HT.far && HT.state === 'nohand' ? 'Acércate a la cámara' : HT.state === 'nohand' ? 'Muestra la mano' : EZ() ? 'Cierra la mano · ábrela' : 'Cierra · sacude · abre') : 'Arrastra y suelta';
   const key = kind + words + first; if (el.dataset.k === key) return; el.dataset.k = key;
+  if (kind === 'cam') say(words.replace(' · ', ', luego '));
   el.innerHTML = `<span class="big">${first ? ICO[kind] : ''}${words}</span>`;
 }
 setInterval(() => { if (APP.screen === 'game' && canThrow(G())) updateHint(); }, 1000);
+/* WATCHDOG: the game can never stay locked. A throw that does not finish, or a busy flag nobody clears, is undone and logged. */
+let busyT = 0;
+setInterval(() => {
+  if (document.hidden || APP.screen !== 'game') { busyT = 0; return; }
+  const now = performance.now(), P = ST.play;
+  if (ST.mode === 'play' && P && now - P.wall > P.tEnd * 3000 + 4000) { bb('watchdog', 'play'); finishPlay(); }
+  if (!busy) { busyT = 0; return; }
+  if (!busyT) busyT = now;
+  if (ST.mode !== 'play' && now - busyT > 15000) { bb('watchdog', 'busy', G() && G().phase); busy = false; busyT = 0; renderGame(); }
+}, 1000);
+/* VOICE (modo sencillo only, and only with the sound on): short Spanish phrases at the moments that already exist */
+let voiceEs = null;
+function pickVoice() { try { const v = speechSynthesis.getVoices(); voiceEs = v.find(x => /es[-_](CO|419|MX|US)/i.test(x.lang)) || v.find(x => /^es/i.test(x.lang)) || null; } catch (e) { } }
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.addEventListener?.('voiceschanged', pickVoice); }
+function say(text) {
+  if (!EZ() || AU.muted || APP.voice === false || !('speechSynthesis' in window) || document.hidden) return;
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = voiceEs ? voiceEs.lang : 'es-CO'; if (voiceEs) u.voice = voiceEs; u.rate = 0.92; speechSynthesis.speak(u); } catch (e) { }
+}
+const NUM = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce'];
+/* the way out by hand: the dice have been in the hand a while → LANZAR (and Space / Enter) throws them */
+function forceThrow() {
+  if (HT.state === 'holding') return release('auto', performance.now());
+  if (ST.mode === 'hold') return doThrow(throwParams({ lat: (rnd() - 0.5) * 0.6, up: 0, fwd: 0.9 }, 'key'), []);
+  moderatorThrow();
+}
 function tweenNum(el, from, to, ms, fmt = v => v) {
   if (!el) return; const t0 = performance.now(), dur = D(ms);
   if (from === to || dur < 30) { el.textContent = fmt(to); return; }
@@ -2271,7 +2449,7 @@ function renderState(anim) {
     pill.innerHTML = pillHTML(safe, pot);
     if (same && HUDV.pot !== pot && pot > 0) { tweenNum($('#pPot'), HUDV.pot, pot, 650, v => '+' + v); tweenNum($('#pTot'), HUDV.safe + HUDV.pot, safe + pot, 650); pill.querySelector('.pot b').classList.add('pulse'); }
   }
-  if (g.round === 4) { race.classList.toggle('hidden', !on); renderRace(g, Engine.duel(g), same); } else race.classList.add('hidden');
+  if (isFinal(g)) { race.classList.toggle('hidden', !on); renderRace(g, Engine.duel(g), same); } else race.classList.add('hidden');
   HUDV.safe = safe; HUDV.pot = pot; HUDV.pid = p.id;
 }
 /* round 4: you vs the leader on one bar — numbers, a crown, and two words only when you lead provisionally */
@@ -2305,7 +2483,7 @@ function renderLeader(g) {
 }
 /* the full ranking: on the turn card and on demand (R); a round-4 total with points EN JUEGO is drawn light */
 function rankHTML(g) {
-  const r4 = g.round === 4, rows = Engine.standings(g, r4), cur = Engine.cur(g), L = Engine.leaders(g, r4);
+  const r4 = isFinal(g), rows = Engine.standings(g, r4), cur = Engine.cur(g), L = Engine.leaders(g, r4);
   return rows.map(r => {
     const isCur = cur && cur.id === r.id && g.phase !== 'round_intro', lead = L.score > 0 && L.ids.includes(r.id);
     return `<div class="rr${isCur ? ' cur' : ''}${lead ? ' ldr' : ''}${r.prov ? ' prov' : ''}"><span class="p">${L.score > 0 ? r.rank + 'º' : '–'}</span><span class="n">${lead ? '<svg><use href="#i-crown"/></svg>' : ''}${esc(r.name)}</span><span class="s">${r.score}</span></div>`;
@@ -2351,30 +2529,30 @@ function showSum(values, anim, tag) {
     const toLeft = right + need > 99 && left - need > 1; r.classList.toggle('lft', toLeft);
     r.style.left = `calc(${toLeft ? left : right}% ${toLeft ? '-' : '+'} 2.4rem)`; r.style.top = (s ? s.y : 30) + '%';
   }
-  r.classList.remove('in'); if (anim) { void r.offsetWidth; r.classList.add('in'); }
+  r.classList.remove('in'); if (anim) { void r.offsetWidth; r.classList.add('in'); say(bust ? '¡Un uno!' : `${NUM[values[0]]} más ${NUM[values[1]]}: ${NUM[values[0] + values[1]]}`); }
 }
 
 /* cards: a number, a name — no rules text (the rules live in ⋯ → Reglas) */
-const dots = r => `<span class="rdots">${[1, 2, 3, 4].map(k => `<i class="${k < r ? 'done' : k === r ? 'cur' : ''}"></i>`).join('')}</span>`;
+const dots = (r, n = 4) => `<span class="rdots">${rng(n).map(k => `<i class="${k < r ? 'done' : k === r ? 'cur' : ''}"></i>`).join('')}</span>`;
 function showRoundCard(g) {
-  const c = $('#card'), r4 = g.round === 4;
+  const c = $('#card'), r4 = isFinal(g);
   if (r4) {
     const top = Engine.standings(g).slice(0, 3);
-    c.innerHTML = `<div class="rn">RONDA <b>4</b></div><div class="name2">FINAL</div><div class="top3">${top.map((r, i) => `<div>${i === 0 ? '<svg class="crown"><use href="#i-crown"/></svg>' : ''}${esc(r.name)}<b>${r.score}</b></div>`).join('')}</div><button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
-  } else c.innerHTML = `<div class="rn">RONDA <b>${g.round}</b></div>${dots(g.round)}<button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
+    c.innerHTML = `<div class="rn">RONDA <b>${g.round}</b></div><div class="name2">FINAL</div><div class="top3">${top.map((r, i) => `<div>${i === 0 ? '<svg class="crown"><use href="#i-crown"/></svg>' : ''}${esc(r.name)}<b>${r.score}</b></div>`).join('')}</div><button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
+  } else c.innerHTML = `<div class="rn">RONDA <b>${g.round}</b></div>${dots(g.round, RN(g))}<button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
   c.className = 'on in ' + (r4 ? 'round r4card' : 'round'); SFX.card();
   $('#cardGo').onclick = () => act(() => Engine.beginRound(g));
 }
 function showTurnCard(g) {
   const c = $('#card'), p = Engine.cur(g), st = Engine.standings(g), pos = st.find(r => r.id === p.id).rank, L = Engine.leaders(g);
   let info = `${LOCK}<b>${p.secured}</b>`;
-  if (g.round === 4) { const d = Engine.duel(g); info += d.status === 'leader' ? ` <svg class="crown"><use href="#i-crown"/></svg> <b>+${d.diff}</b>` : d.status === 'tied' ? ' · <b>0</b>' : ` · <b>−${-d.diff}</b>`; }
+  if (isFinal(g)) { const d = Engine.duel(g); info += d.status === 'leader' ? ` <svg class="crown"><use href="#i-crown"/></svg> <b>+${d.diff}</b>` : d.status === 'tied' ? ' · <b>0</b>' : ` · <b>−${-d.diff}</b>`; }
   else if (L.score > 0) info += ` · <b>${pos}º</b>`;
   const nm = p.name.toUpperCase(), len = [...nm].length, wrap = len > 13, per = wrap ? Math.ceil(len / 2) : len;
   const fs = clamp((MOBILE ? 34 : 44) / (1.08 * Math.max(3, per)), 4.5, 14).toFixed(1);
-  c.innerHTML = `<div class="lft">${dots(g.round)}<div class="who${wrap ? ' wrap' : ''}" style="font-size:${fs}rem">${esc(nm)}</div><div class="info">${info}</div><button class="btn ghostw go" id="cardGo">¡LISTO!</button></div>
+  c.innerHTML = `<div class="lft">${dots(g.round, RN(g))}<div class="who${wrap ? ' wrap' : ''}" style="font-size:${fs}rem">${esc(nm)}</div><div class="info">${info}</div><button class="btn ghostw go" id="cardGo">¡LISTO!</button></div>
     <div class="rgt"><div class="rklist">${rankHTML(g)}</div></div>`;
-  c.className = 'on in turn'; SFX.card();
+  c.className = 'on in turn'; SFX.card(); say('Turno de ' + p.name);
   $('#cardGo').onclick = () => act(() => Engine.beginTurn(g));
   if (ST.ready) { resetDice(); markOnes(null); setCamPose(defaultPose()); }
   HT.armed = true; HT.state = HT.camOn ? 'nohand' : 'off';
@@ -2385,7 +2563,7 @@ function act(fn) { const g = G(); if (!g || busy) return; try { fn(); } catch (e
 function dramaFor(g) {
   const C = CFG.drama;
   if (isPractice(g)) return false;
-  if (g.round < 4) return g.pot >= C.potBig;
+  if (!isFinal(g)) return g.pot >= C.potBig;
   const d = Engine.duel(g); if (g.pot >= C.potBig) return true;
   return d.status !== 'leader' && d.toPass >= 1 && d.toPass <= C.r4Window + 1;
 }
@@ -2396,7 +2574,8 @@ function doThrow(tp, extra) {
   busy = true; closeRank(); markGrab();
   markOnes(null); $('#result').classList.add('hidden');
   ST.onSettled = (values, P) => practice ? onPractice(values) : onSettled(values, extra, P);
-  if (!launch(tp, { drama: dramaFor(g), extra })) { busy = false; return false; }
+  let ok = false; try { ok = launch(tp, { drama: dramaFor(g), extra }); } catch (e) { console.error(e); bb('launch-error', String(e.message || e).slice(0, 160)); }
+  if (!ok) { busy = false; ST.onSettled = null; if (ST.mode === 'hold') cancelHold(); renderGame(); return false; }
   $('#cambox').classList.add('faded'); if (tp.src === 'touch') buzz(tp.gentle ? 10 : [18, 26, 12]); // the throw: a little push-release pattern
   updateHint(); HT.state = HT.camOn ? 'thrown' : HT.state;
   return true;
@@ -2413,11 +2592,12 @@ function moderatorThrow() {
   if (ST.mode !== 'hold') { ST.held = hoverPoint((rnd() - 0.5) * 0.5, -0.3); beginHold('key'); }
   doThrow(throwParams({ lat: Math.sin(a) * s, up: 0, fwd: Math.cos(a) * s / 1.25 }, 'key'), []);
 }
-async function onSettled(values, extra, P) {
+async function onSettled(values, extra, P) { try { await settle(values, extra, P); } catch (e) { console.error(e); bb('settle-error', String(e.message || e).slice(0, 160)); busy = false; renderGame(); } }
+async function settle(values, extra, P) {
   const g = G();
   await sleep(P.drama ? 380 : 220);
   const bust = values.includes(1);
-  spotlight(true, bust && g.round === 4, bust ? (values[0] === 1 ? 0 : 1) : undefined); showSum(values, true);
+  spotlight(true, bust && isFinal(g), bust ? (values[0] === 1 ? 0 : 1) : undefined); showSum(values, true);
   if (bust) markOnes(values);
   const pre = { safe: Engine.cur(g).secured, pot: g.pot };
   try { Engine.roll(g, values[0], values[1], { extra, src: P.tp.src, strength: +P.tp.strength.toFixed(2) }); } catch (e) { console.error(e); busy = false; return; }
@@ -2433,14 +2613,14 @@ async function onSettled(values, extra, P) {
 }
 /* a 1: a beat of silence, then the pot breaks and falls away and the total counts back to the lock */
 async function bustEvent(g, pre) {
-  if (g.round === 4 && hemi) { hemi.intensity = 0.8; ST.dirty = true; }
-  await sleep(g.round === 4 ? 520 : 380);
+  if (isFinal(g) && hemi) { hemi.intensity = 0.8; ST.dirty = true; }
+  await sleep(isFinal(g) ? 520 : 380);
   SFX.bust(); buzz([40, 60, 120]); $('#stage').classList.add('shake'); setTimeout(() => $('#stage').classList.remove('shake'), 500);
   const potRow = $('#pill .pot'), tot = $('#pill .tot');
   if (potRow && pre.pot > 0) { potRow.classList.remove('live'); potRow.classList.add('shatter'); }
   if (tot) { tot.classList.remove('prov'); tot.classList.add('down'); tweenNum($('#pTot'), pre.safe + pre.pot, pre.safe, 900); }
   const pv = $('#rPot'); if (pv && !pv.hidden) pv.classList.add('gone');
-  const meD = $('#rMe .d'); if (g.round === 4 && meD) { tweenNum(meD, pre.safe + pre.pot, pre.safe, 900); $('#rMe').style.left = $('#rSolid').style.width; }
+  const meD = $('#rMe .d'); if (isFinal(g) && meD) { tweenNum(meD, pre.safe + pre.pot, pre.safe, 900); $('#rMe').style.left = $('#rSolid').style.width; }
   await sleep(1150);
   if (hemi) { hemi.intensity = 2.1; ST.dirty = true; }
 }
@@ -2455,7 +2635,7 @@ async function clinchEvent(g, pre) {
   // the provisional state first (the throw that did it), then the hard stop
   const pill = $('#pill'); pill.classList.remove('hidden'); pill.innerHTML = pillHTML(before.safe, before.pot + L.amount);
   HUDV.safe = before.safe; HUDV.pot = before.pot + L.amount; HUDV.pid = p.id;
-  if (g.round === 4) { const d0 = { ...Engine.duel(g), me: before.safe + before.pot + L.amount, safe: before.safe }; d0.diff = d0.me - d0.best; renderRace(g, d0, false); $('#race').classList.remove('hidden'); }
+  if (isFinal(g)) { const d0 = { ...Engine.duel(g), me: before.safe + before.pot + L.amount, safe: before.safe }; d0.diff = d0.me - d0.best; renderRace(g, d0, false); $('#race').classList.remove('hidden'); }
   if (ST.ready) { ST.flash = 1.3; ST.dirty = true; if (hemi) hemi.intensity = 0.55; }
   $('#stage').classList.remove('hitstop'); void $('#stage').offsetWidth; $('#stage').classList.add('hitstop');
   spotlight(true, true); buzz(60);
@@ -2493,7 +2673,7 @@ function showDecision(g, anim) {
   el.innerHTML = `<div class="q"><span>¿PARE</span><span>O</span><span>SIGA?</span></div>
     <div class="choices"><button class="choice pare" id="bPare"><span class="t">PARE</span><span class="d">${LOCK}${keep}</span></button><button class="choice siga" id="bSiga"><span class="t">SIGA</span><span class="d hot" style="--heat:${heat(g.pot)}">+${g.pot}</span></button></div>`;
   el.dataset.seq = g.seq; el.classList.remove('hidden', 'in'); void el.offsetWidth;
-  if (anim) { el.classList.add('in'); setTimeout(() => SFX.sting(), D(450)); }
+  if (anim) { el.classList.add('in'); setTimeout(() => SFX.sting(), D(450)); setTimeout(() => say('¿Pare o siga?'), D(900)); }
   $('#bPare').onclick = () => decide('pare'); $('#bSiga').onclick = () => decide('siga');
 }
 async function decide(choice) {
@@ -2503,7 +2683,8 @@ async function decide(choice) {
   el.querySelector('.choice.' + choice)?.classList.add('picked'); el.querySelector('.choice.' + (choice === 'pare' ? 'siga' : 'pare'))?.classList.add('gone');
   choice === 'pare' ? SFX.bank() : SFX.siga(); buzz(15);
   await sleep(420);
-  Engine.decide(g, choice); save();
+  try { Engine.decide(g, choice); } catch (e) { console.error(e); bb('decide-error', String(e.message || e).slice(0, 160)); busy = false; renderGame(); return; }
+  save();
   busy = false; spotlight(false); $('#result').classList.add('hidden');
   if (choice === 'siga') { el.classList.add('hidden'); if (ST.ready) { markOnes(null); setCamPose(defaultPose()); } HT.armed = HT.state !== 'holding'; renderGame(); return; }
   const prevL = prevLeaders; renderGame(true);
@@ -2513,14 +2694,14 @@ async function decide(choice) {
 function showOutcome(g, anim) {
   if (g.last && g.last.type === 'clinch') { if (clinchSeq !== g.seq) setTimeout(() => clinchEvent(g), D(g.last.entry ? 350 : 0)); return; }
   const el = $('#outcome'), L = g.last || {}, nextP = g.idx + 1 < g.order.length ? Engine.byId(g, g.order[g.idx + 1]).name : null;
-  const nextTxt = nextP ? `${esc(nextP.toUpperCase())} →` : g.round < 4 ? `RONDA ${g.round + 1} →` : 'FINAL →';
+  const nextTxt = nextP ? `${esc(nextP.toUpperCase())} →` : g.round < RN(g) ? `RONDA ${g.round + 1} →` : 'FINAL →';
   let html = '';
   if (L.type === 'bank') html = `<div class="head"><span class="plus">${LOCK}+${L.amount}</span></div>`;
   else if (L.type === 'bust') html = L.lost ? `<div class="head bad"><s>+${L.lost}</s></div>` : '';
   html += `<button class="btn ghostw next" id="bNext">${nextTxt}</button>`;
   el.innerHTML = html; el.className = 'in';
   const bust = L.type === 'bust';
-  spotlight(bust, bust && g.round === 4);
+  spotlight(bust, bust && isFinal(g));
   $('#bNext').onclick = () => nextTurn();
 }
 function nextTurn() { const g = G(); if (!g || g.phase !== 'turn_over' || busy || (g.last && g.last.type === 'clinch')) return; $('#result').classList.add('hidden'); spotlight(false); act(() => Engine.next(g)); }
@@ -2588,10 +2769,10 @@ addEventListener('keydown', e => {
   if (!$('#camfail').hidden) { if (k === 'Enter') $('#cfMouse').click(); return; }
   if (k === 'r' || k === 'R') return toggleRank();
   if (busy) return;
-  if (isPractice(g)) { if (k === ' ') { e.preventDefault(); return moderatorThrow(); } if (k === 'Enter') { e.preventDefault(); return skipPractice(); } return; }
+  if (isPractice(g)) { if (k === ' ') { e.preventDefault(); return forceThrow(); } if (k === 'Enter') { e.preventDefault(); return skipPractice(); } return; }
   if (g.phase === 'round_intro' && (k === 'Enter' || k === ' ')) { e.preventDefault(); return $('#cardGo').click(); }
   if (g.phase === 'turn_intro' && (k === 'Enter' || k === ' ')) { e.preventDefault(); return $('#cardGo').click(); }
-  if (g.phase === 'await_throw' && k === ' ') { e.preventDefault(); closeRank(); return moderatorThrow(); }
+  if (g.phase === 'await_throw' && k === ' ') { e.preventDefault(); closeRank(); return forceThrow(); }
   if (g.phase === 'await_decision') { if (k === 'p' || k === 'P' || k === 'ArrowLeft') return decide('pare'); if (k === 's' || k === 'S' || k === 'ArrowRight') return decide('siga'); }
   if (g.phase === 'turn_over' && (k === 'Enter' || k === ' ')) { e.preventDefault(); if (g.last && g.last.type === 'clinch') { if (!clinchDone && clinchSeq === g.seq) endClinch(g); return; } return nextTurn(); }
 });
@@ -2632,8 +2813,19 @@ if (DEBUG) {
 
 /* test hooks */
 if (TEST) window.__ps = { Engine, SFX, CUP, TRK, REC, get APP() { return APP; }, set APP(v) { APP = v; }, save, load, show, CFG, ST, HT, LIBS, LAYOUTS, upFace, qrot, drawDie, chooseLayout, makeSim, throwParams, initFromThrow, initStage, planThrow, randQuat, get lastCheck() { return lastCheck; }, get lastThrow() { return lastThrow; }, get busy() { return busy; },
+  startHoldHand, gestureTick, motionGesture, forceThrow, BB, setEasy, get EZ() { return EZ(); },
   showCamFail, force(...pairs) { if (!TEST) return; forcedQueue.push(...pairs); if (!forced) forced = forcedQueue.shift(); }, onShape, GS, MO, GEST, doThrow, fingerFeatures, get practice() { return isPractice(G()); }, MOT, SOPLO, REC, MODE, get portrait() { return ST.portrait; }, setFast(v) { FAST = v; document.body.classList.toggle('fast', v); } };
 
+/* ⋯ → Reportar problema: everything needed to explain a stuck game, as one JSON file (nothing leaves the computer) */
+$('#bReport').onclick = () => {
+  const g = G(), rep = { v: 1, at: new Date().toISOString(), ua: navigator.userAgent, mode: MODE, easy: EZ(), cam: { on: HT.camOn, delegate: HT.delegate, ms: +HT.ms.toFixed(1), state: HT.state, lock: TRK.lock, hands: TRK.cands },
+    game: g && { phase: g.phase, round: g.round, R: RN(g), idx: g.idx, n: g.order.length }, busy, stMode: ST.mode, gest: GEST, bb: BB, trace: GS.trace || [], log: GS.log.slice(-20) };
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(rep)], { type: 'application/json' }));
+  a.download = 'pareosiga-reporte-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.json'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('Reporte descargado');
+};
+if (params.has('sencillo')) { APP.easy = true; save(); }
+renderSettings();
 /* boot */
 addEventListener('hashchange', () => { FAST = /fast/.test(location.hash); document.body.classList.toggle('fast', FAST); });
 const bootScreen = APP.screen === 'game' ? 'title' : APP.screen || 'title'; // after a reload, the title offers "continuar partida"
