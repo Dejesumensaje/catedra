@@ -652,13 +652,14 @@ html.mobile #toast{font-size:1.8rem}
 #s-players .head{max-width:58rem;padding-left:0;padding-right:0}
 #s-players.wide .head{max-width:96rem}
 .pl-block .blk-h{margin-bottom:.2rem}
-.pl-cols{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 2.4rem}
+.pl-cols{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 2.4rem;align-items:start}
+.pl-col{align-content:start}
 .pl-cols.one{grid-template-columns:1fr}
 .pl-cols.one #plCol2{display:none}
 .pl-in input{background:#fff}
 .pl-in input::placeholder{color:var(--muted);opacity:.55;font-weight:700}
 .pl-add{display:block;text-align:center;font-size:1.4rem;padding:.9rem 1rem;margin-left:3.2rem;width:calc(100% - 6.6rem)}
-.pl-cols:not(.one)+.pl-add{width:calc(50% - 4.6rem)}
+.pl-col .pl-add{width:calc(100% - 6.6rem)}
 .pl-add[hidden],.pl-groups[hidden]{display:none}
 .paste{background:none;box-shadow:none;padding:0;border-radius:0;border-top:.15rem solid var(--line);padding-top:1.2rem;margin-top:.6rem}
 .paste summary{cursor:pointer;font-size:1.35rem;font-weight:900;list-style:none;display:flex;align-items:center;gap:.7rem;color:var(--ink2)}
@@ -716,7 +717,7 @@ html.mobile .chip .mv{height:3.6rem;font-size:1.6rem;padding:0 1rem}
 html.mobile .chip .mv svg{width:1.7rem;height:1.7rem}
 html.mobile .pl-cols{grid-template-columns:minmax(0,1fr)}
 html.mobile .pl-cols:not(.one) #plCol2{display:grid}
-html.mobile .pl-add,html.mobile .pl-cols:not(.one)+.pl-add{margin-left:3.2rem;width:calc(100% - 7.8rem)}
+html.mobile .pl-add,html.mobile .pl-col .pl-add{margin-left:3.2rem;width:calc(100% - 7.8rem)}
 html.mobile .paste summary,html.mobile .pl-groups{font-size:1.6rem}
 html.mobile .paste .linkb{font-size:1.6rem}
 html.mobile .pl-groups .btn{margin-left:0;width:100%}
@@ -1184,6 +1185,8 @@ function renderPlayers() {
   const idx = [...Array(n).keys()];
   $('#plCol1').innerHTML = idx.slice(0, half).map(mk).join('');
   $('#plCol2').innerHTML = idx.slice(half).map(mk).join('');
+  // the + always sits right after the last name: under column 1, or under column 2 once the list wraps (both columns start at the top)
+  const add = $('#bAddSlot'); if (n > half) $('#plCol2').appendChild(add); else $('#plCols').after(add);
   $('#plCols').classList.toggle('one', n <= half); $('.pl-block').classList.toggle('wide', n > half); $('#s-players').classList.toggle('wide', n > half); $('#bAddSlot').hidden = n >= MAXP;
   $$('#s-players .pl-in input').forEach(inp => {
     inp.oninput = () => { APP.names[+inp.dataset.i] = inp.value; save(); plCheck(); };
