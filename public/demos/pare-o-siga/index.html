@@ -73,7 +73,7 @@ input,textarea{font:inherit;color:var(--ink)}
 .num{font-variant-numeric:tabular-nums}
 
 /* ---------- chunky blocks & buttons ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7rem;padding:1.1rem 2.4rem;border-radius:1.2rem;font-size:1.7rem;font-weight:900;letter-spacing:.02em;background:var(--ink);color:var(--paper);box-shadow:0 .3rem 0 rgba(0,0,0,.35);transition:transform .12s var(--e-out),filter .12s}
+.btn{text-transform:uppercase;display:inline-flex;align-items:center;justify-content:center;gap:.7rem;padding:1.1rem 2.4rem;border-radius:1.2rem;font-size:1.7rem;font-weight:900;letter-spacing:.02em;background:var(--ink);color:var(--paper);box-shadow:0 .3rem 0 rgba(0,0,0,.35);transition:transform .12s var(--e-out),filter .12s}
 .btn:hover{transform:translateY(-.15rem);filter:brightness(1.06)}
 .btn:active{transform:translateY(.15rem)}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
@@ -215,6 +215,8 @@ input,textarea{font:inherit;color:var(--ink)}
 #turntag .th i.done,.rdots i.done{background:currentColor;opacity:.45}
 #turntag .th i.cur,.rdots i.cur{background:currentColor;opacity:1;transform:scale(1.25)}
 .rdots{display:flex;gap:1rem;justify-content:center}.rdots i{width:1.6rem;height:1.6rem}
+#turntag .pracn{display:block;font-size:1.3rem;font-weight:800;color:var(--ink2);margin:.6rem 0 .8rem;letter-spacing:0}
+#turntag .skipp{pointer-events:auto;font-size:1.2rem;color:var(--ink)}
 #turntag .prac{display:inline-block;font-size:2.4rem;letter-spacing:.2em;padding:.5rem 1rem;border-radius:.8rem;background:var(--sun);color:var(--ink);text-shadow:none}
 #leadtag{position:absolute;right:7rem;top:2.2rem;z-index:5;transition:color .45s;pointer-events:none;display:flex;align-items:baseline;gap:.8rem;white-space:nowrap}
 #leadtag svg{width:2.6rem;height:2rem;align-self:center}
@@ -339,7 +341,7 @@ body.r4 .choice .t{font-size:5.4rem}
 body.r4 .choice{padding:1.2rem 2rem 1.3rem}
 #decide .q span:nth-child(2){opacity:.6;font-size:.62em;align-self:center}
 #decide.in .q span{animation:slam .42s cubic-bezier(.2,1.6,.4,1) both}
-#decide.in .q span:nth-child(1){animation-delay:.45s}#decide.in .q span:nth-child(2){animation-delay:.62s}#decide.in .q span:nth-child(3){animation-delay:.79s}
+#decide.in .q span:nth-child(1){animation-delay:.25s}#decide.in .q span:nth-child(2){animation-delay:.37s}#decide.in .q span:nth-child(3){animation-delay:.49s}
 @keyframes slam{0%{opacity:0;transform:scale(1.9) translateY(-.2em);filter:blur(6px)}60%{opacity:1;filter:none}80%{transform:scale(.96)}100%{opacity:1;transform:none}}
 #decide .choices{display:flex;gap:3rem;pointer-events:auto}
 .choice{position:relative;width:27rem;border-radius:2rem;padding:1.6rem 2rem 1.7rem;color:#fff;text-align:center;box-shadow:0 .55rem 0 rgba(0,0,0,.4);transition:transform .25s var(--e-out),opacity .3s}
@@ -351,7 +353,7 @@ body.r4 .choice.siga{box-shadow:0 .55rem 0 rgba(0,0,0,.4),inset 0 0 0 .25rem rgb
 .choice .d .lk{width:2rem;height:2rem}
 .choice .d.hot{color:color-mix(in oklab,var(--sun),#fff 25%)}
 #decide.in .choice{animation:rise .5s var(--e-pop) both}
-#decide.in .choice.pare{animation-delay:1.15s}#decide.in .choice.siga{animation-delay:1.25s}
+#decide.in .choice.pare{animation-delay:.62s}#decide.in .choice.siga{animation-delay:.7s}
 @keyframes rise{from{opacity:0;transform:translateY(4rem)}to{opacity:1;transform:none}}
 #decide .choice.picked{animation:punch .38s var(--e-pop) both!important}
 @keyframes punch{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1.04)}}
@@ -540,7 +542,7 @@ html.mobile #tray{right:1.2rem;top:6.2rem}
 html.mobile .tb{height:4.4rem;font-size:1.6rem}
 html.mobile #cambox{display:none!important}
 html.mobile #hint{bottom:25rem;white-space:normal;width:90%}
-html.mobile #hint .big{font-size:2.3rem;justify-content:center}
+html.mobile #hint .big{font-size:2rem;justify-content:center}
 html.mobile #pill{left:50%;transform:translateX(-50%);bottom:15rem;grid-auto-flow:column;grid-template-columns:none;align-items:center;padding:.9rem 1.8rem}
 html.mobile #pill .hr{display:none}
 html.mobile #pill span{padding:0 1.4rem 0 .6rem}
@@ -565,7 +567,7 @@ html.mobile #outcome .next{font-size:2.2rem;padding:1.4rem 2.6rem}
 html.mobile #result .ab{font-size:3rem}
 html.mobile #result .s{font-size:7.6rem}
 html.mobile #result .one{font-size:5.4rem}
-html.mobile #banner{font-size:3.8rem;white-space:normal;text-align:center;width:90%;padding:1rem 1.6rem 1.2rem}
+html.mobile #banner{top:17%;font-size:3.8rem;white-space:normal;text-align:center;width:90%;padding:1rem 1.6rem 1.2rem}
 html.mobile #rankov .rr{font-size:2.2rem}
 html.mobile #card{padding:3rem 2rem}
 html.mobile #card.round .rn{font-size:5.4rem;gap:1rem}
@@ -718,13 +720,15 @@ html.mobile .pl-add,html.mobile .pl-cols:not(.one)+.pl-add{margin-left:3.2rem;wi
 html.mobile .paste summary,html.mobile .pl-groups{font-size:1.6rem}
 html.mobile .paste .linkb{font-size:1.6rem}
 html.mobile .pl-groups .btn{margin-left:0;width:100%}
-html.mobile .or-wrap .blk-h .btn{font-size:1.6rem}
-html.mobile .setup .foot .next{white-space:nowrap;font-size:1.8rem;flex:1;min-width:0;padding:1.4rem 1rem}
+html.mobile .or-wrap .blk-h .btn{font-size:1.4rem;padding:.8rem 1.2rem}
+html.mobile .blk-h h3{white-space:nowrap}
+html.mobile .setup .foot .next{white-space:nowrap;font-size:1.6rem;letter-spacing:0;flex:1;min-width:0;padding:1.4rem 1rem}
 html.mobile .setup .foot .spacer{display:none}
 html.mobile .setup .foot{flex-wrap:wrap;row-gap:.6rem;padding-left:1.6rem;padding-right:1.6rem}
 html.mobile .setup .foot .msg{order:-1;width:100%;font-size:1.6rem}
 html.mobile .setup .foot .msg:empty{display:none}
-html.mobile .setup .foot .back{font-size:1.6rem;padding:1.4rem 1.2rem}
+html.mobile .setup .foot .back{font-size:2rem;padding:1.3rem 1.6rem}
+html.mobile .setup .foot .back .bk{display:none} /* on a phone the arrow alone: the primary needs the width */
 html.mobile .setup .body{padding-bottom:17rem}
 html.mobile .seg button b{font-size:1.9rem}html.mobile .seg button span{font-size:1.3rem}
 html.mobile .switch b{font-size:1.9rem}html.mobile .switch{font-size:1.5rem}
@@ -773,7 +777,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       <div class="pl-groups" id="plGroups"><span>¿Son muchos? Pueden jugar en dos grupos.</span><button class="btn ghost small" id="bPlGroups">Dividir en grupos</button></div>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small back" data-go="title">← Atrás</button><span class="msg" id="plMsg" aria-live="polite"></span><span class="spacer"></span><button class="btn cobalt next" id="bPlNext">Configurar partida →</button></div>
+  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" data-go="title"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="msg" id="plMsg" aria-live="polite"></span><span class="spacer"></span><button class="btn cobalt next" id="bPlNext">Configurar partida →</button></div>
 </section>
 
 <!-- ASSIGN -->
@@ -791,14 +795,14 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       <div class="gcol gB" data-g="B"><header><span class="tag">B</span><h3 id="hB" class="hidden"></h3><span class="cnt" id="cntB">0/8</span></header><div class="chips" id="chipsB"></div><div class="addrow"><input placeholder="+" data-add="B" maxlength="24" aria-label="Añadir al grupo B"></div></div>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small back" data-go="players">← Atrás</button><span class="msg" id="asMsg"></span><span class="spacer"></span><button class="btn cobalt next" id="bAsNext">Orden →</button></div>
+  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" data-go="players"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="msg" id="asMsg"></span><span class="spacer"></span><button class="btn cobalt next" id="bAsNext">Orden →</button></div>
 </section>
 
 <!-- GROUP CHOICE -->
 <section id="s-group" class="screen setup">
   <div class="head"><h2>¿Qué grupo?</h2><nav class="step" aria-label="Pasos"></nav></div>
   <div class="body"><div class="gc-grid" id="gcGrid"></div></div>
-  <div class="foot"><button class="btn ghost small back" data-go="assign">← Atrás</button><span class="spacer"></span><button class="btn ghost small hidden" id="bSeeBoth">A + B</button></div>
+  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" data-go="assign"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="spacer"></span><button class="btn ghost small hidden" id="bSeeBoth">A + B</button></div>
 </section>
 
 <!-- ORDER = CONFIGURAR PARTIDA -->
@@ -821,7 +825,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       </section>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small back" id="bOrBack">← Atrás</button><span class="spacer"></span><button class="btn tomato next" id="bPlay">¡A JUGAR!</button></div>
+  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" id="bOrBack"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="spacer"></span><button class="btn tomato next" id="bPlay">¡A JUGAR!</button></div>
 </section>
 
 <!-- GAME -->
@@ -876,7 +880,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
     </div>
     <div>
       <ul>
-        <li><b>Cámara</b>: cierra la mano, sacude, ábrela. En <b>modo sencillo</b> basta cerrarla y abrirla.</li>
+        <li><b>Cámara</b>: cierra la mano, sacude, ábrela. En <b>modo sencillo</b> basta cerrarla y abrirla. En tu primer turno la cámara conoce tu mano: ábrela y luego cierra el puño.</li>
         <li><b>Celular</b>: mantén los dados, agita, suelta.</li>
         <li><b>Mouse</b>: arrastra y suelta.</li>
         <li><b>P</b> / <b>S</b> · <b>Enter</b> sigue · <b>Espacio</b> tira · <b>R</b> ranking · <b>M</b> menú · <b>V</b> sonido · <b>F</b> pantalla</li>
@@ -898,7 +902,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
 <div class="ovl" id="menu" hidden><div class="box" style="max-width:40rem">
   <div class="row" style="flex-direction:column;align-items:stretch;margin-top:0">
     <button class="btn cobalt" id="mResume">SEGUIR</button>
-    <button class="btn ghost" id="mGroups">GRUPOS</button>
+    <button class="btn ghost" id="mGroups">JUGADORES</button>
     <button class="btn tomato" id="mAbandon">ABANDONAR</button>
   </div>
 </div></div>
@@ -2455,7 +2459,7 @@ function renderGame(anim) {
 /* information: the name and four small round dots (no words) */
 function renderTag(g) {
   const p = Engine.cur(g);
-  if (isPractice(g)) { $('#ttName').innerHTML = '<span class="prac">PRÁCTICA</span>'; $('#ttThrow').innerHTML = ''; return; }
+  if (isPractice(g)) { $('#ttName').innerHTML = '<span class="prac">PRÁCTICA</span><span class="pracn">No cuenta para el puntaje</span><button class="btn ghost small skipp" id="bSkipPr">Saltar práctica</button>'; $('#bSkipPr').onclick = skipPractice; $('#ttThrow').innerHTML = ''; return; }
   $('#ttName').textContent = p ? p.name : '—';
   $('#ttThrow').innerHTML = rng(RN(g)).map(r => `<i class="${r < g.round ? 'done' : r === g.round ? 'cur' : ''}"></i>`).join('');
   $('#ttThrow').setAttribute('aria-label', 'ronda ' + g.round);
@@ -2839,10 +2843,11 @@ function renderBoth() {
 function openHelp() { $('#help').hidden = false; }
 $$('[data-help]').forEach(b => b.onclick = openHelp);
 $('#bHelpClose').onclick = () => { $('#help').hidden = true; };
-const openMenu = () => { $('#menu').hidden = false; };
+const openMenu = () => { openMenuLabel(); $('#menu').hidden = false; };
 $('#bMenu').onclick = openMenu;
 $('#mResume').onclick = () => { $('#menu').hidden = true; };
-$('#mGroups').onclick = () => { $('#menu').hidden = true; if (ST.mode === 'hold') cancelHold(); show(activeGroups().length > 1 ? 'group' : 'order'); };
+$('#mGroups').onclick = () => { $('#menu').hidden = true; if (ST.mode === 'hold') cancelHold(); show(activeGroups().length > 1 ? 'group' : 'players'); };
+const openMenuLabel = () => { $('#mGroups').textContent = activeGroups().length > 1 ? 'GRUPOS' : 'JUGADORES'; };
 $('#mAbandon').onclick = () => { if (!confirm('¿Abandonar la partida?')) return; $('#menu').hidden = true; APP.game = null; save(); show('group'); };
 $('#bSound').onclick = () => { AU.muted = !AU.muted; $('#bSound').classList.toggle('on', !AU.muted); rumbleSet(0); toast(AU.muted ? '🔇' : '🔊'); };
 $('#bSound').classList.add('on');
