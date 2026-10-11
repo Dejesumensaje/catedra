@@ -578,7 +578,7 @@ html.mobile #card.turn .info{font-size:2.4rem}
 html.mobile #card .rr{font-size:2rem}
 html.mobile #card .go{font-size:2.4rem;padding:1.5rem 4rem}
 /* setup screens on a phone: one column, big targets */
-html.mobile .setup .head{padding:1.4rem 1.6rem 0}
+html.mobile .setup .head,html.mobile #s-players .head{padding:1.4rem 1.6rem 0}
 html.mobile .setup .head h2{font-size:2.8rem}
 html.mobile .setup .body{padding:1.2rem 1.6rem 11rem}
 html.mobile .setup .foot{padding:1rem 1.6rem 1.6rem}
@@ -613,76 +613,121 @@ html.mobile .fl .r{font-size:2rem}
 html.mobile #toast{font-size:1.8rem}
 
 /* =====================================================================
-   SETUP · ONE GLYPH, ONE MEANING: → only ever means "go to the next step". Moving a person is the swap icon + the
-   letter and colour of the group they go to. The foot is its own region (a solid bar); every step says where it goes.
+   SETUP · designed as blocks, not as fields
+   · ONE GLYPH, ONE MEANING: → only means "next step". Moving a person = ⇄ + the destination group's letter and colour.
+   · PROXIMITY / COMMON REGION: every tool sits in the header of the block it acts on (Borrar todos on the names, Barajar on the
+     order). Each screen is ONE centred column of blocks: nothing floats at the far edge of a wide screen.
+   · ONE PRIMARY per screen, bottom right, saying where it goes. Optional paths (two groups, paste a list) are quiet and secondary.
    ===================================================================== */
-.setup .head .step{align-items:center}
-.stepn{white-space:nowrap;font-size:1.2rem;font-weight:800;color:var(--muted);margin-right:.6rem;letter-spacing:.02em}
-.setup .foot{background:var(--cream);box-shadow:0 -.15rem 0 var(--line);padding-bottom:max(1.2rem, env(safe-area-inset-bottom))}
+.setup .head{max-width:104rem;margin:0 auto;padding:2rem 2.6rem 0}
+.setup .body{max-width:104rem;margin:0 auto}
+.setup .head h2{font-size:3.2rem}
+/* the stepper: named steps */
+.setup .head .step{margin-left:auto;display:flex;align-items:center;gap:.8rem}
+.step .st{display:flex;align-items:center;gap:.6rem;font-size:1.25rem;color:var(--muted)}
+.setup .head .step .st i{width:2.2rem;height:2.2rem;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:1.1rem;background:transparent;box-shadow:inset 0 0 0 .15rem var(--line)}
+.step .st.cur{color:var(--ink)}.setup .head .step .st.cur i{background:var(--ink);color:var(--paper);box-shadow:none}
+.setup .head .step .st.done i{background:var(--mint);color:var(--ink);box-shadow:none}
+.step .sep{width:2.4rem;height:.15rem;background:var(--line);border-radius:1rem}
+/* the foot: its own region */
+.setup .foot{background:var(--cream);box-shadow:0 -.15rem 0 var(--line);padding:1.2rem max(2.6rem, calc((100vw - 104rem) / 2 + 2.6rem));padding-bottom:max(1.2rem, env(safe-area-inset-bottom))}
 .setup .foot .msg{font-weight:800}
 .setup .foot .next{font-size:1.9rem;padding:1.1rem 2.6rem}
 .setup .foot .next:disabled{opacity:1;background:var(--line);color:var(--muted);box-shadow:none}
 .setup .foot .back{font-size:1.3rem}
-.btn:focus-visible,.seg button:focus-visible,.mv:focus-visible,.ib:focus-visible,.pl-add:focus-visible,.linkb:focus-visible,.paste summary:focus-visible,.switch input:focus-visible+.tr{outline:.3rem solid var(--cobalt);outline-offset:.25rem}
-/* players: the list and its "+" are one block; the paste box is a secondary, collapsible block */
-.pl-grid{grid-template-columns:1fr 26rem}
-.pl-names{display:grid;gap:.9rem;align-content:start}
-.pl-cols{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 2rem}
-.pl-cols.one{grid-template-columns:minmax(0,46rem)}
+.btn:focus-visible,.seg button:focus-visible,.mv:focus-visible,.ib:focus-visible,.pl-add:focus-visible,.linkb:focus-visible,.paste summary:focus-visible,.switch input:focus-visible+.tr,.hintskip:focus-visible{outline:.3rem solid var(--cobalt);outline-offset:.25rem}
+/* a block = a paper card with a header (title left, its own tool right) */
+.blk,.pl-block{background:var(--paper);border-radius:var(--r);padding:1.6rem 1.8rem 1.8rem;box-shadow:inset 0 0 0 .18rem var(--line)}
+.blk-h{display:flex;align-items:center;gap:1rem;min-height:3.4rem;margin-bottom:1.2rem}
+.blk-h h3{font-size:1.7rem;font-weight:900;margin-right:auto}
+.linkb.quiet{margin:0;color:var(--ink2);font-size:1.25rem}
+.linkb.quiet:hover{color:var(--tomato-d)}
+/* players: one centred block — the list, its +, then the quiet options */
+.pl-block{max-width:58rem;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}
+.pl-in input{min-width:0}
+.pl-col,.pl-in{min-width:0}
+.pl-block.wide{max-width:96rem}
+#s-players .head{max-width:58rem;padding-left:0;padding-right:0}
+#s-players.wide .head{max-width:96rem}
+.pl-block .blk-h{margin-bottom:.2rem}
+.pl-cols{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 2.4rem}
+.pl-cols.one{grid-template-columns:1fr}
 .pl-cols.one #plCol2{display:none}
-.pl-add{display:block;text-align:center;font-size:1.4rem;padding:.9rem 1rem;margin-left:3.2rem;width:calc(100% - 6.6rem);max-width:42.6rem}
-.pl-cols:not(.one)+.pl-add{max-width:none}
-.paste summary{cursor:pointer;font-size:1.4rem;font-weight:900;list-style:none;display:flex;align-items:center;gap:.6rem}
+.pl-in input{background:#fff}
+.pl-in input::placeholder{color:var(--muted);opacity:.55;font-weight:700}
+.pl-add{display:block;text-align:center;font-size:1.4rem;padding:.9rem 1rem;margin-left:3.2rem;width:calc(100% - 6.6rem)}
+.pl-cols:not(.one)+.pl-add{width:calc(50% - 4.6rem)}
+.pl-add[hidden],.pl-groups[hidden]{display:none}
+.paste{background:none;box-shadow:none;padding:0;border-radius:0;border-top:.15rem solid var(--line);padding-top:1.2rem;margin-top:.6rem}
+.paste summary{cursor:pointer;font-size:1.35rem;font-weight:900;list-style:none;display:flex;align-items:center;gap:.7rem;color:var(--ink2)}
 .paste summary::-webkit-details-marker{display:none}
 .paste summary::before{content:"+";display:grid;place-items:center;width:2rem;height:2rem;border-radius:.5rem;background:var(--sky);color:var(--cobalt);flex:none}
 .paste[open] summary::before{content:"–"}
 .paste[open] summary{margin-bottom:.9rem}
-.paste .links{display:flex;gap:1.6rem;flex-wrap:wrap}
-/* assignment: name, then quiet tools, then the move pill (in the destination group's colour) */
-.chip .ib{background:transparent;color:var(--muted)}
-.chip .mv{flex:none;display:inline-flex;align-items:center;gap:.3rem;height:2.4rem;padding:0 .7rem;border-radius:.7rem;font-size:1.2rem;font-weight:900;color:#fff}
-.chip .mv svg{width:1.3rem;height:1.3rem}
-.chip .mv.toA{background:var(--sky);color:var(--cobalt-d)}.chip .mv.toB{background:#FFE1D9;color:#B02A10}
-.pl-add[hidden]{display:none}
-.pl-in input::placeholder{color:var(--muted);opacity:.55;font-weight:700}
-.chip .mv:hover{filter:brightness(1.1)}
-/* order: the game settings live with the order, right before ¡A JUGAR! */
-.opts{display:grid;gap:1.2rem}
-.opts h3{margin:.4rem 0 0}
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;padding:.4rem;border-radius:1.1rem;background:var(--cream);box-shadow:inset 0 0 0 .15rem var(--line)}
-.seg button{display:grid;gap:.15rem;padding:.7rem .4rem;border-radius:.8rem;text-align:center}
+.paste textarea{height:14rem}
+.paste-a{display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;margin-top:.8rem}
+.paste-a .btn{margin:0;width:auto}.paste-a .linkb{margin:0}
+.pl-groups{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;border-top:.15rem solid var(--line);padding-top:1.2rem;font-size:1.3rem;color:var(--ink2);font-weight:700}
+.pl-groups .btn{margin-left:auto}
+/* configurar partida: the order (with its Barajar) and the settings, side by side, centred */
+.or-wrap{grid-template-columns:minmax(0,1fr) 36rem;gap:2rem}
+.or-wrap .blk-h .btn{font-size:1.25rem}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;padding:.4rem;border-radius:1.1rem;background:var(--cream);box-shadow:inset 0 0 0 .15rem var(--line);margin-bottom:1.6rem}
+.seg button{display:grid;gap:.15rem;padding:.8rem .4rem;border-radius:.8rem;text-align:center}
 .seg button b{font-size:1.4rem}.seg button span{font-size:1rem;color:var(--muted);font-weight:700}
 .seg button.on{background:var(--ink);color:var(--paper)}.seg button.on span{color:var(--line)}
-.switch b{font-size:1.35rem}
+.switch{position:relative;font-weight:700;color:var(--ink2);border-top:.15rem solid var(--line);padding-top:1.4rem}
+.switch .tr{margin-top:.2rem}
+.switch b{font-size:1.4rem;color:var(--ink)}
 .switch input{display:block;position:absolute;opacity:0;width:1px;height:1px}
-.switch{position:relative;font-weight:700;color:var(--ink2)}
+/* assignment pills */
+.chip .ib{background:transparent;color:var(--muted)}
+.chip .mv{flex:none;display:inline-flex;align-items:center;gap:.3rem;height:2.4rem;padding:0 .7rem;border-radius:.7rem;font-size:1.2rem;font-weight:900}
+.chip .mv svg{width:1.3rem;height:1.3rem}
+.chip .mv.toA{background:var(--sky);color:var(--cobalt-d)}.chip .mv.toB{background:#FFE1D9;color:#B02A10}
+.chip .mv:hover{filter:brightness(.96)}
 /* the way out while holding */
 #hint .hintbtn{pointer-events:auto;font-size:2.2rem;padding:1.1rem 3.4rem;animation:up .4s var(--e-out) both}
+#hint .calk{font-size:1.3rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);background:var(--paper);padding:.3rem .9rem;border-radius:.6rem}
+#hint .cal-open .ico-hand .op,#hint .cal-fist .ico-hand .cl{animation:none;opacity:1;visibility:visible}
+#hint .cal-open .ico-hand .cl,#hint .cal-fist .ico-hand .op{animation:none;display:none}
+#hint .cal-open .ico-hand,#hint .cal-fist .ico-hand{animation:none}
+#hint .cal-done{background:var(--mint);color:var(--ink)}
+#hint .hintskip{pointer-events:auto;font-size:1.3rem;font-weight:800;color:var(--ink2);text-decoration:underline;padding:.6rem 1rem}
 /* modo sencillo: bigger words, bigger choices */
 body.easy #hint .big{font-size:3.2rem}
 body.easy .choice .t{font-size:6.4rem}
 body.easy .choice .d{font-size:3.2rem}
 body.easy #turntag .nm{font-size:5.2rem}
 /* phone */
-html.mobile .stepn{font-size:1.5rem}
+html.mobile .setup .head{flex-wrap:wrap;row-gap:.8rem}
+html.mobile .setup .head .step{margin-left:0;width:100%}
+html.mobile .step .st{font-size:1.5rem}html.mobile .setup .head .step .st i{width:2.6rem;height:2.6rem;font-size:1.3rem}
+html.mobile .step .st b{display:none}
+html.mobile .pl-block,html.mobile .pl-block.wide{max-width:none}
+html.mobile .step .sep{width:1.6rem}
+html.mobile .blk,html.mobile .pl-block{padding:1.4rem 1.2rem 1.6rem}
+html.mobile .blk-h h3{font-size:2rem}
+html.mobile .linkb.quiet{font-size:1.6rem;padding:.8rem 0}
 html.mobile .chips{grid-template-columns:1fr}
 html.mobile .chip .mv{height:3.6rem;font-size:1.6rem;padding:0 1rem}
 html.mobile .chip .mv svg{width:1.7rem;height:1.7rem}
-html.mobile .pl-grid{grid-template-columns:1fr}
-html.mobile .pl-cols{grid-template-columns:1fr}
-html.mobile .pl-cols.one{grid-template-columns:1fr}
-html.mobile .pl-add{max-width:none;margin-left:3.2rem;width:calc(100% - 7.6rem)}
-html.mobile .paste summary{font-size:1.8rem}
+html.mobile .pl-cols{grid-template-columns:minmax(0,1fr)}
+html.mobile .pl-cols:not(.one) #plCol2{display:grid}
+html.mobile .pl-add,html.mobile .pl-cols:not(.one)+.pl-add{margin-left:3.2rem;width:calc(100% - 7.8rem)}
+html.mobile .paste summary,html.mobile .pl-groups{font-size:1.6rem}
 html.mobile .paste .linkb{font-size:1.6rem}
-html.mobile .setup .foot .next{font-size:2.2rem;flex:1;padding:1.4rem 1rem}
+html.mobile .pl-groups .btn{margin-left:0;width:100%}
+html.mobile .or-wrap .blk-h .btn{font-size:1.6rem}
+html.mobile .setup .foot .next{white-space:nowrap;font-size:1.8rem;flex:1;min-width:0;padding:1.4rem 1rem}
 html.mobile .setup .foot .spacer{display:none}
-html.mobile .setup .foot{flex-wrap:wrap;row-gap:.6rem}
+html.mobile .setup .foot{flex-wrap:wrap;row-gap:.6rem;padding-left:1.6rem;padding-right:1.6rem}
 html.mobile .setup .foot .msg{order:-1;width:100%;font-size:1.6rem}
 html.mobile .setup .foot .msg:empty{display:none}
-html.mobile .setup .foot .back{font-size:1.7rem;padding:1.4rem 1.6rem}
-html.mobile .setup .body{padding-bottom:16rem}
+html.mobile .setup .foot .back{font-size:1.6rem;padding:1.4rem 1.2rem}
+html.mobile .setup .body{padding-bottom:17rem}
 html.mobile .seg button b{font-size:1.9rem}html.mobile .seg button span{font-size:1.3rem}
-html.mobile .switch b{font-size:1.8rem}html.mobile .switch{font-size:1.5rem}
+html.mobile .switch b{font-size:1.9rem}html.mobile .switch{font-size:1.5rem}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 body.fast *{animation-duration:.05s!important;animation-delay:0s!important;transition-duration:.05s!important}
 </style>
@@ -714,27 +759,26 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
 
 <!-- PLAYERS -->
 <section id="s-players" class="screen setup">
-  <div class="head"><h2>Jugadores</h2><div class="step"><span class="stepn">Paso 1 de 4</span><i class="on"></i><i></i><i></i><i></i></div></div>
+  <div class="head"><h2>Jugadores</h2><nav class="step" aria-label="Pasos"></nav></div>
   <div class="body">
-    <div class="pl-grid">
-      <div class="pl-names">
-        <div class="pl-cols" id="plCols"><div class="pl-col" id="plCol1"></div><div class="pl-col" id="plCol2"></div></div>
-        <button class="pl-add" id="bAddSlot">+ Añadir jugador</button>
-      </div>
+    <div class="pl-block">
+      <div class="blk-h"><h3>¿Quiénes juegan?</h3><button class="linkb quiet" id="bClearNames">Borrar todos</button></div>
+      <div class="pl-cols" id="plCols"><div class="pl-col" id="plCol1"></div><div class="pl-col" id="plCol2"></div></div>
+      <button class="pl-add" id="bAddSlot">+ Añadir jugador</button>
       <details class="paste" id="pasteD">
-        <summary>¿Ya tienes la lista? Pégala</summary>
-        <textarea id="pasteBox" aria-label="Lista de nombres, uno por línea" placeholder="Ana&#10;Beto&#10;Carla&#10;…"></textarea>
-        <button class="btn cobalt small" id="bPaste">USAR LISTA</button>
-        <div class="links"><button class="linkb" id="bSample">Nombres de ejemplo</button><button class="linkb" id="bClearNames">Borrar todo</button></div>
+        <summary>Pegar una lista de nombres</summary>
+        <textarea id="pasteBox" aria-label="Lista de nombres, uno por línea" placeholder="Un nombre por línea&#10;Ana&#10;Beto&#10;…"></textarea>
+        <div class="paste-a"><button class="btn cobalt small" id="bPaste">USAR LISTA</button><button class="linkb" id="bSample">Probar con nombres de ejemplo</button></div>
       </details>
+      <div class="pl-groups" id="plGroups"><span>¿Son muchos? Pueden jugar en dos grupos.</span><button class="btn ghost small" id="bPlGroups">Dividir en grupos</button></div>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small back" data-go="title">← Atrás</button><span class="msg" id="plMsg"></span><span class="spacer"></span><button class="btn cobalt next" id="bPlNext">Grupos →</button></div>
+  <div class="foot"><button class="btn ghost small back" data-go="title">← Atrás</button><span class="msg" id="plMsg" aria-live="polite"></span><span class="spacer"></span><button class="btn cobalt next" id="bPlNext">Configurar partida →</button></div>
 </section>
 
 <!-- ASSIGN -->
 <section id="s-assign" class="screen setup">
-  <div class="head"><h2>Grupos</h2><div class="step"><span class="stepn">Paso 2 de 4</span><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+  <div class="head"><h2>Grupos</h2><nav class="step" aria-label="Pasos"></nav></div>
   <div class="body">
     <div class="as-tools">
       <button class="btn sun small" id="bRandom" title="Repartir al azar"><svg class="ico"><use href="#i-shuffle"/></svg> AZAR</button>
@@ -752,27 +796,29 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
 
 <!-- GROUP CHOICE -->
 <section id="s-group" class="screen setup">
-  <div class="head"><h2>¿Qué grupo?</h2><div class="step"><span class="stepn">Paso 3 de 4</span><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+  <div class="head"><h2>¿Qué grupo?</h2><nav class="step" aria-label="Pasos"></nav></div>
   <div class="body"><div class="gc-grid" id="gcGrid"></div></div>
   <div class="foot"><button class="btn ghost small back" data-go="assign">← Atrás</button><span class="spacer"></span><button class="btn ghost small hidden" id="bSeeBoth">A + B</button></div>
 </section>
 
-<!-- ORDER -->
+<!-- ORDER = CONFIGURAR PARTIDA -->
 <section id="s-order" class="screen setup">
-  <div class="head"><h2 id="orTitle">Orden</h2><div class="step"><span class="stepn">Paso 4 de 4</span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+  <div class="head"><h2 id="orTitle">Configurar partida</h2><nav class="step" aria-label="Pasos"></nav></div>
   <div class="body">
     <div class="or-wrap">
-      <div class="or-list" id="orList"></div>
-      <div class="opts">
-        <button class="btn sun small" id="bShuffle" style="width:100%"><svg class="ico"><use href="#i-shuffle"/></svg> BARAJAR ORDEN</button>
-        <h3 id="rdLbl">Partida</h3>
+      <section class="blk">
+        <div class="blk-h"><h3>Orden de juego</h3><button class="btn sun small" id="bShuffle"><svg class="ico"><use href="#i-shuffle"/></svg> Barajar</button></div>
+        <div class="or-list" id="orList"></div>
+      </section>
+      <section class="blk">
+        <div class="blk-h"><h3 id="rdLbl">Duración</h3></div>
         <div class="seg" role="radiogroup" aria-labelledby="rdLbl" id="rdSeg">
           <button role="radio" data-r="2"><b>Corta</b><span>2 rondas</span></button>
           <button role="radio" data-r="4"><b>Normal</b><span>4 rondas</span></button>
           <button role="radio" data-r="6"><b>Larga</b><span>6 rondas</span></button>
         </div>
         <label class="switch"><input type="checkbox" id="swEasy"><span class="tr"></span><span><b>Modo sencillo</b><br>Basta cerrar y abrir la mano. Con voz y pistas siempre a la vista.</span></label>
-      </div>
+      </section>
     </div>
   </div>
   <div class="foot"><button class="btn ghost small back" id="bOrBack">← Atrás</button><span class="spacer"></span><button class="btn tomato next" id="bPlay">¡A JUGAR!</button></div>
@@ -1015,7 +1061,7 @@ const Engine = (() => {
    ===================================================================== */
 const KEY = 'pareosiga.v1';
 const SAMPLE = ['Ana', 'Beto', 'Carla', 'Diego', 'Elena', 'Fabián', 'Gabi', 'Hugo', 'Inés', 'Julián', 'Karen', 'Luis', 'Mara', 'Nico', 'Olga', 'Pablo'];
-function freshApp() { return { v: 1, screen: 'title', names: Array(8).fill(''), people: [], groupOf: {}, order: { A: [], B: [] }, playing: null, game: null, results: { A: null, B: null }, nextId: 1, practiced: false, ftue: {} }; }
+function freshApp() { return { v: 1, screen: 'title', names: Array(4).fill(''), people: [], groupOf: {}, order: { A: [], B: [] }, playing: null, game: null, results: { A: null, B: null }, nextId: 1, practiced: false, ftue: {} }; }
 let APP = freshApp();
 function load() { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { APP = Object.assign(freshApp(), s); if (APP.game) delete APP.game.hist; } } catch (e) { } } // (v3 kept an undo history: dropped)
 function save() { try { localStorage.setItem(KEY, JSON.stringify(APP)); } catch (e) { console.warn('save', e); } }
@@ -1100,7 +1146,16 @@ function show(screen) {
   APP.screen = screen; save();
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-' + screen));
   if (screen !== 'game') { $('#card').className = ''; document.body.classList.remove('r4'); }
+  renderSteps(screen);
   ({ title: renderTitle, players: renderPlayers, assign: renderAssign, group: renderGroup, order: renderOrder, game: enterGame, final: renderFinal, both: renderBoth })[screen]?.();
+}
+/* the steps, named: Jugadores → (Grupos, only when there are two) → Partida. Where you are, where you came from, what is left. */
+function renderSteps(screen) {
+  const el = $(`#s-${screen} .step`); if (!el) return;
+  const two = activeGroups().length > 1 || screen === 'assign';
+  const steps = [['players', 'Jugadores'], ...(two ? [['assign', 'Grupos']] : []), ['order', 'Partida']];
+  const at = Math.max(0, steps.findIndex(([k]) => k === (screen === 'group' ? 'assign' : screen)));
+  el.innerHTML = steps.map(([, label], i) => `<span class="st ${i < at ? 'done' : i === at ? 'cur' : ''}"${i === at ? ' aria-current="step"' : ''}><i>${i < at ? '✓' : i + 1}</i><b>${label}</b></span>`).join('<span class="sep" aria-hidden="true"></span>');
 }
 function toast(msg, ms = 1800) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), ms); }
 function pipHTML(v, cls = '') {
@@ -1119,14 +1174,13 @@ $$('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
 /* players: 2 to 16 name slots, added or removed on the fly */
 const MAXP = 16, MINP = 2, GMAX = 8, GMIN = 2;
 function renderPlayers() {
-  if (!APP.names.length) APP.names = Array(8).fill('');
+  if (!APP.names.length) APP.names = Array(4).fill('');
   const n = APP.names.length, half = Math.max(8, Math.ceil(n / 2));
   const mk = i => `<div class="pl-in"><b>${i + 1}</b><input data-i="${i}" maxlength="24" value="${esc(APP.names[i] || '')}" placeholder="Nombre" aria-label="Jugador ${i + 1}"><button class="rm" data-rm="${i}" title="Quitar" aria-label="Quitar jugador ${i + 1}">✕</button></div>`;
   const idx = [...Array(n).keys()];
   $('#plCol1').innerHTML = idx.slice(0, half).map(mk).join('');
   $('#plCol2').innerHTML = idx.slice(half).map(mk).join('');
-  $('#plCols').classList.toggle('one', n <= half); $('#bAddSlot').hidden = n >= MAXP;
-  if (!MOBILE) $('#pasteD').open = true;
+  $('#plCols').classList.toggle('one', n <= half); $('.pl-block').classList.toggle('wide', n > half); $('#s-players').classList.toggle('wide', n > half); $('#bAddSlot').hidden = n >= MAXP;
   $$('#s-players .pl-in input').forEach(inp => {
     inp.oninput = () => { APP.names[+inp.dataset.i] = inp.value; save(); plCheck(); };
     inp.onkeydown = e => { if (e.key === 'Enter') { const i = +inp.dataset.i, nx = $(`#s-players input[data-i="${i + 1}"]`); if (nx) nx.focus(); else if (APP.names.length < MAXP && inp.value.trim()) { APP.names.push(''); save(); renderPlayers(); $(`#s-players input[data-i="${i + 1}"]`).focus(); } else $('#bPlNext').click(); } };
@@ -1139,8 +1193,10 @@ function plCheck() {
   const names = APP.names.map(s => (s || '').trim()), filled = names.filter(Boolean).length;
   const low = names.map(s => s.toLowerCase()), dup = new Set(low.filter((s, i) => s && low.indexOf(s) !== i));
   $$('#s-players .pl-in input').forEach(inp => inp.classList.toggle('dup', dup.has(inp.value.trim().toLowerCase())));
-  $('#plMsg').textContent = filled < MINP ? `Faltan ${MINP - filled} ${MINP - filled === 1 ? 'nombre' : 'nombres'}` : filled <= GMAX ? `${filled} jugadores` : `${filled} jugadores · dos grupos`;
+  $('#plMsg').textContent = filled < MINP ? 'Necesitamos mínimo dos jugadores' : filled <= GMAX ? `${filled} jugadores` : `${filled} jugadores: se juega en dos grupos`;
   $('#bPlNext').disabled = filled < MINP;
+  $('#bPlNext').textContent = filled > GMAX ? 'Armar los grupos →' : 'Configurar partida →'; // more than 8: groups are not optional
+  $('#plGroups').hidden = !(filled >= 4 && filled <= GMAX); // two groups: an option, never the main path
 }
 $('#bPaste').onclick = () => {
   const lines = $('#pasteBox').value.split(/\r?\n|;|\t/).map(s => s.trim()).filter(Boolean);
@@ -1149,21 +1205,28 @@ $('#bPaste').onclick = () => {
   toast(lines.length > MAXP ? `Máximo ${MAXP}` : `${lines.length} ✓`);
 };
 $('#bSample').onclick = () => { APP.names = SAMPLE.slice(); save(); renderPlayers(); };
-$('#bClearNames').onclick = () => { APP.names = Array(8).fill(''); save(); renderPlayers(); };
+$('#bClearNames').onclick = () => { APP.names = Array(4).fill(''); save(); renderPlayers(); $('#s-players input[data-i="0"]').focus(); };
 function defaultSplit(ids) { // up to 8: one group; 9–16: two balanced groups
   APP.groupOf = {}; const a = ids.length <= GMAX ? ids.length : Math.ceil(ids.length / 2);
   ids.forEach((id, i) => APP.groupOf[id] = i < a ? 'A' : 'B');
 }
-$('#bPlNext').onclick = () => {
+function syncPeople() { // the names typed → people (ids kept when the list did not change, so the order and the calibration survive)
   const names = APP.names.map(s => (s || '').trim()).filter(Boolean);
-  if (names.length < MINP) return;
+  if (names.length < MINP) return false;
   const same = APP.people.length === names.length && APP.people.every((p, i) => p.name === names[i]);
-  if (!same) {
-    APP.people = names.map(n => ({ id: 'p' + (APP.nextId++), name: n }));
-    defaultSplit(APP.people.map(p => p.id));
-    APP.order = { A: [], B: [] }; APP.results = { A: null, B: null };
-  }
-  show('assign');
+  if (!same) { APP.people = names.map(n => ({ id: 'p' + (APP.nextId++), name: n })); APP.order = { A: [], B: [] }; APP.results = { A: null, B: null }; }
+  return true;
+}
+// the main path: one group, straight to the game settings. More than 8 players: the groups step is required.
+$('#bPlNext').onclick = () => {
+  if (!syncPeople()) return; const ids = APP.people.map(p => p.id);
+  if (ids.length > GMAX) { defaultSplit(ids); save(); return show('assign'); }
+  APP.groupOf = {}; ids.forEach(id => APP.groupOf[id] = 'A'); APP.playing = 'A'; APP.results = { A: null, B: null }; save(); show('order');
+};
+// the optional path: two balanced groups, then adjust them
+$('#bPlGroups').onclick = () => {
+  if (!syncPeople()) return; const ids = APP.people.map(p => p.id), a = Math.ceil(ids.length / 2);
+  APP.groupOf = {}; ids.forEach((id, i) => APP.groupOf[id] = i < a ? 'A' : 'B'); APP.results = { A: null, B: null }; save(); show('assign');
 };
 function groupOk(g) { const n = groupIds(g).length; return g === 'B' ? n === 0 || (n >= GMIN && n <= GMAX) : n >= GMIN && n <= GMAX; }
 function groupsValid() { const a = groupIds('A').length, b = groupIds('B').length; if (a === 0 && b >= GMIN && b <= GMAX) return true; return groupOk('A') && groupOk('B'); }
@@ -1180,7 +1243,7 @@ function renderAssign() {
     if (opt) $('#chipsB').innerHTML = '<div class="emptyB">opcional</div>';
   }
   const nA = groupIds('A').length, nB = groupIds('B').length, ok = groupsValid(), total = nA + nB;
-  $('#bAsNext').disabled = !ok; $('#bAsNext').textContent = activeGroups().length > 1 ? 'Elegir grupo →' : 'Orden →';
+  $('#bAsNext').disabled = !ok; $('#bAsNext').textContent = activeGroups().length > 1 ? 'Elegir grupo →' : 'Configurar partida →';
   const bad = g => { const n = groupIds(g).length; return n > GMAX ? `${g}: máx. 8` : n < GMIN && !(g === 'B' && n === 0) && !(g === 'A' && n === 0 && nB) ? `${g}: mín. 2` : ''; };
   $('#asMsg').textContent = ok ? '' : [bad('A'), bad('B')].filter(Boolean).join(' · ');
   $('#bRandom').disabled = total < 4 && !nB;
@@ -1247,7 +1310,7 @@ function curOrder() {
   ids.forEach(id => { if (!o.includes(id)) o.push(id); }); APP.order[g] = o; return o;
 }
 function renderOrder() {
-  const g = APP.playing; $('#orTitle').textContent = 'Orden · ' + g;
+  const g = APP.playing; $('#orTitle').textContent = activeGroups().length > 1 ? 'Configurar partida · Grupo ' + g : 'Configurar partida';
   const o = curOrder();
   $('#orList').innerHTML = o.map((id, i) => `<div class="orow" draggable="true" data-id="${id}"><span class="n">${i + 1}</span><span class="nm">${esc(personName(id))}</span><button class="ib" data-up title="Subir">▲</button><button class="ib" data-dn title="Bajar">▼</button></div>`).join('');
   save(); renderSettings();
@@ -1266,7 +1329,7 @@ $('#orList').addEventListener('drop', e => {
   const o = APP.order[APP.playing].filter(x => x !== id); const at = r ? o.indexOf(r.dataset.id) : o.length; o.splice(at < 0 ? o.length : at, 0, id);
   APP.order[APP.playing] = o; save(); renderOrder();
 });
-$('#bOrBack').onclick = () => show(activeGroups().length > 1 ? 'group' : 'assign');
+$('#bOrBack').onclick = () => show(activeGroups().length > 1 ? 'group' : 'players');
 $('#bShuffle').onclick = () => { APP.order[APP.playing] = shuffle(curOrder()); save(); renderOrder(); };
 /* the game settings: length (corta / normal / larga) and modo sencillo */
 function renderSettings() {
@@ -1980,19 +2043,18 @@ function onBurstEnd(now, b) {
   trace('burst-', b.peak.toFixed(1), Math.round(b.end - b.start) + 'ms', 'travel', burstTravel(b).toFixed(2), b.armed ? 'armed' : 'not-armed');
   if (HT.state !== 'holding' || !b.armed) return;
   const dur = b.end - b.start, latest = GS.lm.filter(r => r.t >= b.start).pop();
-  if (latest && latest.s === 'open' && !(doubtful(b, now) && HT.open < 2)) return release(movedOpen(b) ? 'a' : 'drop', now);
-  if (latest && latest.s === 'mid' && b.peak >= GEST.partL && movedOpen(b) && palmMoved()) return release('p', now);
-  // (b) the hand vanished during a short burst: the NEXT landmarker frame decides — still gone = a throw (b); the fist back where it was
-  // = it was only covered (another hand passed in front); open = (a) or a drop. One frame later, never a false throw.
+  // EVIDENCE ONLY: the dice leave when the camera has SEEN the hand open — twice in a row. A hand that vanished in the blur of a shake,
+  // or a half-open blurred fist, is never a throw: the shake makes the detector lose the hand all the time (that was the false throw).
+  if (latest && latest.s === 'open' && HT.open >= 2) return release(movedOpen(b) ? 'a' : 'drop', now);
+  GS.lastBurst = b; // the hand will show up open a moment later: the throw is measured on this burst
   GS.pending = { end: now, b, dur, lost: !!(latest && latest.s === 'lost') }; GS.info = 'ráfaga terminó: esperando la forma de la mano'; trace('pending');
 }
 function resolvePending(now, s) {
   const P = GS.pending; if (!P) return;
   if (TEST || DEBUG) { const h = HT.hand, c = GS.closedPos; trace('resolve', s, 'moving', isMoving(P.b), 'jump', h && c ? Math.hypot(h.u - c.u, (h.v - c.v) * 0.75).toFixed(3) : '-', h ? h.u.toFixed(3) + ',' + h.v.toFixed(3) : '', c ? c.u.toFixed(3) + ',' + c.v.toFixed(3) : ''); }
-  if (s === 'open') release(movedOpen(P.b) ? 'a' : 'drop', now);
-  else if (s === 'lost' && startsAtFist(P.b)) release('b', now);
-  else if (s === 'mid' && P.b.armed && P.b.peak >= GEST.partL && movedOpen(P.b) && palmMoved()) release('p', now);
-  else { GS.pending = null; GS.info = P.dur > GEST.single ? 'sacudida terminada, puño cerrado: sigue en la mano' : 'amago: el puño siguió cerrado'; }
+  if (s === 'open') { if (HT.open >= 2) release(movedOpen(P.b) ? 'a' : 'drop', now); return; } // one open frame is not enough
+  if (s === 'lost') return; // still in the blur: wait for the hand to show itself (open → throw; fist → it stays in the hand)
+  { GS.pending = null; GS.info = P.dur > GEST.single ? 'sacudida terminada, puño cerrado: sigue en la mano' : 'amago: el puño siguió cerrado'; }
 }
 function gestureTick(now) {
   const dt = Math.min(0.1, (now - (GS.lastTick || now)) / 1000); GS.lastTick = now;
@@ -2000,17 +2062,14 @@ function gestureTick(now) {
   const P = GS.pending;
   if (P && now - P.end > GEST.stale) {
     const news = GS.lm.some(r => r.t > P.end);
-    if (!news && P.dur <= GEST.single && P.b.peak >= GEST.strongL && startsAtFist(P.b)) return release('c', now);
-    if (!news && P.lost && P.dur <= GEST.single && startsAtFist(P.b)) return release('b', now); // the detector stalled after a vanishing burst
-    if (!news) { GS.pending = null; GS.info = 'ráfaga sin confirmar'; }
+    if (!news) { GS.pending = null; GS.info = 'ráfaga sin confirmar: los dados siguen en la mano'; }
   }
   // the locked hand is gone: a burst may delay the verdict, never forever (people moving behind keep the energy up)
-  if (!GS.pending && GS.last === 'lost') {
+  if (GS.last === 'lost') {
     const lf = now - HT.lastSeen, open = GS.burst && !GS.burst.end;
-    if (lf > gLost() && (!open || lf > gLost() + GEST.burstMax)) { bb('lost', Math.round(lf)); return EZ() ? release('auto', now) : cancelHoldHand(); }
+    if (lf > gLost() && (!open || lf > gLost() + GEST.burstMax)) { bb('lost', Math.round(lf)); return cancelHoldHand(); } // back to the table, never a throw
   }
-  // the dice never stay in the hand: after holdMax they leave by themselves
-  if (now - GS.holdStart > gHoldMax()) { bb('hold-max'); return release('auto', now); }
+  // (a long hold is legitimate: after a few seconds the hint offers LANZAR; the dice never leave on their own)
   ST.armedVis = now - GS.holdStart >= gArm();
   // squeeze: the longer (and tighter) the fist, the more the dice glow (silently)
   const tight = clamp((CFG.hand.closeT - HT.curl) / 0.35, 0, 1);
@@ -2091,10 +2150,8 @@ function runLandmarker(now) {
   const seen = TRK.list.filter(t => t.t === now), holding = HT.state === 'holding' && TRK.lock;
   for (const t of seen) { const ff = fingerFeatures(t.c.l, t.c.w, ar, t.ext, t.side); t.ext = ff.ext; t.ff = ff; t.curl = handCurl(t.c, ar);
     if (ff.s === 'closed' && t.curl > CFG.hand.openT * 0.8) ff.s = 'mid'; // a blurred OPEN hand can bend every finger at the knuckle while the tips stay far away: a fist also needs the tips pulled in (real fists: curl ≈ 0.3)
-    if (EZ() && ff.s === 'mid') { // modo sencillo: hands that do not close (or open) all the way still count
-      if (HT.state !== 'holding' && t.curl < CFG.hand.openT * 0.85) ff.s = 'closed';
-      else if (HT.state === 'holding' && t.id === TRK.lock && ff.n >= 2 && now - GS.holdStart >= gArm()) ff.s = 'open';
-    }
+    calibShape(ff, t); // this player's own open hand and fist (first turn) refine the reading
+    if (EZ() && ff.s === 'mid' && HT.state !== 'holding' && t.curl < CFG.hand.openT * 0.85) ff.s = 'closed'; // modo sencillo: a loose fist grabs
     t.shape = ff.s; if (ff.s !== 'closed') t.armed = true; }
   let T0 = null;
   if (holding) T0 = seen.find(t => t.id === TRK.lock) || null;
@@ -2124,7 +2181,7 @@ function runLandmarker(now) {
   if (REC) recPush(REC.f, { t: Math.round(now), s: ff.s, n: ff.n, r: ff.r, ang: ff.ang, curl: +curl.toFixed(3), box: [c.box.x0, c.box.y0, c.box.x1, c.box.y1].map(v => +v.toFixed(3)), L: +MO.L.toFixed(3), st: HT.state,
     lock: TRK.lock, id: T0.id, hand: T0.side > 0 ? 'izq' : 'der', side: +T0.side.toFixed(2), chir: +c.ch.geo.toFixed(3), label: +c.ch.label.toFixed(2), hands: cands.length });
   if (!holding) HT.armed = T0.armed;
-  onShape({ u: c.u, v: c.v, s: c.s, curl, shape: ff.s, nExt: ff.n, lm: c.l, t: now }, now);
+  onShape({ u: c.u, v: c.v, s: c.s, curl, shape: ff.s, nExt: ff.n, r: ff.r, lm: c.l, t: now }, now);
   if (!holding && HT.state !== 'holding') T0.armed = HT.armed;
   // the face (mouth) only matters while holding: cheap, every 3rd landmarker frame
   if (SOPLO.on && HT.fd && HT.state === 'holding' && (HT.faceN++ % 3 === 0)) {
@@ -2141,7 +2198,7 @@ function onShape(h, now) {
   GS.lm.push({ t: now, s }); while (GS.lm.length > 40) GS.lm.shift(); GS.last = s; GS.lastT = now; HT.lmN++; trace('lm', s, HT.state);
   if (!h) {
     HT.hand = null;
-    if (HT.state === 'holding') resolvePending(now, 'lost');
+    if (HT.state === 'holding') { HT.open = 0; resolvePending(now, 'lost'); } // an open reading only counts if the next one is open too
     else if (HT.state !== 'off') { HT.state = 'nohand'; HT.armed = true; }
     return;
   }
@@ -2149,29 +2206,64 @@ function onShape(h, now) {
   const t = now / 1000; HT.su = HT.fu.filter(h.u, t); HT.sv = HT.fv.filter(h.v, t);
   if (HT.state !== 'holding') {
     HT.state = 'idle';
+    if (CAL.on) { if (h.r) calibStep(h, now); return; } // meeting the hand: no grabbing yet
     if (s !== 'closed') HT.armed = true; // any not-a-fist reading re-arms (a blurred open hand often reads as 'mid')
     if (HT.armed && s === 'closed' && !(TEST && window.__noGrab)) { if (!HT.fist++) HT.fistT = now; if (EZ() ? now - HT.fistT >= 350 && HT.fist >= 2 : HT.fist >= (HT.ms > 90 ? 1 : 2)) startHoldHand(now); } else HT.fist = 0; // modo sencillo: a looser fist, held a moment
     return;
   }
   if (ST.mode === 'hold' && ST.holdSrc === 'hand') ST.held = hoverPoint((HT.su * 2 - 1) * 1.25, -(HT.sv * 2 - 1) * 1.3 + 0.12);
   const b = GS.burst;
-  if (s === 'mid' && partialBurst(b, now) && !doubtful(b, now)) return release('p', now); // half-open hand (2 fingers out) + a strong burst while armed
   if (s !== 'open') { GS.closedT = now; if (s === 'closed') GS.closedPos = { u: h.u, v: h.v }; HT.open = 0; resolvePending(now, s); return; }
-  const sure = h.curl > H.openT, first = ++HT.open === 1; // a second opinion: the averaged curl agrees, or a second open frame in a row
-  if (first) HT.openPos = { u: h.u, v: h.v };
-  if (doubtful(b, now)) { // another hand is around: this open hand must be seen twice, in the same place, before the dice leave
-    const same = Math.hypot(h.u - HT.openPos.u, (h.v - HT.openPos.v) * 0.75) < 1.2 * Math.max(h.s, 0.05);
-    if (!same) { HT.open = 1; HT.openPos = { u: h.u, v: h.v }; }
-    if (HT.open < 2) { trace('doubt'); return; }
+  // CONFIRMED OPEN: two open readings in a row, in about the same place. A blurred fist in the middle of a shake can read "open" for
+  // one frame; it does not do it twice in the same spot. The cost is one landmarker frame (~40 ms) before the dice leave.
+  const first = ++HT.open === 1;
+  if (first) { HT.openPos = { u: h.u, v: h.v }; trace('open?'); return; }
+  if (Math.hypot(h.u - HT.openPos.u, (h.v - HT.openPos.v) * 0.75) > 2 * Math.max(h.s, 0.05)) { HT.open = 1; HT.openPos = { u: h.u, v: h.v }; return; }
+  // the throw is measured on the swing that just happened (the hand often shows up open a moment after the blur of the swing)
+  const lb = b && (!b.end || now - b.end < GEST.after + 1000) ? b : GS.lastBurst && GS.lastBurst.end && now - GS.lastBurst.end < GEST.after + 1000 ? GS.lastBurst : null;
+  if (lb) GS.burst = lb;
+  release(movedOpen(lb) ? 'a' : 'drop', now);
+}
+/* ---------- CALIBRATION: on each player's first turn the camera meets THEIR hand — open, then a fist (≈3 s, it doubles as the
+   tutorial). The per-finger extension ratios of both shapes (fingerFeatures().r) give a personal openness scale 0 (their fist) →
+   1 (their open hand). A loose fist (age, arthritis) and a half-open hand stop looking alike, and a blurred fist never reaches "open".
+   Stored by person in APP.calib; {skip:1} = no usable calibration (the fixed thresholds stay). ---------- */
+let CAL = { on: false };
+const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+const pct = (rows, q) => [0, 1, 2, 3].map(k => { const v = rows.map(r => r[k]).sort((a, b) => a - b); return v[Math.min(v.length - 1, Math.floor(q * v.length))]; });
+function curCalib() { const g = G(), p = g && Engine.cur(g), c = p && APP.calib && APP.calib[p.id]; return c && c.o ? c : null; }
+function calibShape(ff, t) {
+  const c = curCalib(); if (!c) return;
+  const o = mean(ff.r.map((r, k) => clamp((r - c.f[k]) / ((c.o[k] - c.f[k]) || 1e-3), -0.2, 1.3))); ff.o = +o.toFixed(2);
+  if (ff.s === 'open' && o < 0.6) ff.s = 'mid';                       // "open" by the fixed rule, but far from THEIR open hand
+  else if (ff.s === 'closed' && o > 0.6) ff.s = 'mid';                // "closed" by the fixed rule, but far from THEIR fist
+  else if (ff.s === 'mid' && o < 0.3 && t.curl < CFG.hand.openT) ff.s = 'closed'; // their fist, even if it does not close all the way
+  else if (ff.s === 'mid' && o > 0.75 && ff.n >= 2) ff.s = 'open';    // close to THEIR open hand, even if it does not open all the way
+}
+function maybeCalib() {
+  const g = G(); if (!g) return;
+  if (CAL.on && (g.phase !== 'await_throw' || !Engine.cur(g) || Engine.cur(g).id !== CAL.pid || hintKind() !== 'cam')) { CAL = { on: false }; return; }
+  if (CAL.on || busy || g.phase !== 'await_throw' || isPractice(g) || hintKind() !== 'cam' || ST.mode === 'hold') return;
+  const p = Engine.cur(g); APP.calib = APP.calib || {}; if (!p || APP.calib[p.id]) return;
+  CAL = { on: true, pid: p.id, ph: 'open', t0: performance.now(), seen: 0, open: [], fist: [] }; bb('calib-start', p.id);
+  updateHint(); say('Muestra la mano abierta');
+}
+function calibStep(h, now) {
+  if (CAL.ph === 'open') {
+    if (h.nExt >= 2) { CAL.open.push(h.r); CAL.seen = CAL.seen || now; }
+    if (CAL.open.length >= 10 && now - CAL.seen >= 900) { CAL.oRef = pct(CAL.open, 0.75); CAL.ph = 'fist'; CAL.t0 = now; CAL.seen = 0; updateHint(); say('Ahora cierra el puño'); }
+  } else if (CAL.ph === 'fist') {
+    if (mean(h.r) < mean(CAL.oRef) * 0.82 || h.nExt <= 1) { CAL.fist.push(h.r); CAL.seen = CAL.seen || now; }
+    if ((CAL.fist.length >= 8 && now - CAL.seen >= 700) || now - CAL.t0 > 7000) finishCalib(now);
   }
-  if (movedOpen(b) && (!b.end || now - b.end < GEST.after)) {
-    const shaking = !b.end && (now - b.start > GEST.single || GS.alt - (b.alt0 || 0) >= 2); // in the middle of a shake (long, or with reversals) a blurred fist can read as open for one frame
-    if (!shaking || sure || !first) return release('a', now); // opened during/after a moving burst: at once, on the raw frame
-    return;
-  }
-  if (GS.pending) return resolvePending(now, 'open');
-  if (b && !b.end) { trace('open in a burst: wait for its end'); return; } // an open frame at the very start of a swing: the burst's end decides (a, or a drop)
-  if (sure || !first) release('drop', now); // opened without moving: a gentle drop
+}
+function finishCalib(now, skipped) {
+  const o = CAL.oRef, f = CAL.fist && CAL.fist.length >= 4 ? pct(CAL.fist, 0.25) : null;
+  const ok = !skipped && o && f && mean(o) - mean(f) >= 0.12;
+  APP.calib = APP.calib || {}; APP.calib[CAL.pid] = ok ? { o: o.map(v => +v.toFixed(3)), f: f.map(v => +v.toFixed(3)) } : { skip: 1 }; save();
+  bb('calib', ok ? 'ok' : skipped ? 'skipped' : 'fallback', ok ? +(mean(o) - mean(f)).toFixed(2) : 0);
+  CAL = { on: false, doneT: skipped ? 0 : now }; HT.armed = false; HT.fist = 0; // the fist that ends the calibration must open before it grabs
+  updateHint(); if (!skipped) say('Listo. Cierra la mano para tomar los dados');
 }
 function startHoldHand(now) {
   if (!beginHold('hand')) return;
@@ -2186,7 +2278,7 @@ function slope(pts, key) { const n = pts.length; if (n < 2) return 0; const mt =
 function motionVector(now) { // strength from the peak and integral of energy; direction from the motion centroid (mirrored)
   // measured on the THROW BURST itself (from just before it started to its end), not on a window ending at the release: the release
   // can come at the end of the burst (b), at the first open frame (a), or a landmarker frame later — the strength must not depend on which
-  const b = GS.burst, useB = b && (!b.end || now - b.end < GEST.after + 300) && now - b.start < 2500;
+  const b = GS.burst, useB = b && (!b.end || now - b.end < GEST.after + 1000) && now - b.start < 3500;
   const t0 = useB ? Math.max(b.start - 80, (b.end || now) - 600) : now - GEST.win, t1 = useB ? Math.min(now, (b.end || now) + 40) : now;
   const pts = MO.hist.filter(p => p.t >= t0 && p.t <= t1);
   let peak = 0, integ = 0; pts.forEach(p => { peak = Math.max(peak, p.L); integ += p.L * Math.min(p.dt, 120) / 1000; });
@@ -2357,7 +2449,7 @@ function renderGame(anim) {
   if (canThrow(g) && ST.ready && ST.mode === 'result') { markOnes(null); setCamPose(defaultPose()); }
   const k = `${g.round}.${g.idx}.${g.throws.length}.${g.phase}.${pr}`; if (k !== hintKey) { hintKey = k; hintT0 = performance.now(); }
   const cb = $('#cambox'); cb.classList.toggle('hidden', mouseOnly && !HT.camOn); cb.classList.toggle('faded', !canThrow(g));
-  updateHint();
+  maybeCalib(); updateHint();
   prevLeaders = Engine.leaders(g).ids.join(',');
 }
 /* information: the name and four small round dots (no words) */
@@ -2380,6 +2472,17 @@ function updateHint() {
   const st = $('#stage'); st.classList.toggle('grab', canThrow(g)); st.classList.toggle('holding', ST.mode === 'hold');
   const p = Engine.cur(g), first = isPractice(g) || (g.round === 1 && g.phase === 'await_throw' && p && !(APP.ftue || {})[p.id]);
   const now = performance.now(), idle = now - hintT0 > 8000;
+  // the first turn of each player: meet their hand
+  if (CAL.on || (CAL.doneT && now - CAL.doneT < 1600)) {
+    const k = 'cal' + (CAL.on ? CAL.ph : 'done');
+    if (el.dataset.k !== k) {
+      el.dataset.k = k;
+      const w = !CAL.on ? '¡Listo!' : CAL.ph === 'open' ? 'Muestra la mano abierta' : 'Ahora cierra el puño';
+      el.innerHTML = `<span class="calk">Conociendo tu mano · ${!CAL.on ? '2' : CAL.ph === 'open' ? '1' : '2'} de 2</span><span class="big cal-${CAL.on ? CAL.ph : 'done'}">${CAL.on ? ICO.cam : ''}${w}</span>` + (CAL.on ? '<button class="hintskip" id="bCalSkip">Saltar</button>' : '');
+      const sk = $('#bCalSkip'); if (sk) sk.onclick = () => finishCalib(performance.now(), true);
+    }
+    return;
+  }
   // the dice have been in the hand a while: say what to do, and offer the way out
   const stuck = canThrow(g) && ST.mode === 'hold' && ST.holdSrc === 'hand' && HT.state === 'holding' && now - GS.holdStart > (EZ() ? 2500 : 4000);
   if (stuck) {
@@ -2393,7 +2496,7 @@ function updateHint() {
   if (kind === 'cam') say(words.replace(' · ', ', luego '));
   el.innerHTML = `<span class="big">${first ? ICO[kind] : ''}${words}</span>`;
 }
-setInterval(() => { if (APP.screen === 'game' && canThrow(G())) updateHint(); }, 1000);
+setInterval(() => { if (APP.screen === 'game' && canThrow(G())) { maybeCalib(); updateHint(); } }, 1000);
 /* WATCHDOG: the game can never stay locked. A throw that does not finish, or a busy flag nobody clears, is undone and logged. */
 let busyT = 0;
 setInterval(() => {
@@ -2719,11 +2822,11 @@ function renderFinal() {
     <div class="fl">${rows.slice(3).map(r => `<div class="r"><span class="p">${r.rank}º</span><span class="n">${esc(r.name)}</span><span class="sc">${r.score}</span></div>`).join('')}</div>
     <div class="row" style="display:flex;gap:1.2rem;margin-top:1rem;flex-wrap:wrap;justify-content:center">
       ${hasOther && !APP.results[other] ? `<button class="btn tomato" id="bOther" style="font-size:2rem">GRUPO ${other} →</button>` : hasOther ? `<button class="btn cobalt" id="bBoth" style="font-size:2rem">A + B</button>` : `<button class="btn cobalt" id="bAgain" style="font-size:2rem">OTRA VEZ</button>`}
-      <button class="btn ghost" id="bFinGroups">← GRUPOS</button></div>`;
+      <button class="btn ghost" id="bFinGroups">${activeGroups().length > 1 ? '← GRUPOS' : '← JUGADORES'}</button></div>`;
   const ba = $('#bAgain'); if (ba) ba.onclick = () => { APP.results[g.group] = null; APP.playing = g.group; save(); show('order'); };
   const bo = $('#bOther'); if (bo) bo.onclick = () => { APP.playing = other; save(); show('order'); };
   const bb = $('#bBoth'); if (bb) bb.onclick = () => show('both');
-  $('#bFinGroups').onclick = () => show(activeGroups().length > 1 ? 'group' : 'assign');
+  $('#bFinGroups').onclick = () => show(activeGroups().length > 1 ? 'group' : 'players');
 }
 function renderBoth() {
   const col = g => { const rows = APP.results[g]; return `<div><h3>${g}</h3><div class="fl" style="width:100%">${rows ? rows.map(r => `<div class="r"><span class="p">${r.rank}º</span><span class="n">${r.rank === 1 ? '<svg class="crown"><use href="#i-crown"/></svg> ' : ''}${esc(r.name)}</span><span class="sc">${r.score}</span></div>`).join('') : '<p>—</p>'}</div></div>`; };
@@ -2739,7 +2842,7 @@ $('#bHelpClose').onclick = () => { $('#help').hidden = true; };
 const openMenu = () => { $('#menu').hidden = false; };
 $('#bMenu').onclick = openMenu;
 $('#mResume').onclick = () => { $('#menu').hidden = true; };
-$('#mGroups').onclick = () => { $('#menu').hidden = true; if (ST.mode === 'hold') cancelHold(); show('group'); };
+$('#mGroups').onclick = () => { $('#menu').hidden = true; if (ST.mode === 'hold') cancelHold(); show(activeGroups().length > 1 ? 'group' : 'order'); };
 $('#mAbandon').onclick = () => { if (!confirm('¿Abandonar la partida?')) return; $('#menu').hidden = true; APP.game = null; save(); show('group'); };
 $('#bSound').onclick = () => { AU.muted = !AU.muted; $('#bSound').classList.toggle('on', !AU.muted); rumbleSet(0); toast(AU.muted ? '🔇' : '🔊'); };
 $('#bSound').classList.add('on');
@@ -2806,14 +2909,14 @@ if (DEBUG) {
   setInterval(() => {
     HT.hz = HT.hzN; HT.hzN = 0; const lt = lastThrow, m = HT.lastThrowVec;
     const t = performance.now(); if (t - (HT._rt || 0) >= 1000) { HT.lmHz = Math.round((HT.lmN - (HT._lmN0 || 0)) * 1000 / (t - (HT._rt || t - 1000))); MO.hz = Math.round((MO.n - (MO._n0 || 0)) * 1000 / (t - (HT._rt || t - 1000))); HT._lmN0 = HT.lmN; MO._n0 = MO.n; HT._rt = t; }
-    el.textContent = `FPS 3D        ${ST.fps.toFixed(0)} · resolución ×${renderer ? renderer.getPixelRatio().toFixed(2) : '-'}  modo ${ST.mode}${ST.slow ? ' · CÁMARA LENTA' : ''}\nlibs          three/cannon ${LIBS.src || '-'}\nmano          HandLandmarker · ${HT.delegate || '-'} · ${HT.src || '-'} · carga ${HT.loadMs.toFixed(0)} ms\ndetección     ${HT.ms.toFixed(1)} ms · ${HT.hz} Hz · cara ${HT.fd ? HT.fms.toFixed(1) + ' ms' : 'no'}\nestado        ${HT.state}  curl ${HT.curl.toFixed(2)} (cierra<${CFG.hand.closeT} abre>${CFG.hand.openT})\nefectos       carga ${HT.charge.toFixed(2)} · sacude ${HT.shake.toFixed(2)} · boca ${SOPLO.on ? (HT.near ? 'sí' : 'no') : 'soplo apagado'} · dedos ${HT.ff ? HT.ff.n + '/4 ' + HT.ff.s : '-'}\n` + gestDebug() + `\n` +
+    el.textContent = `FPS 3D        ${ST.fps.toFixed(0)} · resolución ×${renderer ? renderer.getPixelRatio().toFixed(2) : '-'}  modo ${ST.mode}${ST.slow ? ' · CÁMARA LENTA' : ''}\nlibs          three/cannon ${LIBS.src || '-'}\nmano          HandLandmarker · ${HT.delegate || '-'} · ${HT.src || '-'} · carga ${HT.loadMs.toFixed(0)} ms\ndetección     ${HT.ms.toFixed(1)} ms · ${HT.hz} Hz · cara ${HT.fd ? HT.fms.toFixed(1) + ' ms' : 'no'}\nestado        ${HT.state}  curl ${HT.curl.toFixed(2)} (cierra<${CFG.hand.closeT} abre>${CFG.hand.openT})\nefectos       carga ${HT.charge.toFixed(2)} · sacude ${HT.shake.toFixed(2)} · boca ${SOPLO.on ? (HT.near ? 'sí' : 'no') : 'soplo apagado'} · dedos ${HT.ff ? HT.ff.n + '/4 ' + HT.ff.s + (HT.ff.o !== undefined ? ' · apertura ' + HT.ff.o : ' · sin calibrar') : '-'}\n` + gestDebug() + `\n` +
       `último gesto  ${m ? `pico ${m.peak} · integral ${m.integ} · lado ${m.lat} · arriba ${m.up} · crece ${m.grow} → fuerza ${m.strength} (${m.how})` : '-'}\núltimo tiro   ${lt ? `${lt.values.join('+')} · fuerza ${lt.tp.strength.toFixed(2)} ${lt.tp.src} · ${lt.dur.toFixed(2)} s · ${lt.hits} golpes · reintentos ${lt.tries}${lt.drama ? ' · DRAMA' : ''}` : '-'}\nverificación  ${lastCheck ? (lastCheck.ok ? 'OK ' : 'ERROR ') + lastCheck.shown.join('+') : '-'}`;
   }, 250);
 }
 
 /* test hooks */
 if (TEST) window.__ps = { Engine, SFX, CUP, TRK, REC, get APP() { return APP; }, set APP(v) { APP = v; }, save, load, show, CFG, ST, HT, LIBS, LAYOUTS, upFace, qrot, drawDie, chooseLayout, makeSim, throwParams, initFromThrow, initStage, planThrow, randQuat, get lastCheck() { return lastCheck; }, get lastThrow() { return lastThrow; }, get busy() { return busy; },
-  startHoldHand, gestureTick, motionGesture, forceThrow, BB, setEasy, get EZ() { return EZ(); },
+  startHoldHand, gestureTick, get CAL() { return CAL; }, set CAL(v) { CAL = v; }, calibStep, calibShape, updateHint, finishCalib, maybeCalib, motionGesture, forceThrow, BB, setEasy, get EZ() { return EZ(); },
   showCamFail, force(...pairs) { if (!TEST) return; forcedQueue.push(...pairs); if (!forced) forced = forcedQueue.shift(); }, onShape, GS, MO, GEST, doThrow, fingerFeatures, get practice() { return isPractice(G()); }, MOT, SOPLO, REC, MODE, get portrait() { return ST.portrait; }, setFast(v) { FAST = v; document.body.classList.toggle('fast', v); } };
 
 /* ⋯ → Reportar problema: everything needed to explain a stuck game, as one JSON file (nothing leaves the computer) */
