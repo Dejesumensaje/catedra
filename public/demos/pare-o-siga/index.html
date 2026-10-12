@@ -1104,9 +1104,17 @@ const Engine = (() => {
     G.idx++;
     if (G.idx >= G.order.length) { G.idx = 0; G.round++; G.phase = G.round > RN(G) ? 'game_over' : 'round_intro'; if (G.round > RN(G)) G.round = RN(G), G.idx = G.order.length - 1; }
     else G.phase = 'turn_intro';
-    G.before = 0; G.seq++; return G;
+    G.before = 0;
+    // the last player of the final is already above everyone: they won when the player before them finished — no turn card
+    if (G.phase === 'turn_intro' && clinches(G)) { G.before = live(G, cur(G)); clinch(G, cur(G), true); }
+    G.seq++; return G;
   }
-  return { create, cur, byId, live, standings, leaders, duel, beginRound, beginTurn, roll, decide, next, potIsLive, lastToPlay, clinches, mustGo };
+  // (turn_over) the turn that just ended decides the game: the next and last player of the final is already above everyone
+  function clinchesNext(G) {
+    if (G.phase !== 'turn_over' || !isFinal(G) || G.idx !== G.order.length - 2) return false;
+    const nx = byId(G, G.order[G.idx + 1]); return nx.secured > bestOther(G, nx);
+  }
+  return { create, cur, byId, live, standings, leaders, duel, beginRound, beginTurn, roll, decide, next, potIsLive, lastToPlay, clinches, clinchesNext, mustGo };
 })();
 
 /* =====================================================================
@@ -2862,6 +2870,7 @@ let clinchSeq = -1;
 async function clinchEvent(g, pre) {
   if (clinchSeq === g.seq) return; clinchSeq = g.seq; busy = true;
   const p = Engine.cur(g), L = g.last, entry = L.entry, before = pre || { safe: L.from, pot: 0 };
+  if (entry && ST.ready) { resetDice(); markOnes(null); setCamPose(defaultPose()); $('#result').classList.add('hidden'); } // won without throwing: the table is theirs, not the previous throw
   $('#decide').classList.add('hidden'); $('#outcome').className = 'hidden'; closeRank(); rumbleSet(0);
   // the provisional state first (the throw that did it), then the hard stop
   const pill = $('#pill'); pill.classList.remove('hidden'); pill.innerHTML = pillHTML(before.safe, before.pot + L.amount);
@@ -2925,7 +2934,9 @@ async function decide(choice) {
 function showOutcome(g, anim) {
   if (g.last && g.last.type === 'clinch') { if (clinchSeq !== g.seq) setTimeout(() => clinchEvent(g), D(g.last.entry ? 350 : 0)); return; }
   const el = $('#outcome'), L = g.last || {}, nextP = g.idx + 1 < g.order.length ? Engine.byId(g, g.order[g.idx + 1]).name : null;
-  const nextTxt = nextP ? `${esc(nextP.toUpperCase())} →` : g.round < RN(g) ? `RONDA ${g.round + 1} →` : 'FINAL →';
+  const decided = Engine.clinchesNext(g); // nobody caught the last player: show this turn's result a moment, then their win
+  const nextTxt = decided ? 'FINAL →' : nextP ? `${esc(nextP.toUpperCase())} →` : g.round < RN(g) ? `RONDA ${g.round + 1} →` : 'FINAL →';
+  if (decided && autoSeq !== g.seq) { autoSeq = g.seq; const sq = g.seq; setTimeout(() => { if (G() === g && g.seq === sq) nextTurn(); }, D(2200)); }
   let html = '';
   if (L.type === 'bank') html = `<div class="kick">GUARDASTE</div><div class="head"><span class="plus">+${L.amount}</span></div><div class="sub">Llevas ${L.total}</div>`;
   else if (L.type === 'bust') {
@@ -2938,6 +2949,7 @@ function showOutcome(g, anim) {
   spotlight(bust, bust && isFinal(g));
   $('#bNext').onclick = () => nextTurn();
 }
+let autoSeq = -1;
 function nextTurn() { const g = G(); if (!g || g.phase !== 'turn_over' || busy || (g.last && g.last.type === 'clinch')) return; $('#result').classList.add('hidden'); spotlight(false); act(() => Engine.next(g)); }
 function skipPractice() { const g = G(); if (!isPractice(g) || busy) return; if (ST.mode === 'hold') cancelHold(); APP.practiced = true; save(); renderGame(); }
 
