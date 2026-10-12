@@ -328,6 +328,11 @@ body.r4 #pill{background:#070B30;box-shadow:inset 0 0 0 .14rem rgba(255,255,255,
 #result .ab{font-size:3.4rem;font-weight:800;opacity:.85}
 #result .s{font-size:9rem;font-weight:900;line-height:.85;font-stretch:115%}
 #result .one{font-size:6.4rem;font-weight:900;color:var(--tomato);font-stretch:115%}
+#result.dbl{flex-direction:column;align-items:flex-start;gap:.4rem}
+#result.dbl .one{font-size:5.6rem;line-height:.92}
+#result.dbl.lft{align-items:flex-end;text-align:right}
+#result.dbl.above{align-items:center}#result.dbl.above .br{display:none}
+#result.dbl .nm{font-size:2.6rem;font-weight:800;font-style:italic;opacity:.9}
 #result.above{transform:translate(-50%,-100%)}
 #result .tagp{align-self:center;font-size:1.4rem;letter-spacing:.2em;padding:.4rem .8rem;border-radius:.6rem;background:var(--sun);color:var(--ink)}
 #result.in{animation:sumIn .5s var(--e-pop) both}
@@ -541,6 +546,17 @@ html.mobile .dots{right:1.2rem;top:1.2rem;width:4.2rem;height:4.2rem}
 html.mobile #tray{right:1.2rem;top:6.2rem}
 html.mobile .tb{height:4.4rem;font-size:1.6rem}
 html.mobile #cambox{display:none!important}
+/* the cup: the only place the finger goes. Fixed, centred, far from the screen edges (the edges are the browser's back/forward
+   swipe and, at the bottom, the home bar). The table itself does not take touches on a phone. */
+#cup{display:none}
+html.mobile #cup{position:absolute;left:50%;bottom:max(2.2rem, env(safe-area-inset-bottom));transform:translateX(-50%);z-index:7;display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:0;background:none;color:var(--fg);touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;transition:opacity .25s}
+html.mobile #cup.off{opacity:0;pointer-events:none}
+html.mobile #cup .cupb{width:9.4rem;height:9.4rem;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--paper);box-shadow:0 0 0 .5rem var(--sun),0 .8rem 2.4rem rgba(0,0,0,.22);transition:transform .15s var(--e-out),box-shadow .15s}
+html.mobile #cup .cupb svg{width:5.2rem;height:5.2rem}
+html.mobile #cup .dd{fill:var(--paper)}html.mobile #cup .pp{fill:var(--ink)}
+html.mobile #cup .cupt{font-size:1.7rem;font-weight:900}
+html.mobile #cup.held .cupb{background:var(--sun);color:var(--ink);box-shadow:0 0 0 .8rem color-mix(in oklab,var(--sun) 45%,transparent),0 .4rem 1.2rem rgba(0,0,0,.2)}
+html.mobile #cup.held .dd{fill:var(--ink)}html.mobile #cup.held .pp{fill:var(--sun)}
 html.mobile #hint{bottom:25rem;white-space:normal;width:90%}
 html.mobile #hint .big{font-size:2rem;justify-content:center}
 html.mobile #pill{left:50%;transform:translateX(-50%);bottom:15rem;grid-auto-flow:column;grid-template-columns:none;align-items:center;padding:.9rem 1.8rem}
@@ -567,6 +583,8 @@ html.mobile #outcome .next{font-size:2.2rem;padding:1.4rem 2.6rem}
 html.mobile #result .ab{font-size:3rem}
 html.mobile #result .s{font-size:7.6rem}
 html.mobile #result .one{font-size:5.4rem}
+html.mobile #result.dbl .one{font-size:4.2rem}
+html.mobile #result.dbl .nm{font-size:2.2rem}
 html.mobile #banner{top:17%;font-size:3.8rem;white-space:normal;text-align:center;width:90%;padding:1rem 1.6rem 1.2rem}
 html.mobile #rankov .rr{font-size:2.2rem}
 html.mobile #card{padding:3rem 2rem}
@@ -837,6 +855,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
     <div id="turntag"><span class="nm" id="ttName">—</span><span class="th" id="ttThrow"></span></div>
     <div id="leadtag"></div>
     <div id="hint"></div>
+    <button id="cup" class="off" aria-label="Cubilete: mantén el dedo, agita el celular y suelta"><span class="cupb"><svg viewBox="0 0 40 40" aria-hidden="true"><g class="dd"><rect x="4" y="12" width="16" height="16" rx="3.5" transform="rotate(-12 12 20)"/><rect x="20" y="14" width="16" height="16" rx="3.5" transform="rotate(9 28 22)"/></g><g class="pp"><circle cx="12" cy="20" r="2"/><circle cx="24.5" cy="18.5" r="1.8"/><circle cx="31.5" cy="25.5" r="1.8"/></g></svg></span><span class="cupt">Mantén aquí</span></button>
     <div id="cambox"><canvas id="camcv" width="320" height="240"></canvas></div>
     <div id="pill" class="hidden"></div>
     <div id="race" class="hidden"></div>
@@ -882,7 +901,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
     <div>
       <ul>
         <li><b>Cámara</b>: cierra la mano, sacude, ábrela. En <b>modo sencillo</b> basta cerrarla y abrirla. En tu primer turno la cámara conoce tu mano: ábrela y luego cierra el puño.</li>
-        <li><b>Celular</b>: mantén los dados, agita, suelta.</li>
+        <li><b>Celular</b>: mantén el dedo en el cubilete, agita, suelta.</li>
         <li><b>Mouse</b>: arrastra y suelta.</li>
         <li><b>P</b> / <b>S</b> · <b>Enter</b> sigue · <b>Espacio</b> tira · <b>R</b> ranking · <b>M</b> menú · <b>V</b> sonido · <b>F</b> pantalla</li>
       </ul>
@@ -1129,6 +1148,19 @@ const SFX = {
   provLead() { tone(784, 0.22, { type: 'sine', vol: 0.07 }); tone(1175, 0.34, { type: 'sine', vol: 0.06, when: 0.1 }); }, // gentle: passing the leader is still provisional
   siga() { tone(330, 0.18, { vol: 0.14, to: 660 }); noiseHit(0.08, 1800, 1, 0.2); },
   bust() { noiseHit(0.22, 1600, 1.4, 0.16); tone(392, 0.16, { type: 'sawtooth', vol: 0.08 }); tone(349, 0.16, { type: 'sawtooth', vol: 0.08, when: 0.17 }); tone(294, 0.5, { type: 'sawtooth', vol: 0.09, when: 0.34, to: 250 }); },
+  // doble uno: the sad trombone, wah · wah · wah · waaah. A brassy saw through a lowpass that opens and closes on each note (the
+  // "wah"), and a vibrato that grows on the last one
+  trombone() {
+    const c = au(); if (!c || AU.muted) return; const t0 = c.currentTime + 0.05;
+    [[294, 0, 0.34], [277, 0.4, 0.34], [262, 0.8, 0.34], [247, 1.2, 1.25]].forEach(([f, w, d], i) => {
+      const t = t0 + w, last = i === 3, o = c.createOscillator(), lp = c.createBiquadFilter(), g = c.createGain();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(f, t); if (last) o.frequency.linearRampToValueAtTime(f * 0.96, t + d);
+      lp.type = 'lowpass'; lp.Q.value = 5; lp.frequency.setValueAtTime(420, t); lp.frequency.linearRampToValueAtTime(1500, t + 0.09); lp.frequency.linearRampToValueAtTime(520, t + d);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.15, t + 0.04); g.gain.setValueAtTime(0.15, t + (last ? d * 0.45 : d - 0.08)); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      if (last) { const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = 5.5; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(7, t + 0.5); l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t + d + 0.05); }
+      o.connect(lp); lp.connect(g); g.connect(AU.master); o.start(t); o.stop(t + d + 0.05);
+    });
+  },
   leader() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, 0.16, { vol: 0.15, when: i * 0.09 })); },
   card() { noiseHit(0.08, 1200, 0.8, 0.2); tone(220, 0.2, { type: 'sine', vol: 0.08, to: 440 }); },
   blow() { noiseHit(0.25, 700, 0.6, 0.5); [1568, 2093, 2637].forEach((f, i) => tone(f, 0.12, { vol: 0.06, when: 0.1 + i * 0.06, type: 'sine' })); },
@@ -2356,7 +2388,15 @@ if (REC) {
 }
 
 /* ---------- mouse / touch: hold the dice, (shake the phone,) let go ---------- */
-const buzz = p => { try { if (MOBILE && navigator.vibrate && !AU.muted) navigator.vibrate(p); } catch (e) { } };
+/* haptics do not follow the sound switch: muting the sound is not muting the hand.
+   iPhone (Safari, Brave, every iOS browser is WebKit) has no navigator.vibrate. WebKit (iOS 18+) ticks when a native switch
+   toggles, and only inside a user gesture: so on an iPhone the cup ticks on grab and on release, never during the shake. */
+let tickEl = null;
+function tick() {
+  if (!tickEl) { tickEl = document.createElement('label'); tickEl.setAttribute('aria-hidden', 'true'); tickEl.style.cssText = 'position:fixed;left:-99px;top:0;width:1px;height:1px;opacity:0;pointer-events:none'; tickEl.innerHTML = '<input type="checkbox" switch tabindex="-1">'; document.body.append(tickEl); }
+  tickEl.click();
+}
+const buzz = p => { try { if (!MOBILE) return; if (navigator.vibrate) navigator.vibrate(p); else tick(); } catch (e) { } };
 /* phone shake: DeviceMotion (needs https; iOS asks permission from a user gesture). acceleration when available,
    else accelerationIncludingGravity minus a slow low-pass (= a high-pass that removes gravity) */
 const MOT = { on: false, asked: false, g: null, hist: [], n: 0, hi: false, lastClick: 0 };
@@ -2384,16 +2424,34 @@ function onMotion(e) {
   // feel every jolt whatever the frame rate
   const de = clamp((now - (MOT.lastT || now)) / 1000, 0, 0.05); MOT.lastT = now; if (CUP.c && de > 0) cupDice(de, x * 7, z * 2, -y * 7); // gain: a real shake moves the phone only ~2 cm, the dice should feel more than that
   MOT.hi = m > 8 ? true : m < 4.5 ? false : MOT.hi;
+  MOT.cupB = MOT.cupB || $('#cup .cupb'); MOT.cupB.style.transform = `rotate(${clamp(x * 2.2, -18, 18).toFixed(1)}deg) scale(${(1.04 + 0.08 * ST.shake).toFixed(3)})`; // the cup follows the phone: on an iPhone this is the shake's only feedback besides the sound
 }
 function shakeEnergy(now) { const pts = MOT.hist.filter(p => p.t > now - 700); if (pts.length < 3) return 0; const rms = Math.sqrt(pts.reduce((s, p) => s + p.m * p.m, 0) / pts.length); return clamp((rms - 3) / 12, 0, 1); }
+/* the release, shared by the table (mouse) and the cup (phone): strength = the recent shake energy and/or the flick,
+   direction from the flick, else roughly forward */
+function releaseThrow(pts, w, h) {
+  const now = performance.now();
+  let recent = pts.filter(p => p.t > now - 130); if (recent.length < 3) recent = pts.slice(-3).filter(p => p.t > now - 350); // slow touch reporting: the last 3 samples
+  const win = recent.map(p => ({ t: p.t / 1000, x: p.x / w, y: p.y / h }));
+  const m = win.length >= 2 ? { lat: slope(win, 'x'), up: -slope(win, 'y'), fwd: 0 } : { lat: 0, up: 0, fwd: 0 };
+  const tp = throwParams({ lat: m.lat * 0.8, up: m.up * 0.8, fwd: 0 }, 'mouse');
+  if (ST.holdSrc === 'touch') {
+    const se = shakeEnergy(now); tp.src = 'touch'; tp.shake = +se.toFixed(2);
+    if (se > 0.04) {
+      tp.strength = Math.max(tp.strength, 0.25 + 0.75 * se); tp.gentle = false;
+      if (tp.mag < CFG.hand.deadMag) { const dx = (rnd() - 0.5) * 0.7, dl = Math.hypot(dx, 1); tp.dir = [dx / dl, -1 / dl]; }
+    }
+  }
+  doThrow(tp, []);
+}
 function bindPointer() {
   const cv = $('#gl'); let pts = [], down = false;
   const ndc = e => { const r = cv.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1]; };
-  const lift = e => e.pointerType === 'touch' ? 0.16 : 0; // on a phone the dice float above the finger, so the finger does not hide them
+  const lift = e => e.pointerType === 'touch' ? 0.16 : 0; // on a tablet the dice float above the finger, so the finger does not hide them
   cv.addEventListener('pointerdown', e => {
-    const g = G(); if (!canThrow(g) || ST.mode === 'play' || HT.state === 'holding') return;
-    au(); askMotion(); down = true; cv.setPointerCapture(e.pointerId); pts = [{ t: performance.now(), x: e.clientX, y: e.clientY }];
-    const [x, y] = ndc(e); ST.held = hoverPoint(x, y + lift(e)); if (beginHold(e.pointerType === 'touch' ? 'touch' : 'mouse') && e.pointerType === 'touch') buzz(12); updateHint();
+    const g = G(); if (MOBILE || !canThrow(g) || ST.mode === 'play' || HT.state === 'holding') return; // a phone throws from the cup
+    au(); down = true; cv.setPointerCapture(e.pointerId); pts = [{ t: performance.now(), x: e.clientX, y: e.clientY }];
+    const [x, y] = ndc(e); ST.held = hoverPoint(x, y + lift(e)); beginHold(e.pointerType === 'touch' ? 'touch' : 'mouse'); updateHint();
   });
   cv.addEventListener('pointermove', e => {
     if (!down || ST.mode !== 'hold') return; const [x, y] = ndc(e); ST.held = hoverPoint(x, y + lift(e));
@@ -2402,22 +2460,29 @@ function bindPointer() {
   });
   const up = e => {
     if (!down) return; down = false; if (ST.mode !== 'hold') return;
-    const now = performance.now(), r = cv.getBoundingClientRect(); pts.push({ t: now, x: e.clientX, y: e.clientY });
-    let recent = pts.filter(p => p.t > now - 130); if (recent.length < 3) recent = pts.slice(-3).filter(p => p.t > now - 350); // slow touch reporting: the last 3 samples
-    const win = recent.map(p => ({ t: p.t / 1000, x: p.x / r.width, y: p.y / r.height }));
-    const m = win.length >= 2 ? { lat: slope(win, 'x'), up: -slope(win, 'y'), fwd: 0 } : { lat: 0, up: 0, fwd: 0 };
-    const tp = throwParams({ lat: m.lat * 0.8, up: m.up * 0.8, fwd: 0 }, 'mouse');
-    if (ST.holdSrc === 'touch') { // strength = the recent shake energy and/or the flick; direction from the flick, else roughly forward
-      const se = shakeEnergy(now); tp.src = 'touch'; tp.shake = +se.toFixed(2);
-      if (se > 0.04) {
-        tp.strength = Math.max(tp.strength, 0.25 + 0.75 * se); tp.gentle = false;
-        if (tp.mag < CFG.hand.deadMag) { const dx = (rnd() - 0.5) * 0.7, dl = Math.hypot(dx, 1); tp.dir = [dx / dl, -1 / dl]; }
-      }
-    }
-    doThrow(tp, []);
+    const r = cv.getBoundingClientRect(); pts.push({ t: performance.now(), x: e.clientX, y: e.clientY }); releaseThrow(pts, r.width, r.height);
   };
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  if (MOBILE) bindCup();
 }
+/* THE CUP (phone): hold the finger on it, shake the phone, lift the finger. The finger stays put, so it never wanders to the
+   screen edges; the dice wait over the table, where everyone can see them. Lifting the finger anywhere throws. */
+function bindCup() {
+  const cup = $('#cup'); let down = false;
+  cup.addEventListener('contextmenu', e => e.preventDefault());
+  cup.addEventListener('pointerdown', e => {
+    e.preventDefault(); const g = G(); if (!canThrow(g) || ST.mode === 'play') return;
+    au(); askMotion(); down = true; cup.setPointerCapture(e.pointerId);
+    ST.held = hoverPoint(0, 0.15); if (beginHold('touch')) buzz(12); // the grab tick (the release tick is doThrow's)
+    cup.classList.add('held'); cup.querySelector('.cupt').textContent = 'Agita… y suelta'; updateHint();
+  });
+  const up = () => {
+    if (!down) return; down = false; cupIdle(); if (ST.mode !== 'hold') return;
+    releaseThrow([], 1, 1);
+  };
+  cup.addEventListener('pointerup', up); cup.addEventListener('pointercancel', up);
+}
+function cupIdle() { const c = $('#cup'); c.classList.remove('held'); c.querySelector('.cupb').style.transform = ''; c.querySelector('.cupt').textContent = 'Mantén aquí'; }
 
 /* =====================================================================
    GAME VIEW
@@ -2477,6 +2542,7 @@ function hintKind() { return MOBILE ? 'phone' : HT.camOn && HT.lm && !mouseOnly 
 function updateHint() {
   const g = G(), el = $('#hint'); if (!g) return;
   const st = $('#stage'); st.classList.toggle('grab', canThrow(g)); st.classList.toggle('holding', ST.mode === 'hold');
+  if (MOBILE) $('#cup').classList.toggle('off', !canThrow(g) || ST.mode === 'play');
   const p = Engine.cur(g), first = isPractice(g) || (g.round === 1 && g.phase === 'await_throw' && p && !(APP.ftue || {})[p.id]);
   const now = performance.now(), idle = now - hintT0 > 8000;
   // the first turn of each player: meet their hand
@@ -2630,16 +2696,20 @@ function spotlight(on, strong, which) {
 }
 /* the sum, as typography, beside the dice (above them on a phone) */
 function showSum(values, anim, tag) {
-  const r = $('#result'), bust = values.includes(1), s = diceScreen(), W = $('#stage').clientWidth || 1;
-  r.innerHTML = `<span class="ab">${values[0]} + ${values[1]}${bust ? '' : ' ='}</span>` + (bust ? '<span class="one">¡UN 1!</span>' : `<span class="s">${values[0] + values[1]}</span>`) + (tag ? `<span class="tagp">${tag}</span>` : '');
+  const r = $('#result'), bust = values.includes(1), dbl = values[0] === 1 && values[1] === 1, s = diceScreen(), W = $('#stage').clientWidth || 1;
+  r.classList.toggle('dbl', dbl); // both dice on 1: the two red rings already say "1 + 1", the words say how bad it is
+  r.innerHTML = dbl ? '<span class="one">¡DOBLE<br class="br"> UNO!</span><span class="nm">ni modo</span>' : `<span class="ab">${values[0]} + ${values[1]}${bust ? '' : ' ='}</span>` + (bust ? '<span class="one">¡UN 1!</span>' : `<span class="s">${values[0] + values[1]}</span>`) + (tag ? `<span class="tagp">${tag}</span>` : '');
   r.classList.remove('hidden');
   if (ST.portrait) { r.classList.remove('lft'); r.classList.add('above'); r.style.left = '50%'; r.style.top = `calc(${s ? Math.max(9, s.top) : 22}% - 1rem)`; }
   else {
     r.classList.remove('above'); const right = s ? s.right : 60, left = s ? s.left : 40, need = (r.offsetWidth + 60) / W * 100;
     const toLeft = right + need > 99 && left - need > 1; r.classList.toggle('lft', toLeft);
     r.style.left = `calc(${toLeft ? left : right}% ${toLeft ? '-' : '+'} 2.4rem)`; r.style.top = (s ? s.y : 30) + '%';
+    // no room on either side (a wide line like ¡DOBLE UNO!): slide it inside the screen rather than cut it
+    const b = r.getBoundingClientRect(), sb = $('#stage').getBoundingClientRect(), m = 16;
+    if (b.right > sb.right - m) r.style.left = `${r.offsetLeft - (b.right - sb.right + m)}px`; else if (b.left < sb.left + m) r.style.left = `${r.offsetLeft + (sb.left + m - b.left)}px`;
   }
-  r.classList.remove('in'); if (anim) { void r.offsetWidth; r.classList.add('in'); say(bust ? '¡Un uno!' : `${NUM[values[0]]} más ${NUM[values[1]]}: ${NUM[values[0] + values[1]]}`); }
+  r.classList.remove('in'); if (anim) { void r.offsetWidth; r.classList.add('in'); say(dbl ? '¡Doble uno! Ni modo' : bust ? '¡Un uno!' : `${NUM[values[0]]} más ${NUM[values[1]]}: ${NUM[values[0] + values[1]]}`); }
 }
 
 /* cards: a number, a name — no rules text (the rules live in ⋯ → Reglas) */
@@ -2725,13 +2795,14 @@ async function settle(values, extra, P) {
 async function bustEvent(g, pre) {
   if (isFinal(g) && hemi) { hemi.intensity = 0.8; ST.dirty = true; }
   await sleep(isFinal(g) ? 520 : 380);
-  SFX.bust(); buzz([40, 60, 120]); $('#stage').classList.add('shake'); setTimeout(() => $('#stage').classList.remove('shake'), 500);
+  const dbl = g.last && g.last.d && g.last.d[0] === 1 && g.last.d[1] === 1;
+  if (dbl) { SFX.trombone(); buzz([40, 90, 40, 90, 40, 90, 260]); } else { SFX.bust(); buzz([40, 60, 120]); } $('#stage').classList.add('shake'); setTimeout(() => $('#stage').classList.remove('shake'), 500);
   const potRow = $('#pill .pot'), tot = $('#pill .tot');
   if (potRow && pre.pot > 0) { potRow.classList.remove('live'); potRow.classList.add('shatter'); }
   if (tot) { tot.classList.remove('prov'); tot.classList.add('down'); tweenNum($('#pTot'), pre.safe + pre.pot, pre.safe, 900); }
   const pv = $('#rPot'); if (pv && !pv.hidden) pv.classList.add('gone');
   const meD = $('#rMe .d'); if (isFinal(g) && meD) { tweenNum(meD, pre.safe + pre.pot, pre.safe, 900); $('#rMe').style.left = $('#rSolid').style.width; }
-  await sleep(1150);
+  await sleep(dbl ? 1900 : 1150); // the trombone gets to finish
   if (hemi) { hemi.intensity = 2.1; ST.dirty = true; }
 }
 /* CLINCH: the last player passes everyone who is left to beat — the game stops right there.
