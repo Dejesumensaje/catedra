@@ -486,7 +486,7 @@ body.r4 #card.turn .rr.cur{background:rgba(255,255,255,.08)}
 .fin h2{font-size:3.4rem;font-weight:900;font-stretch:118%}
 .podium{display:flex;align-items:flex-end;gap:1.2rem;margin-top:1rem}
 .pod{width:22rem;display:flex;flex-direction:column;align-items:center;gap:.6rem}
-.pod .nm{font-size:2.8rem;font-weight:900;max-width:22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .nm{display:block;width:100%;font-size:2.8rem;font-weight:900;text-align:center;line-height:1.05}
 .pod .sc{font-size:2.2rem}
 .pod .st{width:100%;border-radius:1.6rem 1.6rem .6rem .6rem;display:flex;align-items:flex-start;justify-content:center;padding-top:.6rem;font-size:5.4rem;font-weight:900;color:#fff;box-shadow:0 .4rem 0 var(--ink);transform-origin:bottom;animation:grow .9s var(--e-pop) both}
 .pod.p1 .st{height:15rem;background:var(--cobalt);animation-delay:.5s}.pod.p2 .st{height:10.5rem;background:var(--tomato);animation-delay:.25s}.pod.p3 .st{height:7.5rem;background:var(--mint);color:var(--ink)}
@@ -651,7 +651,7 @@ html.mobile .ovl p,html.mobile .ovl li{font-size:1.7rem}
 html.mobile .ovl h2{font-size:3rem}
 html.mobile .podium{gap:.8rem}
 html.mobile .pod{width:11.6rem}
-html.mobile .pod .nm{font-size:1.7rem;max-width:11.6rem;white-space:normal;overflow-wrap:anywhere;text-align:center;line-height:1.05}
+html.mobile .pod .nm{font-size:1.7rem}
 html.mobile .pod.p1 .nm{font-size:2.2rem}
 html.mobile .fl{grid-template-columns:1fr}
 html.mobile .fl .r{font-size:2rem}
@@ -2976,6 +2976,8 @@ function renderFinal() {
     <div class="row" style="display:flex;gap:1.2rem;margin-top:1rem;flex-wrap:wrap;justify-content:center">
       ${hasOther && !APP.results[other] ? `<button class="btn tomato" id="bOther" style="font-size:2rem">GRUPO ${other} →</button>` : hasOther ? `<button class="btn cobalt" id="bBoth" style="font-size:2rem">A + B</button>` : `<button class="btn cobalt" id="bAgain" style="font-size:2rem">OTRA VEZ</button>`}
       <button class="btn ghost" id="bFinGroups">${activeGroups().length > 1 ? '← GRUPOS' : '← JUGADORES'}</button></div>`;
+  // names break between words only: while the longest word overflows its pedestal, the name gets smaller («Guadalupe», never «Guadalu / pe»)
+  $$('#finBox .pod .nm').forEach(el => { let fs = parseFloat(getComputedStyle(el).fontSize); for (let k = 0; k < 30 && el.scrollWidth > el.clientWidth + 1; k++) el.style.fontSize = (fs *= 0.94) + 'px'; });
   const ba = $('#bAgain'); if (ba) ba.onclick = () => { APP.results[g.group] = null; APP.playing = g.group; save(); show('order'); };
   const bo = $('#bOther'); if (bo) bo.onclick = () => { APP.playing = other; save(); show('order'); };
   const bb = $('#bBoth'); if (bb) bb.onclick = () => show('both');
