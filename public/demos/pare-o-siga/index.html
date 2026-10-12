@@ -556,6 +556,7 @@ html.mobile #cup .cupb svg{width:5.2rem;height:5.2rem}
 html.mobile #cup .dd{fill:var(--paper)}html.mobile #cup .pp{fill:var(--ink)}
 html.mobile #cup .cupt{font-size:1.7rem;font-weight:900}
 html.mobile #cup.held .cupb{background:var(--sun);color:var(--ink);box-shadow:0 0 0 .8rem color-mix(in oklab,var(--sun) 45%,transparent),0 .4rem 1.2rem rgba(0,0,0,.2)}
+html.mobile #cup.held .cupt{visibility:hidden}
 html.mobile #cup.held .dd{fill:var(--ink)}html.mobile #cup.held .pp{fill:var(--sun)}
 html.mobile #hint{bottom:25rem;white-space:normal;width:90%}
 html.mobile #hint .big{font-size:2rem;justify-content:center}
@@ -2474,7 +2475,7 @@ function bindCup() {
     e.preventDefault(); const g = G(); if (!canThrow(g) || ST.mode === 'play') return;
     au(); askMotion(); down = true; cup.setPointerCapture(e.pointerId);
     ST.held = hoverPoint(0, 0.15); if (beginHold('touch')) buzz(12); // the grab tick (the release tick is doThrow's)
-    cup.classList.add('held'); cup.querySelector('.cupt').textContent = 'Agita… y suelta'; updateHint();
+    cup.classList.add('held'); updateHint();
   });
   const up = () => {
     if (!down) return; down = false; cupIdle(); if (ST.mode !== 'hold') return;
@@ -2482,7 +2483,7 @@ function bindCup() {
   };
   cup.addEventListener('pointerup', up); cup.addEventListener('pointercancel', up);
 }
-function cupIdle() { const c = $('#cup'); c.classList.remove('held'); c.querySelector('.cupb').style.transform = ''; c.querySelector('.cupt').textContent = 'Mantén aquí'; }
+function cupIdle() { const c = $('#cup'); c.classList.remove('held'); c.querySelector('.cupb').style.transform = ''; }
 
 /* =====================================================================
    GAME VIEW
@@ -2560,6 +2561,11 @@ function updateHint() {
   const stuck = canThrow(g) && ST.mode === 'hold' && ST.holdSrc === 'hand' && HT.state === 'holding' && now - GS.holdStart > (EZ() ? 2500 : 4000);
   if (stuck) {
     if (el.dataset.k !== 'stuck') { el.dataset.k = 'stuck'; el.innerHTML = `<span class="big">Abre la mano</span><button class="btn sun hintbtn" id="bForce">LANZAR</button>`; $('#bForce').onclick = forceThrow; say('Abre la mano'); }
+    return;
+  }
+  // phone, finger on the cup: the thumb covers whatever is under or beside it, so the next step goes up here, above the score
+  if (MOBILE && canThrow(g) && ST.mode === 'hold') {
+    if (el.dataset.k !== 'shake') { el.dataset.k = 'shake'; el.innerHTML = `<span class="big">${ICO.phone}Agita… y suelta</span>`; }
     return;
   }
   if (!canThrow(g) || ST.mode === 'play' || ST.mode === 'hold' || !(first || idle || EZ())) { if (el.dataset.k) { el.innerHTML = ''; el.dataset.k = ''; } return; }
