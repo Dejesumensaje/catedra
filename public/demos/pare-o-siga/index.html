@@ -7,6 +7,13 @@
 <meta name="description" content="Juego de dados para todo el salón: tiras con la mano frente a la webcam y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.">
 <link rel="canonical" href="https://catedra.dejesumensaje.com/demos/pare-o-siga/">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#F6EFE2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pare o Siga">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="author" content="William Montoya">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cátedra · William Montoya">
@@ -530,6 +537,9 @@ html.mobile .fl .r:only-child{width:100%}
 .howto .more li,.howto .more p{font-size:1.5rem;margin-top:.5rem}
 .howto .keys{color:var(--muted)}
 html.mobile .only-pc,html:not(.mobile) .only-mob{display:none}
+#s-title .install{margin-top:-1.6rem}
+#s-title .iosinstall{max-width:34rem;margin:0 1.6rem;padding:1rem 3.6rem 1rem 1.4rem;position:relative;border-radius:1.2rem;background:var(--paper);font-size:1.6rem;font-weight:700;line-height:1.35;color:var(--ink2);text-align:center;box-shadow:0 .3rem 0 var(--line)}
+#s-title .iosinstall b{color:var(--ink)}#s-title .iosinstall .x{position:absolute;right:.6rem;top:.6rem;width:2.6rem;height:2.6rem;background:none;color:var(--muted);font-size:1.4rem}
 #s-title .howlink{font-size:2rem;font-weight:800;color:var(--ink);text-decoration:underline;text-decoration-thickness:.15rem;text-underline-offset:.4rem;background:none;padding:.6rem 1rem}
 .ovl .whisper{font-style:italic;color:var(--muted);margin-top:1rem}
 #ps-debug{position:fixed;left:.6rem;top:19rem;opacity:.92;z-index:60;font:600 12px/1.45 ui-monospace,Menlo,Consolas,monospace;color:#d8ffd8;background:rgba(0,0,0,.75);padding:8px 10px;border-radius:8px;white-space:pre;pointer-events:none}
@@ -559,7 +569,7 @@ body.r4 #hint .big,#stage.lit #hint .big{background:var(--plate);color:var(--pap
 html.mobile{font-size:calc(min(2.6vw, 1.25vh))}
 html.mobile body{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
 html.mobile #turntag{left:1.6rem;top:1.4rem}
-html.mobile #turntag .nm{font-size:3.6rem;max-width:13.5rem}
+html.mobile #turntag .nm{font-size:3.6rem;max-width:13.5rem}html.mobile #turntag .nm.pr{max-width:none;overflow:visible}
 html.mobile #turntag .prac{font-size:1.8rem}
 html.mobile #leadtag{right:6.4rem;top:1.9rem;gap:.5rem}
 html.mobile #leadtag svg{width:2rem;height:1.6rem}
@@ -802,6 +812,8 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       <button class="btn sun hidden" id="bContinue">CONTINUAR</button>
     </div>
     <button class="howlink" data-help>¿Cómo se juega?</button>
+    <button class="howlink install" id="bInstall" hidden>Instalar la app</button>
+    <p class="iosinstall" id="iosInstall" hidden>Para tenerla como app: abre el menú de <b>Compartir</b> y elige <b>Agregar a inicio</b>. <button class="x" id="bIosX" aria-label="Cerrar">✕</button></p>
   </div>
 </section>
 
@@ -1005,6 +1017,17 @@ const MODELS = {
 };
 const LOCAL = { hand: 'vendor/hand_landmarker.task', face: 'vendor/blaze_face_short_range.tflite' };
 const IS_HTTP = /^https?:/.test(location.protocol);
+/* ---------- THE APP (PWA): installs, plays offline, keeps the screen on during a game ---------- */
+const STANDALONE = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+if (IS_HTTP && 'serviceWorker' in navigator && !new URLSearchParams(location.search).has('nosw')) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(e => console.warn('sw', e)));
+let installEvt = null; // Android / desktop Chrome: the browser offers the install, we show the button
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; const b = document.getElementById('bInstall'); if (b) b.hidden = false; });
+addEventListener('appinstalled', () => { installEvt = null; const b = document.getElementById('bInstall'); if (b) b.hidden = true; });
+let wakeLock = null; // the screen does not sleep in the middle of a game (iOS 16.4+, Android)
+async function keepAwake(on) {
+  try { if (on && !wakeLock && 'wakeLock' in navigator && document.visibilityState === 'visible') { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } else if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; } } catch (e) { }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && APP.screen === 'game') keepAwake(true); });
 
 /* =====================================================================
    RULES ENGINE (pure; no DOM). Mutates the game object in place. No undo:
@@ -1225,7 +1248,7 @@ function rumbleSet(k) {
    SCREENS: setup
    ===================================================================== */
 function show(screen) {
-  APP.screen = screen; save();
+  APP.screen = screen; save(); keepAwake(screen === 'game');
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-' + screen));
   if (screen !== 'game') { $('#card').className = ''; document.body.classList.remove('r4'); }
   renderSteps(screen);
@@ -1248,7 +1271,12 @@ function renderTitle() {
   $('#titleDice').innerHTML = pipHTML(5) + pipHTML(3);
   const g = G(); $('#bContinue').classList.toggle('hidden', !(g && g.phase !== 'game_over' && APP.playing));
   const s = $('#titleSig'); s.classList.remove('land'); void s.offsetWidth; s.classList.add('land');
+  $('#bInstall').hidden = !installEvt || STANDALONE;
+  // iPhone/iPad have no install button: say where it is, until it is installed or closed
+  $('#iosInstall').hidden = STANDALONE || !/iPhone|iPad|iPod/.test(navigator.userAgent) || seen('iosInstall');
 }
+$('#bInstall').onclick = async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch (e) { } installEvt = null; $('#bInstall').hidden = true; };
+$('#bIosX').onclick = () => { markSeen('iosInstall'); $('#iosInstall').hidden = true; };
 $('#bStart').onclick = () => { au(); askMotion(); show('players'); };
 $('#bContinue').onclick = () => { au(); askMotion(); show('game'); };
 $$('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
@@ -1433,7 +1461,7 @@ $('#bPlay').onclick = () => {
 };
 
 /* =====================================================================
-   3D STAGE: three.js + cannon-es, loaded lazily (CDN via import map, then vendor/)
+   3D STAGE: three.js + cannon-es, loaded lazily (our vendor/ copy first: it is the one the installed app keeps offline; then the CDN)
    ===================================================================== */
 const LIBS = { T: null, C: null, src: '', err: null };
 async function importFirst(list) { let err; for (const u of list) { try { return [await import(u), u]; } catch (e) { err = e; console.warn('import', u, e && e.message); } } throw err; }
@@ -1442,7 +1470,7 @@ function loadLibs() {
   if (!libsP) libsP = (async () => {
     const local = IS_HTTP ? [new URL('vendor/three.module.min.js', location.href).href] : [];
     const localC = IS_HTTP ? [new URL('vendor/cannon-es.js', location.href).href] : [];
-    const order = (a, b) => params.has('local') ? [...b, ...a] : [...a, ...b];
+    const order = (a, b) => params.has('cdn') ? [...a, ...b] : [...b, ...a];
     const [T, tu] = await importFirst(order(['three'], local));
     const [C, cu] = await importFirst(order(['cannon-es'], localC));
     LIBS.T = T; LIBS.C = C; LIBS.src = (tu.includes('vendor') ? 'local' : 'cdn') + '/' + (cu.includes('vendor') ? 'local' : 'cdn');
@@ -2574,6 +2602,7 @@ function renderGame(anim) {
 /* information: the name and four small round dots (no words) */
 function renderTag(g) {
   const p = Engine.cur(g);
+  $('#ttName').classList.toggle('pr', isPractice(g)); // the practice tag is not a name: it gets the full width
   if (isPractice(g)) { $('#ttName').innerHTML = '<span class="prac">PRÁCTICA</span><span class="pracn">No cuenta para el puntaje</span><button class="btn ghost small skipp" id="bSkipPr">Saltar práctica</button>'; $('#bSkipPr').onclick = skipPractice; $('#ttThrow').innerHTML = ''; return; }
   $('#ttName').textContent = p ? tight(p.name) : '—'; // the turn card already showed the full name
   $('#ttThrow').innerHTML = rng(RN(g)).map(r => `<i class="${r < g.round ? 'done' : r === g.round ? 'cur' : ''}"></i>`).join('');
