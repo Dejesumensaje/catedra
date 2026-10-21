@@ -9,12 +9,12 @@ const todas = await conceptos();
 
 // Orden sugerido para quien empieza de cero. Cada paso usa lo anterior.
 const ruta = [
-  ['proximidad', 'Empieza aquí: es la herramienta más simple y solo usa el espacio.'],
-  ['semejanza', 'Otra forma de agrupar, y qué pasa cuando compite con la proximidad.'],
-  ['escalas-tipograficas', 'Cómo el tamaño del texto influye en qué se lee primero.'],
-  ['reticulas-y-alineacion', 'Cómo ubicar cada elemento para que la página se vea ordenada.'],
-  ['interaccion-del-color', 'Por qué un color se ve distinto según lo que tiene al lado, y cómo asegurar que un texto se lea.'],
-  ['sistemas-y-excepciones', 'Cómo reunir todo en reglas compartidas y cuándo romper una a propósito.'],
+  ['proximidad', 'Empieza por el espacio: descubre cómo la distancia entre elementos puede crear grupos.'],
+  ['semejanza', 'Explora cómo reconocer elementos relacionados por su apariencia y qué ocurre cuando la semejanza compite con la proximidad.'],
+  ['escalas-tipograficas', 'Descubre cómo las diferencias de tamaño organizan el orden de lectura.'],
+  ['reticulas-y-alineacion', 'Aprende a reconocer las líneas invisibles que dan estructura a una composición.'],
+  ['interaccion-del-color', 'Comprueba cómo cambia un color según su entorno y qué hace que un texto sea legible.'],
+  ['sistemas-y-excepciones', 'Reúne varias decisiones en un conjunto de reglas y descubre cómo una excepción puede cambiar su significado.'],
 ].map(([slug, porque]) => ({ entrada: todas.find((c) => c.id === slug), porque }))
   .filter((r) => r.entrada);
 const conEntrada = todas.length;
@@ -23,10 +23,10 @@ const conEntrada = todas.length;
 const plano = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 
 const descModo: Record<(typeof modos)[number], string> = {
-  laboratorio: 'Cambias un valor y ves el resultado al instante.',
-  comparacion: 'Guardas una configuración y la pones junto a otra para ver qué cambió.',
-  diseccion: 'Muestras las medidas y reglas que organizan una composición.',
-  provocacion: 'Rompes una regla a propósito para ver cuándo deja de funcionar.',
+  laboratorio: 'Cambia un valor y observa cómo cambia la composición. Una decisión, un efecto.',
+  comparacion: 'Pon dos configuraciones una al lado de la otra. Mira qué cambió y qué consecuencias tuvo.',
+  diseccion: 'Haz visibles las medidas, las alineaciones y las reglas que normalmente pasan inadvertidas.',
+  provocacion: 'Rompe una regla a propósito. Explora hasta dónde funciona y descubre qué sucede cuando deja de hacerlo.',
 };
 ---
 
@@ -47,14 +47,14 @@ const descModo: Record<(typeof modos)[number], string> = {
   </header>
 
   <section class="dv-puerta" aria-labelledby="puerta-titulo">
-    <h2 id="puerta-titulo">Empieza por un cartel</h2>
-    <p>Este cartel parece una sola pieza, pero reúne seis decisiones de diseño. Toca cada número para ver dónde actúa cada una. Después entra a la que te interese.</p>
+    <h2 id="puerta-titulo">Mira cómo se construye un cartel</h2>
+    <p>Un cartel reúne muchas decisiones en una sola composición. Selecciona cada número para descubrir una de ellas, ver qué efecto produce y explorar el concepto que hay detrás.</p>
     <CartelAnatomia />
   </section>
 
   <section class="dv-ruta" aria-labelledby="ruta-titulo">
-    <h2 id="ruta-titulo">Si empiezas de cero</h2>
-    <p>Si no sabes por dónde empezar, sigue este orden. Va de lo más simple a lo más complejo, y cada concepto se apoya en los anteriores.</p>
+    <h2 id="ruta-titulo">Una ruta para empezar</h2>
+    <p>Si todavía no sabes por dónde entrar, sigue esta ruta. Empieza por las relaciones más sencillas y avanza hacia decisiones que combinan varios conceptos.</p>
     <ol>
       {ruta.map(({ entrada, porque }) => (
         <li>
@@ -67,9 +67,10 @@ const descModo: Record<(typeof modos)[number], string> = {
     </ol>
   </section>
 
-  <h2 class="dv-todos-titulo" id="todos">Todos los conceptos</h2>
-  <p class="dv-todos-intro">Cada entrada tiene los mismos seis pasos: La idea, Míralo, Pruébalo, Úsalo, Ponte a prueba y A fondo. Sus instrumentos funcionan de cuatro maneras, que puedes usar para filtrar:</p>
-  <h3 class="sr-solo">Cuatro maneras de explorar</h3>
+  <h2 class="dv-todos-titulo" id="todos">Explora todos los conceptos</h2>
+  <p class="dv-todos-intro">Cada entrada recorre seis momentos: <strong>La idea, Míralo, Pruébalo, Úsalo, Ponte a prueba y A fondo</strong>. Puedes entender el concepto, observarlo en acción, experimentar con sus variables y comprobar lo que descubriste.</p>
+  <p class="dv-todos-intro">Los instrumentos interactivos proponen cuatro maneras de explorar. Elige una para encontrar los conceptos que la ponen en práctica.</p>
+  <h3 class="dv-leyenda-titulo">Cuatro maneras de explorar</h3>
   <dl class="dv-leyenda">
     {modos.map((m) => (
       <div>
@@ -82,10 +83,11 @@ const descModo: Record<(typeof modos)[number], string> = {
   <form class="dv-filtro" role="search" aria-label="Filtrar conceptos" data-filtro hidden>
     <div class="dv-filtro-buscar">
       <label for="dv-buscar">Buscar un concepto</label>
-      <input type="search" id="dv-buscar" placeholder="contraste, grupo, columna…" autocomplete="off" />
+      <input type="search" id="dv-buscar" placeholder="contraste, grupo, columna…" autocomplete="off" aria-describedby="dv-buscar-ayuda" />
+      <p class="dv-ayuda" id="dv-buscar-ayuda">Busca por nombre o escribe una idea relacionada, como contraste, grupo o columna.</p>
     </div>
     <fieldset class="dv-control dv-opciones" style="border-bottom: 0; padding: 0;">
-      <legend>Modo</legend>
+      <legend>Filtrar por forma de explorar</legend>
       <div class="dv-opciones-fila">
         <label class="dv-opcion"><input type="radio" name="dv-modo" value="" checked /><span>Todos</span></label>
         {modos.map((m) => (
@@ -94,7 +96,7 @@ const descModo: Record<(typeof modos)[number], string> = {
       </div>
     </fieldset>
   </form>
-  <p class="dv-filtro-resultado" role="status" data-resultado>{conEntrada === 1 ? 'Un concepto tiene entrada' : `${conEntrada} conceptos tienen entrada`}. Los demás están previstos.</p>
+  <p class="dv-filtro-resultado" role="status" data-resultado>{conEntrada === 1 ? 'Hay 1 concepto disponible' : `Hay ${conEntrada} conceptos disponibles`}. Los demás están en preparación.</p>
 
   {territorios.map((t, i) => {
     const items = itemsDe(t, todas);
@@ -133,7 +135,7 @@ const descModo: Record<(typeof modos)[number], string> = {
           )}
           {previstos.length > 0 && (
             <>
-              <h3 class="dv-previstos-titulo" id={`p-${t.id}`}>{entradas.length ? 'Previstos, sin entrada todavía' : 'Previstos, ninguno con entrada todavía'}</h3>
+              <h3 class="dv-previstos-titulo" id={`p-${t.id}`}>En preparación</h3>
               <ul class="dv-previstos" aria-labelledby={`p-${t.id}`}>
                 {previstos.map((p) => (
                   <li data-item data-texto={plano(`${p.nombre} ${t.nombre}`)} data-modos="">{p.nombre}</li>
@@ -189,7 +191,7 @@ const descModo: Record<(typeof modos)[number], string> = {
       }
       if (!q && !modo) resultado.textContent = inicial;
       else if (!entradas && !previstos) resultado.textContent = 'No hay resultados. Prueba con otra palabra.';
-      else resultado.textContent = `${entradas} ${entradas === 1 ? 'entrada' : 'entradas'}${previstos ? ` y ${previstos} ${previstos === 1 ? 'concepto previsto' : 'conceptos previstos'}` : ''}.`;
+      else resultado.textContent = `${entradas} ${entradas === 1 ? 'entrada' : 'entradas'}${previstos ? ` y ${previstos} ${previstos === 1 ? 'concepto en preparación' : 'conceptos en preparación'}` : ''}.`;
     };
 
     form.addEventListener('input', filtrar);

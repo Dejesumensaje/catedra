@@ -143,7 +143,7 @@ const pasos: PasoGuia[] = [
       : '';
     let cierre = '';
     if (e.unir) cierre += ' La franja tiene el color del centro: al unirlos se ve que es un solo color.';
-    if (e.filo) cierre += ' El filo negro separa el centro de su fondo. Compara si el efecto cambia.';
+    if (e.filo) cierre += ' El filo negro separa el centro de su fondo. Observa si el efecto se debilita.';
     return `Los dos centros son <b class="dv-cifra">el mismo color</b> (${c}). El fondo izquierdo es ${lado(izq)} que el centro; el derecho, ${lado(der)}.${efecto}${sat}${cierre}`;
   }
 

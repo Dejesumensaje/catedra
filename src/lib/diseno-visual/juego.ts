@@ -90,7 +90,7 @@ export function jugar(raiz: HTMLElement, generar: () => Ronda[]) {
     const caja = el('div', 'dv-juego-respuesta');
     caja.tabIndex = -1;
     caja.setAttribute('role', 'status');
-    caja.append(el('p', 'resultado', bien ? '✓ Correcto.' : `✗ ${detalle}`));
+    caja.append(el('p', 'resultado', bien ? '✓ Así es.' : `✗ ${detalle}`));
     caja.append(el('p', '', ronda.porque));
     zona.append(caja);
     const sig = el('button', 'dv-boton dv-boton-fuerte', i === rondas.length - 1 ? 'Ver el resultado' : 'Siguiente ronda →');
@@ -150,7 +150,7 @@ export function jugar(raiz: HTMLElement, generar: () => Ronda[]) {
             b.classList.add('es-elegida-mal');
             b.append(el('span', 'veredicto', '✗ Tu respuesta'));
           }
-          responder(ronda, bien, `No es correcto. La respuesta es la ${LETRAS[ronda.correcta]}.`, acciones);
+          responder(ronda, bien, `La respuesta es la ${LETRAS[ronda.correcta]}.`, acciones);
         });
         lista.append(b);
         return b;
@@ -190,7 +190,7 @@ export function jugar(raiz: HTMLElement, generar: () => Ronda[]) {
         const v = Number(input.value);
         input.disabled = true;
         const bien = ronda.cumple(v);
-        responder(ronda, bien, ronda.falta?.(v) ?? 'Todavía no es correcto.', acciones);
+        responder(ronda, bien, ronda.falta?.(v) ?? 'Todavía no.', acciones);
       });
       acciones.append(comprobar);
       zona.append(acciones);
@@ -207,10 +207,10 @@ export function jugar(raiz: HTMLElement, generar: () => Ronda[]) {
     h.tabIndex = -1;
     caja.append(h);
     const juicio = aciertos === rondas.length
-      ? 'Respondiste todas bien. Ahora prueba con una composición propia: busca dónde actúa este principio.'
+      ? 'Todas bien. El siguiente paso está fuera de esta página: abre una composición tuya y busca dónde actúa este principio.'
       : aciertos >= rondas.length - 1
-        ? 'Respondiste casi todas bien. Abajo está la explicación de la que faltó.'
-        : 'Te conviene volver a «Pruébalo» y repetir la guía, con atención a lo que falló.';
+        ? 'Casi todas bien. Abajo tienes la explicación de la que se escapó.'
+        : 'Antes de volver a jugar, repite la guía de «Pruébalo» con estas explicaciones a la vista.';
     caja.append(el('p', '', juicio));
     if (fallos.length) {
       caja.append(el('p', 'dv-juego-ayuda', 'Para repasar:'));

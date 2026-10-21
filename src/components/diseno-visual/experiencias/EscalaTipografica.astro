@@ -12,26 +12,26 @@ const guia: PasoGuia[] = [
   {
     hacer: 'En «Cuánto crece cada nivel», elige 1,125.',
     pista: 'Es el primer botón: el número más pequeño.',
-    logro: 'Los tamaños son tan parecidos que título, entrada y texto compiten entre sí, y cuesta saber por dónde empezar. Una diferencia muy pequeña funciona casi como si no hubiera diferencia.',
+    logro: 'Con 1,125 el título mide apenas 1,6 veces el texto normal. Título, entrada y párrafos se parecen tanto que compiten entre sí, y la página ya no indica por dónde empezar.',
   },
   {
     hacer: 'Ahora elige 1,5.',
     pista: 'Es el quinto botón.',
-    logro: 'El título pasa a medir unas cinco veces el texto normal. Ahora está claro qué leer primero: el título, luego la entrada y luego los párrafos.',
+    logro: 'Con 1,5 el título mide unas cinco veces el texto normal, y el orden aparece sin esfuerzo: primero el título, después la entrada, al final los párrafos.',
   },
   {
-    hacer: 'Mueve «Tamaño del texto normal» hacia cualquier lado y mira el título.',
+    hacer: 'Mueve «Tamaño del texto normal» en cualquier dirección y observa el título.',
     pista: 'Usa las flechas del teclado o arrastra el control unas cuantas posiciones.',
-    logro: 'Toda la página creció o se redujo a la vez, pero el orden no cambió: el título sigue midiendo el mismo número de veces el texto normal. El tamaño base fija el tamaño general; la razón fija las diferencias entre niveles.',
+    logro: 'Toda la página crece o se reduce a la vez, pero el orden se mantiene: el título sigue midiendo las mismas veces el texto normal. El tamaño base decide qué tan grande es todo; la razón, cuánto se distinguen los niveles.',
   },
   {
     hacer: 'Activa «Mostrar de dónde sale cada tamaño».',
-    logro: 'Cada nivel es el tamaño base multiplicado por la razón: una vez para la entrada, dos veces para los intertítulos y cuatro para el título. Con esos dos números se deciden todos los tamaños de la página.',
+    logro: 'Sobre cada texto aparece su cálculo: el tamaño base multiplicado por la razón una vez para la entrada, dos para los intertítulos y cuatro para el título. Dos números bastan para decidir todos los tamaños de la página.',
   },
   {
     hacer: 'Abre «Más controles» y activa «Todo al mismo tamaño».',
     abrir: true,
-    logro: 'Todo mide lo mismo y aun así reconoces el título: va primero, es más grueso y tiene espacio alrededor. El tamaño es el recurso más fuerte de la jerarquía, pero el grosor, la posición y el espacio también ayudan.',
+    logro: 'Todo mide lo mismo y, aun así, reconoces el título: va primero, usa otro tipo de letra, es más grueso y tiene espacio alrededor. El tamaño es el recurso más visible de la jerarquía, pero trabaja junto con los demás.',
   },
 ];
 
@@ -60,7 +60,7 @@ const razones = [
 <Instrumento
   id={lab}
   titulo="Instrumento · una página, dos números"
-  consigna="Todos los tamaños de esta página salen de dos números: el tamaño del texto normal y cuántas veces crece cada nivel sobre el anterior."
+  consigna="Todos los tamaños de esta página salen de dos números: el tamaño del texto normal y cuánto crece cada nivel sobre el anterior. Cambia uno y la página entera responde."
 >
   <div slot="escenario" class="et" data-et>
     <aside class="et-escalera" aria-label="La escala de esta página, del nivel mayor al menor">
@@ -398,25 +398,25 @@ const razones = [
 
     if (e.plano) {
       frases.push(e.peso === '400'
-        ? 'Sin diferencias de tamaño ni de grosor, quedan la posición, el espacio y la familia: el título se reconoce porque va primero y usa otro tipo de letra.'
-        : `Todo mide ${e.base} px. El orden se sostiene con el grosor, el espacio y la posición, aunque con menos fuerza que antes.`);
+        ? 'Sin diferencias de tamaño ni de grosor, el título se reconoce por lo que queda: va primero, usa otro tipo de letra y tiene espacio alrededor.'
+        : `Todo mide ${e.base} px. El orden todavía se sostiene con el grosor, el tipo de letra, el espacio y la posición, aunque con menos fuerza.`);
     } else {
       frases.push(`Cada nivel es ${n(Number(e.razon), 3)} veces el anterior. El título mide ${px(titulo)}: <b class="dv-cifra">${n(veces)} veces</b> el texto normal.`);
-      if (veces < 1.8) frases.push('La diferencia es pequeña: el título y la entrada compiten por leerse primero.');
+      if (veces < 1.8) frases.push('Con tan poca diferencia, el título y la entrada compiten por la atención.');
       else if (veces <= 4) frases.push('El orden de lectura es claro: título, entrada y texto.');
-      else if (veces > 4) frases.push('El título es tan grande que ocupa más espacio que el texto que presenta y se parte en varios renglones.');
+      else if (veces > 4) frases.push('El título ocupa más espacio que el texto que presenta y tiende a partirse en varios renglones.');
     }
 
     if (medido) {
       const c = Math.round(medido.caracteres);
       let juicio = '';
-      if (c < 45) juicio = ' Líneas cortas: hay que cambiar de renglón muy seguido y la lectura se interrumpe.';
-      else if (c > 75) juicio = ' Líneas largas: cuesta encontrar el comienzo del renglón siguiente.';
+      if (c < 45) juicio = ' Líneas cortas: hay que cambiar de renglón tan seguido que la lectura se entrecorta.';
+      else if (c > 75) juicio = ' Líneas largas: al terminar un renglón, cuesta encontrar el comienzo del siguiente.';
       frases.push(`Caben unos <b>${c} caracteres</b> por línea.${juicio}`);
     }
 
-    if (e.lhc < 1.25) frases.push('Renglones muy juntos: las líneas de los párrafos parecen tocarse.');
-    else if (e.lhc > 1.95) frases.push('Hay tanto espacio entre renglones que el párrafo se lee como líneas sueltas. Es un efecto de proximidad.');
+    if (e.lhc < 1.25) frases.push('Renglones muy juntos: las líneas del párrafo casi se tocan.');
+    else if (e.lhc > 1.95) frases.push('Con tanto espacio entre renglones, el párrafo se lee como líneas sueltas: se pierde la proximidad que las unía.');
     if (e.lht > 1.4 && !e.plano) frases.push('Los renglones del título quedan tan separados que parecen frases distintas.');
 
     return frases.join(' ');

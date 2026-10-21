@@ -5,7 +5,7 @@
 
    `conceptos` es el mapa previsto. Si existe un .mdx en
    src/content/conceptos/ con ese `slug`, el índice lo enlaza; si no, lo
-   lista como «sin entrada». Una entrada nueva cuyo slug no esté aquí
+   lista como «en preparación». Una entrada nueva cuyo slug no esté aquí
    aparece igual al final de su territorio: añadir un concepto es escribir
    un .mdx, no tocar este archivo.
 ------------------------------------------------------------------ */
@@ -26,7 +26,7 @@ export const territorios = [
   {
     id: 'percepcion',
     nombre: 'Percepción',
-    pregunta: 'Cómo agrupamos lo que vemos antes de empezar a leer.',
+    pregunta: 'Cómo organizamos lo que vemos antes de leerlo.',
     conceptos: [
       { slug: 'gestalt', nombre: 'Gestalt' },
       { slug: 'proximidad', nombre: 'Proximidad' },
@@ -40,7 +40,7 @@ export const territorios = [
   {
     id: 'tipografia',
     nombre: 'Tipografía',
-    pregunta: 'Cómo el aspecto del texto influye en el orden de lectura.',
+    pregunta: 'Cómo la apariencia del texto influye en lo que leemos y en qué orden.',
     conceptos: [
       { slug: 'escalas-tipograficas', nombre: 'Escalas tipográficas' },
       { slug: 'jerarquia', nombre: 'Jerarquía' },
@@ -55,7 +55,7 @@ export const territorios = [
   {
     id: 'color',
     nombre: 'Color',
-    pregunta: 'Por qué un color se ve distinto según lo que lo rodea.',
+    pregunta: 'Cómo percibimos los colores en relación con lo que los rodea.',
     conceptos: [
       { slug: 'interaccion-del-color', nombre: 'Interacción del color' },
       { slug: 'contraste', nombre: 'Contraste' },
@@ -68,7 +68,7 @@ export const territorios = [
   {
     id: 'composicion',
     nombre: 'Composición',
-    pregunta: 'Dónde va cada elemento y cómo se relaciona con los demás.',
+    pregunta: 'Cómo la posición y las relaciones entre los elementos organizan una superficie.',
     conceptos: [
       { slug: 'reticulas-y-alineacion', nombre: 'Retículas y alineación' },
       { slug: 'proporcion', nombre: 'Proporción' },
@@ -80,7 +80,7 @@ export const territorios = [
   {
     id: 'sistemas',
     nombre: 'Sistemas',
-    pregunta: 'Qué se repite, qué cambia y con qué reglas.',
+    pregunta: 'Cómo construir reglas compartidas y decidir cuándo una pieza puede apartarse de ellas.',
     conceptos: [
       { slug: 'sistemas-y-excepciones', nombre: 'Sistemas y excepciones' },
       { slug: 'tokens', nombre: 'Tokens' },
@@ -92,7 +92,7 @@ export const territorios = [
   {
     id: 'expresion',
     nombre: 'Expresión',
-    pregunta: 'Qué pasa cuando se rompe una regla a propósito.',
+    pregunta: 'Cómo una decisión visual puede alterar las reglas y cambiar el sentido de una composición.',
     conceptos: [
       { slug: 'enfasis', nombre: 'Énfasis' },
       { slug: 'tension', nombre: 'Tensión' },

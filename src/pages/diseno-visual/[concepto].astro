@@ -65,7 +65,7 @@ const vecinos = itemsDe(territorio, todas);
             <li>
               {r.href
                 ? <a class="dv-rel-nombre" href={r.href}><span>{r.nombre}</span></a>
-                : <span class="dv-rel-nombre">{r.nombre}<span class="dv-rel-pendiente">sin entrada todavía</span></span>}
+                : <span class="dv-rel-nombre">{r.nombre}<span class="dv-rel-pendiente">en preparación</span></span>}
               <p>{r.porQue}</p>
             </li>
           ))}
@@ -100,7 +100,7 @@ const vecinos = itemsDe(territorio, todas);
             ? <span class="actual" aria-current="page">{v.nombre}</span>
             : v.entrada
               ? <a href={rutaConcepto(v.slug)}>{v.nombre}</a>
-              : <span class="sin-entrada">{v.nombre}<span class="sr-solo"> (sin entrada)</span></span>}
+              : <span class="sin-entrada">{v.nombre}<span class="sr-solo"> (en preparación)</span></span>}
         </li>
       ))}
       <li><a href={BASE}>Todos los territorios</a></li>

@@ -137,7 +137,7 @@ const lab = 'color-roles';
     // Accesibilidad: ¿llega a quien no ve el color igual?
     let acceso: string;
     if (e.solo && (iguales || e.gris)) acceso = 'No queda ninguna señal visual: los cuatro mensajes solo se distinguen leyendo la frase completa.';
-    else if (e.solo) acceso = 'El estado depende solo del tono. Quien no distingue el rojo del verde, o ve la pantalla en gris, pierde la información. «Ver sin color» lo simula.';
+    else if (e.solo) acceso = 'El estado depende solo del tono. Quien no distingue el rojo del verde, o ve la pantalla en gris, pierde la información. «Ver sin color» muestra lo que queda cuando el tono no ayuda.';
     else acceso = 'La forma y la palabra repiten lo que indica el color. Si el color no se percibe, el estado se sigue entendiendo.';
 
     return `<b>Percepción.</b> ${percepcion}<br><b>Función.</b> ${funcion}<br><b>Accesibilidad.</b> ${acceso}`;

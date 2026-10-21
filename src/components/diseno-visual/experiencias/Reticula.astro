@@ -12,28 +12,28 @@ import Guia, { type PasoGuia } from '../controles/Guia.astro';
 const pasos: PasoGuia[] = [
   {
     hacer: 'Activa «Mostrar la retícula» y mira dónde empieza y termina cada bloque.',
-    logro: 'Las franjas son las columnas. Cada bloque empieza y termina en el borde de una columna. Por eso el cartel se ve ordenado, aunque esas líneas no se impriman.',
+    logro: 'Las franjas son las columnas. Cada bloque empieza y termina en el borde de una de ellas, y por eso el cartel se ve ordenado aunque esas líneas nunca se impriman.',
   },
   {
     hacer: 'Sube «Desorden» hasta que el cartel se vea descuidado.',
     pista: 'Llévalo por encima del 30 %. Compara los bordes de los bloques con las franjas.',
-    logro: 'Ningún bloque se movió mucho. Aun así, cuando dejan de compartir bordes, la página tiende a verse descuidada, como si fuera un error.',
+    logro: 'Ningún bloque se movió mucho. Basta con que dejen de compartir bordes para que la página parezca descuidada, como si alguien se hubiera equivocado.',
   },
   {
     hacer: 'Con el desorden en cero, baja «Columnas» a 6 o menos.',
     pista: 'Primero lleva «Desorden» a 0 %. Luego mueve «Columnas» hacia la izquierda.',
-    logro: 'Con menos columnas, los bloques se ajustan a otras medidas y el cartel cambia de aspecto. Sigue ordenado. El número de columnas también es una decisión de diseño.',
+    logro: 'Con menos columnas, los bloques se reparten con otras medidas y el cartel cambia de aspecto, pero sigue ordenado. Cuántas columnas usar también es una decisión de diseño.',
   },
   {
     hacer: 'Abre «Más controles» y activa «Sacar el bloque elegido de la retícula».',
     preparar: { columnas: 12, desorden: 0, bloque: 'imagen' },
     abrir: true,
-    logro: 'La imagen atraviesa el margen hasta el borde de la página. Se movió mucho más que con el desorden. Como es el único bloque que sale, tiende a leerse como algo intencional.',
+    logro: 'La imagen atraviesa el margen y llega al borde de la página. Se movió mucho más que con el desorden y, sin embargo, se lee como algo intencional: es el único bloque que sale.',
   },
   {
     hacer: 'Ahora, en «Reparto de los bloques», elige «Todos iguales».',
     preparar: { ruptura: false },
-    logro: 'Todo está alineado, pero ningún bloque destaca y no queda claro por dónde empezar. La retícula decide dónde va cada cosa. Qué se lee primero lo deciden el tamaño y el contraste.',
+    logro: 'Todo está alineado y, aun así, nada indica por dónde empezar. La retícula decide dónde va cada cosa; qué se lee primero lo deciden el tamaño y el contraste.',
   },
 ];
 
@@ -51,7 +51,7 @@ const bloques = [
 <Instrumento
   id={lab}
   titulo="Instrumento · un cartel sobre columnas"
-  consigna="Seis bloques: un título, un número, una imagen, dos textos y un pie. Debajo hay columnas que no se ven."
+  consigna="Seis bloques —título, número, imagen, dos textos y pie— apoyados en columnas que no se ven."
 >
   <svg slot="escenario" viewBox="0 0 720 518" role="img" aria-label="Cartel de seis bloques sobre una retícula de doce columnas.">
     <rect width="720" height="518" fill="#fff" />
@@ -360,11 +360,11 @@ const bloques = [
       txt += ` ${NOMBRE[sel.id]} sale de la retícula y ningún otro bloque lo hace. Como el resto está en orden, la salida tiende a leerse como intencional.`;
     } else {
       txt += fuera.length === 6 ? ' Los seis caen fuera de la retícula.' : ` ${fuera.length} de 6 ${fuera.length === 1 ? 'bloque cae' : 'bloques caen'} fuera de la retícula.`;
-      if (e.desorden > 0) txt += ' Esas salidas no tienen un motivo, y la página se ve descuidada.';
+      if (e.desorden > 0) txt += ' Esas salidas no responden a ningún motivo, y la página se ve descuidada.';
     }
 
     if (e.reparto === 'uniforme' && fuera.length === 0) {
-      txt += ' La retícula se cumple al pie de la letra, pero nada indica por dónde empezar a leer.';
+      txt += ' Se cumple la retícula al pie de la letra, pero nada indica por dónde empezar a leer.';
     }
     if (e.alineacion === 'mixta') txt += ' Con una alineación distinta en cada bloque, los bordes del texto ya no coinciden entre sí.';
     const choca = geo.cajas.filter((o) => o !== sel

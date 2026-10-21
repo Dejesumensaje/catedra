@@ -1299,7 +1299,7 @@
   padding-top: 2.5rem;
   scroll-margin-top: 1rem;
 }
-.dv-todos-intro { font-size: 1.05rem; margin: 0.6rem 0 1rem; }
+.dv-todos-intro { font-size: 1.05rem; margin: 0.6rem 0 1rem; max-width: 44rem; }
 .dv-nota-concepto { display: block; font-size: 1rem; }
 @media (max-width: 52rem) {
   .dv-guia { margin-top: 1rem; grid-column: 1 / -1; }
@@ -1331,3 +1331,14 @@
 }
 .dv-visor.dv-visor-suelto { position: static; }
 .dv-paso * + .dv-instrumento { margin-top: 2.5rem; }
+
+.dv-leyenda-titulo {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin: 1.5rem 0 0.6rem;
+}
+.dv-todos-intro strong { color: var(--tinta); }

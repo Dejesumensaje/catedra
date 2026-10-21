@@ -83,6 +83,8 @@ manipulables. No es material de una sesión y no sigue el flujo semanal.
 - **Añadir un concepto:** escribir el `.mdx` y su experiencia. Si el slug no estaba
   previsto, aparece al final de su territorio sin tocar nada más. Su glifo del índice va
   en `components/diseno-visual/Glifo.astro`.
+- **Voz:** todo texto de la sección sigue `docs/voz-editorial.md`, que precisa §8 para
+  `/diseno-visual` y manda en lo que difiera. Leerla antes de escribir o revisar un texto.
 - Mismo sistema visual (§9). Dentro del escenario de un instrumento, los colores son los
   que el fenómeno exija.
 
