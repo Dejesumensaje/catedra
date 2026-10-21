@@ -1,0 +1,16 @@
+# Servidor de salas de «Sísifo · La comunidad».
+# Desplegar: npx wrangler deploy   (desde esta carpeta)
+# Ver public/demos/sisifo/LEEME.md para conectarlo al sitio de Pages.
+
+name = "sisifo-sala"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[[durable_objects.bindings]]
+name = "SALAS_SISIFO"
+class_name = "SalaSisifo"
+
+# Clase con almacenamiento SQLite: disponible también en el plan gratuito de Workers.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SalaSisifo"]

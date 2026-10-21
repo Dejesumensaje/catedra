@@ -1,0 +1,14 @@
+Recursos de terceros, copiados tal cual para que el demo no dependa de una CDN.
+
+qrcode.mjs
+  qrcode-generator 2.0.4, de Kazuhiko Arase. Licencia MIT (la nota está en la
+  cabecera del propio archivo). https://github.com/kazuhikoarase/qrcode-generator
+
+cormorant-garamond-latin-*.woff2
+  Cormorant Garamond, The Cormorant Project Authors, vía @fontsource 5.3.0.
+  SIL Open Font License 1.1: LICENSE-cormorant-garamond.txt
+
+Nada de esta carpeta ni del demo viene de Let's Play: Ancient Greek Punishment
+(Pippin Barr). Su repositorio público no declara licencia, así que no se reutiliza
+código, imagen ni sonido: la implementación es propia y solo toma la mecánica
+como referente, con crédito explícito.

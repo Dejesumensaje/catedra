@@ -118,3 +118,17 @@ momento 1, que alguien sin momento 1 pueda seguir escribiéndolas a mano, y que
 cambiar de nombre no arrastre las respuestas del anterior. Playwright no es
 dependencia del sitio, así que se instala aparte; las instrucciones están en la
 cabecera del propio archivo.
+
+## Salas de «Sísifo · La comunidad» (`api/sisifo/[[ruta]].js`)
+
+Esta función no guarda nada: reenvía `/api/sisifo/*` al Durable Object
+`SalaSisifo`, que vive en otro Worker (`workers/sisifo-sala`) y es la autoridad
+de cada partida multijugador. Necesita, una sola vez:
+
+1. `cd workers/sisifo-sala && npx wrangler deploy`
+2. Panel de Pages → **Settings → Bindings → Durable Object namespace**:
+   `SALAS_SISIFO` → Worker `sisifo-sala`, clase `SalaSisifo`.
+
+Sin el binding responde 503 y el juego lo dice en pantalla. Todo lo demás
+(cómo probarlo, los parámetros, la tabla de equilibrio) está en
+`public/demos/sisifo/LEEME.md`.

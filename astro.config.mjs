@@ -18,6 +18,7 @@ export default defineConfig({
       customPages: [
         'https://catedra.dejesumensaje.com/demos/pare-o-siga/',
         'https://catedra.dejesumensaje.com/demos/face-off/',
+        'https://catedra.dejesumensaje.com/demos/sisifo/',
       ],
     }),
   ],
