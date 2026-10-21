@@ -28,6 +28,7 @@ export function crearEnergia({ reducido = false } = {}) {
     onda: null,          // { t } rush en curso
     latido: 0,
     ultimoRush: -Infinity,
+    historia: [],        // [reloj, en] del último segundo y algo
     reloj: 0,
     cuenta: { remotos: 0, propios: 0, rushes: 0 },
   };
@@ -59,9 +60,15 @@ export function crearEnergia({ reducido = false } = {}) {
     /** Estado del servidor: f (fase), en (fuerza/resistencia), co (coincidencia), ac (activas). */
     estado({ en = 0, co = 0, ac = 0, f: fase }) {
       E.apagado = false;
-      E.meta = fase === 'juego' ? suave((en - 0.25) / 1.35) : 0;
+      E.meta = fase === 'juego' ? suave((en - 0.5) / 2.2) : 0;
+      // El rush marca una oleada: varias personas a la vez Y la energía subiendo de
+      // golpe. Un empuje parejo y sostenido no lo dispara: se ve en el halo.
+      E.historia.push([E.reloj, en]);
+      while (E.historia.length && E.reloj - E.historia[0][0] > COMUNIDAD.ventanaOleada) E.historia.shift();
+      const minimo = Math.min(...E.historia.map(([, x]) => x));
       const umbral = ac <= 3 ? COMUNIDAD.umbralRushPequeno : COMUNIDAD.umbralRush;
-      if (fase === 'juego' && co >= umbral && E.reloj - E.ultimoRush > COMUNIDAD.enfriamientoRush) {
+      if (fase === 'juego' && co >= umbral && en - minimo >= COMUNIDAD.subidaOleada
+        && E.reloj - E.ultimoRush > COMUNIDAD.enfriamientoRush) {
         E.ultimoRush = E.reloj;
         E.onda = { t: 0 };
         E.latido = 0.0001;
@@ -119,8 +126,8 @@ export function crearEnergia({ reducido = false } = {}) {
       ctx.lineCap = 'round';
       const color = E.apagado ? C.hueso : C.senal;
       if (!reducido) {
-        for (let i = 0; i < 3; i++) {
-          const nivel = (I - i * 0.28) / 0.4;
+        for (let i = 0; i < 2; i++) {
+          const nivel = (I - i * 0.45) / 0.4;
           if (nivel <= 0) continue;
           const radio = r + 0.2 + i * (0.22 - 0.08 * I);
           ctx.setLineDash([0.3 + 0.1 * i, 0.22 - 0.06 * I]);

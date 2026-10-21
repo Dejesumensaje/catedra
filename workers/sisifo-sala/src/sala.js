@@ -1,11 +1,11 @@
 /* Durable Object: una instancia por sala. Adaptador fino entre WebSockets y
- * LogicaSala; toda decisión de juego vive en logica-sala.js.
+ * LogicaSala; toda decisión de juego vive en public/demos/sisifo/nucleo/sala.js.
  *
  * La sala solo simula mientras hay alguien conectado (un intervalo a COMUNIDAD.hz).
  * Lo único que se guarda en disco es que la sala existe y quién la creó; el
  * estado de la partida vive en memoria, igual que la partida misma. */
 
-import { LogicaSala, idValido } from './logica-sala.js';
+import { LogicaSala, idValido } from '../../../public/demos/sisifo/nucleo/sala.js';
 import { COMUNIDAD } from '../../../public/demos/sisifo/nucleo/parametros.js';
 
 const VIDA_SALA = 6 * 60 * 60 * 1000;     // una sala sin uso se borra a las 6 h

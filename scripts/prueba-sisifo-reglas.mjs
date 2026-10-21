@@ -1,5 +1,5 @@
 /* Prueba de las reglas de «Sísifo» (public/demos/sisifo/nucleo) y de la lógica
-   de sala multijugador (workers/sisifo-sala/src/logica-sala.js). Sin dependencias.
+   de sala multijugador (public/demos/sisifo/nucleo/sala.js). Sin dependencias.
 
    Simula personas que tocan a distintos ritmos (con un poco de irregularidad,
    como una mano de verdad) y comprueba que cada regla hace lo que promete.

@@ -13,6 +13,7 @@ import { crearEnergia } from '../escena/energia.js';
 import { crearPolvo } from '../escena/polvo.js';
 import { escucharToques } from '../entrada/toque.js';
 import { conectar, crearSala, miId } from '../red/cliente.js';
+import { salaLocal } from '../red/local.js';
 import * as sonido from '../sonido.js';
 import qrcode from '../vendor/qrcode.mjs';
 
@@ -30,7 +31,7 @@ export function montar(app, codigoRuta) {
   const reducido = movimientoReducido();
   const perfil = regla.crearPerfil();
   const largo = COMUNIDAD.largo;
-  const caja = [-5.6, -0.6, largo + 2.4, perfil(largo) + 2.9];
+  const caja = [-7, -0.6, largo + 2.4, perfil(largo) + 2.9];
   const forma = D.crearForma(5);
   const energia = crearEnergia({ reducido });
   const polvo = crearPolvo({ reducido });
@@ -38,6 +39,7 @@ export function montar(app, codigoRuta) {
 
   const id = miId();
   const codigo = (codigoRuta || '').toUpperCase();
+  const prueba = codigo === 'PRUEBA';   // sala local con personas simuladas
   let cliente = null;
   let yo = null, roster = { personas: [], fase: 'espera', anfitrion: null };
   let st = null;                    // último estado del servidor
@@ -62,7 +64,8 @@ export function montar(app, codigoRuta) {
         <input id="entrar-codigo" class="codigo-entrada" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" aria-label="Código de la sala">
         <button class="boton claro" id="entrar" type="button">Entrar</button>
       </div>
-      <p class="error" role="alert">${esc(error)}</p>`;
+      <p class="error" role="alert">${esc(error)}</p>
+      <p class="menor"><a href="#comunidad/prueba">Probar sola o solo, con personas simuladas</a></p>`;
     panel.classList.add('abierto');
     const nombre = panel.querySelector('#nombre');
     nombre.addEventListener('change', () => guardarNombre(nombre.value.trim()));
@@ -110,6 +113,7 @@ export function montar(app, codigoRuta) {
     const anf = soyAnfitrion();
     document.body.classList.toggle('anfitrion', anf);
     if (fase !== 'espera' && !invitarAbierto) { panel.classList.remove('abierto'); return; }
+    if (prueba) { panelPrueba(fase); return; }
     const invitar = `
       <div class="fila">
         <div class="qr">${qr(enlace())}</div>
@@ -144,13 +148,35 @@ export function montar(app, codigoRuta) {
     panel.classList.add('abierto');
   }
 
+  /* Sala de prueba: sin QR; en su lugar, cuántas personas simuladas empujan. */
+  function panelPrueba(fase) {
+    const sim = cliente?.simuladas?.() ?? 0;
+    panel.innerHTML = `
+      ${fase !== 'espera' ? '<button class="glifo cerrar" type="button" data-cerrar-sala aria-label="Cerrar">×</button>' : ''}
+      <h2>Sala de prueba</h2>
+      <p>Tú y ${sim === 1 ? 'una persona simulada' : `${sim} personas simuladas`}. Las reglas son las del servidor; las demás manos las mueve este navegador.</p>
+      <div class="botones">
+        <button class="boton claro" type="button" data-quitar aria-label="Quitar una persona simulada" ${sim === 0 ? 'disabled' : ''}>− persona</button>
+        <button class="boton claro" type="button" data-agregar aria-label="Agregar una persona simulada" ${sim >= cliente?.maximo ? 'disabled' : ''}>+ persona</button>
+        ${fase === 'espera' ? '<button class="boton" id="empezar" type="button">Empezar</button>' : ''}
+      </div>`;
+    panel.querySelector('[data-quitar]').addEventListener('click', () => { cliente.quitar(); });
+    panel.querySelector('[data-agregar]').addEventListener('click', () => { cliente.agregar(); });
+    panel.querySelector('#empezar')?.addEventListener('click', () => cliente.enviar({ t: 'empezar' }));
+    panel.querySelector('[data-cerrar-sala]')?.addEventListener('click', () => { invitarAbierto = false; panelSala(); });
+    panel.classList.add('abierto');
+  }
+
   const onInvitar = () => { invitarAbierto = !invitarAbierto; panelSala(); };
   botonInvitar.addEventListener('click', onInvitar);
+  if (prueba) { botonInvitar.setAttribute('aria-label', 'Personas simuladas'); botonInvitar.title = 'Personas simuladas'; }
 
   function pintarConexion() {
     const textos = {
       conectando: 'conectando…',
-      conectada: `sala ${codigo} · ${conectadas().length} ${conectadas().length === 1 ? 'persona' : 'personas'}`,
+      conectada: prueba
+        ? `sala de prueba · tú y ${Math.max(0, conectadas().length - 1)} simuladas`
+        : `sala ${codigo} · ${conectadas().length} ${conectadas().length === 1 ? 'persona' : 'personas'}`,
       reconectando: 'reconectando…',
       'sin-señal': 'sin señal…',
       'sin-conexion': 'sin conexión',
@@ -200,7 +226,12 @@ export function montar(app, codigoRuta) {
     }
   }
 
-  if (codigo) {
+  if (prueba) {
+    cliente = salaLocal({
+      id, nombre: leerNombre, alMensaje,
+      alEstado(e) { estadoConexion = e; pintarConexion(); },
+    });
+  } else if (codigo) {
     if (!CODIGO.test(codigo)) {
       estadoConexion = 'no-existe'; pintarConexion();
     } else {
@@ -291,7 +322,7 @@ export function montar(app, codigoRuta) {
     const sep = CUERPOS.separacion;
     const huecos = personas.map((p, i) => {
       const fila = i % 2, col = Math.floor(i / 2);
-      return { p, fila, col, x: vista.x - sep - col * 0.68 - fila * 0.32 };
+      return { p, fila, col, x: vista.x - sep - col * 0.95 - fila * 0.47 };
     });
     // atrás primero
     huecos.sort((a, b) => b.fila - a.fila || b.col - a.col);
@@ -341,6 +372,7 @@ export function montar(app, codigoRuta) {
       parar(); soltarEntrada();
       cliente?.cerrar();
       botonInvitar.removeEventListener('click', onInvitar);
+      botonInvitar.setAttribute('aria-label', 'Mostrar código para invitar'); botonInvitar.title = 'Invitar';
       panel.classList.remove('abierto'); panel.innerHTML = '';
       lineaConexion.textContent = '';
       document.body.classList.remove('en-comunidad', 'anfitrion');

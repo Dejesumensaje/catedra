@@ -29,14 +29,16 @@ export function montar(app) {
       const c = { x: 0, y: 1 };
       Object.assign(app.L.cam, encuadrar(app.L, caja, c, { anchoMinimo: 9 }));
     },
-    manosEn: (est) => est.fase === 'empujando',
-    figuraDetras: (est) => est.fase === 'cayendo' || est.fase === 'bajando',
-    // Arriba, la roca duda antes de caer: un temblor que crece. La anticipación es parte del castigo.
-    tambaleo: (est) => (est.fase === 'cima' && !reducido()
-      ? Math.sin(est.reloj * 26) * 0.07 * Math.min(1, est.reloj / CASTIGO.pausaCima) : 0),
+    manosEn: (est) => est.figura.pose === 'empuja',
+    // Cuando la roca vuelve, pasa por delante de Sísifo.
+    figuraDetras: (est) => est.figura.pose !== 'empuja',
+    // En el filo, la roca duda: un vaivén breve antes de volver. Es el punto de equilibrio de la física.
+    tambaleo: (est) => (est.duda > 0 && !reducido() ? Math.sin(est.duda * Math.PI * 3) * 0.045 * (1 - est.duda * 0.5) : 0),
     alEventos(app, est, eventos) {
       for (const ev of eventos) {
-        if (ev === 'cae') { sonido.retumbo(); app.anunciar('La roca cae.'); }
+        if (ev === 'cae') app.anunciar('La roca cae.');
+        if (ev === 'arrollado') sonido.golpe(1);
+        if (ev === 'fondo') sonido.retumbo();
         if (ev === 'otra-vez' && TRAS_CICLO[est.ciclos]) app.narrativa.decir(TRAS_CICLO[est.ciclos]);
       }
     },

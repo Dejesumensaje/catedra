@@ -35,23 +35,27 @@ export const CUERPOS = {
 
 /* 1 · El castigo
  * Pendiente de `largo` metros que se empina en el último tramo. Con 2 toques/s
- * la roca no sube; con 4/s sube despacio; con 6/s, con decisión. Al llegar a la
- * cima no hay victoria: tras `pausaCima` segundos la roca cae con poco
- * rozamiento (`arrastreCaida`), mucho más rápido de lo que subió.
+ * la roca no sube; con 4/s sube despacio; con 6/s, con decisión. Llegar a
+ * `largo` no es ganar: desde ahí el esfuerzo deja de contar, la inercia la sube
+ * un poco hacia el filo (`labio` metros más allá), duda `pausaCima` segundos y
+ * vuelve por su peso, con poco rozamiento: cae mucho más rápido de lo que subió.
  */
 export const CASTIGO = {
   largo: 10,
+  labio: 0.5,                // el filo de la cima, que la roca nunca alcanza
   pendienteBase: 0.55,       // tangente del tramo principal (~29°)
   inicioEmpinado: 7.5,       // desde aquí la cuesta se empina
-  curvaEmpinado: 0.035,       // cuánto se empina (cuadrático)
+  curvaEmpinado: 0.035,      // cuánto se empina (cuadrático)
   gravedad: 3.1,
   fuerza: 3.6,               // aceleración por unidad de esfuerzo
   golpe: 0.07,               // m/s que suma cada toque en el acto: el ritmo de la mano se ve en la roca
   arrastre: 1.2,             // rozamiento proporcional a la velocidad al subir
   rodadura: 0.12,            // rozamiento constante: sin toques la roca vuelve despacio
-  pausaCima: 0.9,            // segundos que la roca se sostiene arriba antes de caer
-  arrastreCaida: 0.12,
+  pausaCima: 0.55,           // segundos en el punto de equilibrio antes de volver
+  arrastreCaida: 0.03,       // casi nada frena la vuelta
   arrastreValle: 1.6,        // amortigua el vaivén cuando la roca llega abajo
+  velocidadDerribo: 1.4,     // m/s: a partir de aquí la roca tumba a Sísifo
+  tendido: 1.6,              // s que se queda en el suelo después de que la roca toque fondo
   pasoBajada: 1.7,           // m/s de Sísifo cuando baja a buscar la roca
 };
 
@@ -136,5 +140,7 @@ export const COMUNIDAD = {
   ventanaCoincidencia: 0.4,  // s: personas distintas que tocaron en esta ventana
   umbralRush: 3,             // coincidencia que dispara el rush…
   umbralRushPequeno: 2,      // …o esta, si hay 3 personas o menos activas
-  enfriamientoRush: 1.5,
+  ventanaOleada: 1.4,        // s: la energía tiene que haber subido dentro de esta ventana…
+  subidaOleada: 0.45,        // …al menos esto (en unidades de fuerza/resistencia)
+  enfriamientoRush: 2.5,
 };

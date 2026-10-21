@@ -5,7 +5,14 @@ Laboratorio jugable sobre la fricción como mecánica narrativa. Parte de
 (<https://pippinbarr.com/lets-play-ancient-greek-punishment/>). Sus variaciones
 experimentales cambian la relación entre esfuerzo, resistencia y resultado.
 
-Ruta: `/demos/sisifo/` (`#castigo`, `#camino`, `#caida`, `#comunidad`, `#comunidad/CÓDIGO`, `#creditos`).
+Ruta: `/demos/sisifo/` (`#castigo`, `#camino`, `#caida`, `#comunidad`, `#comunidad/CÓDIGO`,
+`#comunidad/prueba`, `#creditos`).
+
+**Sala de prueba** (`#comunidad/prueba`): sirve para jugar la comunidad sin reunir
+a nadie y sin servidor. Corre en el navegador la misma autoridad que el servidor
+(`nucleo/sala.js`), con personas simuladas que tocan a su ritmo, con rachas,
+descansos y más empeño cuando la roca retrocede. Se suman o se quitan en vivo
+(glifo `+`). La pantalla dice siempre que son simuladas. Ver `red/local.js`.
 
 **Relación con la obra original.** El repositorio público de Pippin Barr no
 declara licencia, así que aquí no se reutiliza su código, sus imágenes ni sus
@@ -20,6 +27,7 @@ public/demos/sisifo/
     parametros.js    TODOS los números de equilibrio
     esfuerzo.js      toques → esfuerzo (decae, satura, ignora toques demasiado seguidos)
     fisica.js        cuerpo que rueda sobre un perfil
+    sala.js          lógica autoritativa de una sala (servidor y sala de prueba)
     reglas/          castigo · camino · caida · comunidad: avance, resistencia, final
   escena/            dibujo (lienzo, figuras, roca, frases, polvo, energía colectiva)
   entrada/toque.js   el gesto: dedo, ratón o barra espaciadora
@@ -109,7 +117,8 @@ roca, que es el gamefeel de la mecánica.
 |---|---|---|
 | Castigo | `pendienteBase`, `inicioEmpinado`, `curvaEmpinado` | forma de la cuesta; el final se empina |
 | | `fuerza`, `golpe`, `gravedad`, `arrastre`, `rodadura` | cuánto rinde el toque y cuánto se resiste |
-| | `pausaCima`, `arrastreCaida`, `pasoBajada` | la duda arriba, la velocidad de la caída, la bajada a pie |
+| | `labio`, `pausaCima` | el filo de la cima: la inercia sube la roca, duda y vuelve sola |
+| | `arrastreCaida`, `velocidadDerribo`, `tendido`, `pasoBajada` | la vuelta casi sin freno, cuándo derriba a Sísifo, cuánto tarda en levantarse y bajar |
 | Camino | `ondas`, `pendienteMedia` | el terreno ondulado e infinito |
 | | `rodadura` | mayor que cualquier pendiente: parar nunca hace retroceder |
 | | `primeraTras`, `separacion`, `…Metros`, `quietoParaHablar` | cadencia de las preguntas |
@@ -119,12 +128,13 @@ roca, que es el gamefeel de la mecánica.
 | Comunidad | `pendienteBase`, `pendienteExtra`, `curva` | la cuesta se empina con la altura |
 | | `fuerza`, `golpe`, `techoPersona` | aporte de cada persona, con techo |
 | | `silencioMax`, `graciaReconexion` | cuándo deja de contar y cuándo sale quien se va |
-| | `ventanaCoincidencia`, `umbralRush…`, `enfriamientoRush` | la energía colectiva (solo dibujo) |
+| | `ventanaCoincidencia`, `umbralRush…`, `ventanaOleada`, `subidaOleada`, `enfriamientoRush` | la energía colectiva y el rush: varias personas a la vez y la energía subiendo de golpe (solo dibujo) |
 
 Comportamiento actual, medido por simulación con manos irregulares (±20 %):
 
 - **Castigo**: a 2 toques/s no se mueve; a 4/s llega en ~34 s, a 6/s en ~16 s,
-  a 8/s en ~11 s. La caída tarda ~4 s. Siempre vuelve a empezar.
+  a 8/s en ~11 s. Arriba duda medio segundo, vuelve, derriba a Sísifo y cae en ~4 s.
+  Siempre vuelve a empezar.
 - **Camino**: en 2 minutos, ~10 m a 2/s, ~88 m a 4/s, ~159 m a 6/s. No hay final.
 - **Caída**: sin tocar llega abajo en 10 s; tocando a 3/s, en ~35 s; a 7/s, en ~38 s,
   con pausas en las mesetas. Nunca se detiene del todo.

@@ -1,4 +1,6 @@
-/* Lógica de una sala de «La comunidad», sin nada de Cloudflare: se prueba en Node.
+/* Lógica de una sala de «La comunidad», sin nada de Cloudflare ni del navegador.
+ * La usan el Durable Object (workers/sisifo-sala), la sala de prueba local
+ * (red/local.js) y las pruebas en Node: una sola autoridad, tres lugares.
  *
  * Esta clase es la autoridad. Recibe toques, decide cuáles cuentan, simula la
  * roca con la regla compartida y produce los mensajes que se difunden. Los
@@ -9,9 +11,9 @@
  * únicamente su número de llegada `n` y un nombre opcional.
  */
 
-import { ESFUERZO, COMUNIDAD } from '../../../public/demos/sisifo/nucleo/parametros.js';
-import { crearEsfuerzo, tocar, decaer } from '../../../public/demos/sisifo/nucleo/esfuerzo.js';
-import * as regla from '../../../public/demos/sisifo/nucleo/reglas/comunidad.js';
+import { ESFUERZO, COMUNIDAD } from './parametros.js';
+import { crearEsfuerzo, tocar, decaer } from './esfuerzo.js';
+import * as regla from './reglas/comunidad.js';
 
 const P = COMUNIDAD;
 const r2 = (x) => Math.round(x * 100) / 100;

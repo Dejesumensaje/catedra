@@ -1,6 +1,6 @@
 /* Pruebas de la lógica de sala (sin red). Las llama prueba-sisifo-reglas.mjs. */
 
-import { LogicaSala } from '../workers/sisifo-sala/src/logica-sala.js';
+import { LogicaSala } from '../public/demos/sisifo/nucleo/sala.js';
 import { COMUNIDAD } from '../public/demos/sisifo/nucleo/parametros.js';
 
 export async function pruebasSala(ok) {

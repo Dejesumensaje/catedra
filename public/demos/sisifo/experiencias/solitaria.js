@@ -35,7 +35,7 @@ export function montarSolitaria(app, cfg) {
     es = crearEsfuerzo();
     acumulado = 0;
     toques = 0;
-    vista = { inclinacion: 0, mov: 0, golpe: 0, figX: est.figura.x };
+    vista = { inclinacion: 0, mov: 0, golpe: 0, figX: est.figura.x, abolladuras: [] };
     app.narrativa.limpiar();
     app.cerrarCierre();
     app.pista(cfg.pista);
@@ -53,6 +53,9 @@ export function montarSolitaria(app, cfg) {
       const f = est.figura;
       const pie = f.x - f.mira * 0.35;
       polvo.levantar(pie, est.perfil(pie), 2 + Math.round(es.e * 3), 0.6 + es.e, -f.mira);
+      // Contacto: las manos hunden un poco la roca donde empujan.
+      const c = D.centroRoca(est.perfil, est.roca.x);
+      vista.abolladuras.push({ a: Math.atan2(D.alturaHombros(est.perfil, f.x) - c.y, f.x - c.x), p: 0.5 + es.e });
       sonido.golpe(es.e);
       if (toques === 3) app.pista(null);
       cfg.alToque?.(app, est, toques);
@@ -85,6 +88,14 @@ export function montarSolitaria(app, cfg) {
     if (rapidez > 1.1 && Math.random() < rapidez * dt * 5) {
       polvo.levantar(est.roca.x, est.perfil(est.roca.x), 2, Math.min(2, rapidez / 2), -Math.sign(est.roca.v));
     }
+    // Pies que resbalan porque la roca los empuja cuesta abajo.
+    const f = est.figura;
+    if ((f.resbala || 0) > 0.15 && Math.random() < f.resbala * dt * 14) {
+      const pie = f.x + f.mira * 0.1;
+      polvo.levantar(pie, est.perfil(pie), 2, 0.5 + f.resbala, f.mira);
+    }
+    for (const ab of vista.abolladuras) ab.p -= dt / 0.16;
+    vista.abolladuras = vista.abolladuras.filter((ab) => ab.p > 0);
     polvo.actualizar(dt);
     L.calmar(dt);
 
@@ -99,7 +110,8 @@ export function montarSolitaria(app, cfg) {
   function impacto(ev) {
     const x = est.roca.x, y = est.perfil(x);
     if (ev === 'fondo') { L.sacudir(10); polvo.levantar(x, y, 14, 2.2); }
-    if (ev === 'cae') { L.sacudir(3); polvo.levantar(x, y, 5, 1); }
+    if (ev === 'cae') { polvo.levantar(x, y, 4, 0.8); }
+    if (ev === 'arrollado') { L.sacudir(6); const p = est.figura.x; polvo.levantar(p, est.perfil(p), 10, 1.6); }
     if (ev === 'cede') { L.sacudir(2.5); const p = est.figura.x - 0.3; polvo.levantar(p, est.perfil(p), 6, 1.4, -1); }
   }
 
@@ -121,9 +133,9 @@ export function montarSolitaria(app, cfg) {
     // línea de arcilla separa las dos siluetas, como una incisión.
     if (cfg.figuraDetras?.(est)) {
       pintarFigura();
-      D.roca(L, forma, c, CUERPOS.radioRoca, giro, { contorno: D.C.arcilla, grosor: 0.04 });
+      D.roca(L, forma, c, CUERPOS.radioRoca, giro, { contorno: D.C.arcilla, grosor: 0.04, abolladuras: vista.abolladuras });
     } else {
-      D.roca(L, forma, c, CUERPOS.radioRoca, giro);
+      D.roca(L, forma, c, CUERPOS.radioRoca, giro, { abolladuras: vista.abolladuras });
       pintarFigura();
     }
     polvo.dibujar(L);

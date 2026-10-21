@@ -179,6 +179,7 @@ export function esqueleto(perfil, f) {
   const m = f.mira || 1;
   const pose = f.pose || 'quieto';
   const g = (x) => perfil(x);
+  if (pose === 'tendido') return tendido(perfil, f, m);
   const golpe = f.golpe || 0;
   let lean, alturaCadera, adelante = 0;
   switch (pose) {
@@ -235,6 +236,24 @@ export function esqueleto(perfil, f) {
     return ik(sx, sy, tx, ty, BRAZO, ANTEBRAZO, -m); // codo hacia abajo y atrás
   });
   return { m, pose, lean, hx, hy, sx, sy, cx, cy, piernas, brazos, golpe };
+}
+
+/* Derribado: de espaldas sobre la cuesta, la cabeza hacia abajo, una rodilla
+ * doblada y un brazo echado atrás. */
+function tendido(perfil, f, m) {
+  const hx = f.x, hy = perfil(f.x) + 0.17;
+  const t = tangente(perfil, hx), n = Math.hypot(1, t);
+  const dx = -m / n, dy = (-m * t) / n;               // a lo largo del suelo, cuesta abajo
+  const sx = hx + dx * TORSO, sy = hy + dy * TORSO + 0.04;
+  const cx = sx + dx * (CABEZA + 0.08), cy = sy + dy * (CABEZA + 0.08) + 0.03;
+  const pie = (k) => { const px = hx - dx * k; return [px, perfil(px) + 0.06]; };
+  const [p0x, p0y] = pie(0.62), [p1x, p1y] = pie(0.88);
+  const piernas = [ik(hx, hy, p0x, p0y, MUSLO, PIERNA, -m), ik(hx, hy, p1x, p1y, MUSLO, PIERNA, m)];
+  const brazos = [
+    ik(sx, sy, sx + dx * 0.35, sy + 0.42, BRAZO, ANTEBRAZO, m),
+    ik(sx, sy, sx - dx * 0.45, perfil(sx - dx * 0.45) + 0.06, BRAZO, ANTEBRAZO, -m),
+  ];
+  return { m, pose: 'tendido', lean: 0, hx, hy, sx, sy, cx, cy, piernas, brazos, golpe: 0 };
 }
 
 /**

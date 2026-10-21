@@ -88,58 +88,75 @@ export function montar(app) {
   return exp;
 }
 
-/* Montes lejanos con paralaje y, en el camino, piedras, cipreses y columnas
- * caídas. Determinado por la semilla: lo que se deja atrás no cambia. */
+/* El paisaje vive detrás del camino, en dos planos con paralaje: montes muy
+ * lejos y, más cerca, una loma con cipreses, piedras y columnas caídas. Nada se
+ * cruza con la roca ni aparece o desaparece: solo pasa, más despacio que el
+ * camino. Determinado por la semilla: lo que se deja atrás no cambia. */
 function paisaje(L, est) {
   const { ctx } = L;
-  const [v0, v1] = L.visible(4);
-  L.mundo();
-  // Montes: se mueven a un tercio de la velocidad.
-  const par = 0.3;
-  ctx.fillStyle = D.C.tierra;
-  ctx.globalAlpha = 0.35;
-  ctx.beginPath();
-  const base = L.cam.y - L.alto / L.cam.k;
-  ctx.moveTo(v0, base);
-  for (let x = v0; x <= v1 + 0.5; x += 0.5) {
-    const xm = x - L.cam.x * (1 - par);
-    const y = L.cam.y - 0.8 + 1.1 * Math.sin(xm * 0.21 + est.semilla) + 0.5 * Math.sin(xm * 0.57 + 2);
-    ctx.lineTo(x, y);
-  }
-  ctx.lineTo(v1 + 0.5, base);
-  ctx.fill();
-  ctx.globalAlpha = 1;
+  // horizonte de cada plano, en fracción de la altura de pantalla
+  const capa = (paralaje, escala, horizonte) => {
+    const k = L.cam.k * escala;
+    const ox = L.ancho / 2 - L.cam.x * paralaje * k;
+    ctx.setTransform(k * L.dpr, 0, 0, -k * L.dpr, (ox + L.desvio[0]) * L.dpr, (L.alto * horizonte + L.desvio[1]) * L.dpr);
+    const media = L.ancho / 2 / k;
+    return { k, x0: L.cam.x * paralaje - media - 4, x1: L.cam.x * paralaje + media + 4, abajo: -(L.alto * (1 - horizonte)) / k - 1 };
+  };
+  const s = est.semilla % 1000;
 
-  // Objetos sobre el camino, uno cada tantos metros, a veces ninguno.
-  const tramo = 7;
-  for (let i = Math.floor(v0 / tramo); i <= Math.ceil(v1 / tramo); i++) {
-    const r = azar((est.semilla ^ (i * 2654435761)) >>> 0);
+  // Montes lejanos.
+  let c = capa(0.12, 0.45, 0.5);
+  ctx.fillStyle = D.C.tierra;
+  ctx.globalAlpha = 0.28;
+  ctx.beginPath();
+  ctx.moveTo(c.x0, c.abajo);
+  for (let x = c.x0; x <= c.x1 + 0.5; x += 0.5) ctx.lineTo(x, 2.2 + 1.6 * Math.sin(x * 0.07 + s) + 0.7 * Math.sin(x * 0.19 + 2));
+  ctx.lineTo(c.x1 + 0.5, c.abajo);
+  ctx.fill();
+
+  // Loma media con sus objetos.
+  c = capa(0.4, 0.6, 0.56);
+  const loma = (x) => 0.5 * Math.sin(x * 0.06 + s * 0.7) + 0.25 * Math.sin(x * 0.17 + 1);
+  ctx.globalAlpha = 0.45;
+  ctx.beginPath();
+  ctx.moveTo(c.x0, c.abajo);
+  for (let x = c.x0; x <= c.x1 + 0.4; x += 0.4) ctx.lineTo(x, loma(x));
+  ctx.lineTo(c.x1 + 0.4, c.abajo);
+  ctx.fill();
+
+  ctx.globalAlpha = 0.62;
+  ctx.fillStyle = D.C.barniz;
+  const tramo = 6;
+  for (let i = Math.floor(c.x0 / tramo); i <= Math.ceil(c.x1 / tramo); i++) {
+    const r = azar((est.semilla ^ Math.imul(i, 2654435761)) >>> 0);
     const tipo = r();
-    if (tipo < 0.35 || i < 1) continue;
-    const x = i * tramo + r() * tramo * 0.6;
-    if (Math.abs(x - est.roca.x) < 2.5) continue;
-    const y = est.perfil(x);
-    ctx.fillStyle = D.C.barniz;
-    if (tipo < 0.6) {                       // piedra
-      const s = 0.18 + r() * 0.2;
-      ctx.beginPath();
-      ctx.ellipse(x, y + s * 0.4, s, s * 0.6, 0, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (tipo < 0.82) {               // ciprés
-      const h = 2.2 + r() * 1.6;
-      ctx.beginPath();
-      ctx.moveTo(x, y + h);
-      ctx.quadraticCurveTo(x + 0.42, y + h * 0.45, x + 0.08, y);
-      ctx.lineTo(x - 0.08, y);
-      ctx.quadraticCurveTo(x - 0.42, y + h * 0.45, x, y + h);
-      ctx.fill();
-    } else {                                // columna caída: un fuste estriado
-      const largo = 1.4 + r() * 0.8;
-      ctx.fillRect(x, y, largo, 0.42);
-      ctx.strokeStyle = D.C.hueso; ctx.lineWidth = 0.02;
-      for (let k = 1; k < 3; k++) {
-        ctx.beginPath(); ctx.moveTo(x + 0.06, y + k * 0.14); ctx.lineTo(x + largo - 0.06, y + k * 0.14); ctx.stroke();
+    if (tipo < 0.3) continue;
+    const x = i * tramo + r() * tramo * 0.7;
+    const y = loma(x) - 0.05;
+    if (tipo < 0.5) {                       // piedra
+      const t = 0.25 + r() * 0.3;
+      ctx.beginPath(); ctx.ellipse(x, y + t * 0.35, t, t * 0.6, 0, 0, Math.PI * 2); ctx.fill();
+    } else if (tipo < 0.8) {                // ciprés (a veces dos)
+      const n = r() < 0.4 ? 2 : 1;
+      for (let k = 0; k < n; k++) {
+        const h = 2.4 + r() * 1.8, xx = x + k * 0.9;
+        ctx.beginPath();
+        ctx.moveTo(xx, y + h);
+        ctx.quadraticCurveTo(xx + 0.45, y + h * 0.45, xx + 0.09, y);
+        ctx.lineTo(xx - 0.09, y);
+        ctx.quadraticCurveTo(xx - 0.45, y + h * 0.45, xx, y + h);
+        ctx.fill();
       }
+    } else if (tipo < 0.92) {               // columna caída: un fuste estriado
+      const largo = 1.6 + r() * 1;
+      ctx.fillRect(x, y, largo, 0.45);
+      ctx.strokeStyle = D.C.arcilla; ctx.lineWidth = 0.03;
+      for (let k = 1; k < 3; k++) { ctx.beginPath(); ctx.moveTo(x + 0.08, y + k * 0.15); ctx.lineTo(x + largo - 0.08, y + k * 0.15); ctx.stroke(); }
+    } else {                                // columna en pie, sin techo
+      const h = 2.2 + r() * 1.2;
+      ctx.fillRect(x - 0.22, y, 0.44, h);
+      ctx.fillRect(x - 0.36, y + h, 0.72, 0.18);
     }
   }
+  ctx.globalAlpha = 1;
 }
