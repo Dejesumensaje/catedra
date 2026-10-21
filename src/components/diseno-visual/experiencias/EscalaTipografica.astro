@@ -1,0 +1,437 @@
+---
+// Escalas tipográficas: una página de revista cuyos tamaños salen de una
+// sola razón. El artículo es HTML real (se lee sin JS); el código solo
+// cambia variables CSS: tamaño base, razón, peso, interlineados y ancho.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+
+const guia: PasoGuia[] = [
+  {
+    hacer: 'En «Cuánto crece cada nivel», elige 1,125.',
+    pista: 'Es el primer botón: el número más pequeño.',
+    logro: 'Los tamaños son tan parecidos que título, entrada y texto compiten entre sí, y cuesta saber por dónde empezar. Una diferencia muy pequeña funciona casi como si no hubiera diferencia.',
+  },
+  {
+    hacer: 'Ahora elige 1,5.',
+    pista: 'Es el quinto botón.',
+    logro: 'El título pasa a medir unas cinco veces el texto normal. Ahora está claro qué leer primero: el título, luego la entrada y luego los párrafos.',
+  },
+  {
+    hacer: 'Mueve «Tamaño del texto normal» hacia cualquier lado y mira el título.',
+    pista: 'Usa las flechas del teclado o arrastra el control unas cuantas posiciones.',
+    logro: 'Toda la página creció o se redujo a la vez, pero el orden no cambió: el título sigue midiendo el mismo número de veces el texto normal. El tamaño base fija el tamaño general; la razón fija las diferencias entre niveles.',
+  },
+  {
+    hacer: 'Activa «Mostrar de dónde sale cada tamaño».',
+    logro: 'Cada nivel es el tamaño base multiplicado por la razón: una vez para la entrada, dos veces para los intertítulos y cuatro para el título. Con esos dos números se deciden todos los tamaños de la página.',
+  },
+  {
+    hacer: 'Abre «Más controles» y activa «Todo al mismo tamaño».',
+    abrir: true,
+    logro: 'Todo mide lo mismo y aun así reconoces el título: va primero, es más grueso y tiene espacio alrededor. El tamaño es el recurso más fuerte de la jerarquía, pero el grosor, la posición y el espacio también ayudan.',
+  },
+];
+
+const lab = 'escala';
+
+// Pasos de la escala que usa la página, de mayor a menor.
+const pasos = [
+  { n: 4, usos: 'Título' },
+  { n: 3, usos: '—' },
+  { n: 2, usos: 'Intertítulo, cita' },
+  { n: 1, usos: 'Entrada' },
+  { n: 0, usos: 'Texto normal' },
+  { n: -1, usos: 'Antetítulo, firma, pie' },
+];
+
+const razones = [
+  { valor: '1.125', texto: '1,125' },
+  { valor: '1.2', texto: '1,2' },
+  { valor: '1.25', texto: '1,25' },
+  { valor: '1.333', texto: '1,333' },
+  { valor: '1.5', texto: '1,5' },
+  { valor: '1.618', texto: '1,618' },
+];
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · una página, dos números"
+  consigna="Todos los tamaños de esta página salen de dos números: el tamaño del texto normal y cuántas veces crece cada nivel sobre el anterior."
+>
+  <div slot="escenario" class="et" data-et>
+    <aside class="et-escalera" aria-label="La escala de esta página, del nivel mayor al menor">
+      <ol>
+        {pasos.map((p) => (
+          <li>
+            <span class="et-muestra" style={`font-size: var(--p${p.n})`} aria-hidden="true">Aa</span>
+            <span class="et-dato" data-dato={p.n}>{p.n > 0 ? `+${p.n}` : p.n}</span>
+            <span class="et-usos">{p.usos}</span>
+          </li>
+        ))}
+      </ol>
+    </aside>
+
+    <article class="et-articulo" aria-label="Artículo de muestra">
+      <p class="et-ante"><span class="et-cota" data-cota="-1"></span>Oficios</p>
+      <p class="et-titulo"><span class="et-cota" data-cota="4"></span>El último relojero de la plaza</p>
+      <p class="et-entrada"><span class="et-cota" data-cota="1"></span>Durante cuarenta años arregló los relojes de medio pueblo. Ahora le enseña a su nieta a escuchar un mecanismo antes de abrirlo.</p>
+      <p class="et-firma"><span class="et-cota" data-cota="-1"></span>Texto de muestra · Lectura de 4 minutos</p>
+
+      <div class="et-cuerpo">
+        <p><span class="et-cota" data-cota="0"></span>El taller cabe en un pasillo. Hay un banco de madera, una lámpara de brazo plegable y tres cajones con piezas que nadie más sabría nombrar. Los relojes llegan envueltos en pañuelos, en bolsas de pan, en cajas de zapatos.</p>
+        <p>Antes de tocar uno, lo escucha. Dice que un reloj enfermo no se detiene de golpe: primero cambia de ritmo, y ese cambio se oye semanas antes de que las agujas se atrasen.</p>
+
+        <figure class="et-figura">
+          <svg viewBox="0 0 320 150" aria-hidden="true" focusable="false">
+            <rect width="320" height="150" fill="#dcdcd6" />
+            <circle cx="92" cy="75" r="46" fill="none" stroke="#222" stroke-width="3" />
+            <line x1="92" y1="75" x2="92" y2="44" stroke="#222" stroke-width="3" />
+            <line x1="92" y1="75" x2="114" y2="86" stroke="#222" stroke-width="2" />
+            <circle cx="196" cy="58" r="14" fill="none" stroke="#222" stroke-width="2" />
+            <circle cx="232" cy="88" r="22" fill="none" stroke="#222" stroke-width="2" />
+            <circle cx="272" cy="56" r="9" fill="none" stroke="#222" stroke-width="2" />
+          </svg>
+          <figcaption class="et-pie"><span class="et-cota" data-cota="-1"></span>El banco de trabajo, con las piezas ordenadas por tamaño.</figcaption>
+        </figure>
+
+        <p class="et-inter"><span class="et-cota" data-cota="2"></span>Un oficio que se aprende con el oído</p>
+        <p>Su nieta llegó al taller por curiosidad y se quedó por terquedad. Los primeros meses él solo le dejó limpiar engranajes. Después, escuchar.</p>
+        <blockquote class="et-cita"><span class="et-cota" data-cota="2"></span>«Un reloj te dice qué le pasa si tienes paciencia para oírlo.»</blockquote>
+        <p>Hoy reparan menos relojes que antes, pero cada uno les toma más tiempo. Ninguno de los dos parece tener prisa.</p>
+      </div>
+    </article>
+  </div>
+
+  <Guia slot="guia" pasos={guia} />
+
+  <Opciones lab={lab} variable="razon" etiqueta="Cuánto crece cada nivel" valor="1.25" opciones={razones} ayuda="Cada nivel es el anterior multiplicado por este número." />
+  <Deslizador lab={lab} variable="base" etiqueta="Tamaño del texto normal" min={12} max={24} valor={17} unidad="px" ayuda="El de los párrafos. Los demás tamaños salen de él." />
+  <Interruptor lab={lab} variable="diseccion" etiqueta="Mostrar de dónde sale cada tamaño" ayuda="Muestra sobre cada texto su nivel y su tamaño." />
+
+  <Fragment slot="avanzados">
+    <Opciones
+      lab={lab}
+      variable="peso"
+      etiqueta="Grosor de los títulos"
+      valor="700"
+      opciones={[{ valor: '400', texto: 'Normal' }, { valor: '700', texto: 'Negrita' }, { valor: '900', texto: 'Extranegrita' }]}
+    />
+    <Deslizador lab={lab} variable="lhc" etiqueta="Interlineado de los párrafos" min={1} max={2.2} paso={0.05} valor={1.55} decimales={2} ayuda="Altura de cada renglón, en número de veces el tamaño de la letra." />
+    <Deslizador lab={lab} variable="lht" etiqueta="Interlineado de los títulos" min={0.85} max={1.8} paso={0.05} valor={1.1} decimales={2} />
+    <Deslizador lab={lab} variable="medida" etiqueta="Ancho de línea" min={25} max={120} valor={64} unidad="caracteres" ayuda="Es aproximado: la lectura bajo la página dice cuántos caracteres caben realmente." />
+    <Interruptor lab={lab} variable="plano" etiqueta="Todo al mismo tamaño" ayuda="¿Se sigue entendiendo qué es el título?" />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset='{"plano":true}'>Aplana la escala</button>
+    <button type="button" class="dv-boton" data-preset='{"plano":true,"peso":"400"}'>Quita también el grosor</button>
+    <button type="button" class="dv-boton" data-preset='{"razon":"1.618","plano":false}'>Sube a 1,618</button>
+    <button type="button" class="dv-boton" data-preset='{"razon":"1.125","peso":"400","plano":false}'>Una escala con poca diferencia</button>
+    <button type="button" class="dv-boton" data-preset='{"medida":120,"lhc":1.1,"base":13}'>Letra pequeña, líneas largas y juntas</button>
+  </Fragment>
+</Instrumento>
+
+<style is:global>
+  /* Los estilos son globales porque la comparación clona el artículo
+     dentro del escenario A. Todo va bajo .et. */
+  .et {
+    --base: 17px;
+    --r: 1.25;
+    --peso: 700;
+    --lhc: 1.55;
+    --lht: 1.1;
+    --medida: 511px;
+    /* valores iniciales (17 px, razón 1,25) para cuando no hay JS */
+    --p-1: 13.6px;
+    --p0: 17px;
+    --p1: 21.25px;
+    --p2: 26.56px;
+    --p3: 33.2px;
+    --p4: 41.5px;
+    --linea: calc(var(--base) * var(--lhc));
+    display: block;
+    padding: clamp(1rem, 4vw, 2.25rem);
+    color: #333;
+    background: #fff;
+    min-height: 100%;
+  }
+
+  .et.et-diseccion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 8.5rem;
+    column-gap: 1.75rem;
+    align-items: start;
+  }
+
+  .et-articulo { min-width: 0; grid-row: 1; grid-column: 1; }
+
+  .et-ante,
+  .et-firma,
+  .et-pie {
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-size: var(--p-1);
+    line-height: 1.35;
+  }
+
+  .et-ante {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: calc(var(--linea) * 0.5);
+  }
+
+  .et-titulo {
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-size: var(--p4);
+    font-weight: var(--peso);
+    line-height: var(--lht);
+    letter-spacing: -0.02em;
+    color: #1a1a1a;
+    max-width: 16em;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    margin-bottom: calc(var(--linea) * 0.75);
+  }
+
+  .et-entrada {
+    font-family: 'PT Serif', Georgia, serif;
+    font-size: var(--p1);
+    line-height: var(--lhc);
+    font-style: italic;
+    color: #333;
+    max-width: var(--medida);
+    margin-bottom: calc(var(--linea) * 0.75);
+  }
+
+  .et-firma {
+    color: #555;
+    padding-bottom: calc(var(--linea) * 0.75);
+    margin-bottom: var(--linea);
+    border-bottom: 1px solid #222;
+    max-width: var(--medida);
+  }
+
+  .et-cuerpo {
+    font-family: 'PT Serif', Georgia, serif;
+    font-size: var(--p0);
+    line-height: var(--lhc);
+    max-width: var(--medida);
+  }
+
+  .et-cuerpo > p + p { margin-top: var(--linea); }
+  .et-cuerpo > p:not(.et-inter) { text-indent: 0; }
+
+  .et-figura { margin: var(--linea) 0; }
+  .et-figura svg { display: block; width: 100%; height: auto; }
+  /* `.et figcaption` gana al rótulo de escena del instrumento. */
+  .et figcaption.et-pie {
+    color: #555;
+    margin: calc(var(--linea) * 0.35) 0 0;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .et-cuerpo > .et-inter {
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-size: var(--p2);
+    font-weight: var(--peso);
+    line-height: var(--lht);
+    color: #1a1a1a;
+    margin-top: calc(var(--linea) * 1.5);
+    margin-bottom: calc(var(--linea) * 0.5);
+  }
+
+  .et-cuerpo > .et-inter + p { margin-top: 0; }
+
+  .et-cita {
+    font-family: 'PT Serif', Georgia, serif;
+    font-size: var(--p2);
+    font-style: italic;
+    line-height: var(--lht);
+    color: #1a1a1a;
+    margin: var(--linea) 0;
+    padding-left: calc(var(--base) * 1);
+    border-left: 3px solid #222;
+  }
+
+  /* disección: el paso de cada nivel, escrito sobre el nivel */
+  .et-cota { display: none; }
+  .et-diseccion .et-cota {
+    display: block;
+    font: 700 11px/1.2 'Roboto', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: #b3261e;
+    margin-bottom: 3px;
+  }
+
+  .et-escalera { display: none; }
+  .et-diseccion .et-escalera {
+    display: block;
+    grid-row: 1;
+    grid-column: 2;
+    position: sticky;
+    top: 0;
+    border-left: 1px solid #b3261e;
+    padding-left: 0.75rem;
+  }
+
+  .et-escalera ol { list-style: none; margin: 0; padding: 0; }
+  .et-escalera li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #e5e5e5;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  }
+  .et-muestra {
+    display: block;
+    font-weight: 700;
+    line-height: 1;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .et-dato { font-size: 11px; font-weight: 700; color: #b3261e; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .et-usos { font-size: 11px; color: #555; }
+
+  /* El artículo es largo: el escenario se recorre por dentro para que la
+     lectura de debajo siga a la vista mientras se mueven los controles. */
+  [data-lab="escala"] .dv-lienzo { overflow: auto; }
+  @media (min-width: 52.01rem) {
+    [data-lab="escala"] .dv-lienzo { max-height: 68vh; }
+  }
+
+  @media (max-width: 40rem) {
+    .et.et-diseccion { grid-template-columns: minmax(0, 1fr); }
+    .et-diseccion .et-escalera {
+      position: static;
+      grid-row: 1;
+      grid-column: 1;
+      border-left: 0;
+      border-bottom: 1px solid #b3261e;
+      padding: 0 0 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .et-diseccion .et-articulo { grid-row: 2; }
+    .et-escalera ol { display: flex; gap: 0.75rem; overflow-x: auto; }
+    .et-escalera li { border-bottom: 0; flex: none; max-width: 5.5rem; }
+    .et-usos { display: none; }
+  }
+</style>
+
+<script>
+  import { conectar, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+
+  type E = {
+    base: number; razon: string; peso: string; lhc: number; lht: number;
+    medida: number; diseccion: boolean; plano: boolean;
+  };
+
+  // Ancho medio de un carácter de PT Serif en texto corrido, en em. Sirve
+  // para traducir «caracteres» a un ancho; la lectura mide el resultado real.
+  const EM_POR_CARACTER = 0.47;
+
+  const tam = (e: E, paso: number) => e.base * (e.plano ? 1 : Number(e.razon) ** paso);
+  const px = (v: number) => `${n(v, 1)} px`;
+  const signo = (p: number) => (p > 0 ? `+${p}` : String(p));
+
+  let medido: { caracteres: number; lineas: number } | null = null;
+  const plantillas = new WeakMap<HTMLElement, Node>();
+
+  function pintar(destino: HTMLElement, e: E, rol: 'actual' | 'a') {
+    let et = destino.querySelector<HTMLElement>('[data-et]');
+    if (!et) {
+      const raiz = destino.closest<HTMLElement>('[data-lab]')!;
+      destino.replaceChildren(plantillas.get(raiz)!.cloneNode(true));
+      et = destino.querySelector<HTMLElement>('[data-et]')!;
+    }
+    for (let p = -1; p <= 4; p++) et.style.setProperty(`--p${p}`, `${tam(e, p)}px`);
+    et.style.setProperty('--base', `${e.base}px`);
+    et.style.setProperty('--peso', e.peso);
+    et.style.setProperty('--lhc', String(e.lhc));
+    et.style.setProperty('--lht', String(e.lht));
+    et.style.setProperty('--medida', `${e.medida * EM_POR_CARACTER * e.base}px`);
+    et.classList.toggle('et-diseccion', e.diseccion);
+
+    for (const c of et.querySelectorAll<HTMLElement>('[data-cota]')) {
+      const p = Number(c.dataset.cota);
+      c.textContent = e.plano
+        ? `${signo(p)} mismo tamaño · ${px(tam(e, p))}`
+        : `${signo(p)} · ${e.base} × ${n(Number(e.razon), 3)}${p === 0 ? '⁰' : p === 1 ? '' : p === -1 ? '⁻¹' : ['', '', '²', '³', '⁴'][p]} = ${px(tam(e, p))}`;
+    }
+    for (const d of et.querySelectorAll<HTMLElement>('[data-dato]')) {
+      const p = Number(d.dataset.dato);
+      d.textContent = `${signo(p)} · ${px(tam(e, p))}`;
+    }
+
+    if (rol === 'actual') {
+      // Caracteres por línea medidos sobre los párrafos del cuerpo.
+      let caracteres = 0;
+      let lineas = 0;
+      const lh = e.base * e.lhc;
+      for (const p of et.querySelectorAll<HTMLElement>('.et-cuerpo > p:not(.et-inter)')) {
+        const cota = p.querySelector('.et-cota');
+        const texto = (p.textContent ?? '').length - (cota?.textContent?.length ?? 0);
+        const alto = p.getBoundingClientRect().height - (cota ? (cota as HTMLElement).getBoundingClientRect().height + 3 : 0);
+        const l = Math.max(1, Math.round(alto / lh));
+        caracteres += texto;
+        // La última línea de un párrafo va, en promedio, por la mitad.
+        lineas += l - 0.5;
+      }
+      medido = lineas ? { caracteres: caracteres / lineas, lineas } : null;
+    }
+  }
+
+  function describir(e: E): string {
+    const titulo = tam(e, 4);
+    const veces = titulo / e.base;
+    const frases: string[] = [];
+
+    if (e.plano) {
+      frases.push(e.peso === '400'
+        ? 'Sin diferencias de tamaño ni de grosor, quedan la posición, el espacio y la familia: el título se reconoce porque va primero y usa otro tipo de letra.'
+        : `Todo mide ${e.base} px. El orden se sostiene con el grosor, el espacio y la posición, aunque con menos fuerza que antes.`);
+    } else {
+      frases.push(`Cada nivel es ${n(Number(e.razon), 3)} veces el anterior. El título mide ${px(titulo)}: <b class="dv-cifra">${n(veces)} veces</b> el texto normal.`);
+      if (veces < 1.8) frases.push('La diferencia es pequeña: el título y la entrada compiten por leerse primero.');
+      else if (veces <= 4) frases.push('El orden de lectura es claro: título, entrada y texto.');
+      else if (veces > 4) frases.push('El título es tan grande que ocupa más espacio que el texto que presenta y se parte en varios renglones.');
+    }
+
+    if (medido) {
+      const c = Math.round(medido.caracteres);
+      let juicio = '';
+      if (c < 45) juicio = ' Líneas cortas: hay que cambiar de renglón muy seguido y la lectura se interrumpe.';
+      else if (c > 75) juicio = ' Líneas largas: cuesta encontrar el comienzo del renglón siguiente.';
+      frases.push(`Caben unos <b>${c} caracteres</b> por línea.${juicio}`);
+    }
+
+    if (e.lhc < 1.25) frases.push('Renglones muy juntos: las líneas de los párrafos parecen tocarse.');
+    else if (e.lhc > 1.95) frases.push('Hay tanto espacio entre renglones que el párrafo se lee como líneas sueltas. Es un efecto de proximidad.');
+    if (e.lht > 1.4 && !e.plano) frases.push('Los renglones del título quedan tan separados que parecen frases distintas.');
+
+    return frases.join(' ');
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="escala"]')) {
+    const et = raiz.querySelector('[data-escenario] [data-et]');
+    if (et) plantillas.set(raiz, et.cloneNode(true));
+    guiar<E>(raiz, [
+      (e) => e.razon === '1.125' && !e.plano,
+      (e) => e.razon === '1.5' && !e.plano,
+      (e, inicio) => e.base !== inicio.base,
+      (e) => e.diseccion,
+      (e) => e.plano,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

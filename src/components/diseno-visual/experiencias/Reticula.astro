@@ -1,0 +1,415 @@
+---
+// Retículas y alineación: un cartel de seis bloques puestos sobre columnas.
+// Lo que se lee es cuántos bordes comparten los bloques (ejes) y cuántos
+// caen fuera de la retícula. Las medidas se dan sobre una página de 720 px
+// de ancho y se escalan al escenario real.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+
+const pasos: PasoGuia[] = [
+  {
+    hacer: 'Activa «Mostrar la retícula» y mira dónde empieza y termina cada bloque.',
+    logro: 'Las franjas son las columnas. Cada bloque empieza y termina en el borde de una columna. Por eso el cartel se ve ordenado, aunque esas líneas no se impriman.',
+  },
+  {
+    hacer: 'Sube «Desorden» hasta que el cartel se vea descuidado.',
+    pista: 'Llévalo por encima del 30 %. Compara los bordes de los bloques con las franjas.',
+    logro: 'Ningún bloque se movió mucho. Aun así, cuando dejan de compartir bordes, la página tiende a verse descuidada, como si fuera un error.',
+  },
+  {
+    hacer: 'Con el desorden en cero, baja «Columnas» a 6 o menos.',
+    pista: 'Primero lleva «Desorden» a 0 %. Luego mueve «Columnas» hacia la izquierda.',
+    logro: 'Con menos columnas, los bloques se ajustan a otras medidas y el cartel cambia de aspecto. Sigue ordenado. El número de columnas también es una decisión de diseño.',
+  },
+  {
+    hacer: 'Abre «Más controles» y activa «Sacar el bloque elegido de la retícula».',
+    preparar: { columnas: 12, desorden: 0, bloque: 'imagen' },
+    abrir: true,
+    logro: 'La imagen atraviesa el margen hasta el borde de la página. Se movió mucho más que con el desorden. Como es el único bloque que sale, tiende a leerse como algo intencional.',
+  },
+  {
+    hacer: 'Ahora, en «Reparto de los bloques», elige «Todos iguales».',
+    preparar: { ruptura: false },
+    logro: 'Todo está alineado, pero ningún bloque destaca y no queda claro por dónde empezar. La retícula decide dónde va cada cosa. Qué se lee primero lo deciden el tamaño y el contraste.',
+  },
+];
+
+const lab = 'reticula';
+const bloques = [
+  { valor: 'titulo', texto: 'Título' },
+  { valor: 'dato', texto: 'Número' },
+  { valor: 'imagen', texto: 'Imagen' },
+  { valor: 'texto1', texto: 'Texto 1' },
+  { valor: 'texto2', texto: 'Texto 2' },
+  { valor: 'pie', texto: 'Pie' },
+];
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · un cartel sobre columnas"
+  consigna="Seis bloques: un título, un número, una imagen, dos textos y un pie. Debajo hay columnas que no se ven."
+>
+  <svg slot="escenario" viewBox="0 0 720 518" role="img" aria-label="Cartel de seis bloques sobre una retícula de doce columnas.">
+    <rect width="720" height="518" fill="#fff" />
+    <rect x="32" y="32" width="430" height="70" fill="#222" />
+    <rect x="32" y="140" width="320" height="250" fill="#222" />
+  </svg>
+
+  <Guia slot="guia" pasos={pasos} />
+
+  <Interruptor lab={lab} variable="guias" etiqueta="Mostrar la retícula" ayuda="Dibuja las columnas sobre las que se apoyan los bloques." />
+  <Deslizador lab={lab} variable="desorden" etiqueta="Desorden" min={0} max={100} valor={0} unidad="%" ayuda="Mueve cada bloque un poco, sin ningún motivo." />
+  <Deslizador lab={lab} variable="columnas" etiqueta="Columnas" min={2} max={12} valor={12} ayuda="En cuántas franjas iguales se divide la página." />
+
+  <Fragment slot="avanzados">
+    <Interruptor lab={lab} variable="ruptura" etiqueta="Sacar el bloque elegido de la retícula" ayuda="Saca un solo bloque, a propósito. El bloque se elige abajo." />
+    <fieldset class="dv-control dv-opciones rt-mover">
+      <legend>Bloque que mueves</legend>
+      <div class="dv-opciones-fila">
+        {bloques.map((b) => (
+          <label class="dv-opcion">
+            <input
+              type="radio"
+              name={`${lab}-bloque`}
+              value={b.valor}
+              checked={b.valor === 'imagen'}
+              data-var="bloque"
+              data-etiqueta="Bloque que mueves"
+              data-texto={b.texto}
+            />
+            <span>{b.texto}</span>
+          </label>
+        ))}
+      </div>
+      <div class="rt-botones" role="group" aria-label="Mover el bloque elegido por columnas">
+        <button type="button" class="dv-boton" data-mover="-1">← Una columna</button>
+        <button type="button" class="dv-boton" data-mover="1">Una columna →</button>
+        <button type="button" class="dv-boton" data-ancho="-1">Más estrecho</button>
+        <button type="button" class="dv-boton" data-ancho="1">Más ancho</button>
+      </div>
+      {bloques.map((b) => (
+        <>
+          <input type="hidden" data-var={`mv_${b.valor}`} data-etiqueta={`${b.texto}: posición`} value="0" />
+          <input type="hidden" data-var={`an_${b.valor}`} data-etiqueta={`${b.texto}: ancho`} value="0" />
+        </>
+      ))}
+    </fieldset>
+    <Opciones
+      lab={lab}
+      variable="reparto"
+      etiqueta="Reparto de los bloques"
+      valor="cartel"
+      opciones={[
+        { valor: 'cartel', texto: 'Con jerarquía' },
+        { valor: 'uniforme', texto: 'Todos iguales' },
+      ]}
+    />
+    <Opciones
+      lab={lab}
+      variable="alineacion"
+      etiqueta="Alineación del texto"
+      valor="izquierda"
+      opciones={[
+        { valor: 'izquierda', texto: 'Izquierda' },
+        { valor: 'centro', texto: 'Centro' },
+        { valor: 'derecha', texto: 'Derecha' },
+        { valor: 'mixta', texto: 'Una distinta en cada bloque' },
+      ]}
+    />
+    <Deslizador lab={lab} variable="medianil" etiqueta="Medianil" min={0} max={48} valor={16} unidad="px" ayuda="El espacio entre una columna y la siguiente." />
+    <Deslizador lab={lab} variable="margen" etiqueta="Márgenes" min={8} max={96} valor={32} unidad="px" ayuda="El espacio entre los bloques y el borde de la página (medido sobre una página de 720 px de ancho)." />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset='{"reparto":"uniforme","desorden":0,"ruptura":false,"alineacion":"izquierda"}'>Alinea todo y quita la jerarquía</button>
+    <button type="button" class="dv-boton" data-preset='{"reparto":"cartel","desorden":45,"ruptura":false}'>Desordénala</button>
+    <button type="button" class="dv-boton" data-preset='{"reparto":"cartel","desorden":0,"ruptura":true,"bloque":"imagen"}'>Rómpela con intención</button>
+    <button type="button" class="dv-boton" data-preset='{"columnas":5,"desorden":0,"ruptura":false}'>Prueba con cinco columnas</button>
+  </Fragment>
+</Instrumento>
+
+<style>
+  .rt-mover { padding-bottom: 0.9rem; }
+  .rt-botones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    margin-top: 0.6rem;
+  }
+  .rt-botones .dv-boton { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 0.78rem; text-align: center; }
+</style>
+
+<script>
+  import { conectar, svg, azar } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+
+  type E = {
+    columnas: number; medianil: number; margen: number; guias: boolean;
+    alineacion: string; reparto: string; bloque: string;
+    desorden: number; ruptura: boolean;
+    [k: string]: number | string | boolean;
+  };
+
+  const TINTA = '#222222';
+  const GRIS = '#8f8f8f';
+  const GUIA = '#f6dcda';
+  const GUIA_BORDE = 'rgba(179, 38, 30, 0.55)';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const REF = 720;   // ancho de referencia de la página
+  const IDS = ['titulo', 'dato', 'imagen', 'texto1', 'texto2', 'pie'] as const;
+  type Id = (typeof IDS)[number];
+  const NOMBRE: Record<Id, string> = {
+    titulo: 'El título', dato: 'El número', imagen: 'La imagen',
+    texto1: 'El texto 1', texto2: 'El texto 2', pie: 'El pie',
+  };
+
+  // Posición en columnas de una retícula de 12 (inicio, ancho) y franja
+  // vertical en fracciones del alto útil.
+  const CARTEL: Record<Id, { s: number; w: number; y: number; h: number }> = {
+    titulo: { s: 0, w: 8, y: 0, h: 0.2 },
+    dato: { s: 9, w: 3, y: 0, h: 0.2 },
+    imagen: { s: 0, w: 6, y: 0.27, h: 0.5 },
+    texto1: { s: 6, w: 3, y: 0.27, h: 0.62 },
+    texto2: { s: 9, w: 3, y: 0.27, h: 0.62 },
+    pie: { s: 0, w: 4, y: 0.81, h: 0.08 },
+  };
+  // Todos iguales: tres por fila, mismo alto, misma voz.
+  const UNIFORME: Record<Id, { s: number; w: number; y: number; h: number }> = {
+    titulo: { s: 0, w: 4, y: 0, h: 0.44 },
+    dato: { s: 4, w: 4, y: 0, h: 0.44 },
+    imagen: { s: 8, w: 4, y: 0, h: 0.44 },
+    texto1: { s: 0, w: 4, y: 0.56, h: 0.44 },
+    texto2: { s: 4, w: 4, y: 0.56, h: 0.44 },
+    pie: { s: 8, w: 4, y: 0.56, h: 0.44 },
+  };
+
+  interface Caja { id: Id; x: number; y: number; w: number; h: number; c0: number; c1: number; fuera: boolean }
+
+  function geometria(e: E, W: number) {
+    const k = W / REF;
+    const H = Math.round(W * 0.72);
+    const m = e.margen * k;
+    const g = e.medianil * k;
+    const c = e.columnas;
+    const U = W - m * 2;
+    const V = H - m * 2;
+    const colW = (U - (c - 1) * g) / c;
+    const colX = (i: number) => m + i * (colW + g);
+    const base = e.reparto === 'uniforme' ? UNIFORME : CARTEL;
+    const r = azar(7);
+    const cajas: Caja[] = IDS.map((id) => {
+      const b = base[id];
+      let c0 = Math.round((b.s * c) / 12);
+      let c1 = Math.max(c0 + 1, Math.round(((b.s + b.w) * c) / 12));
+      c0 += Number(e[`mv_${id}`] ?? 0);
+      c1 += Number(e[`mv_${id}`] ?? 0) + Number(e[`an_${id}`] ?? 0);
+      if (c1 <= c0) c1 = c0 + 1;
+      const span = c1 - c0;
+      c0 = Math.max(0, Math.min(c - span, c0));
+      c1 = Math.min(c, c0 + Math.min(span, c));
+      let x = colX(c0);
+      let w = colX(c1 - 1) + colW - x;
+      let y = m + b.y * V;
+      let h = b.h * V;
+      let fuera = false;
+
+      // Desorden: el mismo estado pinta siempre lo mismo (semilla fija).
+      const dx = (r() * 2 - 1) * (e.desorden / 100) * (colW + g) * 0.9;
+      const dy = (r() * 2 - 1) * (e.desorden / 100) * V * 0.05;
+      const dw = (r() * 2 - 1) * (e.desorden / 100) * colW * 0.6;
+      if (e.desorden > 0) {
+        x += dx; y += dy; w = Math.max(colW * 0.6, w + dw);
+      }
+
+      if (e.ruptura && id === e.bloque) {
+        // Sangra hasta el borde más cercano de la página: atraviesa el
+        // margen, que es justo lo que la retícula prohíbe.
+        const centro = x + w / 2;
+        if (centro < W / 2) { w = x + w; x = 0; } else { w = W - x; }
+        fuera = true;
+      }
+      return { id, x, y, w, h, c0, c1, fuera };
+    });
+
+    // ¿Qué bordes caen en una línea de la retícula?
+    const bordes: number[] = [];
+    for (let i = 0; i < c; i++) bordes.push(colX(i), colX(i) + colW);
+    const enReticula = (v: number) => bordes.some((b) => Math.abs(b - v) < 0.75);
+    for (const cj of cajas) {
+      if (!enReticula(cj.x) || !enReticula(cj.x + cj.w)) cj.fuera = true;
+    }
+    return { cajas, H, m, g, colW, colX, c, k };
+  }
+
+  function ejes(cajas: Caja[]) {
+    // Un eje es un borde vertical (izquierdo o derecho) que comparten al menos dos bloques.
+    const valores = cajas.flatMap((c) => [c.x, c.x + c.w]);
+    const grupos: number[][] = [];
+    for (const v of valores.sort((a, b) => a - b)) {
+      const g = grupos.find((gr) => Math.abs(gr[0] - v) < 0.75);
+      if (g) g.push(v); else grupos.push([v]);
+    }
+    return grupos.filter((g) => g.length >= 2).length;
+  }
+
+  function lineas(raiz: SVGElement, x: number, y: number, w: number, h: number, alin: string, semilla: number, alto: number, color: string) {
+    const r = azar(semilla);
+    const paso = alto * 1.9;
+    const n = Math.max(1, Math.floor(h / paso));
+    for (let i = 0; i < n; i++) {
+      const ultimo = i === n - 1;
+      const lw = w * (ultimo ? 0.35 + r() * 0.3 : 0.82 + r() * 0.18);
+      const lx = alin === 'derecha' ? x + w - lw : alin === 'centro' ? x + (w - lw) / 2 : x;
+      raiz.append(svg('rect', { x: lx, y: y + i * paso, width: lw, height: alto, fill: color }));
+    }
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 260);
+    const geo = geometria(e, W);
+    const { cajas, H, k } = geo;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute('aria-label', `Cartel de seis bloques sobre una retícula de ${e.columnas} columnas.`);
+    raiz.append(svg('rect', { width: W, height: H, fill: '#ffffff' }));
+
+    // La retícula va debajo de los bloques: lo que cae fuera de ella se ve
+    // contra las franjas de las columnas.
+    if (e.guias) {
+      for (let i = 0; i < geo.c; i++) {
+        raiz.append(svg('rect', { x: geo.colX(i), y: geo.m, width: geo.colW, height: H - geo.m * 2, fill: GUIA }));
+      }
+      raiz.append(svg('rect', {
+        x: geo.m, y: geo.m, width: W - geo.m * 2, height: H - geo.m * 2,
+        fill: 'none', stroke: GUIA_BORDE, 'stroke-width': 1, 'stroke-dasharray': '4 3',
+      }));
+    }
+
+    const alins = ['izquierda', 'derecha', 'centro', 'izquierda', 'derecha', 'centro'];
+    const alinDe = (i: number) => (e.alineacion === 'mixta' ? alins[i] : e.alineacion);
+    const plano = e.reparto === 'uniforme';
+
+    cajas.forEach((cj, i) => {
+      const a = alinDe(i);
+      const ancla = a === 'derecha' ? 'end' : a === 'centro' ? 'middle' : 'start';
+      const tx = a === 'derecha' ? cj.x + cj.w : a === 'centro' ? cj.x + cj.w / 2 : cj.x;
+      if (plano) {
+        // Todos iguales: la misma textura, el mismo peso, ninguno manda.
+        lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, 11 + i * 2, 5 * k, GRIS);
+      } else if (cj.id === 'imagen') {
+        raiz.append(svg('rect', { x: cj.x, y: cj.y, width: cj.w, height: cj.h, fill: TINTA }));
+        const rr = Math.min(cj.w, cj.h) * 0.28;
+        raiz.append(svg('circle', { cx: cj.x + cj.w * 0.62, cy: cj.y + cj.h * 0.4, r: rr, fill: '#ffffff' }));
+        raiz.append(svg('rect', { x: cj.x, y: cj.y + cj.h * 0.72, width: cj.w, height: Math.max(2, 3 * k), fill: '#ffffff' }));
+      } else if (cj.id === 'titulo') {
+        if (plano) {
+          lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, 11, 5 * k, GRIS);
+        } else {
+          const fs = Math.min(cj.h * 0.42, (cj.w / 11) * 1.25);
+          const t1 = svg('text', { x: tx, y: cj.y + fs * 0.92, 'font-family': SANS, 'font-weight': 900, 'font-size': fs, fill: TINTA, 'text-anchor': ancla, 'letter-spacing': -fs * 0.03 });
+          t1.textContent = 'La ciudad';
+          const t2 = svg('text', { x: tx, y: cj.y + fs * 1.88, 'font-family': SANS, 'font-weight': 900, 'font-size': fs, fill: TINTA, 'text-anchor': ancla, 'letter-spacing': -fs * 0.03 });
+          t2.textContent = 'que camina';
+          raiz.append(t1, t2);
+        }
+      } else if (cj.id === 'dato') {
+        if (plano) {
+          lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, 13, 5 * k, GRIS);
+        } else {
+          const fs = Math.min(cj.h * 0.62, cj.w * 0.5);
+          const t = svg('text', { x: tx, y: cj.y + fs * 0.85, 'font-family': SANS, 'font-weight': 300, 'font-size': fs, fill: TINTA, 'text-anchor': ancla });
+          t.textContent = '07';
+          const l = svg('text', { x: tx, y: cj.y + fs * 0.85 + 13 * k + 4, 'font-family': SANS, 'font-weight': 500, 'font-size': Math.max(8, 11 * k), fill: TINTA, 'text-anchor': ancla, 'letter-spacing': 1 });
+          l.textContent = 'OCTUBRE';
+          raiz.append(t, l);
+        }
+      } else if (cj.id === 'pie') {
+        lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, 17, 3 * k, GRIS);
+      } else {
+        lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, cj.id === 'texto1' ? 19 : 23, 5 * k, GRIS);
+      }
+    });
+
+    // El bloque elegido: lo que estás moviendo.
+    // Solo se marca cuando los controles para moverlo están a la vista: sin
+    // ellos, un contorno amarillo no dice nada a quien empieza.
+    const abiertos = destino.closest('[data-lab]')?.querySelector<HTMLDetailsElement>('details.dv-avanzados')?.open ?? true;
+    const sel = cajas.find((c) => c.id === e.bloque);
+    if (sel && (abiertos || e.ruptura)) {
+      raiz.append(svg('rect', { x: sel.x - 3, y: sel.y - 3, width: sel.w + 6, height: sel.h + 6, fill: 'none', stroke: '#eeff41', 'stroke-width': 4 }));
+      raiz.append(svg('rect', { x: sel.x - 5, y: sel.y - 5, width: sel.w + 10, height: sel.h + 10, fill: 'none', stroke: TINTA, 'stroke-width': 1 }));
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const geo = geometria(e, REF);
+    const fuera = geo.cajas.filter((c) => c.fuera);
+    const n = ejes(geo.cajas);
+    const sel = geo.cajas.find((c) => c.id === e.bloque)!;
+    const ejesTxt = `<b class="dv-cifra">${n} ${n === 1 ? 'eje compartido' : 'ejes compartidos'}</b>`;
+    let txt = `Los seis bloques forman ${ejesTxt}. Un eje es una línea vertical donde coinciden los bordes de dos o más bloques.`;
+
+    if (fuera.length === 0) {
+      txt += ' Todos caen en la retícula.';
+    } else if (e.ruptura && fuera.length === 1 && fuera[0].id === e.bloque) {
+      txt += ` ${NOMBRE[sel.id]} sale de la retícula y ningún otro bloque lo hace. Como el resto está en orden, la salida tiende a leerse como intencional.`;
+    } else {
+      txt += fuera.length === 6 ? ' Los seis caen fuera de la retícula.' : ` ${fuera.length} de 6 ${fuera.length === 1 ? 'bloque cae' : 'bloques caen'} fuera de la retícula.`;
+      if (e.desorden > 0) txt += ' Esas salidas no tienen un motivo, y la página se ve descuidada.';
+    }
+
+    if (e.reparto === 'uniforme' && fuera.length === 0) {
+      txt += ' La retícula se cumple al pie de la letra, pero nada indica por dónde empezar a leer.';
+    }
+    if (e.alineacion === 'mixta') txt += ' Con una alineación distinta en cada bloque, los bordes del texto ya no coinciden entre sí.';
+    const choca = geo.cajas.filter((o) => o !== sel
+      && o.x < sel.x + sel.w - 0.5 && sel.x < o.x + o.w - 0.5
+      && o.y < sel.y + sel.h - 0.5 && sel.y < o.y + o.h - 0.5);
+    if (choca.length && e.desorden === 0) txt += ` ${NOMBRE[sel.id]} se superpone a ${choca.map((o) => NOMBRE[o.id].toLowerCase()).join(' y ')}. La retícula no impide que dos bloques se superpongan.`;
+    if (!sel.fuera) txt += ` ${NOMBRE[sel.id]} ocupa las columnas ${sel.c0 + 1} a ${sel.c1} de ${e.columnas}.`;
+    return txt;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="reticula"]')) {
+    // La guía escucha antes de conectar: así recibe el primer estado.
+    guiar<E>(raiz, [
+      (e) => e.guias,
+      (e) => e.desorden >= 30,
+      (e) => e.desorden === 0 && e.columnas <= 6,
+      (e) => e.ruptura,
+      (e) => e.reparto === 'uniforme',
+    ]);
+    conectar<E>({
+      raiz,
+      pintar,
+      describir,
+      formatear: (k, v) => (k.startsWith('mv_') || k.startsWith('an_')
+        ? `${Number(v) > 0 ? '+' : ''}${v} col.`
+        : undefined),
+    });
+
+    raiz.querySelector('details.dv-avanzados')?.addEventListener('toggle', () => {
+      raiz.dispatchEvent(new CustomEvent('aplicar', { detail: {} }));
+    });
+
+    // Mover o ensanchar el bloque elegido: los botones escriben en los
+    // campos ocultos y avisan como cualquier otro control.
+    raiz.addEventListener('click', (ev) => {
+      const b = (ev.target as HTMLElement).closest<HTMLElement>('[data-mover], [data-ancho]');
+      if (!b) return;
+      const bloque = raiz.querySelector<HTMLInputElement>('input[data-var="bloque"]:checked')?.value;
+      if (!bloque) return;
+      const tipo = b.dataset.mover ? 'mv' : 'an';
+      const campo = raiz.querySelector<HTMLInputElement>(`input[data-var="${tipo}_${bloque}"]`)!;
+      const delta = Number(b.dataset.mover ?? b.dataset.ancho);
+      const cols = Number(raiz.querySelector<HTMLInputElement>('input[data-var="columnas"]')!.value);
+      campo.value = String(Math.max(-cols, Math.min(cols, Number(campo.value) + delta)));
+      campo.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  }
+</script>

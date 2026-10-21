@@ -1,0 +1,39 @@
+---
+// Paso 1 de semejanza: una cancha con jugadores mezclados. La distancia no
+// ayuda (están repartidos parejo); lo único que agrupa es la camiseta.
+// Los dos equipos se distinguen por claridad y por rayas, no solo por tono.
+const pos: [number, number, boolean][] = [
+  [110, 70, true], [210, 60, false], [320, 78, true], [430, 62, false], [530, 74, true],
+  [150, 150, false], [260, 140, true], [370, 152, false], [480, 144, true],
+  [100, 222, true], [215, 230, false], [325, 220, true], [440, 232, false], [545, 224, false],
+];
+---
+
+<figure class="dv-pregunta-visual">
+  <div class="dv-pv-lienzo">
+    <svg viewBox="0 0 640 290" role="img" aria-label="Catorce jugadores repartidos parejo en una cancha. La mitad lleva camiseta oscura y la otra mitad camiseta clara con rayas.">
+      <defs>
+        <pattern id="sem-rayas" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="6" height="6" fill="#f3f3ef" />
+          <rect width="2.5" height="6" fill="#222" />
+        </pattern>
+      </defs>
+      <rect x="30" y="20" width="580" height="250" fill="none" stroke="#222" stroke-width="1.5" />
+      <line x1="320" y1="20" x2="320" y2="270" stroke="#222" stroke-width="1.5" />
+      <circle cx="320" cy="145" r="40" fill="none" stroke="#222" stroke-width="1.5" />
+      {pos.map(([x, y, oscuro]) => (
+        <g transform={`translate(${x} ${y})`}>
+          <circle cx="0" cy="-16" r="7" fill="#222" />
+          <rect x="-10" y="-8" width="20" height="24" fill={oscuro ? '#222' : 'url(#sem-rayas)'} stroke="#222" stroke-width="1.5" />
+          <rect x="-8" y="16" width="6" height="12" fill="#222" />
+          <rect x="2" y="16" width="6" height="12" fill="#222" />
+        </g>
+      ))}
+    </svg>
+  </div>
+  <p>Catorce jugadores en plena jugada, repartidos por toda la cancha. ¿Cuántos equipos hay?</p>
+  <details>
+    <summary>Ver la respuesta</summary>
+    <p>Dos: el de camiseta oscura y el de camiseta a rayas. La distancia no ayuda porque están mezclados. Lo que los agrupa es el parecido de sus camisetas.</p>
+  </details>
+</figure>

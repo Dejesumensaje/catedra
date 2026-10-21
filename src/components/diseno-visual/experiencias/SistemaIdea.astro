@@ -1,0 +1,41 @@
+---
+// Paso 1 de sistemas: un equipo de fútbol. Diez camisetas siguen la misma
+// regla y una la rompe. El arquero se distingue por el color, por los
+// guantes y por el número: la escena no depende solo del color.
+const jugadores = Array.from({ length: 11 }, (_, i) => i);
+const arquero = 7; // posición en la fila, no el primero: hay que buscarlo
+const AZUL = '#1f4e8c';
+const NARANJA = '#c2410c';
+const paso = 52;
+const ox = (640 - paso * 10) / 2;
+const numeros = [4, 9, 2, 11, 6, 3, 8, 1, 5, 10, 7];
+---
+
+<figure class="dv-pregunta-visual">
+  <div class="dv-pv-lienzo">
+    <svg viewBox="0 0 640 220" role="img" aria-label="Once jugadores de un equipo en fila, con camisetas numeradas. Diez llevan la misma camiseta azul. Uno, el octavo de la fila, lleva una camiseta naranja con el número 1 y guantes grandes.">
+      <line x1="30" y1="186" x2="610" y2="186" stroke="#222" stroke-width="1.5" />
+      {jugadores.map((i) => {
+        const x = ox + i * paso;
+        const esArquero = i === arquero;
+        const color = esArquero ? NARANJA : AZUL;
+        return (
+          <g transform={`translate(${x} 0)`}>
+            <circle cx="0" cy="78" r="11" fill="#222" />
+            <rect x="-15" y="94" width="30" height="46" fill={color} />
+            {esArquero && <rect x="-25" y="104" width="10" height="14" fill="#222" />}
+            {esArquero && <rect x="15" y="104" width="10" height="14" fill="#222" />}
+            <text x="0" y="124" text-anchor="middle" font-family="Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="15" fill="#fff">{numeros[i]}</text>
+            <rect x="-11" y="140" width="9" height="46" fill="#222" />
+            <rect x="2" y="140" width="9" height="46" fill="#222" />
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+  <p>Once jugadores del mismo equipo. Sin conocerlos, ¿cuál crees que es el arquero?</p>
+  <details>
+    <summary>Ver la respuesta</summary>
+    <p>El octavo de la fila, con el número 1. Diez camisetas siguen la misma regla y una la rompe: tiene otro color, y el jugador lleva guantes. Esa diferencia tiene una función: el árbitro y el resto del equipo saben de un vistazo quién puede tocar el balón con la mano.</p>
+  </details>
+</figure>

@@ -1,0 +1,81 @@
+---
+// Paso 2 de retículas: la misma página puesta a ojo y sobre seis columnas.
+// En la versión ordenada se dibujan las columnas tenues para que se vean.
+import Anotada from '../Anotada.astro';
+
+const W = 360;
+const H = 300;
+const T = '#222222';
+const G = '#9a9a9a';
+const COL = '#f1e4e2';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+// Seis columnas: margen 24, medianil 12.
+const M = 24;
+const GUT = 12;
+const CW = (W - M * 2 - GUT * 5) / 6;
+const cx = (i: number) => M + i * (CW + GUT);
+const span = (a: number, b: number) => cx(b - 1) + CW - cx(a);
+
+const lineas = (x: number, y: number, w: number, n: number) =>
+  Array.from({ length: n }, (_, i) => ({ x, y: y + i * 11, w: i === n - 1 ? w * 0.55 : w }));
+
+// Bien: todo cae en columnas.
+const bien = {
+  titulo: { x: cx(0), y: 30, w: span(0, 5) },
+  imagen: { x: cx(0), y: 66, w: span(0, 4), h: 118 },
+  pie: { x: cx(0), y: 196, w: span(0, 3) },
+  texto1: { x: cx(0), y: 222, w: span(0, 3) },
+  texto2: { x: cx(3), y: 222, w: span(3, 6) },
+  dato: { x: cx(4), y: 66, w: span(4, 6) },
+};
+// Mal: los mismos bloques, cada uno a ojo.
+const mal = {
+  titulo: { x: 30, y: 30, w: 230 },
+  imagen: { x: 22, y: 66, w: 205, h: 118 },
+  pie: { x: 40, y: 196, w: 140 },
+  texto1: { x: 26, y: 222, w: 150 },
+  texto2: { x: 190, y: 222, w: 138 },
+  dato: { x: 250, y: 74, w: 82 },
+};
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({ x: (x / W) * 100, y: (y / H) * 100, w: (w / W) * 100, h: (h / H) * 100 });
+type Pieza = typeof bien;
+---
+
+<div class="dv-anotadas">
+  {[
+    { p: mal as Pieza, ver: 'mal', rotulo: 'Cada bloque puesto a ojo', columnas: false },
+    { p: bien, ver: 'bien', rotulo: 'Los mismos bloques sobre seis columnas', columnas: true },
+  ].map(({ p, ver, rotulo, columnas }) => (
+    <Anotada
+      veredicto={ver as 'mal' | 'bien'}
+      rotulo={rotulo}
+      notas={ver === 'mal'
+        ? [
+            { ...pct(W, 40), texto: 'El título, la imagen y los textos empiezan cada uno en un borde distinto. Donde podría haber un solo borde común hay cuatro.', zona: zona(16, 24, 30, 260) },
+            { ...pct(W, 240), texto: 'Las dos columnas de texto tienen casi el mismo ancho, pero no el mismo. Una diferencia tan pequeña suele leerse como descuido.', zona: zona(20, 216, 316, 50) },
+            { ...pct(W, 80), texto: 'El número no se apoya en nada: ni en el borde de la imagen ni en el del texto de abajo.', zona: zona(244, 66, 94, 40) },
+          ]
+        : [
+            { ...pct(W, 16), texto: 'Las franjas claras son las seis columnas. No se imprimen: sirven para decidir dónde va cada cosa.', zona: zona(M, 18, W - M * 2, 262) },
+            { ...pct(W, 120), texto: 'Título, imagen, pie y texto empiezan en el mismo borde izquierdo. Comparten una sola línea.', zona: zona(M - 3, 24, 6, 256) },
+            { ...pct(W, 240), texto: 'Cada texto ocupa tres columnas. Tienen el mismo ancho sin necesidad de medirlo.', zona: zona(M, 216, W - M * 2, 50) },
+            { ...pct(W, 80), texto: 'El número empieza en una columna y termina en el margen derecho, igual que el texto de abajo.', zona: zona(cx(4) - 3, 60, span(4, 6) + 6, 214) },
+          ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={ver === 'mal' ? 'Página con título, imagen, dato, pie y dos columnas de texto, cada bloque con bordes distintos.' : 'La misma página con los bloques sobre seis columnas dibujadas en un tono claro.'}>
+        <rect width={W} height={H} fill="#fff" />
+        {columnas && Array.from({ length: 6 }, (_, i) => <rect x={cx(i)} y="18" width={CW} height={H - 36} fill={COL} />)}
+        <rect x={p.titulo.x} y={p.titulo.y} width={p.titulo.w} height="20" fill={T} />
+        <rect x={p.imagen.x} y={p.imagen.y} width={p.imagen.w} height={p.imagen.h} fill="#4a4a4a" />
+        <circle cx={p.imagen.x + p.imagen.w * 0.65} cy={p.imagen.y + 46} r="22" fill="#fff" />
+        <text x={p.dato.x} y={p.dato.y + 32} font-family={SANS} font-weight="900" font-size="36" fill={T}>73%</text>
+        {lineas(p.dato.x, p.dato.y + 46, p.dato.w, 3).map((l) => <rect x={l.x} y={l.y} width={l.w} height="4" fill={G} />)}
+        {lineas(p.pie.x, p.pie.y, p.pie.w, 1).map((l) => <rect x={l.x} y={l.y} width={p.pie.w} height="3" fill={G} />)}
+        {lineas(p.texto1.x, p.texto1.y, p.texto1.w, 5).map((l) => <rect x={l.x} y={l.y} width={l.w} height="4" fill={G} />)}
+        {lineas(p.texto2.x, p.texto2.y, p.texto2.w, 5).map((l) => <rect x={l.x} y={l.y} width={l.w} height="4" fill={G} />)}
+      </svg>
+    </Anotada>
+  ))}
+</div>

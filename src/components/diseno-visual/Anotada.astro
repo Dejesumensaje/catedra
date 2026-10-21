@@ -1,0 +1,92 @@
+---
+// Una composición con marcas numeradas, al modo de un despiece: cada nota
+// señala dónde actúa el principio y lo dice en una frase. La pieza se dibuja
+// en SVG (slot) para que las marcas, en porcentaje, no se desplacen al
+// cambiar el ancho. Tocar una nota resalta su zona.
+export interface Nota {
+  /** Posición de la marca, en % del ancho y del alto de la pieza. */
+  x: number;
+  y: number;
+  /** Arranque en negrita, opcional. */
+  titulo?: string;
+  texto: string;
+  /** Zona que se resalta al elegir la nota, en %. */
+  zona?: { x: number; y: number; w: number; h: number };
+  /** Enlace para seguir desde la nota. */
+  href?: string;
+  enlace?: string;
+}
+
+interface Props {
+  notas: Nota[];
+  /** «bien» y «mal» se escriben además de verse. */
+  veredicto?: 'bien' | 'mal';
+  rotulo?: string;
+  /** Pieza y notas lado a lado en pantallas anchas. */
+  ancha?: boolean;
+}
+
+const { notas, veredicto, rotulo, ancha = false } = Astro.props;
+const marca = veredicto === 'bien' ? '✓' : veredicto === 'mal' ? '✗' : undefined;
+---
+
+<figure class:list={['dv-anotada', veredicto && `es-${veredicto}`, { 'dv-anotada-ancha': ancha }]} data-anotada>
+  {(rotulo || marca) && (
+    <p class="dv-anotada-veredicto">
+      {marca && <span class="marca" aria-hidden="true">{marca}</span>}
+      <span>{veredicto === 'mal' && <span class="sr-solo">No funciona: </span>}{veredicto === 'bien' && <span class="sr-solo">Funciona: </span>}{rotulo}</span>
+    </p>
+  )}
+  <div class="dv-anotada-pieza">
+    <slot />
+    {notas.map((n, i) => n.zona && (
+      <span
+        class="dv-zona"
+        data-zona={i}
+        aria-hidden="true"
+        style={`left:${n.zona.x}%;top:${n.zona.y}%;width:${n.zona.w}%;height:${n.zona.h}%`}
+      ></span>
+    ))}
+    {notas.map((n, i) => (
+      <span class="dv-pin" data-pin={i} aria-hidden="true" style={`left:${n.x}%;top:${n.y}%`}>{i + 1}</span>
+    ))}
+  </div>
+  <figcaption>
+    <ol class="dv-anotada-notas">
+      {notas.map((n, i) => (
+        <li>
+          <button type="button" data-nota={i} aria-pressed="false">
+            <span>
+              {n.titulo && <b>{n.titulo}. </b>}
+              {n.href && <b class="dv-nota-concepto">{n.enlace}</b>}
+              {n.texto}
+            </span>
+          </button>
+          {n.href && <a class="dv-nota-ir" href={n.href}>Entrar <span class="sr-solo">a {n.enlace}</span> <span aria-hidden="true">→</span></a>}
+        </li>
+      ))}
+    </ol>
+  </figcaption>
+</figure>
+
+<script>
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-anotada]')) {
+    const botones = [...fig.querySelectorAll<HTMLButtonElement>('[data-nota]')];
+    const activar = (i: number | null) => {
+      if (i === null) fig.removeAttribute('data-activa');
+      else fig.dataset.activa = String(i);
+      for (const b of botones) b.setAttribute('aria-pressed', String(Number(b.dataset.nota) === i));
+      for (const el of fig.querySelectorAll<HTMLElement>('[data-pin], [data-zona]')) {
+        const k = Number(el.dataset.pin ?? el.dataset.zona);
+        el.classList.toggle('es-activa', k === i);
+      }
+    };
+    for (const b of botones) {
+      const i = Number(b.dataset.nota);
+      b.addEventListener('click', () => activar(b.getAttribute('aria-pressed') === 'true' ? null : i));
+      b.addEventListener('mouseenter', () => activar(i));
+      b.addEventListener('focus', () => activar(i));
+    }
+    fig.addEventListener('mouseleave', () => activar(null));
+  }
+</script>

@@ -1,0 +1,49 @@
+---
+// Guía paso a paso de un instrumento. Cada paso pide una acción concreta y,
+// cuando quien aprende la logra, explica qué acaba de ver. Las condiciones
+// viven en el script de la experiencia (ver src/lib/diseno-visual/guia.ts);
+// aquí solo el texto, que también se lee sin JS.
+export interface PasoGuia {
+  /** Lo que hay que hacer, en imperativo y con el nombre exacto del control. */
+  hacer: string;
+  /** Lo que acaba de pasar y por qué importa. Se muestra al lograrlo. */
+  logro: string;
+  /** Ayuda si no sale. */
+  pista?: string;
+  /** Estado de partida del paso. */
+  preparar?: Record<string, number | string | boolean>;
+  /** El paso necesita los controles avanzados abiertos. */
+  abrir?: boolean;
+}
+
+interface Props {
+  pasos: PasoGuia[];
+}
+
+const { pasos } = Astro.props;
+---
+
+<div class="dv-guia" data-guia data-pasos={JSON.stringify(pasos)}>
+  <div class="dv-guia-cab">
+    <p class="dv-guia-titulo">Guía</p>
+    <p class="dv-guia-avance" data-guia-avance>{pasos.length} pasos</p>
+  </div>
+  <ol class="dv-guia-lista">
+    {pasos.map((p, i) => (
+      <li class="dv-guia-paso" data-guia-paso={i}>
+        <p class="dv-guia-hacer">{p.hacer}</p>
+        <p class="dv-guia-logro" hidden><span class="dv-guia-check" aria-hidden="true">✓</span> {p.logro}</p>
+        {p.pista && <p class="dv-guia-pista" hidden>Pista: {p.pista}</p>}
+      </li>
+    ))}
+  </ol>
+  <p class="dv-guia-final" data-guia-final hidden>
+    Terminaste la guía. Ahora puedes cambiar cualquier control y observar qué pasa.
+  </p>
+  <div class="dv-guia-acciones">
+    <button type="button" class="dv-boton dv-boton-fuerte" data-guia-sig hidden>Siguiente paso →</button>
+    <button type="button" class="dv-boton" data-guia-pista-btn hidden>Necesito una pista</button>
+    <button type="button" class="dv-boton dv-guia-saltar" data-guia-saltar hidden>Omitir la guía</button>
+  </div>
+  <p class="sr-solo" aria-live="polite" data-guia-anuncio></p>
+</div>

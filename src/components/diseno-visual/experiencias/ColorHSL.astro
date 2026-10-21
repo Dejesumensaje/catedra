@@ -1,0 +1,141 @@
+---
+// Control de un color: el selector nativo para elegir con el ojo y
+// deslizadores (tono, saturación, luminosidad) para el teclado y para mover
+// un solo eje a la vez. El estado vive en los deslizadores; el selector se
+// sincroniza con ellos y no entra en la URL.
+//
+// Un mismo color puede repartirse en dos controles: lo básico a la vista
+// (selector + luminosidad) y tono y saturación en «Más controles». Basta
+// usar el mismo `prefijo` con `canales` distintos; el selector busca sus
+// deslizadores en todo el instrumento.
+import { hslAHex } from '../../../lib/diseno-visual/contraste';
+
+interface Props {
+  lab: string;
+  prefijo: string;
+  etiqueta: string;
+  h: number;
+  s: number;
+  l: number;
+  /** Qué deslizadores mostrar: alguna combinación de «h», «s» y «l». */
+  canales?: string;
+  /** Mostrar el selector nativo y la cifra hexadecimal. */
+  selector?: boolean;
+}
+
+const { lab, prefijo, etiqueta, h, s, l, canales = 'hsl', selector = true } = Astro.props;
+const hex = hslAHex(h, s, l);
+const todos = [
+  { c: 'h', nombre: 'Tono', max: 360, valor: h, unidad: '°' },
+  { c: 's', nombre: 'Saturación', max: 100, valor: s, unidad: '%' },
+  { c: 'l', nombre: 'Luminosidad', max: 100, valor: l, unidad: '%' },
+];
+const visibles = todos.filter((k) => canales.includes(k.c));
+const fmt = (v: number, u: string) => (u === '°' ? `${v}°` : `${v} ${u}`);
+---
+
+<fieldset class="dv-control cc-color" data-color={selector ? prefijo : undefined}>
+  <legend>{etiqueta}</legend>
+  {selector && (
+    <div class="cc-muestra">
+      <input type="color" id={`${lab}-${prefijo}-selector`} value={hex} aria-label={`${etiqueta}: elegir en el selector de color`} />
+      <span class="cc-hex">{hex}</span>
+    </div>
+  )}
+  {visibles.map((k) => {
+    const id = `${lab}-${prefijo}${k.c}`;
+    return (
+      <div class="cc-canal">
+        <label for={id}>{k.nombre}</label>
+        <output for={id} data-salida={`${prefijo}${k.c}`}>{fmt(k.valor, k.unidad)}</output>
+        <input
+          type="range"
+          id={id}
+          min="0"
+          max={k.max}
+          step="1"
+          value={k.valor}
+          data-var={`${prefijo}${k.c}`}
+          data-etiqueta={`${etiqueta.split(':')[0]}, ${k.nombre.toLowerCase()}`}
+          data-unidad={k.unidad}
+          data-decimales="0"
+        />
+      </div>
+    );
+  })}
+</fieldset>
+
+<style>
+  .cc-color { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .cc-muestra {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.2rem;
+    clear: both;
+  }
+  .cc-muestra input[type='color'] {
+    width: 2.6rem;
+    height: 1.9rem;
+    padding: 0;
+    border: 1px solid var(--tinta);
+    background: var(--papel);
+    cursor: pointer;
+  }
+  .cc-muestra input[type='color']::-webkit-color-swatch-wrapper { padding: 2px; }
+  .cc-muestra input[type='color']::-webkit-color-swatch { border: 0; border-radius: 0; }
+  .cc-muestra input[type='color']::-moz-color-swatch { border: 0; border-radius: 0; }
+  .cc-hex {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--texto);
+    font-variant-numeric: tabular-nums;
+    text-transform: uppercase;
+  }
+  .cc-canal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 0.5rem;
+    clear: both;
+  }
+  .cc-canal label { font-size: 0.76rem; font-weight: 400; color: var(--texto); }
+  .cc-canal output { font-size: 0.76rem; }
+  .cc-canal input { grid-column: 1 / -1; height: 1.5rem; margin: 0; }
+</style>
+
+<script>
+  import { hexAHsl, hslAHex } from '../../../lib/diseno-visual/contraste';
+
+  for (const f of document.querySelectorAll<HTMLElement>('.cc-color[data-color]')) {
+    const pre = f.dataset.color!;
+    const lab = f.closest<HTMLElement>('[data-lab]');
+    if (!lab) continue;
+    const selector = f.querySelector<HTMLInputElement>('input[type="color"]')!;
+    const hex = f.querySelector<HTMLElement>('.cc-hex')!;
+    const canal = (c: string) => lab.querySelector<HTMLInputElement>(`input[data-var="${pre}${c}"]`);
+    const valor = (c: string, def: number) => Number(canal(c)?.value ?? def);
+    const [h0, s0, l0] = hexAHsl(selector.value);
+
+    const reflejar = () => {
+      const v = hslAHex(valor('h', h0), valor('s', s0), valor('l', l0));
+      selector.value = v;
+      hex.textContent = v;
+    };
+
+    // El selector escribe en los deslizadores antes de que el evento suba
+    // al instrumento, que lee el estado desde ellos.
+    selector.addEventListener('input', () => {
+      const [h, s, l] = hexAHsl(selector.value);
+      const poner = (c: string, v: number) => { const i = canal(c); if (i) i.value = String(v); };
+      poner('h', h);
+      poner('s', s);
+      poner('l', l);
+      hex.textContent = selector.value;
+    });
+    // Cualquier cambio del instrumento (deslizador, prueba, URL, guía) llega como `estado`.
+    lab.addEventListener('estado', reflejar);
+    reflejar();
+  }
+</script>

@@ -1,0 +1,198 @@
+---
+titulo: Retículas y alineación
+territorio: composicion
+pregunta: ¿Por qué una página con bloques distintos puede verse ordenada?
+resumen: Lo que comparte una línea tiende a verse ordenado. Aprende a ver las columnas invisibles de una página, a apoyar cada bloque en ellas y a salirte de ellas solo cuando tengas un motivo.
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 5
+relaciones:
+  - concepto: proximidad
+    porQue: El medianil y el margen son distancias. Una retícula fija de una vez cuánto espacio separa una columna de otra, y eso influye en qué se ve agrupado.
+  - concepto: escalas-tipograficas
+    porQue: La retícula decide dónde va cada texto. El tamaño y el grosor de la letra deciden cuál se lee primero. Las dos cosas juntas producen la jerarquía, es decir, el orden de importancia.
+  - concepto: sistemas-y-excepciones
+    porQue: Una retícula es un sistema de reglas para la página. Sacar un bloque de ella es una excepción, y se nota porque el resto de la página la respeta.
+  - concepto: proporcion
+    porQue: El número de columnas fija las proporciones posibles. Doce columnas se dividen en mitades, tercios y cuartos; cinco obligan a otras medidas.
+  - concepto: equilibrio
+    porQue: Una composición puede respetar toda la retícula y aun así quedar cargada hacia un lado. La retícula ordena posiciones; el reparto del peso visual es otra decisión.
+  - concepto: espacio-negativo
+    porQue: Las columnas vacías también son parte de la retícula. Dejar una sin ocupar es una decisión tan visible como llenarla.
+  - concepto: ruptura
+    porQue: Un bloque fuera de la retícula se lee como ruptura cuando el resto la respeta. Si no hay un orden claro, salirse casi no se nota.
+  - concepto: asimetria
+    porQue: Una retícula de columnas iguales permite composiciones asimétricas. El cartel del instrumento usa doce columnas iguales para repartir los bloques de forma desigual.
+fuentes:
+  - autor: Josef Müller-Brockmann
+    obra: "Rastersysteme für die visuelle Gestaltung / Grid systems in graphic design"
+    anio: 1981
+    nota: Libro dedicado a la retícula como método de trabajo para la página impresa.
+---
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ReticulaIdea from '../../components/diseno-visual/experiencias/ReticulaIdea.astro';
+import ReticulaMiralo from '../../components/diseno-visual/experiencias/ReticulaMiralo.astro';
+import Reticula from '../../components/diseno-visual/experiencias/Reticula.astro';
+import ReticulaErrores from '../../components/diseno-visual/experiencias/ReticulaErrores.astro';
+import ReticulaTabla from '../../components/diseno-visual/experiencias/ReticulaTabla.astro';
+import ReticulaEjemplos from '../../components/diseno-visual/experiencias/ReticulaEjemplos.astro';
+import ReticulaJuego from '../../components/diseno-visual/experiencias/ReticulaJuego.astro';
+
+<Paso id="idea">
+
+<ReticulaIdea />
+
+<p class="dv-frase">Lo que comparte una línea tiende a verse ordenado.</p>
+
+<div class="dv-texto">
+
+Las ventanas de los dos edificios son iguales. La diferencia es que en uno sus bordes caen sobre las mismas líneas. Esas líneas no están dibujadas, pero solemos percibirlas, y por eso ese edificio se ve más ordenado.
+
+En una página pasa lo mismo. Cuando el borde de un título, el de una foto y el de un párrafo caen en la misma línea vertical, se dice que están **alineados**. Para no buscar esas líneas bloque por bloque, se trazan antes de empezar. Ese trazado se llama **retícula**.
+
+Una retícula divide la página en **columnas**: franjas verticales del mismo ancho. Cada bloque empieza y termina en el borde de una columna. Así los bloques comparten líneas sin que tengas que medir cada uno.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Retícula</dt>
+    <dd>Un conjunto de columnas que no se imprimen y que dividen la página en franjas iguales. Los bloques se apoyan en ellas.</dd>
+    <dt>Medianil</dt>
+    <dd>El espacio que separa una columna de la siguiente.</dd>
+    <dt>Margen</dt>
+    <dd>El espacio entre el contenido y el borde de la página.</dd>
+    <dt>Alinear</dt>
+    <dd>Hacer que los bordes de varios elementos caigan en la misma línea.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" proposito="La misma página dos veces, con los mismos bloques y del mismo tamaño. En la primera, cada bloque está colocado sin medir; en la segunda, sobre seis columnas. Toca los números.">
+
+<ReticulaMiralo />
+
+<div class="dv-texto">
+
+En la primera página, ningún bloque está muy lejos de su lugar. Pero cada uno tiene su propio borde, así que el conjunto se ve desordenado.
+
+En la segunda, las franjas claras muestran las columnas. Los bloques solo empiezan y terminan en ellas, por eso comparten bordes. La página tiende a leerse como una sola pieza.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo">
+
+<Reticula />
+
+</Paso>
+
+<Paso id="usalo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Elige las columnas según lo que vas a poner</h3>
+      <p>Cuenta cuántas cosas van una al lado de otra. Si a veces son dos y a veces tres, doce columnas permiten ambas cosas: seis más seis, o cuatro más cuatro más cuatro. En un teléfono suelen bastar una o dos columnas.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Apoya cada bloque en una línea</h3>
+      <p>Haz que cada título, imagen y párrafo empiece en el borde de una columna. Revisa los bordes izquierdos de arriba abajo. Si uno no cae en ninguna línea, muévelo hasta que caiga.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Rompe solo una cosa, y a propósito</h3>
+      <p>Cuando todo sigue la retícula, un bloque que se sale llama la atención. Si sacas varios, no queda claro cuál importa. Y si el bloque se sale por muy poco, suele parecer un error.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Errores que se repiten
+
+Los tres primeros casos son fijos: cada nota explica qué pasa y cómo se corrige. La tabla del final empieza mal; corrígela con su control.
+
+</div>
+
+<ReticulaErrores />
+
+<ReticulaTabla />
+
+<div class="dv-texto">
+
+### En piezas reales
+
+La retícula cambia según el soporte: doce columnas en una pantalla ancha, tres en una revista, dos líneas de alineación en un teléfono. Toca los números.
+
+</div>
+
+<ReticulaEjemplos />
+
+</Paso>
+
+<Paso id="juega">
+
+<ReticulaJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="La relación que produce el efecto">
+
+Los seis bloques del cartel son distintos. Se leen como una sola página porque comparten bordes.
+
+Cuando dos bloques empiezan en la misma línea vertical, solemos percibir esa línea aunque no esté dibujada. Esa línea se llama **eje**. La lectura del instrumento cuenta los ejes que comparten los bloques. Cuantos más bloques se apoyan en los mismos ejes, más tiende el conjunto a leerse como una pieza.
+
+Una retícula crea esos ejes sin tener que decidir cada bloque por separado. Se decide una vez cuántas columnas hay, cuánto mide el medianil y cuánto el margen. Después, cada bloque se coloca en posiciones que ya están alineadas con las demás.
+
+</Seccion>
+
+<Seccion titulo="Una estructura para decidir">
+
+En el instrumento, elige «Todos iguales» en «Reparto de los bloques». Los seis bloques siguen la retícula, comparten más ejes que antes y se ven parecidos. La página está ordenada, pero ningún bloque destaca y no queda claro por dónde empezar a leer.
+
+La retícula decide dónde puede ir cada cosa. Qué es lo más importante lo deciden el tamaño, el contraste y el lugar que ocupa cada bloque. Ese orden de importancia se llama **jerarquía**.
+
+El número de columnas también es una decisión. Doce columnas se dividen en mitades, tercios, cuartos y sextos; por eso es una convención muy usada. Con cinco, los mismos bloques tienen que ajustarse a otras medidas y el cartel cambia de aspecto, aunque siga ordenado.
+
+</Seccion>
+
+<Seccion titulo="Desorden y ruptura">
+
+El desorden mueve cada bloque unos pocos píxeles, sin motivo. Ninguno se mueve mucho y aun así la página se ve descuidada, porque desaparecen los ejes compartidos.
+
+La ruptura saca un solo bloque: la imagen atraviesa el margen y llega hasta el borde de la página. Se mueve mucho más que con el desorden y, aun así, tiende a leerse como algo intencional.
+
+La diferencia está en el resto de la página. Una sola salida, en una página ordenada, se nota. Muchas salidas pequeñas se confunden con errores. Fija una de las dos versiones como A en el instrumento y compáralas.
+
+</Seccion>
+
+<Seccion titulo="Dónde más aparece">
+
+En una pantalla, la retícula cambia con el ancho: un diseño de doce columnas en un computador puede pasar a dos o a una columna en un teléfono. Los bloques cambian de lugar, pero conviene que se mantenga la relación entre ellos.
+
+En un periódico, las columnas de texto fijan el ancho de cada línea, y las fotos ocupan una, dos o tres columnas. En la señalización, el texto de cada panel suele alinearse a un mismo eje para que todos se lean como parte de un conjunto.
+
+</Seccion>
+
+<Seccion titulo="Lo que no explica">
+
+**No garantiza una buena composición.** Una página puede seguir la retícula al pie de la letra y no tener ningún punto de interés. La retícula ordena posiciones; la jerarquía y el ritmo se deciden aparte.
+
+**Solo mide bordes.** Que los bordes coincidan no garantiza que las formas se vean alineadas. Un círculo puesto en la misma línea que un cuadrado suele parecer más bajo. Por eso, en tipografía, las letras redondas sobrepasan un poco la línea de base. La alineación final se ajusta mirando.
+
+**No reparte el peso visual.** Todos los bloques pueden seguir la retícula y la página quedar cargada hacia un lado. El equilibrio se decide aparte.
+
+**No obliga a nada.** Josef Müller-Brockmann dedicó un libro a la retícula como método de trabajo, en 1981. El método ayuda a tomar decisiones coherentes. Decidir cuándo salirse de él sigue siendo tarea de quien diseña.
+
+</Seccion>
+
+</Paso>

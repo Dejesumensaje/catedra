@@ -1,0 +1,178 @@
+---
+titulo: Semejanza
+territorio: percepcion
+pregunta: ¿Por qué los elementos que se parecen se leen juntos, aunque estén lejos?
+resumen: Lo que se parece tiende a verse como un grupo. Aprende a reconocerlo, a compararlo con la distancia y a usarlo en enlaces, tablas y leyendas sin depender solo del color.
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 2
+relaciones:
+  - concepto: proximidad
+    porQue: Es la otra señal del instrumento y compite con la semejanza. En las composiciones reales casi siempre actúan las dos a la vez.
+  - concepto: region-comun
+    porQue: Un fondo compartido aplica la semejanza al espacio que rodea a los elementos, y no a los elementos mismos.
+  - concepto: interaccion-del-color
+    porQue: El color es el atributo de semejanza más usado y el que más depende del entorno. Dos grises iguales pueden verse distintos según lo que tengan al lado.
+  - concepto: accesibilidad-del-color
+    porQue: Un grupo marcado solo con el tono no existe para quien no distingue esos tonos. Conviene reforzarlo con claridad o forma.
+  - concepto: sistemas-y-excepciones
+    porQue: Un sistema visual define de antemano qué elementos se parecen. Una excepción es un elemento que deja de parecerse a los demás a propósito.
+  - concepto: enfasis
+    porQue: Lo que no se parece a nada de su entorno se destaca. El énfasis es la semejanza vista desde el elemento que la rompe.
+fuentes:
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: Describe la semejanza junto a la proximidad entre los factores de agrupamiento.
+  - autor: Johan Wagemans y otros
+    obra: "A century of Gestalt psychology in visual perception: I. Perceptual grouping and figure–ground organization. Psychological Bulletin, 138(6), 1172–1217"
+    anio: 2012
+    url: https://doi.org/10.1037/a0029333
+    nota: Revisa los estudios sobre cómo se combinan y compiten los principios de agrupamiento.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import SemejanzaIdea from '../../components/diseno-visual/experiencias/SemejanzaIdea.astro';
+import SemejanzaMiralo from '../../components/diseno-visual/experiencias/SemejanzaMiralo.astro';
+import Semejanza from '../../components/diseno-visual/experiencias/Semejanza.astro';
+import SemejanzaTono from '../../components/diseno-visual/experiencias/SemejanzaTono.astro';
+import SemejanzaAgenda from '../../components/diseno-visual/experiencias/SemejanzaAgenda.astro';
+import SemejanzaEjemplos from '../../components/diseno-visual/experiencias/SemejanzaEjemplos.astro';
+import SemejanzaJuego from '../../components/diseno-visual/experiencias/SemejanzaJuego.astro';
+
+<Paso id="idea">
+
+<SemejanzaIdea />
+
+<p class="dv-frase">Lo que se parece parece ir junto.</p>
+
+<div class="dv-texto">
+
+En la cancha, la distancia no ayudaba: los jugadores estaban mezclados. Aun así, probablemente viste dos equipos sin esfuerzo. Solemos agrupar lo que se parece, aunque esté lejos.
+
+En diseño, este efecto se llama **semejanza**. Si varios elementos comparten un rasgo (la misma forma, claridad, tamaño o color), quien mira tiende a leerlos como un mismo tipo de cosa. Si uno no comparte ese rasgo, se ve aparte.
+
+La semejanza suele actuar junto con la [proximidad](/diseno-visual/proximidad). A veces las dos indican lo mismo. Otras veces se contradicen, y entonces solemos ver la señal más fuerte.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Atributo</dt>
+    <dd>Un rasgo visual que varios elementos pueden compartir: forma, claridad, tamaño, orientación o tono.</dd>
+    <dt>Claridad</dt>
+    <dd>Qué tan claro u oscuro se ve algo, sin importar su tono.</dd>
+    <dt>Tono</dt>
+    <dd>Lo que nombramos al decir rojo, verde o azul.</dd>
+    <dt>Señal</dt>
+    <dd>Cualquier rasgo que le indica a quien mira qué va con qué. La distancia es una señal; la semejanza, otra.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" proposito="El mismo párrafo dos veces, con los mismos tres enlaces. Solo cambia en qué se parecen. Toca cada número para ver dónde actúa.">
+
+<SemejanzaMiralo />
+
+<div class="dv-texto">
+
+En el primer párrafo, cada enlace tiene un estilo distinto y una palabra en negrita se parece a uno de ellos. Quien lee no sabe qué se puede tocar.
+
+En el segundo, los enlaces comparten color y subrayado, y ningún otro texto los usa. Eso basta para reconocerlos como enlaces antes de leerlos.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo">
+
+<Semejanza />
+
+</Paso>
+
+<Paso id="usalo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Decide qué elementos son del mismo tipo</h3>
+      <p>Haz una lista de los tipos de elementos de tu composición: enlaces, botones, títulos, categorías. Los elementos del mismo tipo deben verse iguales.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Asigna un rasgo a cada tipo y no lo repitas en otro</h3>
+      <p>Si los enlaces van subrayados, ningún otro texto va subrayado. Un rasgo usado para dos tipos distintos confunde.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Marca lo importante con dos rasgos</h3>
+      <p>Si una diferencia importa, no la marques solo con color. Agrega forma o claridad. Para comprobarlo, mira tu composición en blanco y negro: si los tipos se siguen distinguiendo, funciona.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Dos errores frecuentes
+
+Cada caso empieza con el error. Corrígelo con su control.
+
+</div>
+
+<div class="dv-especimenes">
+  <SemejanzaAgenda />
+  <SemejanzaTono />
+</div>
+
+<div class="dv-texto">
+
+### En piezas reales
+
+El mismo recurso en tres piezas distintas. Toca los números para ver dónde actúa.
+
+</div>
+
+<SemejanzaEjemplos />
+
+</Paso>
+
+<Paso id="juega">
+
+<SemejanzaJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="La relación que produce el efecto">
+
+Los elementos que comparten un atributo tienden a verse como un grupo. Max Wertheimer describió la semejanza en el mismo artículo de 1923 en el que describió la proximidad.
+
+En el instrumento, la distancia y la semejanza pueden indicar cosas distintas. Si las filas cambian poco, suele dominar el espacio y se ven columnas. Si cambian mucho y el espacio entre columnas es pequeño, se ven filas. Entre esos extremos hay una zona en la que la imagen se puede leer de las dos maneras y la lectura alterna. El «Mapa de mezclas», en «Más controles», muestra esa zona completa.
+
+</Seccion>
+
+<Seccion titulo="Los atributos no pesan igual">
+
+Prueba el mapa con cada atributo. En esta composición, la claridad y la orientación se imponen con poco cambio. La forma necesita más cambio para competir con la distancia. El tamaño, además, modifica el espacio entre los elementos, así que mezcla dos señales.
+
+Esto vale para estos puntos. Con otros elementos, otros tamaños u otra distancia de lectura, el orden puede cambiar. La regla útil es más general: si dos señales se contradicen, el resultado depende de cuál pese más, y eso se comprueba mirando.
+
+</Seccion>
+
+<Seccion titulo="Lo que no explica">
+
+**No dice qué atributo usar.** Todos agrupan. La elección depende de lo que cada rasgo ya significa en ese contexto: si el rojo ya indica un error, usarlo para agrupar confunde.
+
+**No llega a todas las personas si depende solo del tono.** Si el rojo y el verde se ven igual de claros, quien distingue esos tonos ve filas; quien no los distingue ve una superficie uniforme. Lo mismo pasa al imprimir en blanco y negro.
+
+**Tiene un efecto inverso.** Lo que no se parece a nada de su entorno se destaca. Es el mismo principio aplicado al revés: el énfasis.
+
+</Seccion>
+
+</Paso>

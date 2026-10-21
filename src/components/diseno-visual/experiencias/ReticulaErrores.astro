@@ -1,0 +1,67 @@
+---
+// Paso 4 de retículas: tres errores que se repiten, cada uno con su arreglo
+// escrito en la nota.
+import Anotada from '../Anotada.astro';
+
+const W = 300;
+const H = 200;
+const T = '#222222';
+const G = '#9a9a9a';
+const pc = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zn = (x: number, y: number, w: number, h: number) => ({ x: (x / W) * 100, y: (y / H) * 100, w: (w / W) * 100, h: (h / H) * 100 });
+const barras = (x: number, y: number, w: number, n: number) =>
+  Array.from({ length: n }, (_, i) => ({ x, y: y + i * 11, w: i === n - 1 ? w * 0.6 : w }));
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    veredicto="mal"
+    rotulo="Casi alineado"
+    notas={[
+      { ...pc(W, 70), titulo: 'Qué pasa', texto: 'La imagen empieza cuatro píxeles a la derecha del título y del texto. La diferencia es tan pequeña que parece un error.', zona: zn(20, 22, 40, 160) },
+      { ...pc(W, 150), titulo: 'Cómo se arregla', texto: 'Alinéala exactamente, o muévela lo suficiente para que se vea intencional. Una diferencia mínima es lo que peor se ve.' },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Un texto y una imagen cuyos bordes izquierdos casi coinciden, con cuatro píxeles de diferencia.">
+      <rect width={W} height={H} fill="#fff" />
+      <rect x="30" y="24" width="200" height="16" fill={T} />
+      <rect x="34" y="54" width="180" height="80" fill="#4a4a4a" />
+      {barras(30, 148, 220, 3).map((b) => <rect x={b.x} y={b.y} width={b.w} height="4" fill={G} />)}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="mal"
+    rotulo="Una alineación distinta en cada bloque"
+    notas={[
+      { ...pc(W, 40), titulo: 'Qué pasa', texto: 'El título va centrado, el texto a la izquierda y el dato a la derecha. Ningún borde coincide con otro.', zona: zn(14, 16, 272, 170) },
+      { ...pc(W, 150), titulo: 'Cómo se arregla', texto: 'Elige una alineación para todo lo que va junto. Centrar solo funciona si todo lo demás también va centrado.' },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Un título centrado, un párrafo alineado a la izquierda y un dato alineado a la derecha.">
+      <rect width={W} height={H} fill="#fff" />
+      <rect x="70" y="24" width="160" height="16" fill={T} />
+      {barras(24, 62, 170, 5).map((b) => <rect x={b.x} y={b.y} width={b.w} height="4" fill={G} />)}
+      <text x="276" y="160" text-anchor="end" font-family="Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="30" fill={T}>48</text>
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="mal"
+    rotulo="Todo alineado, nada importante"
+    notas={[
+      { ...pc(W, 40), titulo: 'Qué pasa', texto: 'Seis bloques iguales y bien alineados. Ninguno indica por dónde empezar a leer.', zona: zn(16, 16, 268, 168) },
+      { ...pc(W, 150), titulo: 'Cómo se arregla', texto: 'La retícula ya ordenó las posiciones. Ahora dale a un bloque más columnas, más tamaño o más contraste.' },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seis rectángulos grises iguales en dos filas de tres, perfectamente alineados.">
+      <rect width={W} height={H} fill="#fff" />
+      {[0, 1].map((f) => [0, 1, 2].map((c) => (
+        <g>
+          <rect x={24 + c * 88} y={24 + f * 82} width="76" height="40" fill="#bdbdbd" />
+          {barras(24 + c * 88, 70 + f * 82, 76, 2).map((b) => <rect x={b.x} y={b.y} width={b.w} height="3" fill={G} />)}
+        </g>
+      )))}
+    </svg>
+  </Anotada>
+</div>

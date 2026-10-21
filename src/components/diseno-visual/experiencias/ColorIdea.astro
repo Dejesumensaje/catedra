@@ -1,0 +1,27 @@
+---
+// Paso 1 de interacción del color: una escena cotidiana antes que cualquier
+// término. Dos camisetas, una blanca y una negra, con el mismo parche gris.
+const camiseta = '-70,-80 -30,-96 -16,-86 16,-86 30,-96 70,-80 98,-38 68,-22 56,-44 56,92 -56,92 -56,-44 -68,-22 -98,-38';
+const PARCHE = '#808080';
+---
+
+<figure class="dv-pregunta-visual">
+  <div class="dv-pv-lienzo">
+    <svg viewBox="0 0 640 260" role="img" aria-label="Dos camisetas lado a lado, una blanca y una negra. Cada una tiene un parche gris cuadrado en el pecho.">
+      <rect width="640" height="260" fill="#e9e6df" />
+      <g transform="translate(200 130)">
+        <polygon points={camiseta} fill="#fbfbfb" stroke="#222" stroke-width="1.5" />
+        <rect x="-20" y="-30" width="40" height="40" fill={PARCHE} />
+      </g>
+      <g transform="translate(440 130)">
+        <polygon points={camiseta} fill="#1c1c1c" stroke="#222" stroke-width="1.5" />
+        <rect x="-20" y="-30" width="40" height="40" fill={PARCHE} />
+      </g>
+    </svg>
+  </div>
+  <p>Las dos camisetas llevan un parche gris en el pecho. ¿Cuál parche es más claro?</p>
+  <details>
+    <summary>Ver la respuesta</summary>
+    <p>Ninguno: los dos son exactamente el mismo gris. Sobre la camiseta negra tiende a parecer más claro; sobre la blanca, más oscuro. Percibimos cada color en comparación con lo que lo rodea.</p>
+  </details>
+</figure>

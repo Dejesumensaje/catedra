@@ -1,0 +1,188 @@
+---
+titulo: Proximidad
+territorio: percepcion
+pregunta: ¿Por qué algunos elementos parecen ir juntos y otros no, aunque sean idénticos?
+resumen: Lo que está cerca tiende a verse como un grupo. Aprende a reconocerlo, a ajustarlo con dos distancias y a usarlo en tarjetas, menús y formularios.
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 1
+relaciones:
+  - concepto: semejanza
+    porQue: Compite con la proximidad. Cuando la distancia indica un grupo y el color o la forma indican otro, solemos ver la señal más fuerte, que no siempre es la distancia.
+  - concepto: region-comun
+    porQue: Un marco o un fondo compartido agrupa elementos aunque estén lejos. Sirve cuando el espacio no basta para separar.
+  - concepto: escalas-tipograficas
+    porQue: El espacio encima y debajo de un título indica a qué texto pertenece. Parte de la jerarquía tipográfica depende de la proximidad.
+  - concepto: reticulas-y-alineacion
+    porQue: Los medianiles (el espacio entre columnas) y los márgenes fijan distancias para toda la página. Son decisiones de proximidad tomadas una sola vez.
+  - concepto: espacio-negativo
+    porQue: El espacio vacío entre grupos es lo que permite verlos como grupos.
+  - concepto: densidad-visual
+    porQue: Cuando todos los elementos están cerca entre sí, la distancia deja de distinguir grupos. Cuanta más densidad, menos sirve la proximidad.
+fuentes:
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: El artículo donde se describen los factores de agrupamiento, entre ellos la proximidad.
+  - autor: Stephen E. Palmer
+    obra: "Common region: A new principle of perceptual grouping. Cognitive Psychology, 24(3), 436–447"
+    anio: 1992
+    url: https://doi.org/10.1016/0010-0285(92)90014-S
+    nota: Propone la región común como principio de agrupamiento.
+  - autor: Johan Wagemans y otros
+    obra: "A century of Gestalt psychology in visual perception: I. Perceptual grouping and figure–ground organization. Psychological Bulletin, 138(6), 1172–1217"
+    anio: 2012
+    url: https://doi.org/10.1037/a0029333
+    nota: Revisión de lo que la investigación posterior confirmó, matizó o descartó.
+---
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ProximidadIdea from '../../components/diseno-visual/experiencias/ProximidadIdea.astro';
+import ProximidadMiralo from '../../components/diseno-visual/experiencias/ProximidadMiralo.astro';
+import Proximidad from '../../components/diseno-visual/experiencias/Proximidad.astro';
+import ProximidadAplicaciones from '../../components/diseno-visual/experiencias/ProximidadAplicaciones.astro';
+import ProximidadEjemplos from '../../components/diseno-visual/experiencias/ProximidadEjemplos.astro';
+import ProximidadJuego from '../../components/diseno-visual/experiencias/ProximidadJuego.astro';
+
+<Paso id="idea">
+
+<ProximidadIdea />
+
+<p class="dv-frase">Lo que está cerca parece ir junto.</p>
+
+<div class="dv-texto">
+
+Probablemente viste tres grupos en la fila sin pensarlo. Solemos juntar lo que está cerca y separar lo que está lejos. Ocurre antes de que decidas mirar con atención.
+
+En diseño, este efecto se llama **proximidad**. Es una de las herramientas más simples. Si acercas dos elementos, quien mira tiende a leerlos como un conjunto. Si los alejas, tiende a leerlos como cosas distintas. No hacen falta líneas, cajas ni colores: basta con el espacio.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Elemento</dt>
+    <dd>Cada cosa que se ve por separado: un punto, una palabra, una imagen.</dd>
+    <dt>Grupo</dt>
+    <dd>Varios elementos que se leen como una sola unidad.</dd>
+    <dt>Espacio dentro del grupo</dt>
+    <dd>La distancia entre los elementos de un mismo grupo. También se llama espacio interno.</dd>
+    <dt>Espacio entre grupos</dt>
+    <dd>La distancia que separa un grupo del siguiente. Para que los grupos se vean, tiene que ser claramente mayor que el espacio dentro del grupo.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" proposito="La misma tarjeta dos veces, con los mismos datos y el mismo tamaño de letra. Solo cambia el espacio entre renglones. Toca cada número para ver dónde actúa.">
+
+<ProximidadMiralo />
+
+<div class="dv-texto">
+
+En la primera tarjeta, todos los renglones tienen el mismo espacio debajo. Por eso se leen como cinco datos sueltos, sin relación entre ellos.
+
+En la segunda hay dos medidas de espacio: una pequeña dentro de cada bloque y una grande entre bloques. Eso basta para que se lean tres bloques: quién es, cómo contactarla y dónde está.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo">
+
+<Proximidad />
+
+</Paso>
+
+<Paso id="usalo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Decide qué va junto antes de mover nada</h3>
+      <p>Haz una lista de lo que vas a incluir y agrúpalo según la pregunta que responde: quién, cuándo, dónde, cuánto. Cada respuesta será un grupo.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Usa dos medidas de espacio</h3>
+      <p>Una pequeña dentro de cada grupo y otra claramente mayor entre grupos. Como punto de partida, prueba con el doble o el triple. Después ajusta mirando el resultado.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Comprueba con la vista desenfocada</h3>
+      <p>Entrecierra los ojos o aléjate de la pantalla. Si distingues los bloques sin leer el texto, la proximidad funciona. Si ves una mancha uniforme, falta diferencia entre los dos espacios.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+Cada caso empieza con el error. Corrígelo con su control.
+
+</div>
+
+<ProximidadAplicaciones />
+
+<div class="dv-texto">
+
+### En piezas reales
+
+El mismo recurso en tres piezas distintas. Toca los números para ver dónde actúa.
+
+</div>
+
+<ProximidadEjemplos />
+
+</Paso>
+
+<Paso id="juega">
+
+<ProximidadJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="La relación que produce el efecto">
+
+El efecto depende de una comparación: el espacio dentro de un grupo frente al espacio entre grupos. A esa comparación se le llama razón: cuántas veces es mayor un espacio que el otro. Si duplicas las dos distancias, la razón no cambia y los grupos se mantienen. Si las igualas, los grupos desaparecen, aunque ninguna de las dos sea pequeña.
+
+Max Wertheimer describió la proximidad en 1923 como uno de los factores con los que la percepción agrupa lo que vemos.
+
+</Seccion>
+
+<Seccion titulo="No hay un número fijo">
+
+El «doble o triple» de la receta es solo un punto de partida; no proviene de una medición. Los rangos que nombra la lectura del instrumento (sin grupos, zona dudosa, grupos claros) describen esa composición en particular.
+
+El punto en que un grupo deja de verse depende también de otros factores. En «Más controles», sube «Tamaño de cada elemento» sin tocar las distancias. Con elementos grandes, 10 px de espacio parecen poco; con elementos pequeños, la misma distancia los separa. Prueba también la opción «En bloque»: un grupo compacto tiende a mantenerse unido con menos espacio alrededor que una fila larga.
+
+Por eso la proximidad se ajusta mirando. La razón entre los dos espacios te indica qué observar.
+
+</Seccion>
+
+<Seccion titulo="Fuera de la pantalla">
+
+En un periódico, el pie de foto va junto a su imagen y lejos de la columna vecina. En una señal de aeropuerto, la flecha va junto al destino que indica. En una tabla, el espacio entre columnas influye en si leemos por filas o por columnas.
+
+En todos los casos, alguien decidió dos distancias y la diferencia entre ellas.
+
+</Seccion>
+
+<Seccion titulo="Lo que no explica">
+
+**No actúa sola.** En el instrumento, «Encerrar los vecinos de grupos distintos» y «Dar otro relleno a los vecinos de grupos distintos» reúnen puntos que la distancia separa, y a menudo se imponen. Stephen Palmer propuso en 1992 la región común (un marco o un fondo compartido) como otro principio de agrupamiento.
+
+**No explica qué significa el grupo.** La distancia indica que unos elementos van juntos, pero no por qué. Eso lo explican el título, el orden y el contenido.
+
+**No llega a todas las personas.** Quien usa un lector de pantalla no percibe el espacio. Si un grupo solo existe como espacio, esa persona no lo recibe. La estructura también debe estar en el código: una lista, un encabezado o un grupo de campos de formulario (`fieldset`).
+
+**Puede usarse para crear ambigüedad.** Si los dos espacios son casi iguales, no queda claro qué va con qué. A veces es un error. Otras veces es intencional: un cartel puede buscar que el lector dude.
+
+</Seccion>
+
+</Paso>

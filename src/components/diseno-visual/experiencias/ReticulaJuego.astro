@@ -1,0 +1,209 @@
+---
+// Paso 5 de retículas: cinco rondas con azar. Ver un bloque fuera de la
+// retícula, elegir la composición alineada, alinear una imagen a mano,
+// reconocer una ruptura con intención y ver qué no resuelve la retícula.
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="reticulas-y-alineacion"
+  rondas={5}
+  descripcion="Cinco rondas: encontrar el bloque que se salió de la retícula, elegir la página alineada, alinear una imagen, reconocer una ruptura intencional y ver qué no resuelve una retícula."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { svg, azar as semilla } from '../../../lib/diseno-visual/estado';
+
+  const T = '#222222';
+  const G = '#9a9a9a';
+  const OSC = '#4a4a4a';
+  const COL = '#f1e4e2';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const LETRAS = 'ABCD';
+  const azar = Math.random;
+  const entre = (a: number, b: number) => a + Math.floor(azar() * (b - a + 1));
+
+  // Página de referencia: 6 columnas.
+  const W = 360;
+  const M = 24;
+  const GUT = 12;
+  const CW = (W - M * 2 - GUT * 5) / 6;
+  const cx = (i: number) => M + i * (CW + GUT);
+  const span = (a: number, b: number) => cx(b - 1) + CW - cx(a);
+
+  const lienzo = (w: number, h: number) => svg('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h });
+  const rect = (c: SVGSVGElement, x: number, y: number, w: number, h: number, fill: string) =>
+    c.append(svg('rect', { x, y, width: w, height: h, fill }));
+  const barras = (c: SVGSVGElement, x: number, y: number, w: number, n: number) => {
+    for (let i = 0; i < n; i++) rect(c, x, y + i * 10, i === n - 1 ? w * 0.6 : w, 4, G);
+  };
+  const columnas = (c: SVGSVGElement, h: number) => {
+    for (let i = 0; i < 6; i++) rect(c, cx(i), 10, CW, h - 20, COL);
+  };
+
+  // Una página de cuatro bloques. `corrida` desplaza bordes; `sale` lleva la
+  // imagen al borde de la página; `salidas` saca además otros bloques.
+  function pagina(c: SVGSVGElement, op: { corrida?: number; sale?: boolean; salidas?: boolean; semilla?: number } = {}) {
+    const r = semilla(op.semilla ?? 3);
+    const d = () => (op.corrida ? (r() * 2 - 1) * op.corrida : 0);
+    const titulo = { x: cx(0) + d(), w: span(0, 5) + d() };
+    let img = { x: cx(0) + d(), w: span(0, 4) + d() };
+    const t1 = { x: cx(0) + d(), w: span(0, 3) + d() };
+    const t2 = { x: cx(3) + d(), w: span(3, 6) + d() };
+    if (op.sale) img = { x: 0, w: span(0, 4) + M };
+    if (op.salidas) { titulo.x = 0; titulo.w += M; t2.w = W - t2.x; t1.w += t1.x; t1.x = 0; }
+    rect(c, titulo.x, 22, titulo.w, 16, T);
+    rect(c, img.x, 52, img.w, 96, OSC);
+    c.append(svg('circle', { cx: img.x + img.w * 0.62, cy: 92, r: 18, fill: '#fff' }));
+    barras(c, t1.x, 164, t1.w, 4);
+    barras(c, t2.x, 164, t2.w, 4);
+  }
+
+  // ── 1. ver ───────────────────────────────────────
+  function ver(): Ronda {
+    const bloques = [
+      { c0: 0, c1: 4, y: 20, h: 26 },
+      { c0: 0, c1: 3, y: 58, h: 76 },
+      { c0: 3, c1: 6, y: 58, h: 76 },
+      { c0: 0, c1: 6, y: 146, h: 30 },
+    ];
+    const k = entre(0, 3);
+    const corrimiento = entre(13, 19) * (k === 2 ? -1 : 1);
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(W, 196);
+      columnas(c, 196);
+      bloques.forEach((b, i) => {
+        const x = cx(b.c0) + (i === k ? corrimiento : 0);
+        rect(c, x, b.y, span(b.c0, b.c1), b.h, OSC);
+        const t = svg('text', { x: x + 8, y: b.y + 19, 'font-family': SANS, 'font-weight': 900, 'font-size': 15, fill: '#fff' });
+        t.textContent = LETRAS[i];
+        c.append(t);
+      });
+      el.append(c);
+    };
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué bloque se salió de la retícula?',
+      ayuda: 'Las franjas de fondo son las columnas. Mira dónde empieza cada bloque.',
+      escena: pinta,
+      escenaDescrita: 'Cuatro bloques con letras sobre seis columnas; uno de ellos empieza a mitad de una columna.',
+      opciones: bloques.map((_, i) => ({ texto: `El bloque ${LETRAS[i]}` })),
+      correcta: k,
+      porque: `El bloque ${LETRAS[k]} empieza a mitad de una columna: su borde no cae en ninguna línea de la retícula. Los otros tres empiezan y terminan en bordes de columna, aunque tengan anchos distintos.`,
+      repaso: 'Ver la retícula',
+    };
+  }
+
+  // ── 2. decidir ───────────────────────────────────
+  function decidir(): Ronda {
+    const variantes = barajar([
+      { corrida: 0, bien: true },
+      { corrida: entre(5, 8), bien: false, semilla: entre(1, 50) },
+      { corrida: entre(5, 8), bien: false, semilla: entre(51, 99) },
+    ]);
+    const correcta = variantes.findIndex((v) => v.bien);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas páginas está alineada?',
+      ayuda: 'No hay columnas dibujadas. Compara los bordes izquierdos.',
+      opciones: variantes.map((v) => ({
+        pintar: (el) => { const c = lienzo(W, 214); pagina(c, { corrida: v.corrida, semilla: v.semilla }); el.append(c); },
+        describir: v.bien ? 'todos los bordes coinciden' : 'los bordes están desplazados unos píxeles',
+      })),
+      correcta,
+      porque: `En la ${LETRAS[correcta]} el título, la imagen y el primer texto empiezan en la misma línea, y las dos columnas de texto miden lo mismo. En las otras, los bordes están desplazados unos pocos píxeles. Es poco, pero suele notarse.`,
+      repaso: 'Reconocer bordes compartidos',
+    };
+  }
+
+  // ── 3. hacer ─────────────────────────────────────
+  function hacer(): Ronda {
+    const objetivo = M;
+    const inicio = barajar([entre(2, 14), entre(36, 54)])[0];
+    return {
+      tipo: 'ajuste',
+      pregunta: 'La imagen no está alineada con el texto. Muévela hasta que su borde izquierdo coincida con el del texto.',
+      ayuda: 'Ajusta con las flechas del teclado o moviendo el control despacio. Luego toca «Comprobar».',
+      control: { etiqueta: 'Posición de la imagen', min: 0, max: 60, valor: inicio },
+      pintar: (el, v) => {
+        el.replaceChildren();
+        const c = lienzo(W, 210);
+        rect(c, objetivo, 20, span(0, 5), 16, T);
+        rect(c, v, 50, span(0, 4), 92, OSC);
+        c.append(svg('circle', { cx: v + span(0, 4) * 0.62, cy: 88, r: 18, fill: '#fff' }));
+        barras(c, objetivo, 160, span(0, 6), 4);
+        el.append(c);
+      },
+      cumple: (v) => Math.abs(v - objetivo) <= 1,
+      falta: (v) => v < objetivo
+        ? `Te pasaste: la imagen sobresale ${objetivo - v} px a la izquierda del texto.`
+        : `Todavía le faltan ${v - objetivo} px para llegar al borde del texto.`,
+      porque: 'Cuando el borde de la imagen coincide con el del texto, los dos comparten una línea que se puede seguir de arriba abajo. Una diferencia de dos o tres píxeles suele leerse como descuido.',
+      repaso: 'Alinear a una línea',
+    };
+  }
+
+  // ── 4. ruptura ───────────────────────────────────
+  function ruptura(): Ronda {
+    const variantes = barajar([
+      { tipo: 'decidida', texto: 'el resto alineado y solo la imagen sale al borde' },
+      { tipo: 'desorden', texto: 'todo desplazado y la imagen sale al borde' },
+      { tipo: 'muchas', texto: 'la imagen, el título y los dos textos se salen' },
+    ] as const);
+    const correcta = variantes.findIndex((v) => v.tipo === 'decidida');
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En las tres, la imagen se sale del margen. ¿En cuál parece intencional?',
+      ayuda: 'La línea punteada es el margen.',
+      opciones: variantes.map((v) => ({
+        pintar: (el) => {
+          const c = lienzo(W, 214);
+          rect(c, 0, 0, W, 214, '#fff');
+          // El margen, punteado: lo que la imagen atraviesa.
+          c.append(svg('rect', { x: M, y: 10, width: W - M * 2, height: 194, fill: 'none', stroke: '#b3261e', 'stroke-width': 1, 'stroke-dasharray': '4 3' }));
+          pagina(c, { sale: true, corrida: v.tipo === 'desorden' ? 18 : 0, salidas: v.tipo === 'muchas', semilla: 21 });
+          el.append(c);
+        },
+        describir: v.texto,
+      })),
+      correcta,
+      porque: 'Una salida tiende a leerse como intencional cuando todo lo demás respeta la retícula: el contraste con el resto la hace visible. Si toda la página está desplazada, o si varios bloques se salen, la imagen se confunde con los errores.',
+      repaso: 'Romper a propósito',
+    };
+  }
+
+  // ── 5. límite ────────────────────────────────────
+  function limite(): Ronda {
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(W, 210);
+      columnas(c, 210);
+      for (let f = 0; f < 2; f++) {
+        for (let k = 0; k < 3; k++) {
+          rect(c, cx(k * 2), 22 + f * 94, span(k * 2, k * 2 + 2), 44, '#bdbdbd');
+          barras(c, cx(k * 2), 74 + f * 94, span(k * 2, k * 2 + 2), 2);
+        }
+      }
+      el.append(c);
+    };
+    const opciones = barajar([
+      { t: 'Jerarquía: un bloque más grande o más destacado por donde empezar a leer', bien: true },
+      { t: 'Más columnas', bien: false },
+      { t: 'Alinear mejor los bloques', bien: false },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Esta página cumple la retícula al pie de la letra. ¿Qué le falta?',
+      escena: pinta,
+      escenaDescrita: 'Seis bloques grises iguales en dos filas de tres, cada uno sobre dos columnas.',
+      opciones: opciones.map((o) => ({ texto: o.t })),
+      correcta: opciones.findIndex((o) => o.bien),
+      porque: 'La página ya está ordenada: todos los bordes caen en columnas, así que alinear mejor o sumar columnas no cambia nada. Lo que falta es jerarquía, es decir, un orden de importancia. Se decide con el tamaño, el contraste y cuántas columnas ocupa cada bloque.',
+      repaso: 'Lo que la retícula no resuelve',
+    };
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-juego="reticulas-y-alineacion"]')) {
+    jugar(raiz, () => [ver(), decidir(), hacer(), ruptura(), limite()]);
+  }
+</script>

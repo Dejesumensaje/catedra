@@ -1,0 +1,48 @@
+---
+// Puerta de entrada del índice: un cartel cualquiera, despiezado. Cada marca
+// señala un concepto actuando y lleva a su entrada. Es la premisa de la
+// sección hecha objeto: lo que se ve sale de relaciones entre elementos.
+import Anotada from './Anotada.astro';
+import { rutaConcepto } from '../../lib/diseno-visual/relaciones';
+
+const W = 420;
+const H = 560;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const FONDO = '#1d2b45';
+const CLARO = '#f3efe6';
+const CORAL = '#ff7a59';
+const p = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const z = (x: number, y: number, w: number, h: number) => ({ x: (x / W) * 100, y: (y / H) * 100, w: (w / W) * 100, h: (h / H) * 100 });
+const lista = ['Niebla Norte', 'Los Cardúmenes', 'Ruido Blanco', 'Tarde de Agosto', 'Pájaro Sal'];
+---
+
+<Anotada
+  ancha
+  notas={[
+    { ...p(420, 252), texto: 'Las fechas y el lugar van muy juntos y lejos del resto. Se leen como un solo dato: cuándo y dónde.', zona: z(26, 222, 270, 84), href: rutaConcepto('proximidad'), enlace: 'Proximidad' },
+    { ...p(420, 460), texto: 'Los cinco nombres comparten letra, tamaño y color. Por eso se leen como una misma lista.', zona: z(26, 404, 250, 128), href: rutaConcepto('semejanza'), enlace: 'Semejanza' },
+    { ...p(420, 140), texto: 'El título es varias veces más grande que el resto del texto. Esa diferencia de tamaños hace que se lea primero.', zona: z(26, 74, 368, 124), href: rutaConcepto('escalas-tipograficas'), enlace: 'Escalas tipográficas' },
+    { ...p(420, 30), texto: 'El texto claro sobre azul oscuro tiene mucho contraste y se lee de lejos. El coral destaca lo importante porque es el único color cálido.', zona: z(0, 0, 420, 560), href: rutaConcepto('interaccion-del-color'), enlace: 'Interacción del color' },
+    { ...p(36, 548), texto: 'Todos los textos empiezan en el mismo borde izquierdo. Esa línea invisible da orden al cartel.', zona: z(32, 30, 8, 520), href: rutaConcepto('reticulas-y-alineacion'), enlace: 'Retículas y alineación' },
+    { ...p(420, 384), texto: 'Un solo nombre no sigue la regla de la lista: es más grande y va sobre coral. Como es el único, se lee como el principal.', zona: z(26, 360, 200, 40), href: rutaConcepto('sistemas-y-excepciones'), enlace: 'Sistemas y excepciones' },
+  ]}
+>
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel de un festival de música: título grande, fechas y lugar, y la lista de grupos con un grupo principal destacado.">
+    <rect width={W} height={H} fill={FONDO} />
+    <circle cx="346" cy="320" r="34" fill="none" stroke={CORAL} stroke-width="10" />
+    <text x="36" y="58" font-family={SANS} font-weight="700" font-size="11" letter-spacing="2.4" fill={CLARO}>FESTIVAL DE MÚSICA INDEPENDIENTE</text>
+    <text font-family={SANS} font-weight="900" font-size="66" letter-spacing="-2.5" fill={CLARO}>
+      <tspan x="32" y="130">SONIDOS</tspan>
+      <tspan x="32" y="188">DEL VALLE</tspan>
+    </text>
+    <text x="36" y="250" font-family={SANS} font-weight="900" font-size="30" fill={CORAL}>8 · 9 · 10 de marzo</text>
+    <text x="36" y="274" font-family={SANS} font-size="15" fill={CLARO}>Teatro al aire libre, Medellín</text>
+    <text x="36" y="294" font-family={SANS} font-size="15" fill={CLARO}>Desde las 4:00 p. m.</text>
+    <text x="36" y="346" font-family={SANS} font-weight="700" font-size="11" letter-spacing="2.4" fill={CORAL}>EN EL ESCENARIO</text>
+    <rect x="32" y="364" width="160" height="34" fill={CORAL} />
+    <text x="40" y="390" font-family={SANS} font-weight="900" font-size="24" fill={FONDO}>LA MAREA</text>
+    {lista.map((t, i) => (
+      <text x="36" y={428 + i * 24} font-family={SANS} font-weight="500" font-size="17" fill={CLARO}>{t}</text>
+    ))}
+  </svg>
+</Anotada>

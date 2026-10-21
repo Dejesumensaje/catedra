@@ -1,0 +1,41 @@
+---
+// Elección entre pocas opciones: un grupo de radios nativo dentro de un
+// fieldset. Las flechas mueven la selección; Tab entra y sale del grupo.
+interface Opcion {
+  valor: string;
+  texto: string;
+}
+
+interface Props {
+  lab: string;
+  variable: string;
+  etiqueta: string;
+  opciones: Opcion[];
+  valor: string;
+  ayuda?: string;
+}
+
+const { lab, variable, etiqueta, opciones, valor, ayuda } = Astro.props;
+const nombre = `${lab}-${variable}`;
+---
+
+<fieldset class="dv-control dv-opciones" aria-describedby={ayuda ? `${nombre}-ayuda` : undefined}>
+  <legend>{etiqueta}</legend>
+  <div class="dv-opciones-fila">
+    {opciones.map((o) => (
+      <label class="dv-opcion">
+        <input
+          type="radio"
+          name={nombre}
+          value={o.valor}
+          checked={o.valor === valor}
+          data-var={variable}
+          data-etiqueta={etiqueta}
+          data-texto={o.texto}
+        />
+        <span>{o.texto}</span>
+      </label>
+    ))}
+  </div>
+  {ayuda && <p class="dv-ayuda" id={`${nombre}-ayuda`}>{ayuda}</p>}
+</fieldset>

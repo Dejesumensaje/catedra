@@ -1,0 +1,108 @@
+---
+// Paso 4 de sistemas: tres piezas reales donde un sistema y una sola
+// excepción hacen el trabajo. Movimientos de una cuenta, botones de un pago
+// y un calendario.
+import Anotada from '../Anotada.astro';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+
+// ── movimientos ────────────────────────────────
+const MW = 320; const MH = 300;
+const mp = (x: number, y: number) => ({ x: (x / MW) * 100, y: (y / MH) * 100 });
+const mz = (y: number, h: number) => ({ x: 4, y: (y / MH) * 100, w: 92, h: (h / MH) * 100 });
+const movimientos = [
+  ['21 oct', 'Supermercado del barrio', '−$86.400', false],
+  ['20 oct', 'Transferencia recibida', '+$350.000', false],
+  ['19 oct', 'Pago de internet', '−$95.000', true],
+  ['18 oct', 'Farmacia', '−$23.900', false],
+  ['17 oct', 'Librería', '−$41.000', false],
+] as const;
+
+// ── botones ────────────────────────────────────
+const BW = 320; const BH = 190;
+const bp = (x: number, y: number) => ({ x: (x / BW) * 100, y: (y / BH) * 100 });
+
+// ── calendario ─────────────────────────────────
+const CW = 320; const CH = 280;
+const cp = (x: number, y: number) => ({ x: (x / CW) * 100, y: (y / CH) * 100 });
+const HOY = 21;
+const dias = Array.from({ length: 31 }, (_, i) => i + 1);
+const desfase = 2; // el mes empieza en miércoles
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    rotulo="Los movimientos de una cuenta"
+    notas={[
+      { ...mp(320, 66), texto: 'Cada fila sigue las mismas reglas: fecha pequeña y gris, concepto, valor a la derecha. Por eso se leen con facilidad.', zona: mz(44, 44) },
+      { ...mp(320, 158), texto: 'Una sola fila rompe la regla: valor en rojo, tachado y la palabra «Rechazado». Es lo primero que conviene ver.', zona: mz(136, 52) },
+      { ...mp(320, 278), texto: 'Si cada gasto tuviera su color, el pago rechazado se perdería entre ellos.', zona: mz(44, 240) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${MW} ${MH}`} role="img" aria-label="Lista de cinco movimientos bancarios; uno, el pago de internet, aparece rechazado.">
+      <text x="20" y="28" font-family={SANS} font-weight="900" font-size="16" fill={T}>Movimientos</text>
+      {movimientos.map(([f, c, v, rechazado], i) => {
+        const y = 60 + i * (rechazado ? 46 : 46) + (i > 2 ? 12 : 0);
+        return (
+          <g>
+            <text x="20" y={y} font-family={SANS} font-size="10" fill={G}>{f}</text>
+            <text x="20" y={y + 16} font-family={SANS} font-size="14" fill={T}>{c}</text>
+            <text x="300" y={y + 16} text-anchor="end" font-family={SANS} font-weight="700" font-size="14" fill={rechazado ? ROJO : T} text-decoration={rechazado ? 'line-through' : undefined}>{v}</text>
+            {rechazado && <text x="20" y={y + 33} font-family={SANS} font-weight="700" font-size="10" letter-spacing="1" fill={ROJO}>✗ RECHAZADO</text>}
+            <line x1="20" y1={y + (rechazado ? 42 : 28)} x2="300" y2={y + (rechazado ? 42 : 28)} stroke="#e5e5e5" />
+          </g>
+        );
+      })}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Los botones de un pago"
+    notas={[
+      { ...bp(0, 134), texto: 'Los dos botones secundarios comparten la regla: borde fino y fondo blanco.', zona: { x: 4, y: (114 / BH) * 100, w: 56, h: (40 / BH) * 100 } },
+      { ...bp(320, 134), texto: 'Solo uno va relleno: la acción principal. Si los tres fueran iguales, habría que leerlos todos para decidir.', zona: { x: 61, y: (114 / BH) * 100, w: 35, h: (40 / BH) * 100 } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${BW} ${BH}`} role="img" aria-label="Final de un formulario de pago con tres botones: Cancelar y Guardar con borde, y Pagar relleno de negro.">
+      <text x="20" y="34" font-family={SANS} font-size="12" fill={G}>Total a pagar</text>
+      <text x="20" y="62" font-family={SANS} font-weight="900" font-size="24" fill={T}>$42.000</text>
+      <line x1="20" y1="92" x2="300" y2="92" stroke="#e5e5e5" />
+      <rect x="20.5" y="118.5" width="78" height="32" fill="#fff" stroke={T} />
+      <text x="59.5" y="139" text-anchor="middle" font-family={SANS} font-size="12" fill={T}>Cancelar</text>
+      <rect x="106.5" y="118.5" width="82" height="32" fill="#fff" stroke={T} />
+      <text x="147.5" y="139" text-anchor="middle" font-family={SANS} font-size="12" fill={T}>Guardar</text>
+      <rect x="196" y="118" width="104" height="33" fill={T} />
+      <text x="248" y="139" text-anchor="middle" font-family={SANS} font-weight="700" font-size="12" fill="#fff">Pagar</text>
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Un calendario"
+    notas={[
+      { ...cp(320, 110), texto: 'Todos los días tienen el mismo tamaño, la misma letra y su lugar en la cuadrícula. Esa es la regla.', zona: { x: 4, y: (60 / CH) * 100, w: 92, h: (200 / CH) * 100 } },
+      { ...cp(320, 188), texto: 'Hoy rompe la regla: fondo negro y número blanco. Suele ser lo primero que busca quien abre un calendario.', zona: { x: (58 / CW) * 100, y: (170 / CH) * 100, w: (42 / CW) * 100, h: (36 / CH) * 100 } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${CW} ${CH}`} role="img" aria-label="Calendario de octubre; el día 21 aparece destacado con fondo negro.">
+      <text x="20" y="30" font-family={SANS} font-weight="900" font-size="16" fill={T}>Octubre</text>
+      {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
+        <text x={38 + i * 41} y="56" text-anchor="middle" font-family={SANS} font-weight="700" font-size="10" fill={G}>{d}</text>
+      ))}
+      {dias.map((d) => {
+        const k = d - 1 + desfase;
+        const x = 38 + (k % 7) * 41;
+        const y = 84 + Math.floor(k / 7) * 36;
+        const hoy = d === HOY;
+        return (
+          <g>
+            {hoy && <rect x={x - 17} y={y - 18} width="34" height="28" fill={T} />}
+            <text x={x} y={y} text-anchor="middle" font-family={SANS} font-weight={hoy ? 900 : 400} font-size="13" fill={hoy ? '#fff' : T}>{d}</text>
+          </g>
+        );
+      })}
+    </svg>
+  </Anotada>
+</div>

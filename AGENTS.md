@@ -50,33 +50,6 @@ todo el curso sin abrir un solo deck.
 
 ## 3. Estructura
 
-```
-.
-├── AGENTS.md               ← este archivo
-├── CLAUDE.md               ← puntero a este archivo
-├── .claude/
-│   ├── commands/           ← comandos del flujo semanal
-│   └── agents/             ← subagentes del repo (revisor-de-textos)
-├── skills/
-│   └── pensamiento-sensorial-slides/   ← estilo de las presentaciones
-├── src/
-│   ├── content.config.ts   ← schema
-│   ├── content/
-│   │   ├── cursos/         ← un .mdx por curso
-│   │   ├── sesiones/       ← un .mdx por sesión: {curso-slug}-sNN.mdx
-│   │   ├── referentes/     ← un .mdx por referente
-│   │   └── tensiones/      ← un .mdx por tensión (específicas de cada curso)
-│   ├── layouts/
-│   ├── components/
-│   ├── styles/
-│   └── pages/
-├── public/
-│   └── presentaciones/
-│       └── ps3/s01/index.html   ← decks standalone, se abren solos para proyectar
-└── outlines/
-    └── ps3-s01.outline.md       ← paso intermedio del deck (ver §5)
-```
-
 ### Rutas
 
 ```
@@ -87,7 +60,31 @@ todo el curso sin abrir un solo deck.
 /pensamiento-sensorial/referentes
 /politica-de-uso               consentimiento y créditos
 /licencia                      CC BY-NC-ND 4.0 para el material; código con derechos reservados
+/diseno-visual                 enciclopedia de diseño visual: índice de territorios
+/diseno-visual/proximidad      una entrada por concepto
 ```
+
+### /diseno-visual
+
+Publicación independiente de los cursos: una enciclopedia hecha de instrumentos
+manipulables. No es material de una sesión y no sigue el flujo semanal.
+
+- **Contenido:** `src/content/conceptos/<slug>.mdx` (schema `conceptos`). El `.mdx`
+  importa sus propias experiencias y las intercala con el texto: no hay plantilla única.
+- **Territorios y conceptos previstos:** `src/data/diseno-visual/territorios.ts`. El
+  índice enlaza lo que tiene `.mdx` y lista el resto como «sin entrada».
+- **Relaciones:** en el frontmatter, cada una con `porQue` obligatorio. Pueden apuntar
+  a un concepto previsto sin entrada; el build falla si el slug no existe en ninguna parte.
+- **Instrumentos:** `src/components/diseno-visual/experiencias/`, sobre el marco
+  `controles/Instrumento.astro` y `src/lib/diseno-visual/estado.ts` (controles nativos,
+  lectura en vivo, comparación A/B, estado en la URL).
+- **JS de cliente:** aquí sí lo exige la pieza: los instrumentos son el contenido. TS
+  vanilla en `<script>` de cada componente, sin dependencias.
+- **Añadir un concepto:** escribir el `.mdx` y su experiencia. Si el slug no estaba
+  previsto, aparece al final de su territorio sin tocar nada más. Su glifo del índice va
+  en `components/diseno-visual/Glifo.astro`.
+- Mismo sistema visual (§9). Dentro del escenario de un instrumento, los colores son los
+  que el fenómeno exija.
 
 ---
 
@@ -130,14 +127,18 @@ Tres pasos. El segundo existe para que el paso caro sea corto.
 /memoria-clase 07      →  bloque memoria en el .mdx, estado → con-memoria
 ```
 
-El paso de revisión es aparte y lo hace un subagente barato:
+El paso de revisión es aparte y lo hacen subagentes baratos:
 
 ```
 [antes de dar por terminada la sesión]
    subagente revisor-de-textos sobre el deck, las consignas y el .mdx
-   → reporta hallazgos con cita y propuesta; no edita nada
+   subagente verificador-de-fuentes si hay referentes, citas o enlaces nuevos
+   → reportan hallazgos con evidencia y propuesta; no editan nada
    → el modelo alto decide qué se aplica
 ```
+
+Todo cambio visual se mira renderizado antes de darlo por bueno:
+`node .claude/skills/verificar-render/verificar.mjs <ruta>` (ver su `SKILL.md`).
 
 **Sobre el SKILL de las presentaciones.** Antes decía «NO TOCAR». La regla real es más
 precisa: **no se improvisa el estilo**, porque es muy específico y no se deduce. Pero el

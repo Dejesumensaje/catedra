@@ -1,0 +1,38 @@
+---
+// Paso 1 de escalas: una portada de periódico vista de lejos. Antes de
+// leer, el tamaño ya dijo qué noticia importa más y en qué orden mirar.
+const T = '#222222';
+const G = '#a3a39c';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const barras = (x: number, y: number, w: number, n: number, paso = 9) =>
+  Array.from({ length: n }, (_, i) => ({ x, y: y + i * paso, w: i === n - 1 ? w * 0.6 : w }));
+---
+
+<figure class="dv-pregunta-visual">
+  <div class="dv-pv-lienzo">
+    <svg viewBox="0 0 640 400" role="img" aria-label="Portada de un periódico con tres noticias. Una tiene un titular enorme; las otras dos, titulares pequeños. El texto se ve como renglones grises.">
+      <rect x="110" y="16" width="420" height="368" fill="#fff" stroke={T} stroke-width="1.5" />
+      <text x="320" y="46" text-anchor="middle" font-family={SERIF} font-weight="700" font-size="17" fill={T}>El Diario del Barrio</text>
+      <line x1="128" y1="56" x2="512" y2="56" stroke={T} stroke-width="1.5" />
+      <text font-family={SANS} font-weight="900" font-size="38" letter-spacing="-1" fill={T}>
+        <tspan x="128" y="100">Vuelve el tranvía</tspan>
+        <tspan x="128" y="140">al centro</tspan>
+      </text>
+      <text x="128" y="164" font-family={SERIF} font-style="italic" font-size="13" fill={T}>Las obras terminan en diciembre y la primera semana será gratis.</text>
+      <rect x="128" y="176" width="236" height="112" fill="#d9d9d3" />
+      {barras(380, 182, 132, 12).map((b) => <rect x={b.x} y={b.y} width={b.w} height="4" fill={G} />)}
+      {barras(128, 298, 236, 3).map((b) => <rect x={b.x} y={b.y} width={b.w} height="4" fill={G} />)}
+      <line x1="128" y1="324" x2="512" y2="324" stroke={T} stroke-width="1" />
+      <text x="128" y="342" font-family={SANS} font-weight="700" font-size="11" fill={T}>Feria del libro en la plaza</text>
+      {barras(128, 350, 180, 3, 8).map((b) => <rect x={b.x} y={b.y} width={b.w} height="3" fill={G} />)}
+      <text x="332" y="342" font-family={SANS} font-weight="700" font-size="11" fill={T}>Cierran un carril por obras</text>
+      {barras(332, 350, 180, 3, 8).map((b) => <rect x={b.x} y={b.y} width={b.w} height="3" fill={G} />)}
+    </svg>
+  </div>
+  <p>Una portada vista de pasada. ¿Cuál es la noticia más importante del día? ¿Y qué miras después?</p>
+  <details>
+    <summary>Ver la respuesta</summary>
+    <p>Probablemente la del tranvía: su titular es varias veces más grande que los otros. Después, la frase en cursiva que va debajo y, al final, las noticias pequeñas. Nadie escribió «lea esto primero»: el tamaño de la letra marcó el orden de lectura.</p>
+  </details>
+</figure>

@@ -1,0 +1,193 @@
+---
+titulo: Escalas tipográficas
+territorio: tipografia
+pregunta: ¿Por qué, antes de leer una página, ya sabes qué mirar primero?
+resumen: El tamaño de la letra decide qué se lee primero. Aprende a verlo en una portada, a sacar todos los tamaños de dos números y a usarlo en recetas, fichas y pantallas.
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 3
+relaciones:
+  - concepto: proximidad
+    porQue: El interlineado es la proximidad entre renglones, y el espacio sobre un intertítulo decide a qué párrafo pertenece. La escala fija los tamaños; la proximidad, con qué se agrupa cada texto.
+  - concepto: jerarquia
+    porQue: La escala es una de las herramientas de la jerarquía. Si todos los tamaños se igualan, el orden de lectura todavía se sostiene con el grosor, la posición y el espacio.
+  - concepto: sistemas-y-excepciones
+    porQue: Una escala es una regla compartida. Una cita que se sale de la escala a propósito llama la atención porque el resto del texto sí la respeta.
+  - concepto: reticulas-y-alineacion
+    porQue: La retícula organiza el espacio a lo ancho de la página; la escala, los tamaños del texto. Si los interlineados son múltiplos de una misma medida, el texto también se alinea en vertical.
+  - concepto: interlineado
+    porQue: El mismo interlineado que basta para un cuerpo de 17 px separa demasiado un título de 40. Por eso aquí los títulos tienen su propio control.
+  - concepto: ancho-de-linea
+    porQue: Si cambia el tamaño del texto normal, cambia cuántos caracteres caben por línea, aunque el ancho del área de texto sea el mismo. Por eso tamaño y ancho se ajustan juntos.
+  - concepto: ritmo-tipografico
+    porQue: La razón decide cuánto cambia el tamaño de un nivel al siguiente. El ritmo es cómo se suceden en la página esos tamaños y los espacios entre ellos.
+fuentes:
+  - autor: Robert Bringhurst
+    obra: The Elements of Typographic Style
+    anio: 1992
+    nota: Recoge el rango de 45 a 75 caracteres como la convención aceptada para texto corrido a una columna (sección 2.1.2).
+---
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import EscalaTipograficaIdea from '../../components/diseno-visual/experiencias/EscalaTipograficaIdea.astro';
+import EscalaTipograficaMiralo from '../../components/diseno-visual/experiencias/EscalaTipograficaMiralo.astro';
+import EscalaTipografica from '../../components/diseno-visual/experiencias/EscalaTipografica.astro';
+import EscalaTipograficaArreglos from '../../components/diseno-visual/experiencias/EscalaTipograficaArreglos.astro';
+import EscalaTipograficaEjemplos from '../../components/diseno-visual/experiencias/EscalaTipograficaEjemplos.astro';
+import EscalaTipograficaJuego from '../../components/diseno-visual/experiencias/EscalaTipograficaJuego.astro';
+
+<Paso id="idea">
+
+<EscalaTipograficaIdea />
+
+<p class="dv-frase">Lo más grande se lee primero.</p>
+
+<div class="dv-texto">
+
+Ante una página, solemos mirar primero lo que más resalta, que casi siempre es lo más grande. Después seguimos por el tamaño siguiente y dejamos lo pequeño para el final. Ese orden se llama **jerarquía**: qué se lee primero, qué después y qué al final.
+
+Para que la jerarquía sea clara, los tamaños se eligen con una regla. Primero se fija el tamaño del texto normal, el **tamaño base**. Luego, un número que dice cuánto crece cada nivel sobre el anterior, la **razón**. Todos los demás tamaños salen de esos dos números. Ese sistema se llama **escala tipográfica**.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Jerarquía</dt>
+    <dd>El orden en que se lee una página: qué primero, qué después y qué al final.</dd>
+    <dt>Tamaño base</dt>
+    <dd>El tamaño del texto normal, el de los párrafos. En el instrumento se llama «Tamaño del texto normal».</dd>
+    <dt>Nivel</dt>
+    <dd>Cada uno de los tamaños de la escala: texto normal, entrada, intertítulo, título.</dd>
+    <dt>Razón</dt>
+    <dd>El número que multiplica el tamaño de un nivel para obtener el siguiente. En el instrumento se llama «Cuánto crece cada nivel».</dd>
+    <dt>Escala</dt>
+    <dd>El conjunto de tamaños que sale de multiplicar el tamaño base por la razón, nivel tras nivel.</dd>
+    <dt>Entrada</dt>
+    <dd>El párrafo corto que va debajo del título y presenta el texto.</dd>
+    <dt>Interlineado</dt>
+    <dd>La altura de cada renglón, incluido el espacio que lo separa del siguiente.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" proposito="La misma receta dos veces: las mismas palabras, el mismo tipo de letra y el mismo orden. Cambian los tamaños y, con ellos, el grosor y el espacio de cada nivel. Toca cada número para ver dónde actúa.">
+
+<EscalaTipograficaMiralo />
+
+<div class="dv-texto">
+
+En la primera receta, todo el texto tiene el mismo tamaño. Se puede leer, pero hay que recorrerla entera para encontrar algo.
+
+En la segunda hay cuatro niveles: título, intertítulos, texto normal y nota. Con un vistazo se sabe de qué trata y dónde están los ingredientes. Ninguna palabra cambió de lugar.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo">
+
+<EscalaTipografica />
+
+</Paso>
+
+<Paso id="usalo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Elige el tamaño del texto normal</h3>
+      <p>Es el de los párrafos, el que más se lee. Elígelo primero y pruébalo con un párrafo completo: si leerlo cansa, probablemente es pequeño.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Elige cuánto crece cada nivel y saca tres o cuatro tamaños</h3>
+      <p>Multiplica el tamaño base por la razón (el valor de «Cuánto crece cada nivel»): una vez para la entrada, dos veces para los intertítulos y cuatro para el título. Tres o cuatro niveles suelen bastar. En una página pequeña, una razón mediana (1,25 o 1,333) deja el título en al menos 1,8 veces el texto normal. En un cartel con dos o tres textos, puedes usar una razón grande.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Asigna cada texto a un nivel y míralo de lejos</h3>
+      <p>Aléjate de la pantalla o reduce la imagen. Lo primero que veas debería ser lo más importante. Si dos textos llaman la atención por igual, aumenta la diferencia de nivel entre ellos.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores que se repiten
+
+Cada caso empieza mal. Arréglalo con su control.
+
+</div>
+
+<EscalaTipograficaArreglos />
+
+<div class="dv-texto">
+
+### En piezas reales
+
+En las tres, el texto más grande es el que la persona viene a buscar, aunque no siempre está arriba. Toca los números.
+
+</div>
+
+<EscalaTipograficaEjemplos />
+
+</Paso>
+
+<Paso id="juega">
+
+<EscalaTipograficaJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="La relación que produce el efecto">
+
+Cada tamaño de la página es el anterior multiplicado por un mismo número. El texto normal mide 17 px; la entrada está un nivel por encima; el intertítulo, dos niveles; el título, cuatro. Eso es una escala.
+
+Por eso dos controles cambian toda la página. El tamaño del texto normal la agranda o la reduce sin cambiar su orden. La razón cambia la diferencia entre niveles: con 1,125 los niveles se parecen tanto que cuesta distinguirlos; con 1,618 el título ocupa buena parte de la página.
+
+Las razones de uso común tienen nombres que vienen, casi todos, de los intervalos musicales: 1,125 es la segunda mayor; 1,2, la tercera menor; 1,25, la tercera mayor; 1,333, la cuarta justa; 1,5, la quinta justa. La última, 1,618, es la sección áurea. Son una convención para recordarlas. Que una razón tenga nombre de intervalo no garantiza que se vea bien.
+
+</Seccion>
+
+<Seccion titulo="Todo al mismo tamaño">
+
+En «Más controles», activa «Todo al mismo tamaño» y todos los textos pasan a medir lo mismo. Aun así, el título se sigue reconociendo: está arriba, con otro tipo de letra (otra familia) y más grosor. Si quitas también el grosor, queda la posición.
+
+La jerarquía se construye con varios recursos: tamaño, grosor, familia, espacio, posición y color. La escala controla solo el tamaño. Una página bien resuelta suele combinar varios, y así el orden se mantiene aunque uno falle.
+
+</Seccion>
+
+<Seccion titulo="Ancho de línea e interlineado">
+
+El tamaño no actúa solo. Con letra pequeña, líneas de más de cien caracteres y un interlineado de 1,1, el texto queda tan denso que cuesta seguir los renglones. Robert Bringhurst recoge una convención: en texto corrido a una columna, se suele considerar cómoda una línea de entre 45 y 75 caracteres.
+
+La lectura del instrumento cuenta cuántos caracteres caben realmente. El control pide un número, pero lo que cabe depende del tipo de letra, del tamaño y del espacio disponible. En un teléfono, la línea se acorta sola.
+
+</Seccion>
+
+<Seccion titulo="Dónde aparece">
+
+En una revista o un periódico, la escala distingue antetítulo, título, entrada y texto, y da a todas las páginas un aspecto común. En una interfaz, la misma idea aparece como los niveles de encabezado de un sistema de diseño: unos pocos tamaños con nombre, en lugar de un número nuevo cada vez.
+
+En una aplicación con muchos datos suele servir una razón pequeña, porque hay muchos niveles y poco espacio. En un cartel o una portada, una razón grande con dos o tres niveles marca bien las diferencias sin desordenar la pieza.
+
+</Seccion>
+
+<Seccion titulo="Lo que no explica">
+
+**No decide qué es importante.** La escala ordena los niveles; qué texto va en cada nivel es una decisión editorial.
+
+**El cálculo no basta.** Dos familias con el mismo tamaño en píxeles pueden verse de tamaños distintos, porque la altura de sus minúsculas cambia. Por eso los tamaños de una escala se redondean y se ajustan a ojo.
+
+**La pantalla cambia la escala.** Un título cuatro niveles por encima del texto puede funcionar en una computadora y no caber en un teléfono. Por eso es común usar una razón menor en pantallas estrechas.
+
+**El tamaño no es estructura.** Un lector de pantalla no transmite que el título es grande. La jerarquía también tiene que estar en el código: un `h1`, un `h2`, un párrafo.
+
+</Seccion>
+
+</Paso>

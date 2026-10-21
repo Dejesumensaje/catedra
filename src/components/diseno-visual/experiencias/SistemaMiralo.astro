@@ -1,0 +1,92 @@
+---
+// Paso 2 de sistemas: las mismas cuatro tarjetas de una agenda cultural.
+// Antes, cada una con su estilo; después, las mismas reglas y una sola
+// excepción, la que importa.
+import Anotada from '../Anotada.astro';
+
+const W = 360;
+const H = 300;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const AZUL = '#1f4e8c';
+
+const tarjetas = [
+  { cat: 'MÚSICA', tit: ['Coro de cámara'], fecha: 'Vie 7 · 7:00 p. m.' },
+  { cat: 'CINE', tit: ['Cine mudo', 'con piano'], fecha: 'Sáb 8 · 4:00 p. m.' },
+  { cat: 'CONCIERTO', tit: ['Apertura de', 'la temporada'], fecha: 'Jue 6 · 8:00 p. m.' },
+  { cat: 'TALLER', tit: ['Encuadernación'], fecha: 'Dom 9 · 10:00 a. m.' },
+];
+const pos = [[20, 20], [190, 20], [20, 160], [190, 160]];
+const pc = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zc = (i: number) => ({ x: (pos[i][0] / W) * 100, y: (pos[i][1] / H) * 100, w: (150 / W) * 100, h: (120 / H) * 100 });
+const fila = (y: number) => ({ x: (20 / W) * 100, y: (y / H) * 100, w: (320 / W) * 100, h: (120 / H) * 100 });
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    veredicto="mal"
+    rotulo="Cada tarjeta con su propio estilo"
+    notas={[
+      { ...pc(180, 34), texto: 'Cada tarjeta tiene su borde, su letra y su alineación. Parecen sacadas de cuatro lugares distintos.', zona: fila(20) },
+      { ...pc(180, 174), texto: 'El evento principal está aquí, pero nada lo indica. Entre tantas diferencias, ninguna destaca de verdad.', zona: zc(2) },
+      { ...pc(348, 174), texto: 'La tarjeta más llamativa es la del taller, que no es la más importante. Destaca por accidente.', zona: zc(3) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cuatro tarjetas de eventos, cada una con un estilo distinto: borde grueso, fondo gris, borde punteado y fondo negro.">
+      <rect width={W} height={H} fill="#fff" />
+      {/* 0: borde grueso, serif centrada */}
+      <rect x="22" y="22" width="146" height="116" fill="#fff" stroke={T} stroke-width="4" />
+      <text x="95" y="52" text-anchor="middle" font-family={SANS} font-weight="700" font-size="9" letter-spacing="1.5" fill="#b3261e">MÚSICA</text>
+      <text x="95" y="82" text-anchor="middle" font-family={SERIF} font-style="italic" font-size="17" fill={T}>Coro de cámara</text>
+      <text x="95" y="120" text-anchor="middle" font-family={SERIF} font-size="11" fill="#444">Vie 7 · 7:00 p. m.</text>
+      {/* 1: fondo gris, todo a la derecha y en mayúsculas */}
+      <rect x="190" y="20" width="150" height="120" fill="#d9e4ec" />
+      <text x="328" y="44" text-anchor="end" font-family={SANS} font-size="10" fill="#2e6b3a">cine</text>
+      <text x="328" y="72" text-anchor="end" font-family={SANS} font-weight="700" font-size="12" letter-spacing="1.5" fill={T}>CINE MUDO</text>
+      <text x="328" y="88" text-anchor="end" font-family={SANS} font-weight="700" font-size="12" letter-spacing="1.5" fill={T}>CON PIANO</text>
+      <text x="328" y="126" text-anchor="end" font-family={SANS} font-size="10" fill={T}>Sáb 8 · 4:00 p. m.</text>
+      {/* 2: el principal, discreto */}
+      <rect x="20" y="160" width="150" height="120" fill="#fff" stroke="#6f6f6f" stroke-width="1" stroke-dasharray="4 3" />
+      <text x="32" y="184" font-family={SANS} font-size="10" fill="#6f6f6f">Concierto</text>
+      <text x="32" y="206" font-family={SANS} font-size="13" fill={T}>Apertura de la</text>
+      <text x="32" y="222" font-family={SANS} font-size="13" fill={T}>temporada</text>
+      <text x="32" y="264" font-family={SANS} font-size="10" fill="#6f6f6f">Jue 6 · 8:00 p. m.</text>
+      {/* 3: el taller, el más llamativo */}
+      <rect x="190" y="160" width="150" height="120" fill={T} />
+      <text x="202" y="186" font-family={SANS} font-weight="700" font-size="10" letter-spacing="1.5" fill="#fff">TALLER</text>
+      <text x="202" y="214" font-family={SANS} font-weight="900" font-size="17" fill="#fff">Encuadernación</text>
+      <text x="202" y="264" font-family={SANS} font-size="11" fill="#fff">Dom 9 · 10:00 a. m.</text>
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="bien"
+    rotulo="Las mismas reglas y una excepción"
+    notas={[
+      { ...pc(180, 34), texto: 'Mismo borde, misma letra, mismo orden en las cuatro: categoría, título, fecha. Se reconocen como parte de un mismo conjunto.', zona: fila(20) },
+      { ...pc(180, 174), texto: 'Una sola tarjeta rompe la regla: fondo azul y la palabra «Principal». Como es la única, tiende a verse primero.', zona: zc(2) },
+      { ...pc(348, 174), texto: 'Títulos y fechas cambian de una tarjeta a otra y no rompen nada.', zona: zc(3) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Las mismas cuatro tarjetas con el mismo estilo; solo la del concierto de apertura tiene fondo azul y la palabra Principal.">
+      <rect width={W} height={H} fill="#fff" />
+      {tarjetas.map((t, i) => {
+        const [x, y] = pos[i];
+        const principal = i === 2;
+        const tinta = principal ? '#fff' : T;
+        return (
+          <g>
+            <rect x={x + 0.75} y={y + 0.75} width="148.5" height="118.5" fill={principal ? AZUL : '#fff'} stroke={principal ? AZUL : T} stroke-width="1.5" />
+            <text x={x + 12} y={y + 24} font-family={SANS} font-weight="700" font-size="9" letter-spacing="1.5" fill={principal ? '#fff' : AZUL}>{t.cat}</text>
+            {principal && <text x={x + 138} y={y + 24} text-anchor="end" font-family={SANS} font-weight="700" font-size="9" letter-spacing="1" fill="#fff">PRINCIPAL</text>}
+            {t.tit.map((l, k) => (
+              <text x={x + 12} y={y + 48 + k * 18} font-family={SANS} font-weight="900" font-size="15" fill={tinta}>{l}</text>
+            ))}
+            <text x={x + 12} y={y + 104} font-family={SANS} font-size="11" fill={principal ? '#fff' : '#444'}>{t.fecha}</text>
+          </g>
+        );
+      })}
+    </svg>
+  </Anotada>
+</div>

@@ -1,0 +1,75 @@
+---
+// Paso 2 de semejanza: el mismo párrafo con sus tres enlaces. En el primero
+// cada enlace se ve distinto y la negrita se parece a uno de ellos; en el
+// segundo los enlaces comparten un mismo estilo que nada más usa.
+import Anotada from '../Anotada.astro';
+
+const W = 380;
+const H = 190;
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const AZUL = '#1a56a8';
+const pct = (y: number) => (y / H) * 100;
+
+// Estilo de cada tramo según la versión.
+type Tramo = { t: string; tipo?: 'e1' | 'e2' | 'e3' | 'neg' };
+const lineas: Tramo[][] = [
+  [{ t: 'La biblioteca presta libros, juegos de mesa' }],
+  [{ t: 'y computadores. Consulta el ' }, { t: 'horario de préstamo', tipo: 'e1' }],
+  [{ t: 'o ' }, { t: 'reserva una sala', tipo: 'e2' }, { t: ' para estudiar. Si necesitas' }],
+  [{ t: 'ayuda, ' }, { t: 'escribe al equipo', tipo: 'e3' }, { t: '. Las salas se reservan' }],
+  [{ t: 'con ' }, { t: 'dos días de anticipación', tipo: 'neg' }, { t: '.' }],
+];
+
+const estiloMal = (tipo?: Tramo['tipo']) => {
+  if (tipo === 'e1') return { fill: AZUL, 'text-decoration': 'underline' };
+  if (tipo === 'e2') return { fill: T, 'font-weight': 700 };
+  if (tipo === 'e3') return { fill: AZUL };
+  if (tipo === 'neg') return { fill: T, 'font-weight': 700 };
+  return { fill: T };
+};
+const estiloBien = (tipo?: Tramo['tipo']) => {
+  if (tipo === 'e1' || tipo === 'e2' || tipo === 'e3') return { fill: AZUL, 'text-decoration': 'underline' };
+  if (tipo === 'neg') return { fill: T, 'font-weight': 700 };
+  return { fill: T };
+};
+const y0 = 38;
+const paso = 30;
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    veredicto="mal"
+    rotulo="Cada enlace a su manera"
+    notas={[
+      { x: 100, y: pct(y0 + paso * 1 - 5), texto: 'Este enlace va subrayado y en azul.', zona: { x: 46, y: pct(y0 + paso * 1 - 20), w: 50, h: pct(26) } },
+      { x: 100, y: pct(y0 + paso * 2 - 5), texto: 'Este otro va solo en negrita, y el de la línea siguiente solo en azul. No se parecen al primero, así que no se sabe que también se pueden tocar.', zona: { x: 5, y: pct(y0 + paso * 2 - 20), w: 90, h: pct(paso + 26) } },
+      { x: 100, y: pct(y0 + paso * 4 - 5), texto: 'Esta negrita no es un enlace, pero se parece al segundo. El parecido da una señal equivocada.', zona: { x: 13, y: pct(y0 + paso * 4 - 20), w: 58, h: pct(26) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Párrafo con tres enlaces de estilos distintos: uno subrayado y azul, otro en negrita, otro solo azul. Una frase en negrita que no es enlace.">
+      {lineas.map((l, i) => (
+        <text x="22" y={y0 + i * paso} font-family={SERIF} font-size="15">
+          {l.map((tr) => <tspan {...estiloMal(tr.tipo)}>{tr.t}</tspan>)}
+        </text>
+      ))}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="bien"
+    rotulo="Los enlaces se parecen entre sí"
+    notas={[
+      { x: 100, y: pct(y0 + paso * 2 - 5), texto: 'Los tres enlaces comparten color y subrayado. Se reconocen como enlaces antes de leerlos.', zona: { x: 5, y: pct(y0 + paso * 1 - 20), w: 90, h: pct(paso * 2 + 26) } },
+      { x: 100, y: pct(y0 + paso * 4 - 5), texto: 'La negrita no comparte ningún rasgo con los enlaces. Se lee como énfasis y no como algo que se puede tocar.', zona: { x: 13, y: pct(y0 + paso * 4 - 20), w: 58, h: pct(26) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo párrafo con los tres enlaces en azul y subrayados, y la frase en negrita sin subrayar.">
+      {lineas.map((l, i) => (
+        <text x="22" y={y0 + i * paso} font-family={SERIF} font-size="15">
+          {l.map((tr) => <tspan {...estiloBien(tr.tipo)}>{tr.t}</tspan>)}
+        </text>
+      ))}
+    </svg>
+  </Anotada>
+</div>

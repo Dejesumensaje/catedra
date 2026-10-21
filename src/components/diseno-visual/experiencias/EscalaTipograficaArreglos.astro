@@ -1,0 +1,90 @@
+---
+// Paso 4 de escalas: tres errores que se repiten, cada uno empieza roto y
+// tiene un solo control para arreglarlo.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+---
+
+<div class="dv-especimenes">
+  <Instrumento id="esc-titulo" titulo="Arregla · un título que no se distingue" comparar={false} consigna="El título casi no se distingue del texto. Dale el tamaño necesario para que se lea primero.">
+    <Deslizador lab="esc-titulo" variable="t" etiqueta="Tamaño del título" min={14} max={64} valor={17} unidad="px" ayuda="El texto mide 15 px." />
+  </Instrumento>
+
+  <Instrumento id="esc-interlineado" titulo="Arregla · un párrafo apretado" comparar={false} consigna="Los renglones casi se tocan y cuesta seguirlos. Dales más espacio.">
+    <Deslizador lab="esc-interlineado" variable="lh" etiqueta="Interlineado" min={0.9} max={2.6} paso={0.05} valor={1} decimales={2} ayuda="Altura de cada renglón, en número de veces el tamaño de la letra." />
+  </Instrumento>
+</div>
+
+<div class="dv-especimenes">
+  <Instrumento id="esc-ancho" titulo="Arregla · líneas demasiado largas" comparar={false} consigna="Cada renglón es tan largo que, al terminarlo, cuesta encontrar el comienzo del siguiente. Reduce el ancho del bloque.">
+    <Deslizador lab="esc-ancho" variable="c" etiqueta="Ancho del bloque" min={20} max={120} valor={115} unidad="caracteres" ayuda="Caracteres por renglón, contando espacios." />
+  </Instrumento>
+</div>
+
+<script>
+  import { conectar, n } from '../../../lib/diseno-visual/estado';
+
+  const SANS = "Roboto, Helvetica, Arial, sans-serif";
+  const SERIF = "'PT Serif', Georgia, serif";
+  const PARRAFO = 'La biblioteca abrió un martes, sin ceremonia. A las nueve ya había fila para los computadores, y a mediodía alguien preguntó si se podía cocinar en el patio. La primera semana se prestaron más libros de cocina que novelas. Nadie en el equipo lo había previsto, pero nadie se quejó: la sala se llenó de gente que nunca había entrado.';
+
+  // ── título tímido ─────────────────────────────
+  type Ti = { t: number };
+  function pintarTitulo(d: HTMLElement, e: Ti) {
+    d.innerHTML = `
+      <div style="padding:18px 20px;color:#333;">
+        <p style="margin:0 0 10px;font-family:${SANS};font-weight:700;font-size:${e.t}px;line-height:1.1;color:#1a1a1a;letter-spacing:-0.01em;">Una biblioteca para cocinar</p>
+        <p style="margin:0;font-family:${SERIF};font-size:15px;line-height:1.5;">La primera semana se prestaron más libros de cocina que novelas. Nadie lo había previsto.</p>
+      </div>`;
+  }
+  function describirTitulo(e: Ti) {
+    const r = e.t / 15;
+    const veces = `<b class="dv-cifra">${n(r)} veces</b> el texto`;
+    if (r < 1.4) return `El título mide ${veces}. Casi no se distingue del párrafo.`;
+    if (r < 1.8) return `El título mide ${veces}. Se nota, pero hay que buscarlo.`;
+    if (r <= 4) return `El título mide ${veces}. Se lee primero sin esfuerzo.`;
+    return `El título mide ${veces}. Es tan grande que ocupa más que el texto y se parte en varios renglones.`;
+  }
+
+  // ── interlineado ──────────────────────────────
+  type Li = { lh: number };
+  function pintarInter(d: HTMLElement, e: Li) {
+    d.innerHTML = `<p style="margin:0;padding:18px 20px;font-family:${SERIF};font-size:15px;line-height:${e.lh};color:#333;">${PARRAFO}</p>`;
+  }
+  function describirInter(e: Li) {
+    const v = `<b class="dv-cifra">${n(e.lh, 2)} veces</b> la altura de la letra`;
+    if (e.lh < 1.3) return `Cada renglón mide ${v}. Los renglones casi se tocan y es fácil saltar de línea sin querer.`;
+    if (e.lh <= 1.8) return `Cada renglón mide ${v}. Hay espacio suficiente y el párrafo se sigue leyendo como un bloque.`;
+    return `Cada renglón mide ${v}. Hay tanto espacio que el párrafo se lee como renglones sueltos.`;
+  }
+
+  // ── ancho de línea ────────────────────────────
+  type An = { c: number };
+  const EM = 0.47;
+  let caben = 0;
+  function pintarAncho(d: HTMLElement, e: An) {
+    const disponible = d.clientWidth - 40;
+    const deseado = e.c * EM * 15;
+    caben = Math.round(Math.min(deseado, disponible) / (EM * 15));
+    d.innerHTML = `<p style="margin:0;padding:18px 20px;max-width:${deseado + 40}px;font-family:${SERIF};font-size:15px;line-height:1.55;color:#333;">${PARRAFO}</p>`;
+  }
+  function describirAncho(e: An) {
+    const c = Math.min(e.c, caben || e.c);
+    const v = `<b class="dv-cifra">unos ${c} caracteres</b>`;
+    const tope = caben && caben < e.c ? ` En esta pantalla no caben más de ${caben}.` : '';
+    if (c < 45) return `Renglones de ${v}. Son tan cortos que hay que cambiar de línea muy seguido.${tope}`;
+    if (c <= 75) return `Renglones de ${v}. Está dentro del rango que se suele considerar cómodo (45 a 75).${tope}`;
+    return `Renglones de ${v}. Al llegar al final, cuesta encontrar el comienzo del siguiente.${tope}`;
+  }
+
+  const conf: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['esc-titulo', pintarTitulo as never, describirTitulo as never],
+    ['esc-interlineado', pintarInter as never, describirInter as never],
+    ['esc-ancho', pintarAncho as never, describirAncho as never],
+  ];
+  for (const [id, pintar, describir] of conf) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar, describir });
+    }
+  }
+</script>

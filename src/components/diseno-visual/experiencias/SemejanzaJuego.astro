@@ -1,0 +1,208 @@
+---
+// Paso 5 de semejanza: cinco rondas con azar. De ver (cuántas clases de
+// elementos hay) a decidir (qué párrafo deja reconocer los enlaces), a leer
+// una competencia de señales, a hacer (rayar una tabla) y al límite (tono).
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="semejanza"
+  rondas={5}
+  descripcion="Cinco rondas: contar tipos de elementos, reconocer enlaces, decidir qué señal domina, corregir una tabla y prever qué pasa sin color."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { svg } from '../../../lib/diseno-visual/estado';
+  import { hslAHex, luminancia, hexARgb } from '../../../lib/diseno-visual/contraste';
+
+  const T = '#222222';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const azar = Math.random;
+  const entre = (a: number, b: number) => a + Math.floor(azar() * (b - a + 1));
+  const lienzo = (w: number, h: number) => svg('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h });
+
+  // Figuras por clase: cada clase difiere de las otras en forma y claridad.
+  function figura(c: SVGSVGElement, clase: number, x: number, y: number, r: number) {
+    const s = r * 1.7;
+    if (clase === 0) c.append(svg('circle', { cx: x, cy: y, r, fill: T }));
+    else if (clase === 1) c.append(svg('rect', { x: x - s / 2, y: y - s / 2, width: s, height: s, fill: 'none', stroke: T, 'stroke-width': 2.2 }));
+    else if (clase === 2) c.append(svg('path', { d: `M${x} ${y - r * 1.1} L${x + r} ${y + r * 0.8} L${x - r} ${y + r * 0.8} Z`, fill: '#9a9a9a' }));
+    else c.append(svg('line', { x1: x - r, y1: y + r, x2: x + r, y2: y - r, stroke: T, 'stroke-width': 3 }));
+  }
+
+  // ── 1. contar clases ─────────────────────────────
+  function clases(): Ronda {
+    const k = entre(2, 4);
+    const celdas = barajar(Array.from({ length: 24 }, (_, i) => i % k));
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(420, 220);
+      celdas.forEach((cl, i) => figura(c, cl, 50 + (i % 8) * 46, 50 + Math.floor(i / 8) * 60, 10));
+      el.append(c);
+    };
+    const opciones = barajar([...new Set([k, k + 1, k - 1 < 1 ? k + 2 : k - 1, 24])]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuántos tipos de elementos hay aquí?',
+      ayuda: 'Todos están a la misma distancia. Agrúpalos por su parecido.',
+      escena: pinta,
+      escenaDescrita: `Veinticuatro figuras a la misma distancia, de ${k} tipos mezclados.`,
+      opciones: opciones.map((o) => ({ texto: `${o} ${o === 1 ? 'tipo' : 'tipos'}` })),
+      correcta: opciones.indexOf(k),
+      porque: `Hay ${k} tipos. La distancia es la misma entre todos, así que no agrupa. Lo que te permitió contar fue la semejanza: cada tipo comparte forma y claridad, y por eso lo reconoces aunque esté repartido.`,
+      repaso: 'Ver lo que se parece',
+    };
+  }
+
+  // ── 2. enlaces ───────────────────────────────────
+  function enlaces(): Ronda {
+    const AZUL = '#1a56a8';
+    // Cada variante: estilo de los tres enlaces y de un énfasis que no es enlace.
+    type Est = { color: string; subr: boolean; grueso: boolean };
+    const enlace: Est = { color: AZUL, subr: true, grueso: false };
+    const neg: Est = { color: T, subr: false, grueso: true };
+    const variantes = barajar([
+      { bien: true, links: [enlace, enlace, enlace], enf: neg, desc: 'los tres enlaces azules y subrayados; el énfasis en negrita' },
+      { bien: false, links: [enlace, neg, { color: AZUL, subr: false, grueso: false }], enf: neg, desc: 'cada enlace con un estilo distinto; el énfasis igual a uno de ellos' },
+      { bien: false, links: [enlace, enlace, enlace], enf: enlace, desc: 'los enlaces azules y subrayados, pero el énfasis también' },
+    ]);
+    const pinta = (v: (typeof variantes)[number]) => (el: HTMLElement) => {
+      const c = lienzo(220, 120);
+      const barra = (x: number, y: number, w: number, e?: Est) => {
+        const color = e ? e.color : '#b5b5b0';
+        const h = e?.grueso ? 7 : 5;
+        c.append(svg('rect', { x, y: y - h / 2, width: w, height: h, fill: color }));
+        if (e?.subr) c.append(svg('rect', { x, y: y + 5, width: w, height: 1.6, fill: color }));
+      };
+      const ys = [22, 44, 66, 88];
+      barra(14, ys[0], 190);
+      barra(14, ys[1], 70); barra(90, ys[1], 50, v.links[0]); barra(146, ys[1], 58);
+      barra(14, ys[2], 40, v.links[1]); barra(60, ys[2], 80); barra(146, ys[2], 58, v.links[2]);
+      barra(14, ys[3], 30); barra(50, ys[3], 70, v.enf); barra(126, ys[3], 60);
+      el.append(c);
+    };
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En qué versión se reconocen los enlaces sin leer?',
+      ayuda: 'El texto se representa con barras grises. Las barras de color o más gruesas son enlaces o énfasis.',
+      opciones: variantes.map((v) => ({ pintar: pinta(v), describir: v.desc })),
+      correcta: variantes.findIndex((v) => v.bien),
+      porque: 'Los enlaces deben parecerse entre sí y no parecerse a ningún otro texto. Si cada uno tiene un estilo distinto, no se reconocen como enlaces. Si un énfasis comparte su estilo, parece algo que se puede tocar.',
+      repaso: 'Enlaces que se parecen',
+    };
+  }
+
+  // ── 3. qué señal gana ────────────────────────────
+  function competencia(): Ronda {
+    const caso = barajar(['filas', 'columnas', 'juntas'] as const)[0];
+    // filas: cambia mucho la claridad por filas, aire parejo
+    // columnas: nada cambia, mucho aire entre columnas
+    // juntas: la claridad cambia por columnas y además hay aire entre columnas
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(420, 230);
+      const gapC = caso === 'filas' ? 34 : 64;
+      const ancho = gapC * 5;
+      const ox = (420 - ancho) / 2;
+      for (let f = 0; f < 6; f++) {
+        for (let k = 0; k < 6; k++) {
+          const claro = caso === 'filas' ? f % 2 === 1 : caso === 'juntas' ? k % 2 === 1 : false;
+          c.append(svg('circle', { cx: ox + k * gapC, cy: 30 + f * 34, r: 9, fill: claro ? '#b8b8b8' : T }));
+        }
+      }
+      el.append(c);
+    };
+    const opciones = ['Filas', 'Columnas', 'Ni filas ni columnas'];
+    const correcta = caso === 'filas' ? 0 : 1;
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué ves primero: filas o columnas?',
+      escena: pinta,
+      escenaDescrita: caso === 'filas'
+        ? 'Seis filas de seis puntos a la misma distancia; las filas alternas son más claras.'
+        : caso === 'columnas'
+          ? 'Seis filas de seis puntos iguales, con mucho más espacio entre columnas que entre filas.'
+          : 'Seis filas de seis puntos con más espacio entre columnas; además, las columnas alternas son más claras.',
+      opciones: opciones.map((t) => ({ texto: t })),
+      correcta,
+      porque: caso === 'filas'
+        ? 'Todo está a la misma distancia, así que el espacio no agrupa. La única señal es la claridad de las filas alternas: se ven filas.'
+        : caso === 'columnas'
+          ? 'Todos los puntos son iguales, así que la semejanza no agrupa. Solo actúa el espacio, que es mayor entre columnas: se ven columnas.'
+          : 'El espacio y la claridad indican lo mismo: columnas. Cuando las dos señales coinciden, se refuerzan.',
+      repaso: 'Cuándo domina cada señal',
+    };
+  }
+
+  // ── 4. rayar una tabla ───────────────────────────
+  function tabla(): Ronda {
+    const datos = barajar([
+      ['Centro', '6:10', '6:45'], ['Robledo', '6:25', '7:05'], ['Belén', '6:40', '7:20'],
+      ['Envigado', '7:00', '7:50'], ['Bello', '7:15', '8:00'], ['Itagüí', '7:30', '8:15'],
+    ]);
+    return {
+      tipo: 'ajuste',
+      pregunta: 'En esta tabla ancha cuesta seguir una fila de un extremo al otro. Corrígela.',
+      ayuda: 'Oscurece el fondo de las filas alternas hasta que cada fila se siga sin esfuerzo, pero sin que las franjas llamen más la atención que los datos. Después toca «Comprobar».',
+      control: { etiqueta: 'Fondo de las filas alternas', min: 0, max: 40, valor: 0, unidad: '%' },
+      pintar: (el, v) => {
+        el.replaceChildren();
+        const c = lienzo(460, 250);
+        const gris = Math.round(255 - (255 - 120) * (v / 40));
+        datos.forEach(([r, s, l], i) => {
+          if (i % 2 === 1 && v > 0) c.append(svg('rect', { x: 10, y: 14 + i * 38, width: 440, height: 38, fill: `rgb(${gris},${gris},${gris - 4})` }));
+          const t = (x: number, txt: string, ancla = 'start') => {
+            const e = svg('text', { x, y: 38 + i * 38, 'font-family': SANS, 'font-size': 14, fill: T, 'text-anchor': ancla });
+            e.textContent = txt;
+            c.append(e);
+          };
+          t(22, r); t(330, s, 'end'); t(438, l, 'end');
+        });
+        el.append(c);
+      },
+      cumple: (v) => v >= 4 && v <= 18,
+      falta: (v) => v < 4
+        ? 'El fondo todavía es tan tenue que no se nota. Las filas no se distinguen.'
+        : 'Ahora las franjas llaman más la atención que los datos. Basta con un poco menos.',
+      porque: 'Con un fondo suave en las filas alternas, toda la fila comparte ese fondo y es más fácil no saltar a la de al lado. En esta tabla funciona entre 4 % y 18 %: con menos no se nota, con más compite con los datos.',
+      repaso: 'Filas alternas',
+    };
+  }
+
+  // ── 5. el límite del tono ────────────────────────
+  function tono(): Ronda {
+    const ROJO = hslAHex(4, 68, 50);
+    const yR = luminancia(hexARgb(ROJO));
+    let lo = 0, hi = 100;
+    for (let i = 0; i < 24; i++) {
+      const m = (lo + hi) / 2;
+      if (luminancia(hexARgb(hslAHex(128, 45, m))) < yR) lo = m; else hi = m;
+    }
+    const VERDE = hslAHex(128, 45, (lo + hi) / 2);
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(420, 170);
+      for (let f = 0; f < 4; f++) for (let k = 0; k < 9; k++) {
+        c.append(svg('circle', { cx: 50 + k * 40, cy: 30 + f * 38, r: 11, fill: f % 2 ? VERDE : ROJO }));
+      }
+      el.append(c);
+    };
+    const opciones = barajar([
+      { t: 'Una superficie uniforme de puntos, sin filas', bien: true },
+      { t: 'Las mismas filas, en otros colores', bien: false },
+      { t: 'Columnas en lugar de filas', bien: false },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Estas filas son rojas y verdes, y se ven igual de claras. ¿Qué ve alguien que no distingue el rojo del verde?',
+      escena: pinta,
+      escenaDescrita: 'Cuatro filas de puntos, alternando rojo y verde igual de claros.',
+      opciones: opciones.map((o) => ({ texto: o.t })),
+      correcta: opciones.findIndex((o) => o.bien),
+      porque: 'Las filas solo existen por el tono. Sin él, el rojo y el verde tienen la misma claridad y las filas desaparecen. Por eso conviene marcar un grupo importante con dos rasgos: tono y claridad, o tono y forma.',
+      repaso: 'Grupos hechos solo de tono',
+    };
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-juego="semejanza"]')) {
+    jugar(raiz, () => [clases(), enlaces(), competencia(), tabla(), tono()]);
+  }
+</script>

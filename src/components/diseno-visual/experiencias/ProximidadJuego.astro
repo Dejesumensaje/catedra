@@ -1,0 +1,190 @@
+---
+// Paso 5 de proximidad: cinco rondas generadas con azar. De mirar (contar
+// grupos) a decidir (qué formulario funciona) a hacer (arreglar un menú) y
+// a reconocer el límite (un marco gana a la distancia).
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="proximidad"
+  rondas={5}
+  descripcion="Cinco rondas: contar grupos, elegir el formulario más claro, ubicar un intertítulo, corregir un menú y reconocer cuándo otra señal se impone a la distancia."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { svg } from '../../../lib/diseno-visual/estado';
+
+  const T = '#222222';
+  const G = '#6f6f6f';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const azar = Math.random;
+  const entre = (a: number, b: number) => a + Math.floor(azar() * (b - a + 1));
+
+  const lienzo = (w: number, h: number) => svg('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h });
+
+  const texto = (s: SVGSVGElement, x: number, y: number, t: string, attrs: Record<string, string | number> = {}) => {
+    const e = svg('text', { x, y, 'font-family': SANS, 'font-size': 13, fill: T, ...attrs });
+    e.textContent = t;
+    s.append(e);
+  };
+
+  // ── 1. contar grupos ─────────────────────────────
+  function contar(): Ronda {
+    const k = entre(2, 5);
+    const tam = Array.from({ length: k }, () => entre(2, 4));
+    const total = tam.reduce((a, b) => a + b, 0);
+    const d = 9;
+    const r = 2.6 + azar() * 2;
+    const s = d * r;
+    const pinta = (el: HTMLElement) => {
+      const t = 14;
+      const ancho = tam.reduce((a, n) => a + n * t + (n - 1) * d, 0) + (k - 1) * s;
+      const W = Math.max(ancho + 60, 360);
+      const c = lienzo(W, 120);
+      let x = (W - ancho) / 2;
+      for (const n of tam) {
+        for (let i = 0; i < n; i++) { c.append(svg('circle', { cx: x + t / 2, cy: 60, r: t / 2, fill: T })); x += t + d; }
+        x += s - d;
+      }
+      el.append(c);
+    };
+    const opciones = barajar([...new Set([k, k + 1, k - 1 < 1 ? k + 2 : k - 1, total])].slice(0, 4));
+    while (opciones.length < 4) opciones.push(opciones.length + k + 2);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuántos grupos ves?',
+      ayuda: 'No cuentes los puntos. Fíjate en los bloques.',
+      escena: pinta,
+      escenaDescrita: `${total} puntos en una fila, con espacios desiguales.`,
+      opciones: opciones.map((o) => ({ texto: `${o} ${o === 1 ? 'grupo' : 'grupos'}` })),
+      correcta: opciones.indexOf(k),
+      porque: `Hay ${k} grupos: el espacio entre grupos es unas ${Math.round(r)} veces el espacio dentro de cada grupo. Los grupos no tienen el mismo número de puntos; lo que los define es el espacio.`,
+      repaso: 'Ver grupos',
+    };
+  }
+
+  // ── 2. formulario ────────────────────────────────
+  function formulario(): Ronda {
+    // [aire a su campo, aire al campo anterior]
+    const variantes: { a: number; b: number; bien: boolean }[] = barajar([
+      { a: 4, b: 30, bien: true },
+      { a: 17, b: 17, bien: false },
+      { a: 30, b: 4, bien: false },
+    ]);
+    const pinta = (v: { a: number; b: number }) => (el: HTMLElement) => {
+      const c = lienzo(220, 190);
+      const campo = (y: number) => c.append(svg('rect', { x: 16, y, width: 188, height: 30, fill: '#fff', stroke: G, 'stroke-width': 1.5 }));
+      let y = 14;
+      texto(c, 16, y + 11, 'Nombre', { 'font-weight': 500, 'font-size': 12 });
+      y += 14 + v.a;
+      campo(y); y += 30 + v.b;
+      texto(c, 16, y + 11, 'Correo', { 'font-weight': 500, 'font-size': 12 });
+      y += 14 + v.a;
+      campo(y);
+      el.append(c);
+    };
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En qué formulario queda claro a qué campo pertenece cada etiqueta?',
+      opciones: variantes.map((v) => ({
+        pintar: pinta(v),
+        describir: v.bien ? 'cada etiqueta junto a su campo' : v.a === v.b ? 'etiquetas a la misma distancia de dos campos' : 'etiquetas junto al campo de arriba',
+      })),
+      correcta: variantes.findIndex((v) => v.bien),
+      porque: 'Una etiqueta tiende a leerse con el campo que tiene más cerca. Si está a la misma distancia de dos campos, hay que adivinar. Si está más cerca del campo de arriba, parece una nota de ese campo.',
+      repaso: 'Etiquetas y campos',
+    };
+  }
+
+  // ── 3. intertítulo ───────────────────────────────
+  function intertitulo(): Ronda {
+    const caso = barajar(['arriba', 'abajo', 'medio'] as const)[0];
+    const [sobre, bajo] = caso === 'arriba' ? [8, 40] : caso === 'abajo' ? [40, 8] : [24, 24];
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(420, 200 + 0);
+      const barras = (y0: number) => { for (let i = 0; i < 3; i++) c.append(svg('rect', { x: 20, y: y0 + i * 14, width: i === 2 ? 240 : 380, height: 6, fill: '#9a9a9a' })); };
+      barras(18);
+      const yT = 18 + 34 + sobre;
+      texto(c, 20, yT + 14, 'Lo que pedían los lectores', { 'font-weight': 700, 'font-size': 16 });
+      barras(yT + 18 + bajo);
+      el.append(c);
+    };
+    const opciones = ['Con el párrafo de arriba', 'Con el párrafo de abajo', 'No se sabe: está a la misma distancia de los dos'];
+    const correcta = caso === 'arriba' ? 0 : caso === 'abajo' ? 1 : 2;
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Con qué párrafo va este intertítulo?',
+      ayuda: 'Los párrafos son barras grises. Fíjate solo en el espacio.',
+      escena: pinta,
+      escenaDescrita: `Un intertítulo entre dos párrafos, con ${sobre} píxeles de espacio encima y ${bajo} debajo.`,
+      opciones: opciones.map((t) => ({ texto: t })),
+      correcta,
+      porque: caso === 'medio'
+        ? 'Tiene el mismo espacio arriba y abajo, así que no se sabe a qué párrafo pertenece. Un intertítulo debe tener más espacio encima que debajo: así queda junto al texto que presenta.'
+        : caso === 'arriba'
+          ? 'Tiene poco espacio encima y mucho debajo, así que queda junto al párrafo anterior y parece su final. Es un error frecuente: el intertítulo debería ir más cerca del texto que presenta.'
+          : 'Tiene más espacio encima que debajo, así que queda junto al párrafo que presenta. Así debe ser.',
+      repaso: 'Títulos y su texto',
+    };
+  }
+
+  // ── 4. arreglar un menú ──────────────────────────
+  function menu(): Ronda {
+    const a = barajar([['Perfil', 'Pedidos', 'Direcciones'], ['Inicio', 'Buscar', 'Guardados']])[0];
+    const b = barajar([['Ayuda', 'Contacto', 'Devoluciones'], ['Cerrar sesión', 'Idioma', 'Privacidad']])[0];
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este menú tiene dos temas, pero se lee como una sola lista. Corrígelo.',
+      ayuda: 'Aumenta el espacio entre los dos bloques hasta que se lean dos grupos. Después toca «Comprobar».',
+      control: { etiqueta: 'Espacio adicional entre los dos bloques', min: 0, max: 40, valor: 0, unidad: 'px' },
+      pintar: (el, v) => {
+        el.replaceChildren();
+        const c = lienzo(320, 210 + v);
+        let y = 30;
+        for (const t of a) { texto(c, 24, y, t, { 'font-size': 15 }); y += 25; }
+        y += v;
+        for (const t of b) { texto(c, 24, y, t, { 'font-size': 15 }); y += 25; }
+        el.append(c);
+      },
+      cumple: (v) => v >= 14,
+      falta: (v) => v < 6 ? 'Todavía es una sola lista: no hay diferencia entre los espacios.' : 'Los dos bloques apenas se distinguen. La diferencia tiene que verse sin buscarla.',
+      porque: 'Entre renglones hay unos 10 px de espacio. Con 14 px adicionales o más, el espacio entre bloques es claramente mayor y se leen dos temas sin necesidad de un título. Por encima de 30 px, los bloques empiezan a parecer desconectados.',
+      repaso: 'Separar temas con espacio',
+    };
+  }
+
+  // ── 5. el límite ─────────────────────────────────
+  function limite(): Ronda {
+    const lejos = entre(0, 1);
+    const pinta = (el: HTMLElement) => {
+      const c = lienzo(460, 140);
+      const xs = [40, 64, 88, 112, 220, 244, 268, 292, 400].map((x) => x + 10);
+      // Dos puntos lejanos dentro de un marco.
+      const [i, j] = lejos ? [3, 4] : [7, 8];
+      c.append(svg('rect', { x: xs[i] - 18, y: 46, width: xs[j] - xs[i] + 36, height: 48, fill: '#e9e9e4', stroke: T, 'stroke-width': 1.5 }));
+      for (const x of xs) c.append(svg('circle', { cx: x, cy: 70, r: 8, fill: T }));
+      el.append(c);
+    };
+    const opciones = barajar([
+      { t: 'Porque un marco los encierra: comparten una región', bien: true },
+      { t: 'Porque tienen el mismo tamaño', bien: false },
+      { t: 'Porque están a la misma altura', bien: false },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Los dos puntos enmarcados están lejos entre sí. ¿Por qué se ven juntos?',
+      escena: pinta,
+      escenaDescrita: 'Una fila de puntos en grupos; dos puntos de grupos distintos, separados por un espacio grande, están encerrados en un rectángulo.',
+      opciones: opciones.map((o) => ({ texto: o.t })),
+      correcta: opciones.findIndex((o) => o.bien),
+      porque: 'Todos los puntos tienen el mismo tamaño y están a la misma altura, así que eso no explica nada. Lo que reúne a esos dos es el marco. A esto se le llama región común: un marco agrupa elementos aunque estén lejos.',
+      repaso: 'Cuándo otra señal se impone a la distancia',
+    };
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-juego="proximidad"]')) {
+    jugar(raiz, () => [contar(), formulario(), intertitulo(), menu(), limite()]);
+  }
+</script>

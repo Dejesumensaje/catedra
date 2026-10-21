@@ -1,0 +1,149 @@
+---
+// Interacción del color, escena 3: el color como función. Cuatro mensajes
+// de estado, paletas intercambiables y la prueba de verlos sin color.
+// La lectura separa tres preguntas: si se distinguen, qué significan y a
+// quién le llegan.
+import Instrumento from '../controles/Instrumento.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+
+const lab = 'color-roles';
+---
+
+<Instrumento
+  id={lab}
+  titulo="Arregla · cuatro mensajes que dependen solo del color"
+  consigna="Estos mensajes se distinguen solo por el color. Activa «Ver sin color» y trata de encontrar el error. Después desactiva «Dejar solo el color»."
+  comparar={false}
+>
+  <ul slot="escenario" class="cr-mensajes">
+    <li>Error. No se pudo guardar el pedido.</li>
+    <li>Listo. El pedido quedó guardado.</li>
+    <li>Atención. Tu sesión vence en cinco minutos.</li>
+    <li>Nota. Hay una versión nueva de los términos.</li>
+  </ul>
+
+  <Opciones
+    lab={lab}
+    variable="paleta"
+    etiqueta="Paleta"
+    valor="convencion"
+    opciones={[
+      { valor: 'convencion', texto: 'Convencional' },
+      { valor: 'cruzada', texto: 'Cruzada' },
+      { valor: 'mono', texto: 'Un solo tono' },
+    ]}
+    ayuda="Cruzada: los mismos colores, asignados a otros estados."
+  />
+  <Interruptor lab={lab} variable="gris" etiqueta="Ver sin color" ayuda="Convierte cada color en el gris de la misma luminancia." />
+  <Interruptor lab={lab} variable="solo" etiqueta="Dejar solo el color" activo ayuda="Quita la forma y la palabra que nombra el estado." />
+</Instrumento>
+
+<style is:global>
+  .cr-mensajes {
+    list-style: none;
+    margin: 0;
+    padding: 1.1rem;
+    display: grid;
+    gap: 0.6rem;
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    line-height: 1.35;
+    color: #222222;
+  }
+  .cr-mensajes li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.65rem 0.8rem;
+    border-left: 4px solid currentColor;
+    background: #f0f0f0;
+  }
+  .cr-mensajes svg { flex: none; margin-top: 0.05rem; }
+  .cr-mensajes strong { font-weight: 700; }
+</style>
+
+<script>
+  import { conectar, n } from '../../../lib/diseno-visual/estado';
+  import { aGris, razonContraste } from '../../../lib/diseno-visual/contraste';
+
+  type E = { paleta: string; gris: boolean; solo: boolean };
+  type Rol = 'error' | 'exito' | 'aviso' | 'info';
+
+  const ROLES: { rol: Rol; palabra: string; texto: string; nombre: string }[] = [
+    { rol: 'error', palabra: 'Error.', texto: 'No se pudo guardar el pedido.', nombre: 'error' },
+    { rol: 'exito', palabra: 'Listo.', texto: 'El pedido quedó guardado.', nombre: 'éxito' },
+    { rol: 'aviso', palabra: 'Atención.', texto: 'Tu sesión vence en cinco minutos.', nombre: 'aviso' },
+    { rol: 'info', palabra: 'Nota.', texto: 'Hay una versión nueva de los términos.', nombre: 'información' },
+  ];
+
+  // [acento, fondo]. Los acentos pasan 4,5:1 sobre su fondo; el texto es tinta.
+  const BASE: Record<Rol, [string, string]> = {
+    error: ['#b3261e', '#fbe9e7'],
+    exito: ['#1e7d34', '#e6f4ea'],
+    aviso: ['#8a5a00', '#fff4d6'],
+    info: ['#1f5fa8', '#e7f0fb'],
+  };
+  const CRUCE: Record<Rol, Rol> = { error: 'exito', exito: 'error', aviso: 'info', info: 'aviso' };
+
+  function colores(e: E, rol: Rol): [string, string] {
+    let par: [string, string];
+    if (e.paleta === 'mono') par = ['#3d4f63', '#eef1f4'];
+    else if (e.paleta === 'cruzada') par = BASE[CRUCE[rol]];
+    else par = BASE[rol];
+    return e.gris ? [aGris(par[0]), aGris(par[1])] : par;
+  }
+
+  // Formas geométricas, no íconos de catálogo: cada una distinta en silueta.
+  const FORMA: Record<Rol, string> = {
+    error: '<rect x="2" y="2" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 6l6 6M12 6l-6 6" stroke="currentColor" stroke-width="2"/>',
+    exito: '<circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 9.2l2.4 2.4 4.6-5" fill="none" stroke="currentColor" stroke-width="2"/>',
+    aviso: '<path d="M9 2l7.5 14h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/><path d="M9 7v4.5M9 13v1.6" stroke="currentColor" stroke-width="2"/>',
+    info: '<circle cx="9" cy="9" r="7" fill="currentColor"/><path d="M9 8v5M9 5v1.6" stroke="#fff" stroke-width="2"/>',
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const items = ROLES.map(({ rol, palabra, texto }) => {
+      const [acento, fondo] = colores(e, rol);
+      const forma = e.solo ? '' : `<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" style="color:${acento}">${FORMA[rol]}</svg>`;
+      const dicho = e.solo ? '' : `<strong>${palabra}</strong> `;
+      return `<li style="background:${fondo}; border-left-color:${acento}; color:#222222;">${forma}<span>${dicho}${texto}</span></li>`;
+    }).join('');
+    destino.innerHTML = `<ul class="cr-mensajes">${items}</ul>`;
+  }
+
+  function describir(e: E): string {
+    // Percepción: ¿se distinguen los cuatro entre sí?
+    const acentos = ROLES.map(({ rol }) => colores(e, rol)[0]);
+    let peor = { r: Infinity, a: 0, b: 0 };
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) {
+      const r = razonContraste(acentos[i], acentos[j]);
+      if (r < peor.r) peor = { r, a: i, b: j };
+    }
+    const iguales = new Set(acentos).size === 1;
+    let percepcion: string;
+    if (iguales) percepcion = 'Los cuatro mensajes tienen el mismo color.';
+    else if (e.gris) percepcion = `En gris, la razón de contraste entre ${ROLES[peor.a].nombre} y ${ROLES[peor.b].nombre} es de <b class="dv-cifra">${n(peor.r, 2)}:1</b>: son casi el mismo gris.`;
+    else percepcion = `Son cuatro tonos distintos, pero con luminancia casi igual: entre ${ROLES[peor.a].nombre} y ${ROLES[peor.b].nombre} la razón de contraste es de apenas ${n(peor.r, 2)}:1.`;
+
+    // Función: ¿qué significa cada color?
+    let funcion: string;
+    if (e.paleta === 'convencion') funcion = 'Rojo para error y verde para éxito es una convención aprendida. Funciona porque se repite en muchas interfaces.';
+    else if (e.paleta === 'cruzada') funcion = e.solo
+      ? 'Sin palabra ni forma, el color es la única señal y aquí indica lo contrario de lo que pasó: el pedido guardado parece un fallo.'
+      : 'La palabra dice «Error», pero el color es el que se suele asociar al éxito. Las dos señales se contradicen y obligan a leer con más atención.';
+    else funcion = 'El color ya no distingue los estados: solo indica que hay un mensaje.';
+
+    // Accesibilidad: ¿llega a quien no ve el color igual?
+    let acceso: string;
+    if (e.solo && (iguales || e.gris)) acceso = 'No queda ninguna señal visual: los cuatro mensajes solo se distinguen leyendo la frase completa.';
+    else if (e.solo) acceso = 'El estado depende solo del tono. Quien no distingue el rojo del verde, o ve la pantalla en gris, pierde la información. «Ver sin color» lo simula.';
+    else acceso = 'La forma y la palabra repiten lo que indica el color. Si el color no se percibe, el estado se sigue entendiendo.';
+
+    return `<b>Percepción.</b> ${percepcion}<br><b>Función.</b> ${funcion}<br><b>Accesibilidad.</b> ${acceso}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="color-roles"]')) {
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

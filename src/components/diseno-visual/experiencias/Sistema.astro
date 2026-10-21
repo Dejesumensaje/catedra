@@ -1,0 +1,372 @@
+---
+// Sistemas y excepciones: doce fichas de una programación cultural hechas
+// con las mismas reglas. Cambiar una regla cambia el conjunto; marcar una
+// pieza como excepción le hace romper una regla. Lo que se lee es cuántas
+// piezas piden atención y qué pasa con el énfasis cuando son muchas.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import { piezas } from './SistemaPiezas';
+
+const lab = 'sistema';
+const ninguna = Object.fromEntries(piezas.map((_, i) => [`x${i}`, false]));
+
+const pasos: PasoGuia[] = [
+  {
+    hacer: 'En «Regla · color de las fichas», elige otro color.',
+    logro: 'Las doce fichas cambiaron a la vez. Ninguna decide su propio color: lo toman de una regla que comparten. Un sistema es eso: decisiones que se toman una vez y valen para todas las piezas.',
+  },
+  {
+    hacer: 'Lleva «Variación del contenido» hasta 0 %.',
+    pista: 'Mueve el control hasta el extremo izquierdo, o selecciónalo y pulsa la tecla Inicio.',
+    logro: 'Doce copias de la misma ficha. El conjunto está ordenado, pero no hay ninguna diferencia que leer. A eso se le llama uniformidad.',
+  },
+  {
+    hacer: 'Ahora sube «Variación del contenido» por encima de 50 %.',
+    logro: 'Cada ficha tiene su título, su imagen y su forma, y aun así se reconocen como parte de un mismo conjunto. Eso es consistencia: las reglas no cambian y el contenido sí.',
+  },
+  {
+    hacer: 'En «Excepciones», marca una sola ficha.',
+    pista: 'Toca un número. Las casillas marcadas aparecen tachadas.',
+    preparar: { variacion: 80, ...ninguna },
+    logro: 'Esa ficha tiende a verse antes que las otras once porque rompe una regla. Es una excepción: indica «esta es distinta» sin necesidad de escribirlo.',
+  },
+  {
+    hacer: 'Sigue marcando fichas hasta que más de la mitad sean excepción.',
+    pista: 'Marca siete o más.',
+    logro: 'Ahora destacan las fichas que siguen la regla. Cuando casi todo es excepción, las excepciones dejan de indicar algo. Úsala para una sola cosa.',
+  },
+];
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · doce fichas, unas pocas reglas"
+  consigna="Doce fichas de la programación de un centro cultural. Todas siguen las mismas reglas."
+>
+  <p slot="escenario" class="sx-sin-js">Doce fichas de una programación cultural, hechas con las mismas reglas.</p>
+
+  <Guia slot="guia" pasos={pasos} />
+
+  <Opciones
+    lab={lab}
+    variable="acento"
+    etiqueta="Regla · color de las fichas"
+    valor="rojo"
+    opciones={[
+      { valor: 'rojo', texto: 'Rojo' },
+      { valor: 'azul', texto: 'Azul' },
+      { valor: 'verde', texto: 'Verde' },
+      { valor: 'tinta', texto: 'Negro' },
+    ]}
+  />
+  <Deslizador lab={lab} variable="variacion" etiqueta="Variación del contenido" min={0} max={100} valor={70} unidad="%" ayuda="En 0 %, la misma ficha doce veces. Al subirlo, cambian títulos, imágenes y formas, con las mismas reglas." />
+
+  <fieldset class="dv-control sx-excepciones">
+    <legend>Excepciones: marca las fichas que rompen la regla</legend>
+    <div class="sx-casillas">
+      {piezas.map((p, i) => (
+        <label class="sx-casilla">
+          <input type="checkbox" id={`${lab}-x${i}`} data-var={`x${i}`} data-etiqueta={`Excepción en la ficha ${i + 1}`} checked={i === 4} />
+          <span class="sx-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="sr-solo">Ficha {i + 1}: {p.titulo}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <Fragment slot="avanzados">
+    <Opciones
+      lab={lab}
+      variable="tipo"
+      etiqueta="Qué regla rompe una excepción"
+      valor="color"
+      opciones={[
+        { valor: 'color', texto: 'Color' },
+        { valor: 'escala', texto: 'Tamaño' },
+        { valor: 'alineacion', texto: 'Alineación' },
+      ]}
+    />
+    <Deslizador lab={lab} variable="escala" etiqueta="Regla · tamaño del título" min={1} max={1.7} paso={0.05} valor={1.3} decimales={2} ayuda="Cuántas veces es más grande el título que el texto pequeño." />
+    <Deslizador lab={lab} variable="espacio" etiqueta="Regla · espacio interior" min={4} max={24} valor={12} unidad="px" />
+    <Deslizador lab={lab} variable="borde" etiqueta="Regla · grosor del borde" min={0} max={4} valor={1} unidad="px" />
+    <Opciones
+      lab={lab}
+      variable="alinear"
+      etiqueta="Regla · alineación"
+      valor="izquierda"
+      opciones={[{ valor: 'izquierda', texto: 'Izquierda' }, { valor: 'centro', texto: 'Centro' }]}
+    />
+    <Interruptor lab={lab} variable="diseccion" etiqueta="Mostrar las reglas sobre cada ficha" ayuda="Dibuja el espacio interior, la línea de alineación y qué regla rompe cada excepción." />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset={JSON.stringify({ variacion: 0, ...ninguna })}>Uniforme: la misma ficha doce veces</button>
+    <button type="button" class="dv-boton" data-preset={JSON.stringify({ variacion: 80, ...ninguna })}>Consistente, sin excepciones</button>
+    <button type="button" class="dv-boton" data-preset={JSON.stringify({ variacion: 80, ...Object.fromEntries(piezas.map((_, i) => [`x${i}`, i === 6])) })}>Una sola excepción</button>
+    <button type="button" class="dv-boton" data-preset={JSON.stringify({ variacion: 80, ...Object.fromEntries(piezas.map((_, i) => [`x${i}`, i !== 3 && i !== 9])) })}>Casi todo es excepción</button>
+  </Fragment>
+</Instrumento>
+
+<style is:global>
+  .sx-sin-js { padding: 1.5rem; font-family: var(--sans); font-size: 0.9rem; }
+
+  /* casillas de excepción: una fila compacta de números */
+  .sx-casillas {
+    clear: both;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+  .sx-casilla { position: relative; cursor: pointer; }
+  .sx-casilla input {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    margin: 0; opacity: 0; cursor: pointer;
+  }
+  .sx-casilla .sx-num {
+    display: block;
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding: 0.35rem 0;
+    border: 1px solid var(--tinta);
+    color: var(--tinta);
+    background: var(--papel);
+  }
+  /* Marcada: amarillo de excepción y una barra diagonal, para que el estado
+     no dependa solo del color. */
+  .sx-casilla input:checked + .sx-num {
+    background: var(--amarillo);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+  }
+  .sx-casilla input:focus-visible + .sx-num { outline: 2px solid var(--tinta); outline-offset: 2px; }
+  .sx-casilla:hover input:not(:checked) + .sx-num { background: var(--regla); }
+
+  /* ── escenario ─────────────────────────────── */
+  .sx-escena { position: relative; overflow: hidden; }
+  .sx-lienzo {
+    transform-origin: top left;
+    padding: 14px;
+    font-family: var(--sans);
+    color: #222;
+  }
+  .sx-leyenda {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: #6f6f6f;
+    margin: 0 0 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sx-rejilla {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
+  .sx-pieza {
+    position: relative;
+    background: #fff;
+    border: var(--borde) solid #222;
+    padding: var(--esp);
+    text-align: var(--alinear);
+    min-width: 0;
+  }
+  .sx-pieza .sx-n {
+    font-size: 10px;
+    font-weight: 700;
+    color: #6f6f6f;
+    font-variant-numeric: tabular-nums;
+    margin: 0 0 6px;
+  }
+  .sx-img {
+    background: #ecece8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: calc(var(--esp) * 0.75);
+  }
+  .sx-img svg { width: 42%; height: 70%; }
+  .sx-cat {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--acento);
+    margin: 0;
+  }
+  .sx-tit {
+    font-size: calc(11px * var(--escala) * var(--escala));
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 4px 0 6px;
+    overflow-wrap: break-word;
+    /* mejor partir por sílaba que a mitad de letra */
+    hyphens: auto;
+  }
+  .sx-fecha { font-size: 11px; color: #444; margin: 0; }
+
+  /* excepciones: cada una rompe una sola regla */
+  .sx-exc-color { background: var(--acento); border-color: var(--acento); }
+  .sx-exc-color .sx-cat,
+  .sx-exc-color .sx-tit,
+  .sx-exc-color .sx-fecha,
+  .sx-exc-color .sx-n { color: #fff; }
+  .sx-exc-color .sx-img { background: rgba(255, 255, 255, 0.18); }
+  .sx-exc-escala { grid-column: span 2; }
+  .sx-exc-escala .sx-tit { font-size: calc(11px * var(--escala) * var(--escala) * 1.7); }
+  .sx-exc-alineacion { transform: rotate(-4deg) translateY(-4px); text-align: right; }
+
+  /* disección: espacio interior, eje y regla rota */
+  .sx-diseccion .sx-pieza::after {
+    content: '';
+    position: absolute;
+    inset: var(--esp);
+    outline: 1px dashed #b3261e;
+    pointer-events: none;
+  }
+  .sx-diseccion .sx-pieza::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1px solid #b3261e;
+    left: var(--eje);
+    pointer-events: none;
+  }
+  .sx-diseccion .sx-exc-alineacion::before { left: auto; right: var(--esp); }
+  .sx-rompe {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    z-index: 1;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: #eeff41;
+    color: #222;
+    border: 1px solid #222;
+    padding: 1px 5px;
+  }
+
+  @media (max-width: 30rem) {
+    .sx-casillas { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+</style>
+
+<script>
+  import { conectar } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { piezas, acentos, nombreTipo } from './SistemaPiezas';
+
+  type E = {
+    acento: string; escala: number; espacio: number; borde: number; alinear: string;
+    variacion: number; tipo: string; diseccion: boolean;
+  } & Record<string, number | string | boolean>;
+
+  const N = piezas.length;
+  const marcadas = (e: E) => piezas.map((_, i) => e[`x${i}`] === true).map((v, i) => (v ? i : -1)).filter((i) => i >= 0);
+
+  const FORMAS: Record<string, string> = {
+    circulo: '<circle cx="50" cy="50" r="40" />',
+    cuadro: '<rect x="12" y="12" width="76" height="76" />',
+    triangulo: '<polygon points="50,8 92,90 8,90" />',
+    barras: '<rect x="8" y="20" width="84" height="14" /><rect x="8" y="44" width="84" height="14" /><rect x="8" y="68" width="56" height="14" />',
+    medio: '<path d="M8 80 A42 42 0 0 1 92 80 Z" />',
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 240);
+    const cols = W >= 820 ? 6 : 4;
+    const diseno = Math.max(W, cols * 132);
+    const escala = W / diseno;
+    const acento = acentos[e.acento] ?? acentos.rojo;
+    const exc = new Set(marcadas(e));
+    const v = e.variacion / 100;
+    const uniforme = e.variacion === 0;
+
+    const fichas = piezas.map((propia, i) => {
+      const p = uniforme ? piezas[0] : propia;
+      // la proporción de la imagen varía dentro de un rango; en 0 % es la misma
+      const altoImg = Math.round(56 + (p.alto - 56) * v);
+      const forma = v >= 0.5 ? p.forma : piezas[0].forma;
+      const esExc = exc.has(i);
+      const clases = ['sx-pieza', esExc ? `sx-exc-${e.tipo}` : ''].join(' ');
+      return `
+        <article class="${clases}" aria-label="Ficha ${i + 1}${esExc ? `, excepción: rompe ${nombreTipo[e.tipo]}` : ''}">
+          ${e.diseccion && esExc ? `<span class="sx-rompe">rompe: ${nombreTipo[e.tipo]}</span>` : ''}
+          <p class="sx-n">${String(i + 1).padStart(2, '0')}</p>
+          <div class="sx-img" style="height:${altoImg}px">
+            <svg viewBox="0 0 100 100" aria-hidden="true" fill="${esExc && e.tipo === 'color' ? '#fff' : acento}">${FORMAS[forma]}</svg>
+          </div>
+          <p class="sx-cat">${p.categoria}</p>
+          <p class="sx-tit">${p.titulo}</p>
+          <p class="sx-fecha">${p.fecha}</p>
+        </article>`;
+    }).join('');
+
+    const nombreAcento = { rojo: 'rojo', azul: 'azul', verde: 'verde', tinta: 'negro' }[e.acento] ?? e.acento;
+    const fmt = (x: number, d = 0) => x.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const leyenda = `color ${nombreAcento} · título ${fmt(11 * e.escala * e.escala)} px · espacio ${e.espacio} px · borde ${e.borde} px · ${e.alinear === 'centro' ? 'centrado' : 'a la izquierda'}`;
+
+    destino.innerHTML = `
+      <div class="sx-escena">
+        <div class="sx-lienzo ${e.diseccion ? 'sx-diseccion' : ''}" style="width:${diseno}px; transform: scale(${escala});
+          --acento:${acento}; --escala:${e.escala}; --esp:${e.espacio}px; --borde:${e.borde}px;
+          --alinear:${e.alinear === 'centro' ? 'center' : 'left'}; --eje:${e.alinear === 'centro' ? '50%' : `${e.espacio}px`}; --cols:${cols};">
+          <p class="sx-leyenda">Reglas: ${leyenda}</p>
+          <div class="sx-rejilla">${fichas}</div>
+        </div>
+      </div>`;
+    // En pantallas estrechas el lienzo tiene un alto máximo (queda fijo
+    // mientras se mueven los controles): las doce fichas tienen que caber.
+    const escena = destino.firstElementChild as HTMLElement;
+    const lienzo = escena.firstElementChild as HTMLElement;
+    const maxAlto = parseFloat(getComputedStyle(destino).maxHeight);
+    let k = escala;
+    if (Number.isFinite(maxAlto) && lienzo.offsetHeight * k > maxAlto - 2) {
+      k = (maxAlto - 2) / lienzo.offsetHeight;
+      lienzo.style.transform = `translateX(${(W - diseno * k) / 2}px) scale(${k})`;
+    }
+    escena.style.height = `${Math.ceil(lienzo.offsetHeight * k)}px`;
+  }
+
+  function describir(e: E): string {
+    const xs = marcadas(e);
+    const k = xs.length;
+    let base: string;
+    if (e.variacion === 0) base = 'Uniformidad: doce copias de la misma ficha. Ninguna se distingue, así que nada atrae la mirada primero.';
+    else if (e.variacion < 35) base = 'Las fichas cambian poco y ninguna destaca: el conjunto es consistente, pero monótono. La monotonía es una uniformidad que ya no informa.';
+    else base = 'Consistencia: cada ficha es distinta y todas siguen las mismas reglas. Se reconocen como parte de un mismo conjunto.';
+
+    const cifra = `<b class="dv-cifra">${k} de ${N}</b>`;
+    let exc: string;
+    if (k === 0) exc = 'Ninguna pide atención especial.';
+    else if (k === 1) exc = `Piden atención: ${cifra}. La ficha ${xs[0] + 1} tiende a verse primero. Su diferencia se nota porque las demás siguen la regla.`;
+    else if (k <= 3) exc = `Piden atención: ${cifra}. Todavía destacan, pero ya compiten entre sí.`;
+    else if (k <= 8) exc = `Piden atención: ${cifra}. Ya no queda claro cuál es la regla y cuál la excepción.`;
+    else if (k < N) exc = `Piden atención: ${cifra}. Las excepciones son mayoría, y ahora destacan las fichas que siguen la regla.`;
+    else exc = `Piden atención: ${cifra}. Todas rompen la misma regla: en la práctica, cambiaste la regla.`;
+
+    return `${base} ${exc}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="sistema"]')) {
+    // La guía escucha antes de conectar: así recibe el primer estado.
+    guiar<E>(raiz, [
+      (e, inicio) => e.acento !== inicio.acento,
+      (e) => e.variacion === 0,
+      (e) => e.variacion > 50,
+      (e) => marcadas(e).length === 1,
+      (e) => marcadas(e).length > N / 2,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

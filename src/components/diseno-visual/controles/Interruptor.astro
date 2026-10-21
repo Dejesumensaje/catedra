@@ -1,0 +1,30 @@
+---
+// Encender o apagar una capa o una condición. Checkbox nativo: Espacio lo
+// alterna. El texto dice qué pasa al activarlo, no el estado.
+interface Props {
+  lab: string;
+  variable: string;
+  etiqueta: string;
+  activo?: boolean;
+  ayuda?: string;
+}
+
+const { lab, variable, etiqueta, activo = false, ayuda } = Astro.props;
+const id = `${lab}-${variable}`;
+---
+
+<div class="dv-control dv-interruptor">
+  <label for={id}>
+    <input
+      type="checkbox"
+      id={id}
+      checked={activo}
+      data-var={variable}
+      data-etiqueta={etiqueta}
+      aria-describedby={ayuda ? `${id}-ayuda` : undefined}
+    />
+    <span class="dv-caja" aria-hidden="true"></span>
+    <span>{etiqueta}</span>
+  </label>
+  {ayuda && <p class="dv-ayuda" id={`${id}-ayuda`}>{ayuda}</p>}
+</div>

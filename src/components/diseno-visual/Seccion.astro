@@ -1,0 +1,17 @@
+---
+// Sección de texto de una entrada: el encabezado en el margen, el texto en
+// su columna. Los instrumentos van fuera de las secciones, a todo el ancho.
+interface Props {
+  titulo: string;
+  id?: string;
+}
+
+const { titulo, id } = Astro.props;
+---
+
+<section class="dv-seccion" id={id}>
+  <h2>{titulo}</h2>
+  <div class="dv-seccion-texto">
+    <slot />
+  </div>
+</section>

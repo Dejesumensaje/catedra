@@ -1,0 +1,195 @@
+---
+titulo: Sistemas y excepciones
+territorio: sistemas
+pregunta: ¿Por qué una pieza distinta se ve primero y cuándo deja de verse?
+resumen: Muchas piezas que siguen las mismas reglas y una que las rompe. Aprende a verlo en un equipo de fútbol, a construirlo con doce fichas y a usar la excepción para una sola cosa.
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 6
+relaciones:
+  - concepto: tokens
+    porQue: Las cinco reglas del instrumento funcionan como tokens. Un token es una regla con nombre propio que muchas piezas usan en lugar de repetir el valor.
+  - concepto: componentes
+    porQue: Cada ficha es un componente, una pieza que se reutiliza. Lo que el instrumento muestra con doce piezas ocurre también en un producto entero.
+  - concepto: variantes
+    porQue: Una excepción que se repite con un criterio fijo se convierte en una variante. La diferencia está en si se decidió para todos los casos de un tipo o solo para uno.
+  - concepto: enfasis
+    porQue: Una excepción es una forma directa de dar énfasis. Funciona porque es escasa; el instrumento muestra qué pasa cuando deja de serlo.
+  - concepto: ruptura
+    porQue: Para que romper una regla se note, la regla tiene que verse. Sin un sistema reconocible, una ruptura se confunde con un error.
+  - concepto: escalas-tipograficas
+    porQue: El tamaño del título es una regla del sistema. Cambiarlo en una sola ficha es un caso frecuente de excepción tipográfica.
+  - concepto: reticulas-y-alineacion
+    porQue: La retícula es el sistema que ordena el espacio de una página. Una pieza que ocupa dos columnas o se sale del eje es una excepción a esa retícula.
+  - concepto: interaccion-del-color
+    porQue: Un mismo color se percibe distinto según lo que tiene alrededor. Invertir el color en una ficha cambia también cómo se ven las vecinas.
+  - concepto: semejanza
+    porQue: Un sistema funciona porque sus piezas se parecen. La excepción se nota porque rompe esa semejanza; por eso dos excepciones iguales tienden a verse como un grupo.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import SistemaIdea from '../../components/diseno-visual/experiencias/SistemaIdea.astro';
+import SistemaMiralo from '../../components/diseno-visual/experiencias/SistemaMiralo.astro';
+import Sistema from '../../components/diseno-visual/experiencias/Sistema.astro';
+import SistemaErrores from '../../components/diseno-visual/experiencias/SistemaErrores.astro';
+import SistemaEjemplos from '../../components/diseno-visual/experiencias/SistemaEjemplos.astro';
+import SistemaJuego from '../../components/diseno-visual/experiencias/SistemaJuego.astro';
+
+<Paso id="idea">
+
+<SistemaIdea />
+
+<p class="dv-frase">Las mismas reglas para todo, y una excepción que significa algo.</p>
+
+<div class="dv-texto">
+
+Entre diez camisetas iguales, la camiseta distinta se ve enseguida. No hace falta un letrero que diga «arquero»: la diferencia lo indica, porque el resto es igual.
+
+En diseño pasa lo mismo. Una página, una aplicación o una serie de carteles se construyen con unas pocas **reglas** que siguen todas las piezas: el mismo tipo de letra, el mismo color, el mismo orden. Ese conjunto de reglas es un **sistema**. Cuando una pieza rompe una regla a propósito, es una **excepción**, y tiende a verse primero.
+
+Hay una condición: la excepción funciona mientras sea escasa. Si todo es distinto, nada destaca.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Tres palabras que vas a usar</h3>
+  <dl>
+    <dt>Regla</dt>
+    <dd>Una decisión que se toma una vez y vale para muchas piezas: «todos los títulos en negrita», «todas las camisetas azules».</dd>
+    <dt>Sistema</dt>
+    <dd>El conjunto de reglas que comparten las piezas. Gracias a él se reconocen como parte de un mismo conjunto.</dd>
+    <dt>Excepción</dt>
+    <dd>Una pieza que rompe una regla a propósito, para decir «esta es distinta».</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" proposito="Las mismas cuatro tarjetas de una agenda, dos veces. Toca cada número para ver dónde actúa la regla y dónde la excepción.">
+
+<SistemaMiralo />
+
+<div class="dv-texto">
+
+En la primera versión, cada tarjeta tiene su propio estilo. Hay muchas diferencias y ninguna indica nada. La tarjeta que más llama la atención es la del taller, y por accidente.
+
+En la segunda, las cuatro siguen las mismas reglas. Eso se llama **consistencia**: las tarjetas son distintas en lo que dicen y se parecen en cómo lo presentan. Por eso basta romper una regla en una sola tarjeta para que se lea como la principal.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo">
+
+<Sistema />
+
+</Paso>
+
+<Paso id="usalo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Escribe tus reglas antes de diseñar</h3>
+      <p>Pocas y concretas: qué letra y qué tamaño tienen los títulos, qué color marca las categorías, cuánto espacio hay dentro de cada pieza. Si no puedes escribirlas, todavía no tienes un sistema.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Deja que cambie el contenido y mantén las reglas</h3>
+      <p>Títulos largos y cortos, imágenes altas y bajas: todo eso cabe dentro de las mismas reglas. Si una pieza no cabe, ajusta la regla para todas en lugar de hacer un arreglo solo para esa.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Guarda la excepción para una sola cosa</h3>
+      <p>Decide qué es lo más importante de la página y rompe una regla solo ahí. Si necesitas destacar dos o tres cosas del mismo tipo, conviene crear una regla nueva para ellas.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores que se repiten
+
+Cada caso empieza mal. Corrígelo con su control.
+
+</div>
+
+<SistemaErrores />
+
+<div class="dv-texto">
+
+### En piezas reales
+
+La misma idea en tres materiales distintos. Toca los números.
+
+</div>
+
+<SistemaEjemplos />
+
+</Paso>
+
+<Paso id="juega">
+
+<SistemaJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="Lo que produce el efecto">
+
+Las doce fichas comparten cinco reglas: un color, un tamaño para el título, un espacio interior, un grosor de borde y una alineación. Las cuatro últimas están en «Más controles». Ninguna ficha decide esas cosas por su cuenta; por eso, al cambiar una regla, cambian las doce a la vez.
+
+Una excepción es una ficha que rompe una sola regla. Tiende a verse primero porque las demás la siguen. Su efecto depende del resto: cuantas más fichas siguen la regla, más destaca la que la rompe.
+
+</Seccion>
+
+<Seccion titulo="Consistencia, uniformidad, monotonía">
+
+Lleva «Variación del contenido» a 0 %. Las doce fichas quedan idénticas. Eso es **uniformidad**: la misma pieza repetida. Está ordenada, pero no informa nada porque no hay diferencias que leer.
+
+Súbela un poco, sin excepciones. Las fichas ya son distintas, pero ninguna destaca y nada marca un ritmo. Eso es **monotonía**: un conjunto tan parejo que deja de informar.
+
+Súbela más. Cada ficha tiene su contenido, su proporción de imagen y su forma, y las reglas siguen iguales. Eso es **consistencia**: las mismas reglas con contenido distinto.
+
+</Seccion>
+
+<Seccion titulo="Cuándo una excepción significa">
+
+Con una sola excepción, la ficha que rompe la regla se vuelve lo más visible. Puede ser el evento principal del mes, el que tiene cupo limitado o el que se canceló. La excepción indica «esta es diferente» sin escribirlo.
+
+Marca tres o cuatro. Todavía destacan, pero ya compiten entre sí. Quien mira tiene que decidir cuál ver primero.
+
+Marca casi todas. Ahora destacan las dos que siguen la regla: la excepción se volvió lo normal y el énfasis pasó a otras fichas. Si todas rompen la misma regla, en la práctica cambiaste la regla.
+
+</Seccion>
+
+<Seccion titulo="Más lugares donde aparece">
+
+En una interfaz: el botón principal entre botones secundarios, el mensaje de error en un formulario, la fila seleccionada de una tabla. Cada uno funciona mientras sea el único.
+
+En una publicación: el titular de portada que se sale de la retícula, una página negra dentro de un libro de páginas blancas, el número de una revista que cambia de tipografía para un tema especial.
+
+</Seccion>
+
+<Seccion titulo="Lo que no explica">
+
+**No dice qué excepción es la correcta.** El instrumento muestra cuánto destaca una excepción. Si esa ficha merecía destacar, lo decide el contenido.
+
+**No todo lo que rompe una regla es una excepción.** Una ficha que se sale del eje por descuido también rompe la regla. Vistos desde fuera, el error y la decisión se parecen. Los distingue el motivo: una excepción tiene uno que se puede explicar en una frase.
+
+**No reemplaza el criterio.** Un sistema con reglas claras puede producir piezas aburridas o confusas. Las reglas ordenan las decisiones, pero no garantizan que sean buenas.
+
+**No se ve igual para todos.** Si la excepción solo cambia el color, quien no distingue ese color no la ve. Una excepción importante debería cambiar más de una cosa, o indicarse también en el texto.
+
+</Seccion>
+
+<Seccion titulo="Reglas con nombre: tokens">
+
+En los equipos que diseñan productos digitales, las reglas de un sistema suelen tener nombre propio: «color-acento», «espacio-medio», «título-grande». A esas reglas con nombre se les llama **tokens**. Cada pieza usa el token en lugar de repetir el valor, así que al cambiar el token cambian todas las piezas a la vez. Es lo que hacen los controles del instrumento que empiezan por «Regla ·».
+
+</Seccion>
+
+</Paso>

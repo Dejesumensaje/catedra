@@ -1,0 +1,208 @@
+---
+titulo: Interacción del color
+territorio: color
+pregunta: ¿Por qué el mismo color parece otro cuando cambia lo que tiene al lado?
+resumen: Un color se ve según lo que tiene al lado. Aprende a verlo en dos camisetas, a medir si un texto se lee y a no dejar un significado colgando solo del color.
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 4
+relaciones:
+  - concepto: semejanza
+    porQue: "El color es una de las formas más rápidas de hacer que dos cosas se parezcan, y por eso agrupa con fuerza. También puede fallar: si dos colores que deberían distinguirse tienen la misma luminancia, sin color se confunden."
+  - concepto: roles-semanticos
+    porQue: "Los mensajes de estado usan el color como señal de significado: rojo para error, verde para éxito. Ese significado se aprende en un contexto y puede leerse distinto en otro."
+  - concepto: contraste
+    porQue: La razón de contraste mide una sola de las diferencias entre dos colores, la de luminancia. Las demás también cambian lo que se ve.
+  - concepto: accesibilidad-del-color
+    porQue: La opción «Ver sin color» muestra qué queda cuando el tono no se distingue. Lo que queda tiene que bastar para entender el mensaje.
+  - concepto: dependencia-del-contexto
+    porQue: "El instrumento de los dos cuadros muestra el caso extremo: un color elegido por separado, en una paleta, puede verse distinto en la página."
+  - concepto: sistemas-y-excepciones
+    porQue: Una paleta de estados es un sistema pequeño. Intercambiar los colores de dos estados es una excepción especialmente confusa, porque contradice lo que el sistema enseñó.
+fuentes:
+  - autor: Josef Albers
+    obra: Interaction of Color. Yale University Press
+    anio: 1963
+    nota: Ejercicios con papeles de color para ver cómo un color cambia según sus vecinos.
+  - autor: W3C
+    obra: Web Content Accessibility Guidelines (WCAG) 2.2. Definiciones de razón de contraste y luminancia relativa
+    anio: 2023
+    url: https://www.w3.org/TR/WCAG22/
+    nota: La fórmula y los umbrales que usan el aviso para arreglar y el juego.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ColorIdea from '../../components/diseno-visual/experiencias/ColorIdea.astro';
+import ColorMiralo from '../../components/diseno-visual/experiencias/ColorMiralo.astro';
+import ColorSimultaneo from '../../components/diseno-visual/experiencias/ColorSimultaneo.astro';
+import ColorContraste from '../../components/diseno-visual/experiencias/ColorContraste.astro';
+import ColorRoles from '../../components/diseno-visual/experiencias/ColorRoles.astro';
+import ColorEjemplos from '../../components/diseno-visual/experiencias/ColorEjemplos.astro';
+import ColorJuego from '../../components/diseno-visual/experiencias/ColorJuego.astro';
+
+<Paso id="idea">
+
+<ColorIdea />
+
+<p class="dv-frase">Un color se ve según lo que tiene al lado.</p>
+
+<div class="dv-texto">
+
+El gris de los dos parches es el mismo, aunque cueste creerlo. Percibimos cada color en comparación con lo que lo rodea. Junto a algo oscuro, un color tiende a parecer más claro; junto a algo claro, más oscuro.
+
+En diseño, esto tiene dos consecuencias. La primera: un color elegido por separado, en una paleta, puede verse distinto al ponerlo en la página. La segunda: que un texto se pueda leer depende de la diferencia entre su color y el del fondo.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Tono</dt>
+    <dd>Lo que nombramos al decir rojo, verde o azul.</dd>
+    <dt>Luminancia</dt>
+    <dd>Cuánta luz devuelve un color, medida con una fórmula. Es lo que queda en una foto en blanco y negro. Lo que tú ves como más o menos claro se llama claridad.</dd>
+    <dt>Contraste</dt>
+    <dd>La diferencia entre dos colores que se tocan. Para leer, la que importa es la diferencia de luminancia.</dd>
+    <dt>Razón de contraste</dt>
+    <dd>La cifra que mide esa diferencia. Va de 1:1 (dos colores iguales) a 21:1 (negro sobre blanco). Para un párrafo, el mínimo habitual es 4,5:1.</dd>
+    <dt>Luminosidad y saturación</dt>
+    <dd>Dos de los controles del instrumento. La luminosidad aclara u oscurece un color: se parece a la luminancia, pero no mide lo mismo. La saturación dice qué tan vivo o apagado es.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" proposito="El mismo formulario de pago dos veces, con los mismos colores de marca. Cambia lo que cada color tiene al lado y si el error se dice solo con color. Toca cada número.">
+
+<ColorMiralo />
+
+<div class="dv-texto">
+
+En el primero, el amarillo de la marca lleva texto blanco encima. Los dos son claros, así que casi no hay diferencia de luminancia y el texto del botón apenas se lee. Además, el error del campo se indica solo con un borde rojo.
+
+En el segundo, el amarillo es el mismo, pero el texto ahora es oscuro. Y el error se indica también con un símbolo y una frase. No se quitó ningún color: cambió la relación entre ellos.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo">
+
+<ColorSimultaneo />
+
+</Paso>
+
+<Paso id="usalo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Mide el contraste del texto, no lo adivines</h3>
+      <p>A simple vista, un color llamativo puede parecer legible aunque no lo sea. Usa una herramienta que calcule la razón de contraste. WCAG 2 pide como mínimo 4,5:1 para texto normal y 3:1 para texto grande.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No dejes que el color sea la única señal</h3>
+      <p>Si el rojo significa «error», indícalo también con una palabra, un símbolo o una forma. El color refuerza el mensaje; la palabra lo asegura.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Prueba cada color en su lugar, y en gris</h3>
+      <p>Pon el color sobre el fondo donde se va a usar. Después mira la pieza en blanco y negro: si algo importante desaparece, dependía solo del tono.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Dos errores que se repiten
+
+Cada caso empieza mal. Arréglalo con sus controles.
+
+</div>
+
+<div style="margin-top: 2.5rem">
+  <ColorContraste />
+</div>
+
+<div style="margin-top: 1.5rem">
+  <ColorRoles />
+</div>
+
+<div class="dv-texto">
+
+### En piezas reales
+
+Tres piezas en las que el color depende de los colores que lo rodean. Toca los números.
+
+</div>
+
+<ColorEjemplos />
+
+</Paso>
+
+<Paso id="juega">
+
+<ColorJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="Lo que produce el efecto">
+
+Cada fondo tiende a cambiar la apariencia del color que tiene encima en la dirección contraria. Un fondo claro lo hace parecer más oscuro; uno oscuro, más claro. Un fondo muy saturado lo hace parecer menos vivo. Este fenómeno se llama contraste simultáneo.
+
+Josef Albers hizo de ejercicios como el de los dos centros la base de su enseñanza del color, recogida en *Interaction of Color* (1963). En ese libro sostiene que el color es el medio más relativo del arte.
+
+</Seccion>
+
+<Seccion titulo="Percepción, función, accesibilidad">
+
+Al elegir un color hay por lo menos tres preguntas distintas, y cada una se responde con criterios distintos.
+
+**Percepción.** ¿Cómo se ve este color aquí, junto a estos otros? Se responde mirándolo en su contexto.
+
+**Función.** ¿Qué tiene que comunicar? Separar, marcar un estado, guiar la mirada. Se responde según el propósito de la pieza.
+
+**Accesibilidad.** ¿Lo percibe quien ve los colores de otra forma, quien usa una pantalla de baja calidad o quien está a pleno sol? Se responde con la diferencia de luminancia y con la redundancia: decir lo mismo por más de un medio.
+
+Una combinación puede ser buena en una de las tres y fallar en otra. Los dos casos para arreglar separan esas preguntas.
+
+</Seccion>
+
+<Seccion titulo="La razón de contraste es un mínimo">
+
+WCAG 2, la guía de accesibilidad web del W3C, compara la luminancia relativa del texto y la del fondo. El resultado va de 1:1 (el mismo color) a 21:1 (negro sobre blanco). Para texto normal pide 4,5:1 en el nivel habitual (AA) y 7:1 en el más exigente (AAA). Para texto grande, de unos 24 px o 19 px en negrita, pide 3:1 y 4,5:1.
+
+La fórmula no tiene en cuenta el tono. En el aviso para arreglar, prueba «Rojo sobre verde»: dos tonos muy distintos quedan casi en 1:1 porque tienen casi la misma luminancia. La cifra acierta: ese texto cuesta leerlo.
+
+Cumplir el mínimo no garantiza que una combinación sea buena. Indica que no excluye a quien necesita más diferencia. El resto es una decisión de diseño.
+
+</Seccion>
+
+<Seccion titulo="Cuando el color tiene un significado">
+
+En la paleta convencional de los cuatro mensajes, el rojo, el verde, el ámbar y el azul tienen casi la misma luminancia. Con «Ver sin color» se vuelven un mismo gris.
+
+La forma y la palabra («Error.», «Listo.») repiten la información por otro medio. Por eso los mensajes se siguen entendiendo sin color.
+
+La paleta cruzada usa los mismos colores en otros estados. El rojo no significa «error» por sí mismo: lo asociamos por costumbre. Una paleta que contradice esa costumbre obliga a leer con más atención.
+
+</Seccion>
+
+<Seccion titulo="Lo que no explica">
+
+**No predice cuánto cambiará la apariencia de un color.** El efecto varía con el tamaño de las superficies, con la distancia y con lo que hay alrededor de la pantalla. Prueba «Rodear los centros con un filo» en el instrumento y compara.
+
+**No dice qué combinación es correcta.** Ninguna lo es en abstracto. Un amarillo que resulta excesivo en un formulario puede ser justo lo que necesita un cartel.
+
+**Cada pantalla es distinta.** El mismo código de color se ve diferente según el brillo, la configuración de color y la luz del lugar. Los números de estos instrumentos son exactos; lo que ve cada persona puede variar.
+
+**La razón de contraste no mide la comodidad.** Un texto largo con el máximo contraste posible puede cansar. La fórmula no se ocupa de eso.
+
+</Seccion>
+
+</Paso>

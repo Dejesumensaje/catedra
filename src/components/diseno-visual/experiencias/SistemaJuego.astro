@@ -1,0 +1,217 @@
+---
+// Paso 5 de sistemas: cinco rondas con azar. Ver qué rompe la regla,
+// distinguir consistencia de uniformidad, elegir dónde poner el énfasis,
+// arreglar un exceso de excepciones y reconocer cuándo se invierte.
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="sistemas-y-excepciones"
+  rondas={5}
+  descripcion="Cinco rondas: encontrar la pieza que rompe la regla, distinguir consistencia de uniformidad, elegir el botón principal, quitar las excepciones que sobran y ver qué pasa cuando casi todo es excepción."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { svg } from '../../../lib/diseno-visual/estado';
+
+  const T = '#222222';
+  const AZUL = '#1f4e8c';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const azar = Math.random;
+  const entre = (a: number, b: number) => a + Math.floor(azar() * (b - a + 1));
+
+  type Rompe = 'color' | 'tamano' | 'giro' | 'borde';
+  interface Ficha {
+    rompe?: Rompe;
+    /** 0–1: cuánto varía el contenido (largo del título, alto de la imagen). */
+    var?: number;
+    numero?: number;
+    /** estilo propio: cada ficha a su manera (sin sistema) */
+    propio?: number;
+  }
+
+  /** Dibuja una ficha esquemática en (x, y) con ancho w. */
+  function ficha(s: SVGSVGElement, x: number, y: number, w: number, h: number, f: Ficha, semilla: number) {
+    const g = svg('g');
+    const r = (k: number) => ((Math.sin(semilla * 97.13 + k * 13.7) + 1) / 2);
+    const v = f.var ?? 0;
+    let fondo = '#fff';
+    let trazo = T;
+    let grosor = 1.5;
+    let tinta = T;
+    let acento = AZUL;
+    let giro = 0;
+    let alinear: 'izq' | 'der' | 'centro' = 'izq';
+    let tituloAlto = 6;
+    if (f.propio !== undefined) {
+      const p = f.propio % 5;
+      if (p === 1) { fondo = '#d9e4ec'; trazo = 'none'; alinear = 'der'; acento = '#2e6b3a'; }
+      if (p === 2) { grosor = 4; alinear = 'centro'; acento = '#b3261e'; }
+      if (p === 3) { fondo = T; tinta = '#fff'; acento = '#fff'; }
+      if (p === 4) { trazo = '#6f6f6f'; grosor = 1; tituloAlto = 4; }
+    }
+    if (f.rompe === 'color') { fondo = AZUL; trazo = AZUL; tinta = '#fff'; acento = '#fff'; }
+    if (f.rompe === 'tamano') tituloAlto = 13;
+    if (f.rompe === 'giro') giro = -7;
+    if (f.rompe === 'borde') grosor = 5;
+    g.setAttribute('transform', `rotate(${giro} ${x + w / 2} ${y + h / 2})`);
+    g.append(svg('rect', { x: x + grosor / 2, y: y + grosor / 2, width: w - grosor, height: h - grosor, fill: fondo, stroke: trazo, 'stroke-width': trazo === 'none' ? 0 : grosor }));
+    const pad = w * 0.12;
+    const imgAlto = h * (0.3 + 0.2 * (r(1) - 0.5) * 2 * v);
+    g.append(svg('rect', { x: x + pad, y: y + pad, width: w - pad * 2, height: imgAlto, fill: f.rompe === 'color' || f.propio === 3 ? 'rgba(255,255,255,0.25)' : '#e5e3dc' }));
+    const ancho = (frac: number) => (w - pad * 2) * frac;
+    const ax = (wl: number) => (alinear === 'izq' ? x + pad : alinear === 'der' ? x + w - pad - wl : x + (w - wl) / 2);
+    let yy = y + pad + imgAlto + h * 0.08;
+    const wc = ancho(0.35);
+    g.append(svg('rect', { x: ax(wc), y: yy, width: wc, height: 3, fill: acento }));
+    yy += 7;
+    const wt = ancho(Math.min(1, 0.5 + 0.5 * r(2) * v + (f.rompe === 'tamano' ? 0.3 : 0)));
+    g.append(svg('rect', { x: ax(wt), y: yy, width: wt, height: tituloAlto, fill: tinta }));
+    yy += tituloAlto + 5;
+    const wf = ancho(0.45);
+    g.append(svg('rect', { x: ax(wf), y: yy, width: wf, height: 3, fill: tinta, opacity: 0.6 }));
+    if (f.numero !== undefined) {
+      const n = svg('text', { x: x + w - 6, y: y + h - 6, 'text-anchor': 'end', 'font-family': SANS, 'font-weight': 900, 'font-size': 12, fill: tinta });
+      n.textContent = String(f.numero);
+      g.append(n);
+    }
+    s.append(g);
+  }
+
+  function rejilla(fichas: Ficha[], cols: number, ancho = 420, semilla = 1) {
+    const filas = Math.ceil(fichas.length / cols);
+    const gap = 12;
+    const w = (ancho - 24 - gap * (cols - 1)) / cols;
+    const h = w * 1.05;
+    const alto = 24 + filas * h + (filas - 1) * gap;
+    const s = svg('svg', { viewBox: `0 0 ${ancho} ${alto}`, width: ancho, height: alto });
+    fichas.forEach((f, i) => ficha(s, 12 + (i % cols) * (w + gap), 12 + Math.floor(i / cols) * (h + gap), w, h, f, semilla + i));
+    return s;
+  }
+
+  const nombreRompe: Record<Rompe, string> = {
+    color: 'del color: es la única con fondo azul',
+    tamano: 'del tamaño: su título es mucho más grande',
+    giro: 'de la alineación: es la única inclinada',
+    borde: 'del borde: es la única con borde grueso',
+  };
+
+  // ── 1. ver ───────────────────────────────────────
+  function ver(): Ronda {
+    const n = 8;
+    const rota = entre(0, n - 1);
+    const tipo = barajar<Rompe>(['color', 'tamano', 'giro', 'borde'])[0];
+    const fichas: Ficha[] = Array.from({ length: n }, (_, i) => ({ numero: i + 1, var: 0.8, rompe: i === rota ? tipo : undefined }));
+    const otras = barajar(Array.from({ length: n }, (_, i) => i).filter((i) => i !== rota)).slice(0, 3);
+    const opciones = barajar([rota, ...otras]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué ficha rompe la regla?',
+      ayuda: 'Las ocho comparten reglas. Que cambie el contenido no cuenta como romperlas.',
+      escena: (el) => el.append(rejilla(fichas, 4, 480, entre(1, 999))),
+      escenaDescrita: `Ocho fichas numeradas del 1 al 8. Una rompe la regla ${nombreRompe[tipo]}.`,
+      opciones: opciones.map((i) => ({ texto: `La ficha ${i + 1}` })),
+      correcta: opciones.indexOf(rota),
+      porque: `La ficha ${rota + 1} rompe la regla ${nombreRompe[tipo]}. Que los títulos y las imágenes cambien de tamaño no rompe ninguna regla: es contenido distinto dentro de las mismas reglas.`,
+      repaso: 'Distinguir regla y contenido',
+    };
+  }
+
+  // ── 2. consistente, uniforme, sin sistema ────────
+  function decidir(): Ronda {
+    const semilla = entre(1, 999);
+    const conjuntos = barajar([
+      { id: 'consistente', fichas: Array.from({ length: 6 }, () => ({ var: 1 })), describir: 'fichas con el mismo estilo y contenidos de distinto largo' },
+      { id: 'uniforme', fichas: Array.from({ length: 6 }, () => ({ var: 0 })), describir: 'seis fichas idénticas' },
+      { id: 'caos', fichas: Array.from({ length: 6 }, (_, i) => ({ var: 1, propio: i })), describir: 'fichas, cada una con su propio estilo' },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estos conjuntos es consistente?',
+      ayuda: 'Consistente: piezas con contenido distinto que siguen las mismas reglas.',
+      opciones: conjuntos.map((c) => ({ pintar: (el: HTMLElement) => el.append(rejilla(c.fichas, 3, 300, semilla)), describir: c.describir })),
+      correcta: conjuntos.findIndex((c) => c.id === 'consistente'),
+      porque: 'El conjunto consistente tiene un mismo estilo y contenidos de distinto largo. Las seis copias iguales son uniformes: están ordenadas, pero no informan nada. Cuando cada ficha tiene su propio estilo no hay sistema, y no se distingue qué es regla y qué es accidente.',
+      repaso: 'Consistencia y uniformidad',
+    };
+  }
+
+  // ── 3. el botón principal ────────────────────────
+  function boton(): Ronda {
+    const textos = barajar([['Cancelar', 'Guardar', 'Pagar'], ['Volver', 'Vista previa', 'Publicar'], ['Descartar', 'Borrador', 'Enviar']])[0];
+    const fila = (modo: 'todos' | 'uno' | 'colores') => (el: HTMLElement) => {
+      const s = svg('svg', { viewBox: '0 0 300 70', width: 300, height: 70 });
+      const colores = ['#1f4e8c', '#2e6b3a', '#b3261e'];
+      textos.forEach((t, i) => {
+        const x = 12 + i * 96;
+        const relleno = modo === 'todos' ? T : modo === 'colores' ? colores[i] : i === 2 ? T : '#fff';
+        s.append(svg('rect', { x: x + 0.5, y: 18.5, width: 88, height: 32, fill: relleno, stroke: modo === 'colores' ? relleno : T }));
+        const e = svg('text', { x: x + 44, y: 39, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 12, 'font-weight': 700, fill: relleno === '#fff' ? T : '#fff' });
+        e.textContent = t;
+        s.append(e);
+      });
+      el.append(s);
+    };
+    const ops = barajar([
+      { m: 'uno' as const, d: 'dos botones con borde y uno relleno' },
+      { m: 'todos' as const, d: 'tres botones rellenos de negro' },
+      { m: 'colores' as const, d: 'tres botones, cada uno de un color' },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: `«${textos[2]}» es la acción principal. ¿En qué versión se nota?`,
+      opciones: ops.map((o) => ({ pintar: fila(o.m), describir: o.d })),
+      correcta: ops.findIndex((o) => o.m === 'uno'),
+      porque: `Con dos botones iguales y uno distinto, el distinto es la excepción y tiende a verse primero. Si los tres van rellenos, ninguno destaca. Si cada uno tiene su color, hay tres excepciones a la vez: compiten y hay que leerlos todos.`,
+      repaso: 'Dónde poner la excepción',
+    };
+  }
+
+  // ── 4. arreglar: demasiadas excepciones ──────────
+  function arreglar(): Ronda {
+    const orden = barajar(Array.from({ length: 9 }, (_, i) => i));
+    const tipo = barajar<Rompe>(['color', 'borde'])[0];
+    const semilla = entre(1, 999);
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Demasiadas fichas destacan. Quita excepciones hasta que se lea cuál es la importante.',
+      ayuda: 'Mueve el control y luego toca «Comprobar».',
+      control: { etiqueta: 'Fichas que rompen la regla', min: 0, max: 9, valor: 7 },
+      pintar: (el, v) => {
+        el.replaceChildren();
+        const marcadas = new Set(orden.slice(0, v));
+        el.append(rejilla(Array.from({ length: 9 }, (_, i) => ({ var: 0.8, rompe: marcadas.has(i) ? tipo : undefined })), 3, 360, semilla));
+      },
+      cumple: (v) => v === 1,
+      falta: (v) => v === 0 ? 'Quitaste todas: ahora ninguna destaca. Había que dejar una.' : v <= 3 ? `Con ${v} todavía compiten entre sí. Deja una sola.` : `Con ${v}, la excepción es casi lo normal. Quita más.`,
+      porque: 'Una sola excepción tiende a verse primero e indica «esta es la importante». Con dos o tres, ya compiten entre sí. Con más de la mitad, destacan las fichas que siguen la regla.',
+      repaso: 'Una sola excepción',
+    };
+  }
+
+  // ── 5. el límite ─────────────────────────────────
+  function limite(): Ronda {
+    const normales = new Set(barajar(Array.from({ length: 9 }, (_, i) => i)).slice(0, 2));
+    const semilla = entre(1, 999);
+    const ops = barajar([
+      { t: 'Las dos fichas que siguen la regla', bien: true },
+      { t: 'Las fichas azules, las excepciones', bien: false },
+      { t: 'Ninguna: todas destacan por igual', bien: false },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Aquí siete de nueve fichas son excepción. ¿Qué ves primero?',
+      escena: (el) => el.append(rejilla(Array.from({ length: 9 }, (_, i) => ({ var: 0.8, rompe: normales.has(i) ? undefined : 'color' })), 3, 360, semilla)),
+      escenaDescrita: 'Nueve fichas: siete con fondo azul y dos con fondo blanco.',
+      opciones: ops.map((o) => ({ texto: o.t })),
+      correcta: ops.findIndex((o) => o.bien),
+      porque: 'Cuando las excepciones son mayoría, lo raro pasa a ser lo normal y destacan las dos fichas que siguen la regla. Si siete fichas rompen la misma regla, en la práctica cambiaste la regla.',
+      repaso: 'Cuando la excepción se vuelve lo normal',
+    };
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-juego="sistemas-y-excepciones"]')) {
+    jugar(raiz, () => [ver(), decidir(), boton(), arreglar(), limite()]);
+  }
+</script>

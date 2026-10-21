@@ -1,0 +1,76 @@
+---
+// Diagrama mínimo de cada entrada para el índice. No es un ícono: es el
+// fenómeno reducido a su relación. Decorativo para lectores de pantalla
+// (el título y el resumen ya lo dicen).
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const T = '#222222';
+---
+
+<svg class="dv-glifo" viewBox="0 0 88 64" aria-hidden="true" focusable="false">
+  {slug === 'proximidad' && (
+    <g fill={T}>
+      {[0, 1, 2].map((g) =>
+        [0, 1, 2, 3].map((i) => <circle cx={12 + g * 28 + (i % 2) * 8} cy={24 + Math.floor(i / 2) * 8} r="2.6" />),
+      )}
+    </g>
+  )}
+  {slug === 'semejanza' && (
+    <g>
+      {[0, 1, 2, 3].map((f) =>
+        [0, 1, 2, 3, 4, 5].map((c) =>
+          f % 2 === 0
+            ? <circle cx={14 + c * 12} cy={14 + f * 12} r="3" fill={T} />
+            : <circle cx={14 + c * 12} cy={14 + f * 12} r="2.4" fill="none" stroke={T} stroke-width="1.2" />,
+        ),
+      )}
+    </g>
+  )}
+  {slug === 'escalas-tipograficas' && (
+    <g fill={T}>
+      <rect x="12" y="12" width="56" height="10" />
+      <rect x="12" y="28" width="40" height="6" />
+      <rect x="12" y="40" width="62" height="2.5" />
+      <rect x="12" y="45" width="60" height="2.5" />
+      <rect x="12" y="50" width="38" height="2.5" />
+    </g>
+  )}
+  {slug === 'interaccion-del-color' && (
+    <g>
+      <rect x="0" y="0" width="44" height="64" fill="#1f3a5f" />
+      <rect x="44" y="0" width="44" height="64" fill="#e9c46a" />
+      <rect x="14" y="22" width="16" height="20" fill="#8a8a8a" />
+      <rect x="58" y="22" width="16" height="20" fill="#8a8a8a" />
+    </g>
+  )}
+  {slug === 'reticulas-y-alineacion' && (
+    <g>
+      {[0, 1, 2, 3, 4, 5].map((c) => <rect x={8 + c * 12.5} y="6" width="9.5" height="52" fill="#e5e5e5" />)}
+      <rect x="8" y="10" width="47" height="10" fill={T} />
+      <rect x="8" y="26" width="22" height="26" fill={T} />
+      <rect x="33" y="26" width="47" height="3" fill={T} />
+      <rect x="33" y="33" width="47" height="3" fill={T} />
+      <rect x="33" y="40" width="34" height="3" fill={T} />
+    </g>
+  )}
+  {slug === 'sistemas-y-excepciones' && (
+    <g>
+      {[0, 1, 2].map((f) =>
+        [0, 1, 2, 3].map((c) => (
+          <rect
+            x={10 + c * 18}
+            y={8 + f * 17}
+            width="14"
+            height="13"
+            fill={f === 1 && c === 2 ? '#eeff41' : 'none'}
+            stroke={T}
+            stroke-width={f === 1 && c === 2 ? 2 : 1.2}
+          />
+        )),
+      )}
+    </g>
+  )}
+</svg>

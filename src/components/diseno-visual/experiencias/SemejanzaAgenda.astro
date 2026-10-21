@@ -1,0 +1,81 @@
+---
+// Error frecuente: una agenda con dos tipos de evento que no se distinguen
+// sin leer. Empieza rota (nada los distingue) y se arregla eligiendo qué
+// atributo comparten los talleres.
+import Instrumento from '../controles/Instrumento.astro';
+import Opciones from '../controles/Opciones.astro';
+
+const lab = 'sem-agenda';
+---
+
+<Instrumento
+  id={lab}
+  titulo="Arregla · una agenda"
+  consigna="Tres talleres y cinco charlas se ven iguales. Haz que los talleres se distingan antes de leer."
+  comparar={false}
+>
+  <Opciones
+    lab={lab}
+    variable="marca"
+    etiqueta="Qué comparten los talleres"
+    valor="nada"
+    opciones={[
+      { valor: 'nada', texto: 'Nada' },
+      { valor: 'tono', texto: 'Un color' },
+      { valor: 'forma', texto: 'Una forma' },
+      { valor: 'ambos', texto: 'Forma y claridad' },
+    ]}
+  />
+</Instrumento>
+
+<script>
+  import { conectar } from '../../../lib/diseno-visual/estado';
+
+  type E = { marca: string };
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const eventos: [string, string, boolean][] = [
+    ['Lun 3', 'Lectura en voz alta', false],
+    ['Mar 4', 'Encuadernación básica', true],
+    ['Mié 5', 'Historia del barrio', false],
+    ['Jue 6', 'Cine comentado', false],
+    ['Vie 7', 'Grabado con sellos', true],
+    ['Sáb 8', 'Autores locales', false],
+    ['Lun 10', 'Escritura de cartas', true],
+    ['Mar 11', 'Archivo fotográfico', false],
+  ];
+
+  function marcador(e: E, taller: boolean): string {
+    const base = 'display:inline-block;width:12px;height:12px;margin-right:10px;vertical-align:-1px;flex:none;';
+    if (e.marca === 'nada') return `<span style="${base}border:1.5px solid #222;border-radius:50%"></span>`;
+    if (e.marca === 'tono') return `<span style="${base}border-radius:50%;background:${taller ? '#c0392b' : '#2e7d4f'}"></span>`;
+    if (e.marca === 'forma') return taller
+      ? `<span style="${base}border:1.5px solid #222"></span>`
+      : `<span style="${base}border:1.5px solid #222;border-radius:50%"></span>`;
+    return taller
+      ? `<span style="${base}background:#222"></span>`
+      : `<span style="${base}border:1.5px solid #222;border-radius:50%"></span>`;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    destino.innerHTML = `
+      <ul style="list-style:none;margin:0;padding:16px 18px;font-family:${SANS};font-size:14px;color:#222;line-height:1.3">
+        ${eventos.map(([dia, nombre, taller]) => `
+          <li style="display:flex;align-items:baseline;padding:5px 0">
+            ${marcador(e, taller)}
+            <span style="width:52px;flex:none;color:#6f6f6f">${dia}</span>
+            <span>${nombre}</span>
+          </li>`).join('')}
+      </ul>`;
+  }
+
+  function describir(e: E): string {
+    if (e.marca === 'nada') return 'Ocho eventos iguales. Para saber cuáles son talleres hay que leerlos <b class="dv-cifra">todos</b>.';
+    if (e.marca === 'tono') return 'Ahora los talleres se distinguen, pero solo por el color. En blanco y negro, o para quien no distingue el rojo del verde, vuelven a verse iguales.';
+    if (e.marca === 'forma') return 'Un cuadrado frente a un círculo: los talleres se distinguen sin leer, también sin color.';
+    return '<b class="dv-cifra">Forma y claridad</b> a la vez: la señal más segura. Si una no se percibe, queda la otra.';
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="sem-agenda"]')) {
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

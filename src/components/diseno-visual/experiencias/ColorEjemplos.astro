@@ -1,0 +1,105 @@
+---
+// Paso 4 de interacción del color: tres piezas reales con marcas. Un plano
+// de transporte, un gráfico y una pantalla con el mismo color de marca
+// sobre dos fondos.
+import Anotada from '../Anotada.astro';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const T = '#222222';
+const G = '#6f6f6f';
+const pc = (w: number, h: number) => (x: number, y: number) => ({ x: (x / w) * 100, y: (y / h) * 100 });
+const zc = (w: number, h: number) => (x: number, y: number, ancho: number, alto: number) => ({ x: (x / w) * 100, y: (y / h) * 100, w: (ancho / w) * 100, h: (alto / h) * 100 });
+
+// ── plano ───────────────────────────────────────
+const PW = 320; const PH = 300;
+const pp = pc(PW, PH); const pz = zc(PW, PH);
+const AZUL = '#1f5fa8'; const VERDE = '#2e7d32'; const CORAL = '#c4471f';
+
+// ── gráfico ─────────────────────────────────────
+const GW = 320; const GH = 270;
+const gp = pc(GW, GH); const gz = zc(GW, GH);
+const barras = [52, 61, 58, 70, 66, 98];
+const anios = ['2021', '2022', '2023', '2024', '2025', '2026'];
+
+// ── pantalla ────────────────────────────────────
+const AW = 320; const AH = 340;
+const ap = pc(AW, AH); const az = zc(AW, AH);
+const NARANJA = '#ff7a1a'; const NOCHE = '#1d2b45';
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    rotulo="Un plano de transporte"
+    notas={[
+      { ...pp(320, 44), texto: 'Cada línea tiene un color y una letra. Quien no distingue el verde del rojo puede guiarse por la letra.', zona: pz(10, 30, 44, 34) },
+      { ...pp(320, 252), texto: 'La línea en obras va en gris y punteada. Se ve menos a propósito: aquí el bajo contraste es una decisión.', zona: pz(20, 236, 280, 32) },
+      { ...pp(320, 148), texto: 'La estación de cambio es más grande y tiene el borde más grueso. Se reconoce por la forma, además del color.', zona: pz(140, 128, 40, 40) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="Plano de tres líneas de transporte, A azul, B verde y C roja, con una estación de cambio y una línea en obra en gris punteado.">
+      <rect width={PW} height={PH} fill="#fff" />
+      <line x1="40" y1="148" x2="290" y2="148" stroke={AZUL} stroke-width="8" />
+      <line x1="160" y1="40" x2="160" y2="220" stroke={VERDE} stroke-width="8" />
+      <polyline points="60,220 120,190 160,148 230,90" fill="none" stroke={CORAL} stroke-width="8" />
+      <line x1="40" y1="252" x2="290" y2="252" stroke="#9e9e9e" stroke-width="5" stroke-dasharray="10 8" />
+      {[[70, 148], [230, 148], [270, 148], [160, 80], [160, 200], [100, 200], [200, 116]].map(([x, y]) => (
+        <circle cx={x} cy={y} r="6" fill="#fff" stroke={T} stroke-width="2" />
+      ))}
+      <circle cx="160" cy="148" r="12" fill="#fff" stroke={T} stroke-width="4" />
+      <rect x="18" y="136" width="22" height="24" fill={AZUL} />
+      <text x="29" y="154" text-anchor="middle" font-family={SANS} font-weight="900" font-size="15" fill="#fff">A</text>
+      <rect x="149" y="16" width="22" height="24" fill={VERDE} />
+      <text x="160" y="34" text-anchor="middle" font-family={SANS} font-weight="900" font-size="15" fill="#fff">B</text>
+      <rect x="230" y="66" width="22" height="24" fill={CORAL} />
+      <text x="241" y="84" text-anchor="middle" font-family={SANS} font-weight="900" font-size="15" fill="#fff">C</text>
+      <text x="40" y="278" font-family={SANS} font-size="12" fill={G}>Línea D · en obra hasta 2027</text>
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Un gráfico de barras"
+    notas={[
+      { ...gp(320, 120), texto: 'Solo una barra tiene color, y por eso tiende a mirarse primero. Destaca por contraste con el gris de las demás.', zona: gz(246, 60, 50, 170) },
+      { ...gp(320, 196), texto: 'Las demás van en gris claro. Si todas tuvieran color, ninguna destacaría.', zona: gz(26, 110, 220, 120) },
+      { ...gp(320, 36), texto: 'La barra destacada también lleva un rótulo con el dato. Quien no percibe el color puede leerlo.', zona: gz(210, 22, 106, 26) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${GW} ${GH}`} role="img" aria-label="Gráfico de barras de préstamos de libros por año. Las barras de 2021 a 2025 son grises; la de 2026 es naranja y lleva el rótulo «2026: récord».">
+      <rect width={GW} height={GH} fill="#fff" />
+      <text x="26" y="20" font-family={SANS} font-weight="700" font-size="12" fill={T}>Préstamos de libros por año</text>
+      <line x1="26" y1="230" x2="300" y2="230" stroke={T} stroke-width="1.5" />
+      {barras.map((v, i) => {
+        const h = v * 1.6;
+        const ultima = i === barras.length - 1;
+        return (
+          <g>
+            <rect x={34 + i * 44} y={230 - h} width="30" height={h} fill={ultima ? '#d9531e' : '#c9c9c9'} />
+            <text x={49 + i * 44} y="248" text-anchor="middle" font-family={SANS} font-size="11" fill={ultima ? T : G} font-weight={ultima ? 700 : 400}>{anios[i]}</text>
+          </g>
+        );
+      })}
+      <text x="306" y="44" text-anchor="end" font-family={SANS} font-weight="700" font-size="12" fill={T}>2026: récord</text>
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Un color de marca sobre dos fondos"
+    notas={[
+      { ...ap(320, 64), texto: 'Sobre blanco, este naranja tiene una razón de contraste de 2,6:1 y no sirve para texto. Aquí solo subraya; el texto va en un color oscuro.', zona: az(10, 30, 300, 60) },
+      { ...ap(320, 236), texto: 'El mismo naranja sobre azul oscuro se ve más intenso y ya sirve para texto: razón de contraste de 5,4:1.', zona: az(24, 214, 272, 40) },
+      { ...ap(320, 300), texto: 'Un color de marca necesita una regla de uso para cada fondo en el que aparece.', zona: az(10, 120, 300, 210) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${AW} ${AH}`} role="img" aria-label="Pantalla de una tienda: arriba, sobre blanco, un título subrayado en naranja; abajo, una tarjeta azul oscuro con el texto «Envío gratis» en el mismo naranja.">
+      <rect width={AW} height={AH} fill="#fff" />
+      <text x="24" y="58" font-family={SANS} font-weight="900" font-size="24" fill={T}>Ofertas</text>
+      <rect x="24" y="68" width="96" height="6" fill={NARANJA} />
+      <text x="24" y="108" font-family={SANS} font-size="13" fill={G}>Hasta el domingo</text>
+      <rect x="24" y="130" width="272" height="180" fill={NOCHE} />
+      <text x="44" y="172" font-family={SANS} font-weight="700" font-size="18" fill="#f3efe6">Lámpara de escritorio</text>
+      <text x="44" y="196" font-family={SANS} font-size="14" fill="#f3efe6">$129.000</text>
+      <text x="44" y="242" font-family={SANS} font-weight="900" font-size="20" fill={NARANJA}>Envío gratis</text>
+      <rect x="44" y="254" width="96" height="6" fill={NARANJA} />
+    </svg>
+  </Anotada>
+</div>

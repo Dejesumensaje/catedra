@@ -1,0 +1,45 @@
+---
+// Control numérico. Un <input type="range"> nativo: flechas, Inicio/Fin y
+// RePág/AvPág funcionan sin código propio. El <output> se actualiza desde
+// src/lib/diseno-visual/estado.ts.
+interface Props {
+  lab: string;
+  variable: string;
+  etiqueta: string;
+  min: number;
+  max: number;
+  paso?: number;
+  valor: number;
+  unidad?: string;
+  decimales?: number;
+  ayuda?: string;
+}
+
+const { lab, variable, etiqueta, min, max, paso = 1, valor, unidad = '', decimales = 0, ayuda } = Astro.props;
+const id = `${lab}-${variable}`;
+const texto = new Intl.NumberFormat('es-CO', {
+  minimumFractionDigits: decimales,
+  maximumFractionDigits: decimales,
+}).format(valor) + (unidad ? (unidad === '°' ? '°' : ` ${unidad}`) : '');
+---
+
+<div class="dv-control dv-deslizador">
+  <div class="dv-control-cab">
+    <label for={id}>{etiqueta}</label>
+    <output for={id} data-salida={variable}>{texto}</output>
+  </div>
+  <input
+    type="range"
+    id={id}
+    min={min}
+    max={max}
+    step={paso}
+    value={valor}
+    data-var={variable}
+    data-etiqueta={etiqueta}
+    data-unidad={unidad}
+    data-decimales={decimales}
+    aria-describedby={ayuda ? `${id}-ayuda` : undefined}
+  />
+  {ayuda && <p class="dv-ayuda" id={`${id}-ayuda`}>{ayuda}</p>}
+</div>

@@ -1,0 +1,190 @@
+---
+// Paso 5 de interacción del color: cinco rondas generadas con azar. De ver
+// (dos centros iguales) a saber (qué alcanza una razón) a decidir (qué
+// aviso se lee mejor) a hacer (subir el contraste) y al límite (un estado
+// que solo dice color).
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="interaccion-del-color"
+  rondas={5}
+  descripcion="Cinco rondas: comparar un color en dos contextos, saber para qué sirve una razón de contraste, elegir el aviso que mejor se lee, arreglar uno que no se lee y reconocer cuándo el color no basta."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { svg, n } from '../../../lib/diseno-visual/estado';
+  import { hslAHex, razonContraste, aGris } from '../../../lib/diseno-visual/contraste';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const azar = Math.random;
+  const entre = (a: number, b: number) => a + Math.floor(azar() * (b - a + 1));
+  const lienzo = (w: number, h: number) => svg('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h });
+
+  /** Luminosidad HSL con la que un color de tono h y saturación s alcanza la razón pedida contra el fondo. */
+  function buscarL(h: number, s: number, fondo: string, objetivo: number, oscuro: boolean): number {
+    let lo = 0;
+    let hi = 100;
+    for (let i = 0; i < 26; i++) {
+      const mid = (lo + hi) / 2;
+      const r = razonContraste(hslAHex(h, s, mid), fondo);
+      // Hacia oscuro: más L, menos contraste. Hacia claro: al revés.
+      if (oscuro ? r > objetivo : r < objetivo) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  const aviso = (el: HTMLElement, fondo: string, texto: string, ancho = 260, alto = 120, contenido = 'Cerrado por inventario') => {
+    const c = lienzo(ancho, alto);
+    c.append(svg('rect', { width: ancho, height: alto, fill: fondo }));
+    const t1 = svg('text', { x: 20, y: alto / 2 - 4, 'font-family': SANS, 'font-weight': 700, 'font-size': 18, fill: texto });
+    t1.textContent = contenido;
+    const t2 = svg('text', { x: 20, y: alto / 2 + 22, 'font-family': SANS, 'font-size': 13, fill: texto });
+    t2.textContent = 'Volvemos el lunes a las 8:00';
+    c.append(t1, t2);
+    el.append(c);
+  };
+
+  // ── 1. ver: el mismo color en dos contextos ────────
+  function mismos(): Ronda {
+    const g = entre(42, 58);
+    const centro = hslAHex(entre(0, 359), entre(0, 25), g);
+    const claro = hslAHex(entre(0, 359), entre(20, 70), entre(85, 94));
+    const oscuro = hslAHex(entre(0, 359), entre(20, 60), entre(8, 18));
+    const izqClaro = azar() < 0.5;
+    const [fi, fd] = izqClaro ? [claro, oscuro] : [oscuro, claro];
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de los dos cuadros del centro es más claro?',
+      escena: (el) => {
+        const c = lienzo(480, 200);
+        c.append(svg('rect', { x: 0, y: 0, width: 240, height: 200, fill: fi }));
+        c.append(svg('rect', { x: 240, y: 0, width: 240, height: 200, fill: fd }));
+        c.append(svg('rect', { x: 85, y: 65, width: 70, height: 70, fill: centro }));
+        c.append(svg('rect', { x: 325, y: 65, width: 70, height: 70, fill: centro }));
+        el.append(c);
+      },
+      escenaDescrita: 'Dos cuadros pequeños, cada uno sobre un fondo distinto: uno claro y uno oscuro.',
+      opciones: [{ texto: 'El de la izquierda' }, { texto: 'El de la derecha' }, { texto: 'Son del mismo color' }],
+      correcta: 2,
+      porque: `Son el mismo color (${centro}). Sobre el fondo oscuro tiende a parecer más claro, y sobre el fondo claro, más oscuro: cada fondo cambia la apariencia del centro en la dirección contraria.`,
+      repaso: 'El color depende de lo que lo rodea',
+    };
+  }
+
+  // ── 2. saber: para qué alcanza una razón ───────────
+  function umbral(): Ronda {
+    const banda = barajar(['nada', 'grande', 'parrafo'] as const)[0];
+    const r = banda === 'nada' ? 1.8 + azar() * 1 : banda === 'grande' ? 3.2 + azar() * 1.1 : 4.8 + azar() * 4;
+    const opciones = ['Para un párrafo y para un titular', 'Solo para un titular grande', 'Para ninguno de los dos'];
+    const correcta = banda === 'parrafo' ? 0 : banda === 'grande' ? 1 : 2;
+    return {
+      tipo: 'eleccion',
+      pregunta: `Un texto tiene una razón de contraste de ${n(r, 1)}:1 con su fondo. ¿Para qué tipo de texto cumple el mínimo?`,
+      ayuda: 'Recuerda los dos mínimos de WCAG 2, la guía de accesibilidad web: uno para texto normal y otro, más bajo, para texto grande.',
+      opciones: opciones.map((t) => ({ texto: t })),
+      correcta,
+      porque: `${banda === 'parrafo' ? `Con ${n(r, 1)}:1 cumple para ambos: supera el mínimo de un párrafo.` : banda === 'grande' ? `Con ${n(r, 1)}:1 cumple para un titular grande, pero no para un párrafo.` : `Con ${n(r, 1)}:1 no cumple para ninguno de los dos.`} El mínimo para texto normal es 4,5:1. Para texto grande, de unos 24 px (o 19 px en negrita), basta 3:1.`,
+      repaso: 'Los dos mínimos: 4,5 y 3',
+    };
+  }
+
+  // ── 3. decidir: qué aviso se lee mejor ─────────────
+  function legible(): Ronda {
+    const h = entre(0, 359);
+    const fondo = hslAHex(h, entre(30, 60), entre(88, 95));
+    const hs = [entre(0, 359), entre(0, 359), entre(0, 359)];
+    const objetivos = [8 + azar() * 3, 2.6 + azar() * 0.6, 1.25 + azar() * 0.25];
+    const variantes = barajar(objetivos.map((o, i) => {
+      const color = hslAHex(hs[i], 55, buscarL(hs[i], 55, fondo, o, true));
+      return { color, r: razonContraste(color, fondo) };
+    }));
+    const mejor = variantes.reduce((a, b, i, arr) => (b.r > arr[a].r ? i : a), 0);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estos avisos se lee mejor desde lejos?',
+      opciones: variantes.map((v) => ({
+        pintar: (el) => aviso(el, fondo, v.color, 260, 110),
+        describir: `aviso con razón de contraste ${n(v.r, 1)}:1`,
+      })),
+      correcta: mejor,
+      porque: `Sus razones de contraste: ${variantes.map((v, i) => `${'ABC'[i]} ${n(v.r, 1)}:1`).join(', ')}. Se lee mejor el que tiene más diferencia de luminancia con su fondo, aunque otro tenga un tono más llamativo.`,
+      repaso: 'La legibilidad depende de la luminancia',
+    };
+  }
+
+  // ── 4. hacer: subir el contraste ───────────────────
+  function arreglar(): Ronda {
+    const h = entre(0, 359);
+    const fondo = hslAHex(entre(0, 359), entre(20, 50), entre(93, 97));
+    const s = entre(20, 60);
+    const color = (l: number) => hslAHex(h, s, l);
+    const inicio = Math.round(buscarL(h, s, fondo, 2.2, true));
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este aviso no se lee bien. Oscurece el texto hasta alcanzar el mínimo para un párrafo.',
+      ayuda: 'El mínimo para texto normal es 4,5:1. Mira la cifra mientras mueves el control.',
+      control: { etiqueta: 'Luminosidad del texto', min: 0, max: 100, valor: inicio, unidad: '%' },
+      pintar: (el, l) => {
+        el.replaceChildren();
+        aviso(el, fondo, color(l), 360, 120);
+        const r = razonContraste(color(l), fondo);
+        const p = document.createElement('p');
+        p.style.cssText = 'font-family: Roboto, sans-serif; font-weight: 700; font-size: 0.95rem; padding: 0.5rem 0.75rem; margin: 0; color: #222; background: #fff; border-top: 1px solid #222;';
+        p.textContent = `Razón de contraste: ${n(r, 2)}:1`;
+        el.append(p);
+      },
+      cumple: (l) => razonContraste(color(l), fondo) >= 4.5,
+      falta: (l) => `Todavía no: la razón de contraste es de ${n(razonContraste(color(l), fondo), 2)}:1. Hay que bajar la luminosidad del texto hasta llegar a 4,5:1.`,
+      porque: 'Bajar la luminosidad del texto aumenta su diferencia con un fondo claro. El tono puede quedarse igual: para la legibilidad cuenta la diferencia de luminancia.',
+      repaso: 'Medir y corregir el contraste',
+    };
+  }
+
+  // ── 5. límite: un estado que solo dice color ───────
+  function limite(): Ronda {
+    const conSenales = azar() < 0.5;
+    const roles = barajar([
+      { nombre: 'error', color: '#b3261e', palabra: 'Error.', forma: '✗' },
+      { nombre: 'éxito', color: '#1e7d34', palabra: 'Listo.', forma: '✓' },
+      { nombre: 'aviso', color: '#8a5a00', palabra: 'Atención.', forma: '!' },
+    ]);
+    const frase = 'Revisa tu pedido';
+    const escena = (el: HTMLElement) => {
+      const c = lienzo(420, 170);
+      c.append(svg('rect', { width: 420, height: 170, fill: '#fff' }));
+      roles.forEach((r, i) => {
+        const y = 14 + i * 50;
+        c.append(svg('rect', { x: 14, y, width: 392, height: 40, fill: aGris('#f3f3f3') }));
+        c.append(svg('rect', { x: 14, y, width: 6, height: 40, fill: aGris(r.color) }));
+        const t = svg('text', { x: 34, y: y + 25, 'font-family': SANS, 'font-size': 14, fill: '#222' });
+        t.textContent = conSenales ? `${r.forma}  ${r.palabra} ${frase}` : `${'ABC'[i]}.  ${frase}`;
+        c.append(t);
+      });
+      el.append(c);
+    };
+    const iError = roles.findIndex((r) => r.nombre === 'error');
+    const opciones = conSenales
+      ? [...roles.map((_, i) => ({ texto: `El mensaje ${i + 1}` })), { texto: 'No se puede saber' }]
+      : [{ texto: 'A' }, { texto: 'B' }, { texto: 'C' }, { texto: 'No se puede saber' }];
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Esta pantalla está en gris, como la vería alguien que no distingue estos colores. ¿Cuál mensaje es el de error?',
+      escena,
+      escenaDescrita: conSenales
+        ? 'Tres mensajes en gris, cada uno con un símbolo y una palabra.'
+        : 'Tres mensajes en gris, con el mismo texto y sin símbolos.',
+      opciones,
+      correcta: conSenales ? iError : 3,
+      porque: conSenales
+        ? 'El símbolo ✗ y la palabra «Error» lo indican, aunque el gris de los tres sea casi igual. Por eso conviene repetir el estado por otro medio.'
+        : 'No se puede saber: en gris, el rojo, el verde y el ámbar de estos mensajes tienen casi la misma luminancia, y no hay palabra ni símbolo. Un estado indicado solo con color no llega a todas las personas.',
+      repaso: 'El color no debe ser la única señal',
+    };
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-juego="interaccion-del-color"]')) {
+    jugar(raiz, () => [mismos(), umbral(), legible(), arreglar(), limite()]);
+  }
+</script>
