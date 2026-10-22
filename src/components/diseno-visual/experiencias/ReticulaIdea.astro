@@ -1,0 +1,55 @@
+---
+// Paso 1 de retículas: dos fachadas con las mismas doce ventanas. En una
+// comparten líneas; en la otra cada ventana está puesta a ojo.
+const T = '#222222';
+const FACHADA = '#e9e9e4';
+const ancho = 220;
+const alto = 250;
+const cols = 3;
+const filas = 4;
+const vw = 40;
+const vh = 34;
+const ox = 36;
+const oy = 32;
+const px = 64;
+const py = 52;
+
+// Desplazamientos fijos para la fachada desordenada (siempre la misma).
+const corrimientos = [
+  [5, -3], [-7, 4], [3, 6], [-4, -5], [8, 2], [-3, -6],
+  [6, 5], [-7, 1], [2, -5], [-5, 6], [7, -3], [-2, 4],
+];
+const tam = [
+  [0, 0], [-4, 0], [4, 2], [0, -4], [-4, 2], [4, 0],
+  [0, 4], [2, -2], [-4, -2], [2, 0], [0, 2], [-2, 4],
+];
+
+const ventanas = (orden: boolean) =>
+  Array.from({ length: cols * filas }, (_, i) => {
+    const c = i % cols;
+    const f = Math.floor(i / cols);
+    const [dx, dy] = orden ? [0, 0] : corrimientos[i];
+    const [dw, dh] = orden ? [0, 0] : tam[i];
+    return { x: ox + c * px + dx, y: oy + f * py + dy, w: vw + dw, h: vh + dh };
+  });
+---
+
+<figure class="dv-pregunta-visual">
+  <div class="dv-pv-lienzo">
+    <svg viewBox="0 0 520 300" role="img" aria-label="Dos fachadas de edificio, cada una con doce ventanas iguales. En la de la izquierda las ventanas están desplazadas sin orden; en la de la derecha forman filas y columnas.">
+      <line x1="20" y1="282" x2="500" y2="282" stroke={T} stroke-width="1.5" />
+      {[false, true].map((orden, k) => (
+        <g transform={`translate(${30 + k * 250} 32)`}>
+          <rect width={ancho} height={alto} fill={FACHADA} stroke={T} stroke-width="1.5" />
+          {ventanas(orden).map((v) => <rect x={v.x - 10} y={v.y - 14} width={v.w} height={v.h} fill={T} />)}
+          <text x={ancho / 2} y={alto + 0} dy="-4" text-anchor="middle" font-family="Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="14" fill={T}>{k === 0 ? 'A' : 'B'}</text>
+        </g>
+      ))}
+    </svg>
+  </div>
+  <p>Dos edificios tienen las mismas doce ventanas. ¿Cuál parece más ordenado?</p>
+  <details>
+    <summary>Ver la respuesta</summary>
+    <p>El edificio B. Sus ventanas comparten líneas: los bordes izquierdos coinciden verticalmente y los superiores siguen una misma línea horizontal. Nadie dibujó esas líneas sobre la fachada, pero podemos reconocerlas al mirar.</p>
+  </details>
+</figure>

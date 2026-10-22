@@ -1,0 +1,73 @@
+---
+// Límite de la semejanza: un grupo hecho solo de tono desaparece para quien
+// no distingue esos tonos, y en una fotocopia. La diferencia de valor
+// (claro/oscuro) sobrevive.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Interruptor from '../controles/Interruptor.astro';
+
+const lab = 'semejanza-tono';
+---
+
+<Instrumento
+  id={lab}
+  titulo="Arregla unas filas que dependen del tono"
+  consigna="Una tabla distingue sus filas mediante dos tonos de color. Activa «Ver sin color» y aumenta «Diferencia de claridad entre los dos tonos» hasta que las filas vuelvan a ser reconocibles. Dos colores diferentes pueden tener una claridad muy parecida: si la única diferencia está en el tono, la agrupación se pierde al imprimir en blanco y negro o para quien no distingue esos colores."
+  comparar={false}
+>
+  <Deslizador lab={lab} variable="luz" etiqueta="Diferencia de claridad entre los dos tonos" min={0} max={40} valor={0} unidad="%" ayuda="0 %: los dos tonos se ven igual de claros." />
+  <Interruptor lab={lab} variable="gris" etiqueta="Ver sin color" ayuda="Muestra cada tono en gris, con su misma claridad, como una fotocopia en blanco y negro." />
+</Instrumento>
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { hslAHex, luminancia, hexARgb, razonContraste, aGris } from '../../../lib/diseno-visual/contraste';
+
+  type E = { luz: number; gris: boolean };
+
+  const ROJO = hslAHex(4, 68, 50);
+  const yRojo = luminancia(hexARgb(ROJO));
+
+  /** Verde con la luminancia del rojo más un desplazamiento de valor. */
+  function verde(desplazamiento: number): string {
+    const objetivo = Math.min(0.95, yRojo + desplazamiento / 100);
+    let lo = 0;
+    let hi = 100;
+    for (let i = 0; i < 24; i++) {
+      const mid = (lo + hi) / 2;
+      if (luminancia(hexARgb(hslAHex(128, 45, mid))) < objetivo) lo = mid;
+      else hi = mid;
+    }
+    return hslAHex(128, 45, (lo + hi) / 2);
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const ancho = Math.max(destino.clientWidth, 240);
+    const alto = 200;
+    const v = verde(e.luz);
+    const a = e.gris ? aGris(ROJO) : ROJO;
+    const b = e.gris ? aGris(v) : v;
+    const raiz = svg('svg', { viewBox: `0 0 ${ancho} ${alto}`, width: ancho, height: alto, role: 'img' });
+    raiz.setAttribute('aria-label', e.gris ? 'Los puntos sin color.' : 'Puntos rojos y verdes alternados por filas.');
+    const cols = Math.max(6, Math.min(12, Math.floor((ancho - 40) / 34)));
+    const paso = (ancho - 60) / (cols - 1);
+    for (let f = 0; f < 4; f++) {
+      for (let c = 0; c < cols; c++) {
+        raiz.append(svg('circle', { cx: 30 + c * paso, cy: 40 + f * 40, r: 11, fill: f % 2 ? b : a }));
+      }
+    }
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const r = razonContraste(ROJO, verde(e.luz));
+    const cifra = `<b class="dv-cifra">${n(r, 2)}:1</b>`;
+    if (r < 1.3) return `Diferencia de claridad entre los dos tonos: ${cifra}. ${e.gris ? 'Sin color, las filas desaparecen.' : 'Las filas existen solo por el tono.'} Para quien no distingue rojo de verde pasa lo mismo.`;
+    if (r < 2) return `Diferencia de claridad: ${cifra}. ${e.gris ? 'Sin color, las filas apenas se distinguen.' : 'El tono ya no actúa solo: la claridad empieza a ayudar.'}`;
+    return `Diferencia de claridad: ${cifra}. ${e.gris ? 'Sin color, las filas se mantienen gracias a la claridad.' : 'La diferencia de claridad mantiene las filas aunque se pierda el tono.'}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="semejanza-tono"]')) {
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

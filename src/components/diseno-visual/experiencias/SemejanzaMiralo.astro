@@ -1,0 +1,120 @@
+---
+// Paso 2 de semejanza: el mismo párrafo con sus tres enlaces. En el primero
+// cada enlace se ve distinto y la negrita se parece a uno de ellos; en el
+// segundo los enlaces comparten un mismo estilo que nada más usa.
+import Anotada from '../Anotada.astro';
+
+const W = 380;
+const H = 190;
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const AZUL = '#1a56a8';
+const pct = (y: number) => (y / H) * 100;
+
+// Estilo de cada tramo según la versión.
+type Tramo = { t: string; tipo?: 'e1' | 'e2' | 'e3' | 'neg' };
+const lineas: Tramo[][] = [
+  [{ t: 'La biblioteca presta libros, juegos de mesa' }],
+  [{ t: 'y computadores. Consulta el ' }, { t: 'horario de préstamo', tipo: 'e1' }],
+  [{ t: 'o ' }, { t: 'reserva una sala', tipo: 'e2' }, { t: ' para estudiar. Si necesitas' }],
+  [{ t: 'ayuda, ' }, { t: 'escribe al equipo', tipo: 'e3' }, { t: '. Las salas se reservan' }],
+  [{ t: 'con ' }, { t: 'dos días de anticipación', tipo: 'neg' }, { t: '.' }],
+];
+
+// El texto va como HTML dentro del SVG: así un enlace puede marcarse con
+// fondo («Mostrar cuáles son los enlaces») sin medir cada palabra.
+const estiloMal = (tipo?: Tramo['tipo']) => {
+  if (tipo === 'e1') return `color:${AZUL};text-decoration:underline`;
+  if (tipo === 'e2' || tipo === 'neg') return `color:${T};font-weight:700`;
+  if (tipo === 'e3') return `color:${AZUL}`;
+  return '';
+};
+const estiloBien = (tipo?: Tramo['tipo']) => {
+  if (tipo === 'e1' || tipo === 'e2' || tipo === 'e3') return `color:${AZUL};text-decoration:underline`;
+  if (tipo === 'neg') return `color:${T};font-weight:700`;
+  return '';
+};
+const esEnlace = (tipo?: Tramo['tipo']) => tipo === 'e1' || tipo === 'e2' || tipo === 'e3';
+const y0 = 38;
+const paso = 30;
+---
+
+<div class="sem-miralo" data-sem-miralo>
+<button type="button" class="dv-boton sem-ver" data-sem-ver aria-pressed="false" hidden>Mostrar cuáles son los enlaces</button>
+<p class="sem-ver-nota" data-sem-ver-nota aria-live="polite"></p>
+
+<div class="dv-anotadas">
+  <Anotada
+    veredicto="mal"
+    rotulo="Cuando cada enlace parece diferente"
+    notas={[
+      { x: 100, y: pct(y0 + paso * 1 - 5), texto: 'El primer enlace está subrayado y es azul. Se reconoce como algo que puedes activar.', zona: { x: 46, y: pct(y0 + paso * 1 - 20), w: 50, h: pct(26) } },
+      { x: 100, y: pct(y0 + paso * 2 - 5), texto: 'El segundo solo aparece en negrita, mientras que el tercero solo tiene color. Como no comparten el mismo aspecto, cuesta reconocerlos como elementos del mismo tipo.', zona: { x: 5, y: pct(y0 + paso * 2 - 20), w: 90, h: pct(paso + 26) } },
+      { x: 100, y: pct(y0 + paso * 4 - 5), texto: 'Una palabra que no es un enlace también aparece en negrita. Ahora comparte un rasgo con el segundo enlace y puede confundirse con él.', zona: { x: 13, y: pct(y0 + paso * 4 - 20), w: 58, h: pct(26) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Párrafo con tres enlaces de estilos distintos: «horario de préstamo», subrayado y azul; «reserva una sala», solo en negrita; «escribe al equipo», solo azul. «Dos días de anticipación» va en negrita y no es un enlace.">
+      <foreignObject x="0" y="0" width={W} height={H}>
+        <div class="sem-parrafo" style={`padding-top:${y0 - 21}px`}>
+          {lineas.map((l) => (
+            <div>{l.map((tr) => <span class:list={{ 'sem-enlace': esEnlace(tr.tipo) }} style={estiloMal(tr.tipo)}>{tr.t}</span>)}</div>
+          ))}
+        </div>
+      </foreignObject>
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="bien"
+    rotulo="Cuando los enlaces se parecen entre sí"
+    notas={[
+      { x: 100, y: pct(y0 + paso * 2 - 5), texto: 'Los tres enlaces comparten color y subrayado. Se reconocen como elementos interactivos antes de leer su contenido.', zona: { x: 5, y: pct(y0 + paso * 1 - 20), w: 90, h: pct(paso * 2 + 26) } },
+      { x: 100, y: pct(y0 + paso * 4 - 5), texto: 'La palabra que funciona como énfasis está en negrita, pero no comparte el aspecto de los enlaces. Se distingue de ellos.', zona: { x: 13, y: pct(y0 + paso * 4 - 20), w: 58, h: pct(26) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo párrafo con los tres enlaces en azul y subrayados, y «dos días de anticipación» en negrita, sin subrayar.">
+      <foreignObject x="0" y="0" width={W} height={H}>
+        <div class="sem-parrafo" style={`padding-top:${y0 - 21}px`}>
+          {lineas.map((l) => (
+            <div>{l.map((tr) => <span class:list={{ 'sem-enlace': esEnlace(tr.tipo) }} style={estiloBien(tr.tipo)}>{tr.t}</span>)}</div>
+          ))}
+        </div>
+      </foreignObject>
+    </svg>
+  </Anotada>
+</div>
+</div>
+
+<style>
+  .sem-parrafo {
+    font-family: 'PT Serif', Georgia, serif;
+    font-size: 15px;
+    line-height: 30px;
+    color: #222;
+    padding-left: 22px;
+    white-space: nowrap;
+  }
+  .sem-miralo { margin: 1.5rem 0 2rem; }
+  .sem-ver { margin-bottom: 1.25rem; }
+  .sem-ver[hidden] { display: none; }
+  .sem-ver-enlaces .sem-enlace { background: #eeff41; outline: 1.5px dashed #222; outline-offset: 1px; }
+  .sem-ver-nota { font-family: var(--sans); font-size: 0.85rem; color: var(--tinta); margin: -0.5rem 0 1.25rem; max-width: 52ch; }
+  .sem-ver-nota:empty { display: none; }
+</style>
+
+<script>
+  for (const caja of document.querySelectorAll<HTMLElement>('[data-sem-miralo]')) {
+    const boton = caja.querySelector<HTMLButtonElement>('[data-sem-ver]')!;
+    const nota = caja.querySelector<HTMLElement>('[data-sem-ver-nota]')!;
+    boton.hidden = false;
+    boton.addEventListener('click', () => {
+      const ver = boton.getAttribute('aria-pressed') !== 'true';
+      boton.setAttribute('aria-pressed', String(ver));
+      boton.textContent = ver ? 'Ocultar la marca de los enlaces' : 'Mostrar cuáles son los enlaces';
+      caja.classList.toggle('sem-ver-enlaces', ver);
+      nota.textContent = ver
+        ? 'Marcados: los tres enlaces. En el primer ejemplo, «reserva una sala» es un enlace y «dos días de anticipación» no lo es, aunque las dos frases se ven igual.'
+        : '';
+    });
+  }
+</script>

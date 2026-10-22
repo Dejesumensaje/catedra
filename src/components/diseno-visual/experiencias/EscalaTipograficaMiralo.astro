@@ -1,0 +1,64 @@
+---
+// Paso 2 de escalas: la misma receta con un solo tamaño de letra y con
+// cuatro niveles que salen de una escala.
+import Anotada from '../Anotada.astro';
+
+const W = 360;
+const H = 400;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const T = '#222222';
+const G = '#5f5f5f';
+const pct = (y: number) => (y / H) * 100;
+
+const ingredientes = ['2 tazas de maíz tierno', '1 huevo', '2 cucharadas de mantequilla', 'Sal y azúcar al gusto'];
+const pasosReceta = ['Licúa el maíz con el huevo.', 'Mezcla con la mantequilla y la sal.', 'Asa en sartén caliente, 3 min por lado.'];
+
+// Antes: todo a 13 px, mismo grosor, mismo espacio.
+const plano = [
+  'Arepas de choclo',
+  'Para seis personas. Listas en media hora.',
+  'Ingredientes',
+  ...ingredientes,
+  'Preparación',
+  ...pasosReceta.map((t, i) => `${i + 1}. ${t}`),
+  'Nota: quedan mejor con maíz recién cosechado.',
+];
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    veredicto="mal"
+    rotulo="Cuando todo tiene el mismo tamaño"
+    notas={[
+      { x: 100, y: pct(30), titulo: 'El título', texto: 'Parece un renglón más de la receta. Cuesta reconocerlo como el nombre de todo lo que sigue.', zona: { x: 5, y: pct(14), w: 90, h: pct(24) } },
+      { x: 100, y: pct(140), titulo: 'Los ingredientes', texto: 'Para encontrarlos, tienes que recorrer la página y leer hasta llegar a ellos. Nada te permite localizarlos de inmediato.', zona: { x: 5, y: pct(62), w: 90, h: pct(300) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Receta de arepas con todos los textos del mismo tamaño.">
+      {plano.map((t, i) => (
+        <text x="26" y={32 + i * 24} font-family={SANS} font-size="13" fill={T}>{t}</text>
+      ))}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="bien"
+    rotulo="Cuando hay cuatro niveles"
+    notas={[
+      { x: 100, y: pct(40), titulo: 'Título', texto: 'Es el nivel más destacado y permite reconocer el tema general.', zona: { x: 5, y: pct(14), w: 90, h: pct(36) } },
+      { x: 100, y: pct(104), titulo: 'Intertítulos', texto: 'Dividen el contenido en secciones y ayudan a encontrar una parte concreta.', zona: { x: 5, y: pct(90), w: 90, h: pct(24) } },
+      { x: 100, y: pct(150), titulo: 'Texto normal', texto: 'Tiene un tamaño adecuado para leer los párrafos de corrido. Es el tamaño base de la escala.', zona: { x: 5, y: pct(118), w: 90, h: pct(92) } },
+      { x: 100, y: pct(372), titulo: 'Nota', texto: 'Tiene menor protagonismo y queda disponible para quien necesita consultarla.', zona: { x: 5, y: pct(358), w: 90, h: pct(24) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma receta con título grande, intertítulos medianos, texto normal y una nota pequeña.">
+      <text x="26" y="52" font-family={SANS} font-weight="900" font-size="31" letter-spacing="-0.6" fill={T}>Arepas de choclo</text>
+      <text x="26" y="76" font-family={SANS} font-size="14" fill={T}>Para seis personas. Listas en media hora.</text>
+      <text x="26" y="110" font-family={SANS} font-weight="700" font-size="18" fill={T}>Ingredientes</text>
+      {ingredientes.map((t, i) => <text x="26" y={134 + i * 20} font-family={SANS} font-size="13" fill={T}>{t}</text>)}
+      <text x="26" y="236" font-family={SANS} font-weight="700" font-size="18" fill={T}>Preparación</text>
+      {pasosReceta.map((t, i) => <text x="26" y={260 + i * 20} font-family={SANS} font-size="13" fill={T}>{`${i + 1}. ${t}`}</text>)}
+      <text x="26" y="376" font-family={SANS} font-size="10.5" fill={G}>Nota: quedan mejor con maíz recién cosechado.</text>
+    </svg>
+  </Anotada>
+</div>

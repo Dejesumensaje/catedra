@@ -1,0 +1,171 @@
+---
+// Interacción del color, escena 1: un mismo color central sobre dos fondos.
+// El puente tiende una franja del color del centro entre los dos cuadros
+// y deja ver que son uno solo.
+import Instrumento from '../controles/Instrumento.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import ColorHSL from './ColorHSL.astro';
+
+const lab = 'color-centro';
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Comprueba que los centros son iguales.',
+    hacer: 'Mira los dos cuadros centrales y activa «Unir los dos centros».',
+    logro: 'Una franja conecta ambos cuadros. Como tiene el mismo color que los centros, puedes comprobar que los tres forman una sola superficie de color. Lo que parecía una diferencia entre los centros era, en realidad, un efecto de su contexto.',
+  },
+  {
+    titulo: 'Oscurece el fondo izquierdo.',
+    hacer: 'Baja la luminosidad del «Fondo izquierdo» hasta acercarlo al negro.',
+    pista: 'Lleva el control de luminosidad del fondo izquierdo cerca del 0 %.',
+    preparar: { unir: false },
+    logro: 'Con ambos fondos oscuros, los centros deberían parecerse mucho más. La diferencia entre ellos pierde fuerza porque ahora comparten un contexto similar.',
+  },
+  {
+    titulo: 'Lleva el fondo izquierdo hacia el blanco.',
+    hacer: 'Aumenta su luminosidad hasta acercarlo al blanco.',
+    pista: 'Lleva la luminosidad del fondo izquierdo por encima del 92 %.',
+    logro: 'El centro de la izquierda tiende a parecer más oscuro. El centro de la derecha, sobre un fondo oscuro, tiende a parecer más claro. El color de los centros no cambió: cambió la relación entre cada centro y lo que lo rodea.',
+  },
+  {
+    titulo: 'Haz que el centro y su fondo se parezcan en luminancia.',
+    hacer: 'Modifica la luminosidad del «Color del centro» hasta que el cuadro de la derecha casi desaparezca sobre su fondo.',
+    pista: 'Baja poco a poco la luminosidad del centro, hacia el 20 %, mientras observas el cuadro de la derecha. El texto bajo el instrumento te indica cuándo las luminancias se parecen.',
+    logro: 'Cuando dos colores tienen una luminancia parecida, sus límites pueden resultar difíciles de distinguir, aunque sus tonos sean diferentes. En una imagen en blanco y negro, el cuadro se perdería todavía más. Para diseñar textos, iconos y controles, la diferencia de tono no garantiza una diferencia suficiente de luminancia.',
+  },
+  {
+    titulo: 'Añade un borde.',
+    hacer: 'Abre «Más controles» y activa «Rodear los centros con un filo».',
+    abrir: true,
+    logro: 'La línea negra crea una separación visible entre cada centro y su fondo, y el cuadro se reconoce mejor aunque los colores tengan una luminancia similar. El borde no cambia el color central, pero modifica la manera en que se percibe su forma.',
+  },
+];
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · un color, dos fondos"
+  consigna="Los dos cuadros del centro tienen exactamente el mismo color. Sin embargo, pueden parecer distintos porque cada uno está rodeado por un fondo diferente. Modifica los controles y observa cuándo cambia tu percepción."
+  comparar={false}
+>
+  <svg slot="escenario" viewBox="0 0 640 280" role="img" aria-label="El mismo cuadro de color sobre un fondo claro y sobre uno oscuro.">
+    <rect x="0" y="0" width="320" height="280" fill="#f2c14e" />
+    <rect x="320" y="0" width="320" height="280" fill="#3b2a5e" />
+    <rect x="110" y="90" width="100" height="100" fill="#a67c52" />
+    <rect x="430" y="90" width="100" height="100" fill="#a67c52" />
+  </svg>
+
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Ahora cambia los controles libremente. Busca combinaciones en las que el color parezca transformarse, otras en las que los cuadros pierdan sus límites y otras en las que el borde permita recuperarlos." />
+
+  <ColorHSL lab={lab} prefijo="c" etiqueta="Color del centro" h={30} s={33} l={49} canales="l" />
+  <ColorHSL lab={lab} prefijo="i" etiqueta="Fondo izquierdo" h={42} s={86} l={63} canales="l" />
+  <Interruptor lab={lab} variable="unir" etiqueta="Unir los dos centros" ayuda="Añade una franja del mismo color que los dos centros para comprobar que son idénticos." />
+
+  <Fragment slot="avanzados">
+    <Interruptor lab={lab} variable="filo" etiqueta="Rodear los centros con un filo" ayuda="Dibuja una línea negra entre los cuadros centrales y sus fondos." />
+    <ColorHSL lab={lab} prefijo="d" etiqueta="Fondo derecho" h={259} s={38} l={27} />
+    <ColorHSL lab={lab} prefijo="c" etiqueta="Color del centro: tono y saturación" h={30} s={33} l={49} canales="hs" selector={false} />
+    <ColorHSL lab={lab} prefijo="i" etiqueta="Fondo izquierdo: tono y saturación" h={42} s={86} l={63} canales="hs" selector={false} />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset='{"ch":0,"cs":0,"cl":50,"ih":0,"is":0,"il":92,"dh":0,"ds":0,"dl":10,"unir":false}'>Un gris entre blanco y negro</button>
+    <button type="button" class="dv-boton" data-preset='{"ch":30,"cs":33,"cl":49,"ih":42,"is":86,"il":63,"dh":259,"ds":38,"dl":27,"unir":false}'>Un ocre que parece dos colores</button>
+    <button type="button" class="dv-boton" data-preset='{"ch":120,"cs":20,"cl":55,"ih":120,"is":70,"il":55,"dh":330,"ds":60,"dl":55,"unir":false}'>Misma luminosidad, tono opuesto</button>
+    <button type="button" class="dv-boton" data-preset='{"ch":0,"cs":0,"cl":50,"ih":210,"is":40,"il":30,"dh":210,"ds":40,"dl":30,"unir":false}'>Dos fondos iguales</button>
+  </Fragment>
+</Instrumento>
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { hslAHex, hexARgb, luminancia } from '../../../lib/diseno-visual/contraste';
+
+  type E = {
+    ch: number; cs: number; cl: number;
+    ih: number; is: number; il: number;
+    dh: number; ds: number; dl: number;
+    unir: boolean; filo: boolean;
+  };
+
+  const color = (e: E, p: 'c' | 'i' | 'd') =>
+    hslAHex(e[`${p}h`] as number, e[`${p}s`] as number, e[`${p}l`] as number);
+  const Y = (hex: string) => luminancia(hexARgb(hex));
+
+  function pintar(destino: HTMLElement, e: E) {
+    const ancho = Math.max(destino.clientWidth, 240);
+    const alto = ancho < 500 ? 200 : 280;
+    const lado = Math.min(ancho / 4.2, alto * 0.4);
+    const centro = color(e, 'c');
+    const raiz = svg('svg', { viewBox: `0 0 ${ancho} ${alto}`, width: ancho, height: alto, role: 'img' });
+    raiz.setAttribute('aria-label', `El mismo color ${centro} en dos cuadros, sobre ${color(e, 'i')} a la izquierda y ${color(e, 'd')} a la derecha.`);
+    raiz.append(svg('rect', { x: 0, y: 0, width: ancho / 2, height: alto, fill: color(e, 'i') }));
+    raiz.append(svg('rect', { x: ancho / 2, y: 0, width: ancho / 2, height: alto, fill: color(e, 'd') }));
+    const y = (alto - lado) / 2;
+    const xs = [ancho / 4 - lado / 2, (ancho * 3) / 4 - lado / 2];
+    if (e.unir) {
+      const franja = lado * 0.22;
+      raiz.append(svg('rect', { x: xs[0] + lado / 2, y: alto / 2 - franja / 2, width: xs[1] - xs[0], height: franja, fill: centro }));
+    }
+    for (const x of xs) {
+      raiz.append(svg('rect', {
+        x, y, width: lado, height: lado, fill: centro,
+        stroke: e.filo ? '#000' : 'none', 'stroke-width': e.filo ? 3 : 0,
+      }));
+    }
+    destino.replaceChildren(raiz);
+  }
+
+  function relacion(fondo: number, centro: number): 'claro' | 'oscuro' | 'igual' {
+    const r = (Math.max(fondo, centro) + 0.05) / (Math.min(fondo, centro) + 0.05);
+    if (r < 1.15) return 'igual';
+    return fondo > centro ? 'claro' : 'oscuro';
+  }
+
+  function describir(e: E): string {
+    const c = color(e, 'c');
+    const ci = color(e, 'i');
+    const cd = color(e, 'd');
+    if (ci === cd) {
+      return `Los dos fondos son iguales (${ci}). Sin fondos distintos, los centros se ven iguales: el efecto necesita dos entornos diferentes.`;
+    }
+    const yc = Y(c);
+    const izq = relacion(Y(ci), yc);
+    const der = relacion(Y(cd), yc);
+    const lado = (r: string) => r === 'claro' ? 'más claro' : r === 'oscuro' ? 'más oscuro' : 'de luminancia parecida';
+    let efecto = '';
+    if (izq !== 'igual' && der !== 'igual' && izq !== der) {
+      const hacia = (r: string) => r === 'claro' ? 'más oscuro' : 'más claro';
+      efecto = ` Cada fondo cambia la apariencia del centro en la dirección contraria: tiende a verse ${hacia(izq)} a la izquierda y ${hacia(der)} a la derecha.`;
+    } else if (izq === der && izq !== 'igual') {
+      efecto = ' Los dos fondos cambian el centro en la misma dirección, así que la diferencia entre los centros se reduce.';
+    } else {
+      efecto = ' Donde fondo y centro tienen luminancia parecida, el cambio depende sobre todo del tono y la saturación.';
+    }
+    const sat = Math.abs((e.is as number) - (e.ds as number)) > 30 && (e.cs as number) > 8
+      ? ' Junto al fondo más saturado, el centro tiende a verse más apagado; junto al más gris, más vivo.'
+      : '';
+    let cierre = '';
+    if (e.unir) cierre += ' La franja tiene el color del centro: al unirlos se ve que es un solo color.';
+    if (e.filo) cierre += ' El filo negro separa el centro de su fondo. Observa si el efecto se debilita.';
+    return `Los dos centros son <b class="dv-cifra">el mismo color</b> (${c}). El fondo izquierdo es ${lado(izq)} que el centro; el derecho, ${lado(der)}.${efecto}${sat}${cierre}`;
+  }
+
+  const contraste = (a: string, b: string) => {
+    const [x, y] = [Y(a), Y(b)];
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+  };
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="color-centro"]')) {
+    // La guía escucha antes de conectar: así recibe el primer estado.
+    guiar<E>(raiz, [
+      (e) => e.unir,
+      (e) => e.il <= 12,
+      (e) => e.il >= 92,
+      (e) => contraste(color(e, 'c'), color(e, 'd')) < 1.15,
+      (e) => e.filo,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

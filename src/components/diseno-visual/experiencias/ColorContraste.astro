@@ -1,0 +1,78 @@
+---
+// Interacción del color, escena 2: texto sobre fondo y su razón de
+// contraste según WCAG 2. La razón mide luminancia: es un piso para leer,
+// no una opinión sobre la combinación.
+import Instrumento from '../controles/Instrumento.astro';
+import ColorHSL from './ColorHSL.astro';
+
+const lab = 'color-contraste';
+---
+
+<Instrumento
+  id={lab}
+  titulo="Arregla un aviso que no se lee"
+  consigna="El texto de un horario aparece en gris claro sobre un fondo casi blanco. La diferencia de luminancia es insuficiente para alcanzar el mínimo de contraste de un párrafo. Oscurece el texto hasta alcanzar una razón de contraste de al menos 4,5:1. Después prueba las otras combinaciones: dos colores que parecen muy diferentes por su tono pueden tener una razón de contraste baja."
+  nota="Fija una configuración A y compárala con B para observar qué cambio mejora la lectura."
+>
+  <div slot="escenario" style="background:#f3e8d6; color:#9aa0ab; padding: 1.4rem 1.5rem; min-height: 12rem;">
+    <p style="font-family: Roboto, sans-serif; font-weight: 700; font-size: 1.5rem; line-height: 1.15; margin: 0 0 0.6rem;">Horario de la biblioteca</p>
+    <p style="font-size: 1rem; line-height: 1.5; margin: 0;">De lunes a sábado, de ocho de la mañana a siete de la noche.</p>
+  </div>
+
+  <ColorHSL lab={lab} prefijo="t" etiqueta="Color del texto" h={220} s={10} l={64} canales="l" />
+  <ColorHSL lab={lab} prefijo="b" etiqueta="Color del fondo" h={40} s={45} l={91} canales="l" />
+
+  <Fragment slot="avanzados">
+    <ColorHSL lab={lab} prefijo="t" etiqueta="Color del texto: tono y saturación" h={220} s={10} l={64} canales="hs" selector={false} />
+    <ColorHSL lab={lab} prefijo="b" etiqueta="Color del fondo: tono y saturación" h={40} s={45} l={91} canales="hs" selector={false} />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset='{"th":0,"ts":0,"tl":60,"bh":0,"bs":0,"bl":100}'>Gris claro sobre blanco</button>
+    <button type="button" class="dv-boton" data-preset='{"th":0,"ts":0,"tl":46,"bh":0,"bs":0,"bl":100}'>Una combinación que apenas alcanza el mínimo</button>
+    <button type="button" class="dv-boton" data-preset='{"th":0,"ts":85,"tl":50,"bh":120,"bs":70,"bl":35}'>Rojo sobre verde</button>
+    <button type="button" class="dv-boton" data-preset='{"th":220,"ts":60,"tl":22,"bh":45,"bs":90,"bl":75}'>Azul noche sobre amarillo</button>
+  </Fragment>
+</Instrumento>
+
+<script>
+  import { conectar, n } from '../../../lib/diseno-visual/estado';
+  import { cumple, hslAHex, razonContraste } from '../../../lib/diseno-visual/contraste';
+
+  type E = { th: number; ts: number; tl: number; bh: number; bs: number; bl: number };
+
+  const texto = (e: E) => hslAHex(e.th, e.ts, e.tl);
+  const fondo = (e: E) => hslAHex(e.bh, e.bs, e.bl);
+
+  function pintar(destino: HTMLElement, e: E) {
+    destino.innerHTML = `
+      <div style="background:${fondo(e)}; color:${texto(e)}; padding: 1.4rem 1.5rem; min-height: 12rem;">
+        <p style="font-family: Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 1.5rem; line-height: 1.15; margin: 0 0 0.6rem;">Horario de la biblioteca</p>
+        <p style="font-family: 'PT Serif', Georgia, serif; font-size: 1rem; line-height: 1.5; margin: 0 0 0.8rem;">De lunes a sábado, de ocho de la mañana a siete de la noche. Los domingos abre solo la sala infantil.</p>
+        <p style="font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 0.75rem; margin: 0;">Última actualización: martes</p>
+      </div>`;
+  }
+
+  const si = (ok: boolean) => (ok ? 'sí' : 'no');
+  const veredicto = (r: number) => r >= 4.5
+    ? '<b>Arreglado:</b> cumple el mínimo para un párrafo.'
+    : r >= 3 ? 'Cumple el mínimo para un titular grande, pero todavía no para un párrafo.'
+    : 'No cumple el mínimo ni para un titular.';
+
+  function describir(e: E): string {
+    const r = razonContraste(texto(e), fondo(e));
+    const c = cumple(r);
+    const umbrales =
+      `Párrafo: mínimo habitual (4,5) ${si(c.aaNormal)}; nivel más exigente (7) ${si(c.aaaNormal)}. ` +
+      `Texto grande, de unos 24 px o 19 px en negrita: mínimo habitual (3) ${si(c.aaGrande)}; nivel más exigente (4,5) ${si(c.aaaGrande)}.`;
+    const tonosLejos = Math.min(Math.abs(e.th - e.bh), 360 - Math.abs(e.th - e.bh)) > 90 && e.ts > 40 && e.bs > 40;
+    let nota = '';
+    if (r < 1.5 && tonosLejos) nota = ' Los tonos son opuestos, pero su luminancia casi coincide: la fórmula no tiene en cuenta el tono, y a la vista los bordes de las letras parecen vibrar.';
+    else if (r >= 15) nota = ' Casi el máximo posible (21:1). La cifra no dice si la combinación cansa en un texto largo ni si encaja con esta pieza.';
+    return `Razón de contraste <b class="dv-cifra">${n(r, 2)}:1</b>. ${veredicto(r)} ${umbrales}${nota}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="color-contraste"]')) {
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

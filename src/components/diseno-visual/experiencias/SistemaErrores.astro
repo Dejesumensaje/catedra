@@ -1,0 +1,109 @@
+---
+// Paso 4 de sistemas: tres errores que se repiten, cada uno empieza mal y
+// tiene un solo control para arreglarlo.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Interruptor from '../controles/Interruptor.astro';
+---
+
+<div class="dv-especimenes">
+  <Instrumento id="sx-demasiadas" titulo="Arregla una tienda" comparar={false} consigna="Seis de ocho productos aparecen marcados como «Oferta». Deja marcada solo la que realmente necesita destacar. Cuando demasiados productos reclaman atención, la etiqueta deja de ayudar a elegir.">
+    <Deslizador lab="sx-demasiadas" variable="k" etiqueta="Productos marcados como oferta" min={0} max={8} valor={6} />
+  </Instrumento>
+
+  <Instrumento id="sx-solo-color" titulo="Arregla unos mensajes" comparar={false} consigna="El mensaje sin leer se distingue únicamente por el color de fondo. Prueba a verlo sin color y después añade una segunda señal: negrita y un punto. Una diferencia importante no debería depender de una sola característica visual.">
+    <Interruptor lab="sx-solo-color" variable="gris" etiqueta="Ver sin color" />
+    <Interruptor lab="sx-solo-color" variable="senal" etiqueta="Añadir una segunda señal: negrita y un punto" />
+  </Instrumento>
+
+  <Instrumento id="sx-descuido" titulo="Decide qué hacer con una tarjeta desplazada" comparar={false} consigna="Una tarjeta se ha desplazado unos pocos píxeles respecto a las demás. ¿Conviene alinearla o convertir esa diferencia en una excepción clara? Experimenta con el desplazamiento y observa cuándo parece un error y cuándo podría leerse como una decisión intencional.">
+    <Deslizador lab="sx-descuido" variable="d" etiqueta="Desplazamiento de la tarjeta" min={0} max={40} valor={3} unidad="px" />
+  </Instrumento>
+</div>
+
+<script>
+  import { conectar } from '../../../lib/diseno-visual/estado';
+  import { aGris } from '../../../lib/diseno-visual/contraste';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  // ── demasiadas excepciones ──────────────────────
+  type K = { k: number };
+  const PRODUCTOS = [
+    ['Cuaderno A5 punteado', '$12.000'],
+    ['Lápices de grafito, 6', '$9.500'],
+    ['Tinta china 30 ml', '$7.800'],
+    ['Regla de acero 30 cm', '$15.000'],
+    ['Block de acuarela', '$24.000'],
+    ['Pincel redondo n.º 6', '$6.500'],
+    ['Cúter de precisión', '$11.000'],
+    ['Cinta de enmascarar', '$4.200'],
+  ];
+  // Orden en que se marcan: la primera es la oferta que importa.
+  const ORDEN = [4, 1, 6, 2, 7, 0, 5, 3];
+  function pintarTienda(destino: HTMLElement, e: K) {
+    const marcadas = new Set(ORDEN.slice(0, e.k));
+    destino.innerHTML = `<ul style="list-style:none;margin:0;padding:12px 16px;font-family:${SANS};font-size:13px;color:#222;">
+      ${PRODUCTOS.map(([n, p], i) => `<li style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #e5e5e5;">
+        <span style="flex:1;min-width:0;">${n}</span>
+        ${marcadas.has(i) ? '<span style="font-size:10px;font-weight:700;letter-spacing:.08em;background:#b3261e;color:#fff;padding:2px 6px;">OFERTA</span>' : ''}
+        <span style="font-variant-numeric:tabular-nums;">${p}</span></li>`).join('')}
+    </ul>`;
+  }
+  function describirTienda(e: K) {
+    if (e.k === 0) return 'Ninguna oferta marcada: nada dirige la mirada. A veces eso es lo adecuado.';
+    if (e.k === 1) return '<b class="dv-cifra">Una sola oferta</b>: tiende a verse primero. Así funciona una excepción.';
+    if (e.k <= 3) return `${e.k} ofertas: todavía destacan, pero compiten entre sí.`;
+    return `${e.k} de 8 dicen «oferta»: ya nada destaca. La etiqueta aparece tanto que deja de llamar la atención.`;
+  }
+
+  // ── excepción solo de color ─────────────────────
+  type C = { gris: boolean; senal: boolean };
+  const BASE = '#e9e3d6';
+  const NUEVO = '#d6e3ee'; // misma luminancia que BASE: solo cambia el tono
+  const MENSAJES = ['Tu pedido fue enviado', 'Nueva respuesta en el foro', 'Recordatorio: taller el sábado', 'Factura de octubre', 'Bienvenida al boletín'];
+  function pintarMensajes(destino: HTMLElement, e: C) {
+    const fondo = (c: string) => (e.gris ? aGris(c) : c);
+    destino.innerHTML = `<ul style="list-style:none;margin:0;padding:12px 16px;font-family:${SANS};font-size:13px;color:#222;">
+      ${MENSAJES.map((m, i) => {
+        const nuevo = i === 1;
+        return `<li style="background:${fondo(nuevo ? NUEVO : BASE)};padding:8px 10px;margin-bottom:4px;display:flex;align-items:center;gap:8px;${nuevo && e.senal ? 'font-weight:700;' : ''}">
+          ${nuevo && e.senal ? '<span aria-hidden="true" style="width:8px;height:8px;background:#222;flex:none;"></span>' : '<span aria-hidden="true" style="width:8px;flex:none;"></span>'}
+          <span>${m}${nuevo && e.senal ? '<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);"> (sin leer)</span>' : ''}</span></li>`;
+      }).join('')}
+    </ul>`;
+  }
+  function describirMensajes(e: C) {
+    if (e.senal) return `Ahora el mensaje sin leer se distingue de tres maneras: el color, la negrita y un punto. ${e.gris ? 'Sin color se sigue viendo.' : 'Prueba «Ver sin color»: se sigue viendo.'}`;
+    if (e.gris) return '<b class="dv-cifra">Sin color</b>, el mensaje sin leer se confunde con los demás. Así lo ve quien no distingue esos tonos.';
+    return 'El mensaje sin leer solo cambia el tono del fondo. Activa «Ver sin color».';
+  }
+
+  // ── descuido o decisión ─────────────────────────
+  type D = { d: number };
+  function pintarDescuido(destino: HTMLElement, e: D) {
+    const tarjetas = ['Coro de cámara', 'Cine mudo', 'Hora del cuento', 'Ensayo abierto'];
+    destino.innerHTML = `<div style="padding:14px 16px 14px 20px;font-family:${SANS};">
+      ${tarjetas.map((t, i) => `<div style="border:1.5px solid #222;background:#fff;padding:8px 10px;margin-bottom:8px;width:72%;transform:translateX(${i === 2 ? e.d : 0}px);">
+        <p style="margin:0;font-size:9px;font-weight:700;letter-spacing:.1em;color:#1f4e8c;">EVENTO</p>
+        <p style="margin:2px 0 0;font-size:14px;font-weight:900;color:#222;">${t}</p></div>`).join('')}
+    </div>`;
+  }
+  function describirDescuido(e: D) {
+    if (e.d === 0) return '<b class="dv-cifra">Alineada</b>: ya no hay excepción. Si no había un motivo para moverla, esta es la versión adecuada.';
+    if (e.d <= 8) return `${e.d} px: se nota, pero no lo suficiente para parecer intencional. Parece un error.`;
+    if (e.d < 20) return `${e.d} px: no queda claro si es un descuido o algo intencional.`;
+    return `${e.d} px: <b class="dv-cifra">tiende a leerse como intencional</b>. Funciona si esa tarjeta tiene un motivo para destacar.`;
+  }
+
+  const conf: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['sx-demasiadas', pintarTienda as never, describirTienda as never],
+    ['sx-solo-color', pintarMensajes as never, describirMensajes as never],
+    ['sx-descuido', pintarDescuido as never, describirDescuido as never],
+  ];
+  for (const [id, pintar, describir] of conf) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar, describir });
+    }
+  }
+</script>

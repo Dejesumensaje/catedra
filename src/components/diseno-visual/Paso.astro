@@ -1,0 +1,28 @@
+---
+// Un paso del recorrido de una entrada. Los seis pasos son siempre los
+// mismos (ver PASOS) para que quien aprende sepa dónde está; lo que cambia
+// entre entradas es lo que hay dentro.
+import { PASOS, type IdPaso } from '../../lib/diseno-visual/pasos';
+
+interface Props {
+  id: IdPaso;
+  /** Reemplaza el propósito por defecto del paso. */
+  proposito?: string;
+  /** Titular propio del paso, bajo su nombre. Con él no se muestra el propósito por defecto. */
+  titular?: string;
+}
+
+const { id, proposito, titular } = Astro.props;
+const i = PASOS.findIndex((p) => p.id === id);
+const paso = PASOS[i];
+---
+
+<section class="dv-paso" id={paso.id} aria-labelledby={`paso-${paso.id}`}>
+  <header class="dv-paso-cab">
+    <span class="dv-paso-num" aria-hidden="true">{i + 1}</span>
+    <h2 id={`paso-${paso.id}`}>{paso.titulo}</h2>
+    {titular && <h3 class="dv-paso-titular">{titular}</h3>}
+    {(proposito || !titular) && <p>{proposito ?? paso.proposito}</p>}
+  </header>
+  <slot />
+</section>

@@ -1,0 +1,110 @@
+---
+// Paso 4 de retículas: tres piezas reales con sus columnas a la vista.
+// Una página web, una página de revista y una pantalla de aplicación.
+import Anotada from '../Anotada.astro';
+
+const T = '#222222';
+const G = '#9a9a9a';
+const COL = '#f1e4e2';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+
+// ── web: 12 columnas ────────────────────────────
+const WW = 360; const WH = 300;
+const wm = 20; const wg = 8; const wc = (WW - wm * 2 - wg * 11) / 12;
+const wx = (i: number) => wm + i * (wc + wg);
+const ws = (a: number, b: number) => wx(b - 1) + wc - wx(a);
+
+// ── revista: 3 columnas ─────────────────────────
+const RW = 300; const RH = 400;
+const rm = 26; const rg = 14; const rc = (RW - rm * 2 - rg * 2) / 3;
+const rx = (i: number) => rm + i * (rc + rg);
+
+// ── app: una línea clave para íconos y otra para texto ─
+const AW = 280; const AH = 420;
+const linea1 = 20;
+const linea2 = 64;
+
+const pc = (w: number, h: number) => (x: number, y: number) => ({ x: (x / w) * 100, y: (y / h) * 100 });
+const zn = (w: number, h: number) => (x: number, y: number, ancho: number, alto: number) => ({ x: (x / w) * 100, y: (y / h) * 100, w: (ancho / w) * 100, h: (alto / h) * 100 });
+const pw = pc(WW, WH); const zw = zn(WW, WH);
+const pr = pc(RW, RH); const zr = zn(RW, RH);
+const pa = pc(AW, AH); const za = zn(AW, AH);
+
+const barras = (x: number, y: number, w: number, n: number, paso = 9, alto = 3) =>
+  Array.from({ length: n }, (_, i) => ({ x, y: y + i * paso, w: i === n - 1 ? w * 0.6 : w, h: alto }));
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    rotulo="Una página web"
+    notas={[
+      { ...pw(WW, 26), titulo: 'Doce columnas', texto: 'Es una convención frecuente porque doce puede dividirse en mitades, tercios y cuartos. La estructura permite organizar bloques de distintos anchos sin inventar una medida para cada uno.', zona: zw(wm, 12, WW - wm * 2, WH - 24) },
+      { ...pw(WW, 112), titulo: 'Texto e imagen', texto: 'El texto ocupa seis columnas y la imagen cinco. Entre ambos queda una columna vacía. Seis, una y cinco suman doce.', zona: zw(wm, 54, WW - wm * 2, 110) },
+      { ...pw(WW, 228), titulo: 'Tres tarjetas', texto: 'Cada tarjeta ocupa cuatro columnas. Así comparten el mismo ancho y mantienen una separación coherente.', zona: zw(wm, 186, WW - wm * 2, 96) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${WW} ${WH}`} role="img" aria-label="Página web con una barra superior, un titular junto a una imagen y tres tarjetas iguales debajo, sobre doce columnas.">
+      <rect width={WW} height={WH} fill="#fff" />
+      {Array.from({ length: 12 }, (_, i) => <rect x={wx(i)} y="12" width={wc} height={WH - 24} fill={COL} />)}
+      <rect x={wx(0)} y="22" width={ws(0, 2)} height="10" fill={T} />
+      {[7, 8, 9, 10, 11].map((c) => <rect x={wx(c)} y="25" width={wc} height="4" fill={G} />)}
+      <text x={wx(0)} y="76" font-family={SANS} font-weight="900" font-size="19" fill={T}>Un río</text>
+      <text x={wx(0)} y="98" font-family={SANS} font-weight="900" font-size="19" fill={T}>de vuelta</text>
+      {barras(wx(0), 114, ws(0, 6), 4).map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={G} />)}
+      <rect x={wx(7)} y="58" width={ws(7, 12)} height="104" fill="#4a4a4a" />
+      {[0, 4, 8].map((c) => (
+        <g>
+          <rect x={wx(c)} y="190" width={ws(c, c + 4)} height="48" fill="#4a4a4a" />
+          {barras(wx(c), 248, ws(c, c + 4), 3).map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={G} />)}
+        </g>
+      ))}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Una página de revista"
+    notas={[
+      { ...pr(RW, 30), titulo: 'Columnas de texto', texto: 'Tres columnas determinan el ancho disponible para los renglones. Ese ancho influye en cuántas palabras caben en cada línea.', zona: zr(rm, 20, RW - rm * 2, RH - 40) },
+      { ...pr(RW, 160), titulo: 'Fotografía', texto: 'La imagen ocupa dos columnas exactas y comparte sus bordes con la estructura de la página.', zona: zr(rx(1) - 3, 112, rc * 2 + rg + 6, 132) },
+      { ...pr(RW, 262), titulo: 'Pie de foto', texto: 'Empieza en el mismo borde que la imagen. La alineación ayuda a reconocer que ambos elementos están relacionados.', zona: zr(rx(1), 248, rc * 2 + rg, 16) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${RW} ${RH}`} role="img" aria-label="Página de revista con título, tres columnas de texto y una foto que ocupa dos columnas.">
+      <rect width={RW} height={RH} fill="#fff" />
+      {[0, 1, 2].map((i) => <rect x={rx(i)} y="20" width={rc} height={RH - 40} fill={COL} />)}
+      <text x={rx(0)} y="62" font-family={SERIF} font-weight="700" font-size="26" fill={T}>El oficio</text>
+      <text x={rx(0)} y="92" font-family={SERIF} font-weight="700" font-size="26" fill={T}>de esperar</text>
+      {barras(rx(0), 116, rc, 26, 10).map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={G} />)}
+      <rect x={rx(1)} y="116" width={rc * 2 + rg} height="124" fill="#4a4a4a" />
+      <rect x={rx(1)} y="250" width={(rc * 2 + rg) * 0.7} height="3" fill={T} />
+      {barras(rx(1), 270, rc, 12, 10).map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={G} />)}
+      {barras(rx(2), 270, rc, 12, 10).map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={G} />)}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Una aplicación"
+    notas={[
+      { ...pa(AW, 70), titulo: 'Dos líneas verticales', texto: 'Una sirve para alinear los iconos y otra para alinear los textos. En una pantalla estrecha no hace falta utilizar doce columnas para organizar una lista.', zona: za(linea1 - 2, 52, linea2 - linea1 + 6, 340) },
+      { ...pa(AW, 150), titulo: 'Nombres alineados', texto: 'Aunque los iconos tengan formas distintas, todos los nombres empiezan en la misma posición. Esto facilita recorrer la lista de arriba abajo.', zona: za(linea2 - 3, 120, 6, 270) },
+      { ...pa(AW, 30), titulo: 'Título', texto: 'El título se alinea con los iconos y se diferencia del resto mediante su posición y su nivel de protagonismo.', zona: za(linea1 - 3, 14, AW - linea1 * 2, 30) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${AW} ${AH}`} role="img" aria-label="Pantalla de una aplicación con una lista de contactos: íconos a la izquierda y nombres alineados en una misma línea.">
+      <rect width={AW} height={AH} fill="#fff" />
+      <rect x={linea1} y="52" width="1.5" height={AH - 70} fill="#d8a8a3" />
+      <rect x={linea2} y="52" width="1.5" height={AH - 70} fill="#d8a8a3" />
+      <text x={linea1} y="38" font-family={SANS} font-weight="900" font-size="22" fill={T}>Contactos</text>
+      {['Ana Lucía Gómez', 'Bernardo Ríos', 'Camila Duque', 'Daniel Ortiz', 'Elena Mejía', 'Fabio Restrepo'].map((n, i) => (
+        <g>
+          {i % 3 === 0 && <circle cx={linea1 + 16} cy={92 + i * 52} r="16" fill="#4a4a4a" />}
+          {i % 3 === 1 && <rect x={linea1} y={76 + i * 52} width="32" height="32" fill="#4a4a4a" />}
+          {i % 3 === 2 && <rect x={linea1 + 4} y={80 + i * 52} width="24" height="24" fill="none" stroke="#4a4a4a" stroke-width="4" />}
+          <text x={linea2 + 6} y={89 + i * 52} font-family={SANS} font-weight="500" font-size="15" fill={T}>{n}</text>
+          <rect x={linea2 + 6} y={97 + i * 52} width="90" height="3" fill={G} />
+        </g>
+      ))}
+    </svg>
+  </Anotada>
+</div>

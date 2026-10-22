@@ -2,6 +2,7 @@ import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 // `import { z } from 'astro:content'` está deprecado en Astro 7.
 import { z } from 'astro/zod';
+import { idsTerritorio, modos } from './data/diseno-visual/territorios';
 
 /* ------------------------------------------------------------------
    Cursos
@@ -193,6 +194,39 @@ const sesiones = defineCollection({
   ),
 });
 
+/* ------------------------------------------------------------------
+   Conceptos de /diseno-visual
+   Independientes de cualquier curso. Un .mdx por concepto; el cuerpo
+   importa sus propias experiencias y las intercala con el texto.
+
+   `relaciones.concepto` es un slug y no un `reference()`: puede apuntar
+   a un concepto previsto que todavía no tiene entrada (ver
+   src/data/diseno-visual/territorios.ts). `porQue` es obligatorio por la
+   misma razón que en referentes: un enlace sin razón no entra.
+------------------------------------------------------------------ */
+const conceptos = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/conceptos' }),
+  schema: z.object({
+    titulo: z.string(),
+    territorio: z.enum(idsTerritorio),
+    pregunta: z.string(),                    // la del fenómeno, una línea
+    resumen: z.string(),                     // lo que se puede hacer en la entrada
+    modos: z.array(z.enum(modos)).min(1),
+    relaciones: z.array(z.object({
+      concepto: z.string(),
+      porQue: z.string().min(20),
+    })).default([]),
+    fuentes: z.array(z.object({
+      autor: z.string(),
+      obra: z.string(),
+      anio: z.number().int(),
+      url: z.url().optional(),
+      nota: z.string().optional(),           // para qué se cita aquí
+    })).default([]),
+    orden: z.number().int().default(0),
+  }),
+});
+
 export const collections = {
-  cursos, sesiones, evaluaciones, referentes, tensiones, trabajos,
+  cursos, sesiones, evaluaciones, referentes, tensiones, trabajos, conceptos,
 };

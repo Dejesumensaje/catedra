@@ -1,0 +1,126 @@
+---
+// Tres especímenes de proximidad en situaciones reales. Cada uno tiene un
+// solo control: la distancia que decide a qué pertenece cada cosa.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Interruptor from '../controles/Interruptor.astro';
+---
+
+<div class="dv-especimenes">
+  <Instrumento id="prox-formulario" titulo="Arregla un formulario" comparar={false} consigna="La etiqueta «Correo» está situada entre dos campos y no queda claro a cuál pertenece. Mueve la etiqueta hasta que su relación con el campo correspondiente resulte evidente. Observa cómo cambia la lectura sin necesidad de modificar el texto.">
+    <Deslizador lab="prox-formulario" variable="p" etiqueta="Posición de la etiqueta" min={0} max={100} valor={50} unidad="%" ayuda="0 %: junto a su campo. 100 %: junto al campo anterior." />
+  </Instrumento>
+
+  <Instrumento id="prox-titular" titulo="Arregla un artículo" comparar={false} consigna="El intertítulo está más cerca del párrafo anterior que del que presenta. Parece cerrar una idea en lugar de introducir la siguiente. Ajusta el espacio por encima del intertítulo: la distancia debe ayudar a reconocer qué texto está encabezando.">
+    <Deslizador lab="prox-titular" variable="k" etiqueta="Espacio sobre el intertítulo" min={0} max={100} valor={30} unidad="%" ayuda="El espacio total se mantiene: lo que añades arriba se resta abajo." />
+  </Instrumento>
+
+  <Instrumento id="prox-menu" titulo="Arregla un menú" comparar={false} consigna="Ocho enlaces pertenecen a dos temas, pero todos parecen formar una sola lista. Aumenta la distancia entre los dos bloques y observa si se distinguen mejor. Después, compara esa solución con la posibilidad de separarlos mediante una línea.">
+    <Deslizador lab="prox-menu" variable="sep" etiqueta="Espacio entre los dos bloques" min={0} max={40} valor={0} unidad="px" />
+    <Interruptor lab="prox-menu" variable="linea" etiqueta="Separar mediante una línea" />
+  </Instrumento>
+</div>
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  // ── formulario ────────────────────────────────
+  type F = { p: number };
+  const HUECO = 56;   // entre el borde inferior de un campo y el superior del siguiente
+  const ALTO_ETQ = 14;
+  const medidas = (p: number) => {
+    const libre = HUECO - ALTO_ETQ - 8;
+    const aSuCampo = 4 + (libre * p) / 100;
+    const alAnterior = HUECO - ALTO_ETQ - aSuCampo;
+    return { aSuCampo: Math.round(aSuCampo), alAnterior: Math.round(alAnterior) };
+  };
+
+  function pintarFormulario(destino: HTMLElement, e: F) {
+    const ancho = Math.max(destino.clientWidth, 220);
+    const { aSuCampo } = medidas(e.p);
+    const campo = 38;
+    const x = 20;
+    const w = ancho - 40;
+    const raiz = svg('svg', { viewBox: `0 0 ${ancho} 220`, width: ancho, height: 220, role: 'img' });
+    raiz.setAttribute('aria-label', 'Dos campos de formulario con sus etiquetas.');
+    const etiqueta = (texto: string, y: number) => {
+      const t = svg('text', { x, y: y + 11, 'font-family': SANS, 'font-size': 13, 'font-weight': 500, fill: '#222' });
+      t.textContent = texto;
+      raiz.append(t);
+    };
+    const caja = (y: number) => raiz.append(svg('rect', { x, y, width: w, height: campo, fill: '#fff', stroke: '#6f6f6f', 'stroke-width': 1.5 }));
+    const y = 16;
+    etiqueta('Nombre', y);
+    const c1 = y + ALTO_ETQ + aSuCampo;
+    caja(c1);
+    const yEtq2 = c1 + campo + (HUECO - ALTO_ETQ - aSuCampo);
+    etiqueta('Correo', yEtq2);
+    caja(yEtq2 + ALTO_ETQ + aSuCampo);
+    destino.replaceChildren(raiz);
+  }
+
+  function describirFormulario(e: F) {
+    const { aSuCampo, alAnterior } = medidas(e.p);
+    const r = alAnterior / aSuCampo;
+    const juicio = r > 2 ? 'La etiqueta pertenece a su campo.'
+      : r > 0.8 ? '<b class="dv-cifra">A la misma distancia</b> de los dos campos: no se sabe a cuál pertenece.'
+      : 'Parece una nota del campo de arriba.';
+    return `«Correo» está a ${aSuCampo} px de su campo y a ${alAnterior} px del anterior. ${juicio}`;
+  }
+
+  // ── texto editorial ───────────────────────────
+  type T = { k: number };
+  const AIRE = 44;
+  function pintarTitular(destino: HTMLElement, e: T) {
+    const arriba = Math.round((AIRE * e.k) / 100);
+    const abajo = AIRE - arriba;
+    destino.innerHTML = `
+      <div style="padding: 18px 20px; font-family: ${SERIF}; color: #444; font-size: 13px; line-height: 1.5;">
+        <p style="margin:0">La biblioteca abrió sus puertas un martes, sin ceremonia. A las nueve ya había fila para los computadores.</p>
+        <p style="margin:${arriba}px 0 ${abajo}px; font-family: ${SANS}; font-weight: 700; font-size: 15px; color: #222; line-height: 1.2;">Lo que pedían los lectores</p>
+        <p style="margin:0">La primera semana se prestaron más libros de cocina que novelas. Nadie en el equipo lo había previsto.</p>
+      </div>`;
+  }
+  function describirTitular(e: T) {
+    const arriba = Math.round((AIRE * e.k) / 100);
+    const abajo = AIRE - arriba;
+    const juicio = arriba > abajo * 1.5 ? 'El intertítulo abre el bloque que sigue.'
+      : arriba >= abajo / 1.5 ? '<b class="dv-cifra">Queda en el medio</b>: no se sabe a qué párrafo pertenece.'
+      : 'Queda junto al párrafo anterior y parece su final.';
+    return `${arriba} px arriba, ${abajo} px abajo. ${juicio}`;
+  }
+
+  // ── navegación ────────────────────────────────
+  type M = { sep: number; linea: boolean };
+  const BLOQUES = [['Perfil', 'Pedidos', 'Direcciones', 'Pagos'], ['Preguntas', 'Devoluciones', 'Contacto', 'Estado del envío']];
+  function pintarMenu(destino: HTMLElement, e: M) {
+    const item = (t: string) => `<li style="padding: 3px 0;">${t}</li>`;
+    const corte = e.linea
+      ? '<li aria-hidden="true" style="border-top:1px solid #6f6f6f; margin: 6px 0;"></li>'
+      : `<li aria-hidden="true" style="height:${e.sep}px"></li>`;
+    destino.innerHTML = `
+      <ul style="list-style:none; margin:0; padding: 18px 20px; font-family:${SANS}; font-size:14px; color:#222; line-height:1.35;">
+        ${BLOQUES[0].map(item).join('')}${corte}${BLOQUES[1].map(item).join('')}
+      </ul>`;
+  }
+  function describirMenu(e: M) {
+    if (e.linea) return 'La línea separa los dos bloques sin agregar espacio. Funciona, pero añade un elemento más a la composición.';
+    if (e.sep < 6) return `${e.sep} px adicionales: se lee <b class="dv-cifra">una sola lista</b> de ocho opciones.`;
+    if (e.sep < 16) return `${e.sep} px adicionales: los dos bloques empiezan a distinguirse, pero todavía poco.`;
+    return `${e.sep} px adicionales: se leen dos temas, cuenta y ayuda, sin necesidad de títulos.`;
+  }
+
+  const conf: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['prox-formulario', pintarFormulario as never, describirFormulario as never],
+    ['prox-titular', pintarTitular as never, describirTitular as never],
+    ['prox-menu', pintarMenu as never, describirMenu as never],
+  ];
+  for (const [id, pintar, describir] of conf) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar, describir });
+    }
+  }
+</script>

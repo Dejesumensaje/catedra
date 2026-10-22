@@ -1,0 +1,291 @@
+---
+// Proximidad: puntos idénticos cuya única diferencia es el espacio.
+// El escenario pinta en píxeles reales; lo que se lee es la razón entre la
+// separación de grupos y la distancia interna.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Haz desaparecer los grupos.',
+    hacer: 'Reduce el espacio entre grupos hasta que los puntos parezcan formar una sola unidad.',
+    pista: 'Acerca el espacio entre grupos al espacio dentro del grupo. Prueba con unos 10 px.',
+    logro: 'Los puntos no han cambiado. Al acercar los grupos entre sí, la diferencia entre las dos distancias disminuye y la agrupación se vuelve menos evidente.',
+  },
+  {
+    titulo: 'Vuelve a separarlos.',
+    hacer: 'Aumenta el espacio entre grupos hasta que puedas distinguirlos de un vistazo.',
+    pista: 'Prueba con una diferencia de tres veces o más.',
+    logro: 'Cuando la distancia entre grupos es varias veces mayor que la distancia entre sus elementos, la organización se vuelve más evidente.',
+  },
+  {
+    titulo: 'Cambia la distancia interior.',
+    hacer: 'Sin modificar el espacio entre grupos, aumenta el espacio dentro de cada uno hasta que vuelvan a confundirse.',
+    pista: 'Deja el espacio entre grupos en 40 px y aumenta el espacio interior hacia esa misma medida.',
+    preparar: { d: 10, s: 40 },
+    logro: 'Esto revela algo importante: no importa solo cuánto mide cada espacio, sino cómo se comparan entre sí.',
+  },
+  {
+    titulo: 'Haz visibles las medidas.',
+    hacer: 'Activa «Mostrar las medidas» y compara los dos valores.',
+    preparar: { d: 10, s: 40 },
+    logro: 'Estás decidiendo cuánto espacio necesita cada grupo por dentro y cuánto espacio necesita para distinguirse de los demás.',
+  },
+  {
+    titulo: 'Deja que otra señal intervenga.',
+    hacer: 'Abre «Más controles» y activa «Encerrar los vecinos de grupos distintos».',
+    abrir: true,
+    logro: 'Aunque la distancia sugiera grupos separados, el marco puede hacer que los puntos se perciban como parte de una misma unidad. La proximidad influye en la percepción, pero no actúa sola.',
+  },
+];
+
+const lab = 'proximidad';
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · doce puntos iguales"
+  consigna="Todos los puntos tienen el mismo tamaño, color y forma. Solo cambia la distancia entre ellos. Mueve los controles y observa cuándo aparecen los grupos, cuándo se confunden y qué otras señales pueden alterar lo que ves."
+  nota="Fija una configuración como A y compárala con B. Observa qué cambió y decide si la agrupación sigue siendo clara."
+>
+  <svg slot="escenario" viewBox="0 0 640 260" role="img" aria-label="Doce puntos iguales en tres grupos de cuatro.">
+    {[0, 1, 2].map((g) => [0, 1, 2, 3].map((i) => (
+      <circle cx={142 + g * 150 + i * 26} cy="130" r="8" fill="#222" />
+    )))}
+  </svg>
+
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Ahora cambia cualquier control, combina varias opciones y busca el punto en el que la composición deja de leerse como esperabas." />
+
+  <Deslizador lab={lab} variable="s" etiqueta="Espacio entre grupos" min={2} max={160} valor={56} unidad="px" ayuda="Distancia de una unidad a la siguiente." />
+  <Deslizador lab={lab} variable="d" etiqueta="Espacio dentro del grupo" min={2} max={80} valor={10} unidad="px" ayuda="Distancia entre los puntos de una misma unidad." />
+  <Interruptor lab={lab} variable="cotas" etiqueta="Mostrar las medidas" ayuda="Dibuja las dos distancias sobre la composición." />
+
+  <Fragment slot="avanzados">
+    <Deslizador lab={lab} variable="g" etiqueta="Elementos por grupo" min={1} max={12} valor={4} ayuda="Cambia cuántos puntos forman cada unidad." />
+    <Deslizador lab={lab} variable="n" etiqueta="Número de elementos" min={2} max={48} valor={12} ayuda="Añade o quita puntos." />
+    <Deslizador lab={lab} variable="t" etiqueta="Tamaño de cada elemento" min={4} max={40} valor={16} unidad="px" ayuda="Comprueba cómo influye el tamaño en la percepción del espacio." />
+    <Opciones
+      lab={lab}
+      variable="forma"
+      etiqueta="Forma de cada grupo"
+      ayuda="Compara la agrupación en línea y en bloque."
+      valor="linea"
+      opciones={[{ valor: 'linea', texto: 'En línea' }, { valor: 'bloque', texto: 'En bloque' }]}
+    />
+    <Interruptor lab={lab} variable="region" etiqueta="Encerrar los vecinos de grupos distintos" ayuda="Añade un marco que compite con la distancia." />
+    <Interruptor lab={lab} variable="semejanza" etiqueta="Dar otro relleno a los vecinos de grupos distintos" ayuda="Introduce una diferencia de apariencia que también influye en la agrupación." />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset='{"d":24,"s":24}'>Iguala los dos espacios</button>
+    <button type="button" class="dv-boton" data-preset='{"d":20,"s":30}'>Busca la zona dudosa</button>
+    <button type="button" class="dv-boton" data-preset='{"d":46,"s":8}'>Invierte la relación: más espacio dentro que entre grupos</button>
+    <button type="button" class="dv-boton" data-preset='{"d":20,"s":112}'>Duplica las dos distancias iniciales</button>
+  </Fragment>
+</Instrumento>
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+
+  type E = {
+    n: number; g: number; d: number; s: number; t: number;
+    forma: string; cotas: boolean; region: boolean; semejanza: boolean;
+  };
+
+  const TINTA = '#222222';
+  const COTA = '#b3261e';
+  const PAD = 28;
+
+  interface Punto { x: number; y: number; grupo: number; i: number; fila: number }
+
+  function componer(e: E, ancho: number) {
+    const total = Math.max(e.n, 1);
+    const porGrupo = Math.max(1, Math.min(e.g, total));
+    const nGrupos = Math.ceil(total / porGrupo);
+    const paso = e.t + e.d;
+    const cols = e.forma === 'bloque' ? Math.ceil(Math.sqrt(porGrupo)) : porGrupo;
+    const util = ancho - PAD * 2;
+
+    const puntos: Punto[] = [];
+    let x = 0;
+    let y = 0;
+    let altoFila = 0;
+    let fila = 0;
+    const grupos: { x: number; y: number; w: number; h: number; fila: number }[] = [];
+
+    for (let gi = 0; gi < nGrupos; gi++) {
+      const c = gi === nGrupos - 1 ? total - porGrupo * (nGrupos - 1) : porGrupo;
+      const gc = Math.min(cols, c);
+      const gr = Math.ceil(c / cols);
+      const w = gc * e.t + (gc - 1) * e.d;
+      const h = gr * e.t + (gr - 1) * e.d;
+      if (x > 0 && x + w > util) {
+        x = 0;
+        y += altoFila + e.s;
+        altoFila = 0;
+        fila++;
+      }
+      for (let i = 0; i < c; i++) {
+        puntos.push({ x: x + (i % cols) * paso, y: y + Math.floor(i / cols) * paso, grupo: gi, i, fila });
+      }
+      grupos.push({ x, y, w, h, fila });
+      x += w + e.s;
+      altoFila = Math.max(altoFila, h);
+    }
+
+    const anchoTotal = Math.max(...grupos.map((g) => g.x + g.w));
+    const altoTotal = y + altoFila;
+    return { puntos, grupos, anchoTotal, altoTotal, nGrupos, porGrupo };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const ancho = Math.max(destino.clientWidth, 240);
+    const c = componer(e, ancho);
+    const escala = Math.min(1, (ancho - PAD * 2) / c.anchoTotal);
+    const alto = Math.max(ancho < 500 ? 200 : 320, c.altoTotal * escala + PAD * 2 + (e.cotas ? 60 : 0));
+    const ox = (ancho - c.anchoTotal * escala) / 2;
+    const oy = (alto - c.altoTotal * escala) / 2;
+    const X = (v: number) => ox + v * escala;
+    const Y = (v: number) => oy + v * escala;
+    const t = e.t * escala;
+
+    const raiz = svg('svg', { viewBox: `0 0 ${ancho} ${alto}`, width: ancho, height: alto, role: 'img' });
+    raiz.setAttribute('aria-label', `${e.n} puntos iguales en ${c.nGrupos} ${c.nGrupos === 1 ? 'grupo' : 'grupos'}; espacio dentro del grupo ${e.d} px, espacio entre grupos ${e.s} px.`);
+
+    // Vecinos de frontera: el último de un grupo y el primero del siguiente, en la misma fila.
+    const frontera = new Set<Punto>();
+    const pares: [Punto, Punto][] = [];
+    for (let gi = 0; gi < c.nGrupos - 1; gi++) {
+      const delGrupo = c.puntos.filter((p) => p.grupo === gi);
+      const delSig = c.puntos.filter((p) => p.grupo === gi + 1);
+      const ultimo = delGrupo.reduce((a, b) => (b.x > a.x || (b.x === a.x && b.y < a.y) ? b : a));
+      const primero = delSig.reduce((a, b) => (b.x < a.x || (b.x === a.x && b.y < a.y) ? b : a));
+      if (ultimo.fila !== primero.fila) continue;
+      frontera.add(ultimo); frontera.add(primero);
+      pares.push([ultimo, primero]);
+    }
+
+    if (e.region) {
+      for (const [a, b] of pares) {
+        const m = Math.max(6, t * 0.5);
+        raiz.append(svg('rect', {
+          x: X(a.x) - m, y: Y(Math.min(a.y, b.y)) - m,
+          width: X(b.x) - X(a.x) + t + m * 2, height: t + m * 2 + Math.abs(Y(b.y) - Y(a.y)),
+          fill: '#e9e9e4', stroke: TINTA, 'stroke-width': 1.5,
+        }));
+      }
+    }
+
+    for (const p of c.puntos) {
+      const vacio = e.semejanza && frontera.has(p);
+      raiz.append(svg('circle', {
+        cx: X(p.x) + t / 2, cy: Y(p.y) + t / 2, r: vacio ? t / 2 - 1 : t / 2,
+        fill: vacio ? 'none' : TINTA, stroke: TINTA, 'stroke-width': vacio ? 2 : 0,
+      }));
+    }
+
+    if (e.cotas) {
+      const fuente = { 'font-family': 'Roboto, Helvetica, Arial, sans-serif', 'font-size': 13, 'font-weight': 700, fill: COTA };
+      const cota = (x1: number, y1: number, x2: number, y2: number, texto: string, debajo: boolean) => {
+        const g = svg('g', { stroke: COTA, 'stroke-width': 1.5 });
+        const horizontal = y1 === y2;
+        g.append(svg('line', { x1, y1, x2, y2 }));
+        const tick = 6;
+        if (horizontal) {
+          g.append(svg('line', { x1, y1: y1 - tick, x2: x1, y2: y1 + tick }));
+          g.append(svg('line', { x1: x2, y1: y2 - tick, x2, y2: y2 + tick }));
+        } else {
+          g.append(svg('line', { x1: x1 - tick, y1, x2: x1 + tick, y2: y1 }));
+          g.append(svg('line', { x1: x2 - tick, y1: y2, x2: x2 + tick, y2 }));
+        }
+        raiz.append(g);
+        const tx = svg('text', {
+          ...fuente,
+          x: horizontal ? (x1 + x2) / 2 : x1 + 10,
+          y: horizontal ? (debajo ? y1 + 22 : y1 - 12) : (y1 + y2) / 2 + 4,
+          'text-anchor': horizontal ? 'middle' : 'start',
+        });
+        tx.textContent = texto;
+        raiz.append(tx);
+      };
+
+      const g0 = c.puntos.filter((p) => p.grupo === 0);
+      if (g0.length > 1) {
+        const a = g0[0];
+        const b = g0[1];
+        const y = Y(a.y) - 14;
+        cota(X(a.x) + t, y, X(b.x), y, `dentro ${e.d} px`, false);
+      }
+      if (pares.length) {
+        const [a, b] = pares[0];
+        const y = Y(Math.max(a.y, b.y)) + t + 14;
+        cota(X(a.x) + t, y, X(b.x), y, `entre ${e.s} px`, true);
+      } else if (c.grupos.length > 1 && c.grupos[1].fila !== c.grupos[0].fila) {
+        const g = c.grupos[0];
+        const x = X(g.x) - 12;
+        cota(x, Y(g.y + g.h), x, Y(c.grupos[1].y), `entre ${e.s} px`, false);
+      }
+    }
+
+    // La relación, escrita en el escenario: en móvil la lectura queda fuera
+    // de la vista mientras se mueven los controles.
+    const porGrupo = Math.max(1, Math.min(e.g, e.n));
+    if (porGrupo > 1 && Math.ceil(e.n / porGrupo) > 1) {
+      const r = svg('text', {
+        x: 12, y: alto - 12, 'font-family': 'Roboto, Helvetica, Arial, sans-serif',
+        'font-size': 12, 'font-weight': 500, fill: '#6f6f6f',
+      });
+      r.textContent = `espacio entre grupos = ${n(e.s / e.d)} × espacio dentro`;
+      raiz.append(r);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const porGrupo = Math.max(1, Math.min(e.g, e.n));
+    const nGrupos = Math.ceil(e.n / porGrupo);
+    const resto = e.n - porGrupo * (nGrupos - 1);
+    if (porGrupo === 1 || nGrupos === 1) {
+      return nGrupos === 1
+        ? `Todos los puntos están en un solo grupo, así que no hay otro grupo del que separarse. El espacio dentro del grupo (${e.d} px) solo decide si se leen como una fila o como puntos sueltos.`
+        : `Hay un punto por grupo, así que todos los espacios miden lo mismo (${e.s} px). Sin diferencia entre espacios no se forman grupos: se ve una sola serie.`;
+    }
+    const r = e.s / e.d;
+    const razon = `<b class="dv-cifra">${n(r)} veces</b>`;
+    let lectura: string;
+    if (r < 0.8) lectura = 'Hay más espacio dentro de los grupos que entre ellos. Cada punto se junta con su vecino del grupo de al lado y se forman grupos nuevos.';
+    else if (r < 1.25) lectura = 'Sin grupos: los dos espacios casi coinciden y se ve una sola serie.';
+    else if (r < 2) lectura = 'Zona dudosa: los grupos se ven si los buscas, pero no a primera vista.';
+    else if (r <= 6) lectura = `Grupos claros: se ven ${nGrupos} grupos${resto !== porGrupo ? ` (el último con ${resto} puntos)` : ` de ${porGrupo}`}.`;
+    else lectura = 'Piezas independientes: los grupos están tan lejos que dejan de leerse como partes de un mismo conjunto.';
+
+    const tamano = e.d / e.t;
+    let extra = '';
+    if (r >= 1.25 && tamano > 2) extra = ` Atención: dentro de cada grupo cabrían ${n(tamano)} puntos más. Los grupos se ven sueltos aunque la razón entre espacios sea alta.`;
+    if (e.region && e.semejanza) extra += ' Ahora compiten tres señales: distancia, marco y relleno.';
+    else if (e.region) extra += ' El marco reúne puntos de grupos distintos y compite con la distancia.';
+    else if (e.semejanza) extra += ' Los puntos vacíos tienden a verse juntos aunque la distancia los separe.';
+
+    return `El espacio entre grupos es ${razon} mayor que el espacio dentro del grupo. ${lectura}${extra}`;
+  }
+
+  const razon = (e: E) => e.s / e.d;
+  const hayGrupos = (e: E) => e.g > 1 && e.n > e.g;
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="proximidad"]')) {
+    // La guía escucha antes de conectar: así recibe el primer estado.
+    guiar<E>(raiz, [
+      (e) => hayGrupos(e) && razon(e) < 1.25,
+      (e) => hayGrupos(e) && razon(e) >= 3,
+      (e, inicio) => e.s === inicio.s && e.d > inicio.d && razon(e) < 1.6,
+      (e) => e.cotas,
+      (e) => e.region,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

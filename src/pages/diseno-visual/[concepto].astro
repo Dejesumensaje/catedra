@@ -1,0 +1,109 @@
+---
+import { render } from 'astro:content';
+import DisenoVisual from '../../layouts/DisenoVisual.astro';
+import { nombreModo } from '../../data/diseno-visual/territorios';
+import { PASOS } from '../../lib/diseno-visual/pasos';
+import {
+  BASE,
+  conceptos,
+  itemsDe,
+  resolverRelaciones,
+  rutaConcepto,
+  rutaTerritorio,
+  territorioPorId,
+} from '../../lib/diseno-visual/relaciones';
+
+export async function getStaticPaths() {
+  const todas = await conceptos();
+  return todas.map((entrada) => ({ params: { concepto: entrada.id }, props: { entrada } }));
+}
+
+const { entrada } = Astro.props;
+const todas = await conceptos();
+const { Content } = await render(entrada);
+const d = entrada.data;
+const territorio = territorioPorId(d.territorio);
+const relaciones = resolverRelaciones(entrada, todas);
+const vecinos = itemsDe(territorio, todas);
+---
+
+<DisenoVisual
+  titulo={`${d.titulo} · Diseño visual`}
+  descripcion={d.resumen}
+  volverHref={BASE}
+  volverTexto="Diseño visual"
+>
+  <nav class="dv-miga" aria-label="Ubicación">
+    <a href={BASE}>Diseño visual</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href={rutaTerritorio(territorio.id)}>{territorio.nombre}</a>
+  </nav>
+
+  <header class="dv-entrada-cab">
+    <h1>{d.titulo}</h1>
+    <p class="dv-pregunta">{d.pregunta}</p>
+    <ul class="dv-modos" aria-label="Modos de exploración de esta entrada">
+      {d.modos.map((m) => <li>{nombreModo[m]}</li>)}
+    </ul>
+  </header>
+
+  <nav class="dv-recorrido" aria-label="Pasos de esta entrada">
+    <p>Si es tu primera vez, sigue las seis etapas en orden. Si ya conoces el tema, pasa directamente a «Pruébalo» o «Ponte a prueba».</p>
+    <ol>
+      {PASOS.map((p) => <li><a href={`#${p.id}`}><span>{p.corto}</span></a></li>)}
+    </ol>
+  </nav>
+
+  <Content />
+
+  {relaciones.length > 0 && (
+    <section class="dv-seccion" id="relaciones">
+      <h2>Se relaciona con</h2>
+      <div class="dv-seccion-texto">
+        <ul class="dv-relaciones">
+          {relaciones.map((r) => (
+            <li>
+              {r.href
+                ? <a class="dv-rel-nombre" href={r.href}><span>{r.nombre}</span></a>
+                : <span class="dv-rel-nombre">{r.nombre}<span class="dv-rel-pendiente">en preparación</span></span>}
+              <p>{r.porQue}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {d.fuentes.length > 0 && (
+    <section class="dv-seccion" id="fuentes">
+      <h2>Fuentes</h2>
+      <div class="dv-seccion-texto">
+        <ul class="dv-fuentes">
+          {d.fuentes.map((f) => (
+            <li>
+              {f.autor} ({f.anio}).{' '}
+              {f.url ? <a href={f.url}><cite>{f.obra}</cite></a> : <cite>{f.obra}</cite>}.
+              {f.nota && <span class="dv-nota">{f.nota}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <nav class="dv-vecinos" aria-labelledby="vecinos-titulo">
+    <h2 id="vecinos-titulo">{territorio.nombre}</h2>
+    <ul>
+      {vecinos.map((v) => (
+        <li>
+          {v.slug === entrada.id
+            ? <span class="actual" aria-current="page">{v.nombre}</span>
+            : v.entrada
+              ? <a href={rutaConcepto(v.slug)}>{v.nombre}</a>
+              : <span class="sin-entrada">{v.nombre}<span class="sr-solo"> (en preparación)</span></span>}
+        </li>
+      ))}
+      <li><a href={BASE}>Todos los territorios</a></li>
+    </ul>
+  </nav>
+</DisenoVisual>

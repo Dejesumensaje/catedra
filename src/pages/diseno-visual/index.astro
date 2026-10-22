@@ -1,0 +1,200 @@
+---
+import DisenoVisual from '../../layouts/DisenoVisual.astro';
+import Glifo from '../../components/diseno-visual/Glifo.astro';
+import CartelAnatomia from '../../components/diseno-visual/CartelAnatomia.astro';
+import { territorios, modos, nombreModo } from '../../data/diseno-visual/territorios';
+import { conceptos, itemsDe, rutaConcepto } from '../../lib/diseno-visual/relaciones';
+
+const todas = await conceptos();
+
+// Orden sugerido para quien empieza de cero. Cada paso usa lo anterior.
+const ruta = [
+  ['proximidad', 'Empieza por el espacio: descubre cómo la distancia entre elementos puede crear grupos.'],
+  ['semejanza', 'Explora cómo reconocer elementos relacionados por su apariencia y qué ocurre cuando la semejanza compite con la proximidad.'],
+  ['escalas-tipograficas', 'Descubre cómo las diferencias de tamaño organizan el orden de lectura.'],
+  ['reticulas-y-alineacion', 'Aprende a reconocer las líneas invisibles que dan estructura a una composición.'],
+  ['interaccion-del-color', 'Comprueba cómo cambia un color según su entorno y qué hace que un texto sea legible.'],
+  ['sistemas-y-excepciones', 'Reúne varias decisiones en un conjunto de reglas y descubre cómo una excepción puede cambiar su significado.'],
+].map(([slug, porque]) => ({ entrada: todas.find((c) => c.id === slug), porque }))
+  .filter((r) => r.entrada);
+const conEntrada = todas.length;
+
+// Texto en el que busca el filtro: sin tildes ni mayúsculas.
+const plano = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+const descModo: Record<(typeof modos)[number], string> = {
+  laboratorio: 'Cambia un valor y observa cómo cambia la composición. Una decisión, un efecto.',
+  comparacion: 'Pon dos configuraciones una al lado de la otra. Mira qué cambió y qué consecuencias tuvo.',
+  diseccion: 'Haz visibles las medidas, las alineaciones y las reglas que normalmente pasan inadvertidas.',
+  provocacion: 'Rompe una regla a propósito. Explora hasta dónde funciona y descubre qué sucede cuando deja de hacerlo.',
+};
+---
+
+<DisenoVisual
+  titulo="Anatomía del diseño visual"
+  descripcion="Una enciclopedia de diseño visual con instrumentos interactivos: cambias la relación entre elementos y observas cómo cambia lo que percibes."
+  volverHref="/"
+  volverTexto="Cátedra"
+>
+  <header class="dv-indice-cab">
+    <h1>Anatomía del diseño visual</h1>
+    <div class="dv-intro">
+      <p>¿Qué cambia cuando acercas dos elementos, agrandas una palabra o alteras un color?</p>
+      <p>El diseño visual está hecho de decisiones que modifican cómo vemos, agrupamos y leemos lo que tenemos delante. En esta enciclopedia puedes experimentar con ellas: mover, comparar, desarmar composiciones y descubrir qué hace cada elemento.</p>
+      <p>Cada concepto es una invitación a probar, observar y sacar tus propias conclusiones. No se trata de memorizar reglas, sino de entender cómo funcionan, qué posibilidades abren y qué ocurre cuando las llevamos al límite.</p>
+      <p>Elige algo que te dé curiosidad y empieza a explorar.</p>
+    </div>
+  </header>
+
+  <section class="dv-puerta" aria-labelledby="puerta-titulo">
+    <h2 id="puerta-titulo">Mira cómo se construye un cartel</h2>
+    <p>Un cartel reúne muchas decisiones en una sola composición. Selecciona cada número para descubrir una de ellas, ver qué efecto produce y explorar el concepto que hay detrás.</p>
+    <CartelAnatomia />
+  </section>
+
+  <section class="dv-ruta" aria-labelledby="ruta-titulo">
+    <h2 id="ruta-titulo">Una ruta para empezar</h2>
+    <p>Si todavía no sabes por dónde entrar, sigue esta ruta. Empieza por las relaciones más sencillas y avanza hacia decisiones que combinan varios conceptos.</p>
+    <ol>
+      {ruta.map(({ entrada, porque }) => (
+        <li>
+          <a href={rutaConcepto(entrada!.id)}>
+            <span><strong>{entrada!.data.titulo}</strong><span class="porque">{porque}</span></span>
+            <span class="hecho" data-hecho={entrada!.id}></span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <h2 class="dv-todos-titulo" id="todos">Explora todos los conceptos</h2>
+  <p class="dv-todos-intro">Cada entrada recorre seis momentos: <strong>La idea, Míralo, Pruébalo, Úsalo, Ponte a prueba y A fondo</strong>. Puedes entender el concepto, observarlo en acción, experimentar con sus variables y comprobar lo que descubriste.</p>
+  <p class="dv-todos-intro">Los instrumentos interactivos proponen cuatro maneras de explorar. Elige una para encontrar los conceptos que la ponen en práctica.</p>
+  <h3 class="dv-leyenda-titulo">Cuatro maneras de explorar</h3>
+  <dl class="dv-leyenda">
+    {modos.map((m) => (
+      <div>
+        <dt>{nombreModo[m]}</dt>
+        <dd>{descModo[m]}</dd>
+      </div>
+    ))}
+  </dl>
+
+  <form class="dv-filtro" role="search" aria-label="Filtrar conceptos" data-filtro hidden>
+    <div class="dv-filtro-buscar">
+      <label for="dv-buscar">Buscar un concepto</label>
+      <input type="search" id="dv-buscar" placeholder="contraste, grupo, columna…" autocomplete="off" aria-describedby="dv-buscar-ayuda" />
+      <p class="dv-ayuda" id="dv-buscar-ayuda">Busca por nombre o escribe una idea relacionada, como contraste, grupo o columna.</p>
+    </div>
+    <fieldset class="dv-control dv-opciones" style="border-bottom: 0; padding: 0;">
+      <legend>Filtrar por forma de explorar</legend>
+      <div class="dv-opciones-fila">
+        <label class="dv-opcion"><input type="radio" name="dv-modo" value="" checked /><span>Todos</span></label>
+        {modos.map((m) => (
+          <label class="dv-opcion"><input type="radio" name="dv-modo" value={m} /><span>{nombreModo[m]}</span></label>
+        ))}
+      </div>
+    </fieldset>
+  </form>
+  <p class="dv-filtro-resultado" role="status" data-resultado>{conEntrada === 1 ? 'Hay 1 concepto disponible' : `Hay ${conEntrada} conceptos disponibles`}. Los demás están en preparación.</p>
+
+  {territorios.map((t, i) => {
+    const items = itemsDe(t, todas);
+    const entradas = items.filter((it) => it.entrada);
+    const previstos = items.filter((it) => !it.entrada);
+    return (
+      <section class="dv-territorio" id={t.id} aria-labelledby={`t-${t.id}`} data-territorio>
+        <div class="dv-territorio-cab">
+          <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <h2 id={`t-${t.id}`}>{t.nombre}</h2>
+          <p>{t.pregunta}</p>
+        </div>
+        <div>
+          {entradas.length > 0 && (
+            <ul class="dv-conceptos">
+              {entradas.map(({ entrada }) => (
+                <li
+                  class="dv-concepto-entrada"
+                  data-item
+                  data-texto={plano(`${entrada!.data.titulo} ${entrada!.data.resumen} ${entrada!.data.pregunta} ${t.nombre}`)}
+                  data-modos={entrada!.data.modos.join(' ')}
+                >
+                  <a href={rutaConcepto(entrada!.id)}>
+                    <Glifo slug={entrada!.id} />
+                    <div>
+                      <h3>{entrada!.data.titulo} <span class="flecha" aria-hidden="true">→</span></h3>
+                      <p class="resumen">{entrada!.data.resumen}</p>
+                      <ul class="dv-modos" aria-label="Modos">
+                        {entrada!.data.modos.map((m) => <li>{nombreModo[m]}</li>)}
+                      </ul>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {previstos.length > 0 && (
+            <>
+              <h3 class="dv-previstos-titulo" id={`p-${t.id}`}>En preparación</h3>
+              <ul class="dv-previstos" aria-labelledby={`p-${t.id}`}>
+                {previstos.map((p) => (
+                  <li data-item data-texto={plano(`${p.nombre} ${t.nombre}`)} data-modos="">{p.nombre}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
+    );
+  })}
+</DisenoVisual>
+
+<script>
+  // Lo que ya practicaste: el mejor resultado de cada juego, guardado en este
+  // navegador. Se escribe, no se premia.
+  for (const el of document.querySelectorAll<HTMLElement>('[data-hecho]')) {
+    try {
+      const r = JSON.parse(localStorage.getItem(`dv-juego-${el.dataset.hecho}`) ?? 'null');
+      if (r) el.textContent = `Practicado: ${r.aciertos} de ${r.total}`;
+    } catch { /* sin almacenamiento */ }
+  }
+
+  // Filtro del índice. Sin JS el formulario no aparece y la lista está entera.
+  const form = document.querySelector<HTMLFormElement>('[data-filtro]');
+  const resultado = document.querySelector<HTMLElement>('[data-resultado]');
+  if (form && resultado) {
+    form.hidden = false;
+    const buscar = form.querySelector<HTMLInputElement>('#dv-buscar')!;
+    const plano = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim();
+    const inicial = resultado.textContent;
+
+    const filtrar = () => {
+      const q = plano(buscar.value);
+      const modo = form.querySelector<HTMLInputElement>('input[name="dv-modo"]:checked')?.value ?? '';
+      let entradas = 0;
+      let previstos = 0;
+      for (const item of document.querySelectorAll<HTMLElement>('[data-item]')) {
+        const porTexto = !q || item.dataset.texto!.includes(q);
+        const porModo = !modo || item.dataset.modos!.split(' ').includes(modo);
+        const visible = porTexto && porModo;
+        item.classList.toggle('dv-oculto', !visible);
+        if (visible) item.classList.contains('dv-concepto-entrada') ? entradas++ : previstos++;
+      }
+      for (const t of document.querySelectorAll<HTMLElement>('[data-territorio]')) {
+        const listas = t.querySelectorAll('ul.dv-conceptos, ul.dv-previstos');
+        for (const l of listas) {
+          const algo = l.querySelector('[data-item]:not(.dv-oculto)');
+          l.classList.toggle('dv-oculto', !algo);
+          if (l.classList.contains('dv-previstos')) l.previousElementSibling?.classList.toggle('dv-oculto', !algo);
+        }
+        t.classList.toggle('dv-oculto', !t.querySelector('[data-item]:not(.dv-oculto)'));
+      }
+      if (!q && !modo) resultado.textContent = inicial;
+      else if (!entradas && !previstos) resultado.textContent = 'No hay resultados. Prueba con otra palabra.';
+      else resultado.textContent = `${entradas} ${entradas === 1 ? 'entrada' : 'entradas'}${previstos ? ` y ${previstos} ${previstos === 1 ? 'concepto en preparación' : 'conceptos en preparación'}` : ''}.`;
+    };
+
+    form.addEventListener('input', filtrar);
+    form.addEventListener('submit', (e) => e.preventDefault());
+  }
+</script>

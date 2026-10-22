@@ -1,0 +1,104 @@
+---
+// Marco común de un instrumento: escenario, lectura de la relación,
+// controles y acciones. Lo que cambia entre instrumentos es lo que se pinta
+// y qué controles hay; el marco solo ordena.
+//
+// Slots:
+//   escenario  contenido inicial del escenario (se ve sin JS)
+//   (default)  controles
+//   pruebas    botones data-preset con configuraciones sugeridas
+//   guia       <Guia> paso a paso, encima de los controles
+//   avanzados  controles que no hacen falta para empezar (van plegados)
+interface Props {
+  id: string;
+  titulo: string;
+  consigna?: string;
+  comparar?: boolean;
+  /** Proporción del escenario, p. ej. "16 / 9". Sin ella, el alto lo da el contenido. */
+  proporcion?: string;
+  /** El escenario pide todo el ancho y los controles van debajo. */
+  ancho?: boolean;
+  clase?: string;
+  /** Una invitación a comparar, junto a las acciones. */
+  nota?: string;
+}
+
+const { id, titulo, consigna, comparar = true, proporcion, ancho = false, clase = '', nota } = Astro.props;
+const tienePruebas = Astro.slots.has('pruebas');
+const tieneAvanzados = Astro.slots.has('avanzados');
+---
+
+<section
+  class:list={['dv-instrumento', clase, { 'dv-instrumento-ancho': ancho }]}
+  data-lab={id}
+  id={id}
+  aria-labelledby={`${id}-titulo`}
+  style={proporcion ? `--proporcion: ${proporcion}` : undefined}
+>
+  <header class="dv-ins-cab">
+    <h2 id={`${id}-titulo`}>{titulo}</h2>
+    {consigna && <p class="dv-consigna">{consigna}</p>}
+  </header>
+
+  <div class="dv-ins-cuerpo">
+    <div class="dv-visor">
+    <div class="dv-ins-escenas">
+      {comparar && (
+        <figure class="dv-escena dv-escena-a" data-comparacion hidden>
+          <figcaption>A · fijada</figcaption>
+          <div class="dv-lienzo" data-escenario-a></div>
+        </figure>
+      )}
+      <figure class="dv-escena dv-escena-actual">
+        {comparar && <figcaption class="dv-solo-comparando">B · ahora</figcaption>}
+        <div class="dv-lienzo" data-escenario>
+          <slot name="escenario" />
+        </div>
+      </figure>
+    </div>
+
+    <p class="dv-lectura" data-lectura aria-live="polite"></p>
+
+    {comparar && (
+      <div class="dv-diferencias dv-solo-comparando" data-diferencias aria-live="polite"></div>
+    )}
+    </div>
+
+    <div class="dv-ins-controles">
+      <slot name="guia" />
+      <slot />
+
+      {tieneAvanzados && (
+        <details class="dv-avanzados">
+          <summary>Más controles</summary>
+          <div class="dv-avanzados-cuerpo">
+            <slot name="avanzados" />
+          </div>
+        </details>
+      )}
+
+      {tienePruebas && (
+        <div class="dv-pruebas">
+          <p class="dv-pruebas-titulo">Configuraciones para probar</p>
+          <div class="dv-pruebas-fila">
+            <slot name="pruebas" />
+          </div>
+        </div>
+      )}
+
+      <div class="dv-acciones">
+        {nota && <p class="dv-ins-nota">{nota}</p>}
+        {comparar && (
+          <>
+            <button type="button" class="dv-boton dv-boton-fuerte dv-solo-sin-comparar" data-accion="fijar">Fijar como A y comparar</button>
+            <button type="button" class="dv-boton dv-solo-comparando" data-accion="fijar">Fijar de nuevo</button>
+            <button type="button" class="dv-boton dv-solo-comparando" data-accion="soltar">Cerrar comparación</button>
+          </>
+        )}
+        <button type="button" class="dv-boton" data-accion="restablecer">Restablecer</button>
+        <button type="button" class="dv-boton" data-accion="enlace">Copiar enlace</button>
+      </div>
+      <p class="dv-aviso" data-aviso role="status"></p>
+    </div>
+  </div>
+</section>

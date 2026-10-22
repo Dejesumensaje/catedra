@@ -1,0 +1,246 @@
+---
+titulo: Interacción del color
+territorio: color
+pregunta: ¿Por qué el mismo color parece otro cuando cambia lo que tiene al lado?
+resumen: "Un color no se percibe de forma aislada: su entorno modifica cómo lo vemos. Compara combinaciones, comprueba la legibilidad del texto y descubre por qué un significado nunca debería depender únicamente del color."
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 4
+relaciones:
+  - concepto: semejanza
+    porQue: El color es una de las formas más rápidas de hacer que varios elementos parezcan relacionados. Pero la semejanza también puede fallar cuando dos colores que deberían distinguirse tienen una luminancia parecida y se confunden al eliminar el tono.
+  - concepto: roles-semanticos
+    porQue: Los mensajes de estado utilizan el color como una señal de significado. El rojo puede indicar un error y el verde una confirmación, pero estas asociaciones dependen de convenciones y del contexto en que se presentan.
+  - concepto: contraste
+    porQue: La razón de contraste mide la diferencia de luminancia entre dos colores. Es una herramienta importante para evaluar la legibilidad, aunque no describe todas las relaciones perceptivas entre ellos.
+  - concepto: accesibilidad-del-color
+    porQue: La opción «Ver sin color» permite comprobar qué información permanece cuando el tono deja de distinguirse. Los mensajes importantes deben seguir siendo comprensibles mediante otras señales.
+  - concepto: dependencia-del-contexto
+    porQue: El instrumento de los dos cuadros muestra cómo un color elegido por separado puede parecer distinto cuando aparece junto a otros colores.
+  - concepto: sistemas-y-excepciones
+    porQue: Una paleta de estados es un sistema visual. Intercambiar los colores de dos estados puede resultar confuso porque contradice las asociaciones que el sistema ya ha establecido.
+fuentes:
+  - autor: Josef Albers
+    obra: Interaction of Color. Yale University Press
+    anio: 1963
+    nota: Ejercicios y reflexiones sobre la percepción del color y cómo cambia según los colores que lo rodean.
+  - autor: W3C
+    obra: Web Content Accessibility Guidelines (WCAG) 2.2
+    anio: 2023
+    url: https://www.w3.org/TR/WCAG22/
+    nota: Criterios de contraste, luminancia relativa y uso del color en contenido web.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ColorIdea from '../../components/diseno-visual/experiencias/ColorIdea.astro';
+import ColorMiralo from '../../components/diseno-visual/experiencias/ColorMiralo.astro';
+import ColorSimultaneo from '../../components/diseno-visual/experiencias/ColorSimultaneo.astro';
+import ColorContraste from '../../components/diseno-visual/experiencias/ColorContraste.astro';
+import ColorRoles from '../../components/diseno-visual/experiencias/ColorRoles.astro';
+import ColorEjemplos from '../../components/diseno-visual/experiencias/ColorEjemplos.astro';
+import ColorJuego from '../../components/diseno-visual/experiencias/ColorJuego.astro';
+
+<Paso id="idea" titular="Un color nunca está completamente solo">
+
+<ColorIdea />
+
+<p class="dv-frase">Un color puede parecer distinto sin que su valor haya cambiado.</p>
+
+<div class="dv-texto">
+
+Este fenómeno se conoce como *contraste simultáneo*. Un fondo oscuro puede hacer que un color parezca más claro; uno claro puede hacerlo parecer más oscuro. La apariencia también puede cambiar cuando los colores vecinos tienen distintos tonos o niveles de saturación.
+
+Esto tiene consecuencias prácticas. Un color que parece perfecto en una paleta puede verse diferente cuando llega a una página, un cartel o una interfaz. Y un texto no se lee solo por el color que tiene: importa la diferencia entre ese color y el fondo.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Tono</dt>
+    <dd>La característica que nombramos al decir rojo, verde o azul.</dd>
+    <dt>Luminancia</dt>
+    <dd>Una medida de la luz relativa que refleja o emite un color, calculada a partir de sus componentes. Es la base de la razón de contraste utilizada en accesibilidad web.</dd>
+    <dt>Claridad percibida</dt>
+    <dd>Qué tan claro u oscuro nos parece un color en un contexto concreto. No siempre coincide con la luminancia calculada.</dd>
+    <dt>Contraste</dt>
+    <dd>La diferencia perceptible entre dos elementos. Para evaluar la legibilidad del texto en la web, una diferencia importante es la de luminancia entre el texto y su fondo.</dd>
+    <dt>Razón de contraste</dt>
+    <dd>Una cifra que expresa la diferencia de luminancia entre dos colores. Va de 1:1, cuando tienen la misma luminancia, a 21:1, en el caso del negro y el blanco. Para texto normal, WCAG establece un mínimo de 4,5:1 en el nivel AA.</dd>
+    <dt>Luminosidad y saturación</dt>
+    <dd>Dos controles del instrumento. La luminosidad permite aclarar u oscurecer un color dentro del modelo utilizado; la saturación modifica qué tan intenso o apagado se ve. Estos controles no equivalen directamente a la luminancia calculada ni a la apariencia que tendrá el color en cualquier contexto.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="El mismo formulario, dos maneras de usar el color">
+
+<div class="dv-texto">
+
+Observa dos versiones de un formulario de pago. Ambas utilizan los mismos colores de marca, pero cambian dos decisiones: cómo se combinan los colores y cómo se comunica un error.
+
+Toca los números para explorar cada caso.
+
+</div>
+
+<ColorMiralo />
+
+<div class="dv-texto">
+
+En la primera versión, el amarillo puede ser reconocible y coherente con la marca, pero eso no garantiza que el texto colocado encima se lea bien. Tampoco basta con que el error tenga un color convencionalmente asociado con las advertencias.
+
+En la segunda no se eliminó el color de marca. Se cambió la relación entre el texto y el fondo, y se hizo que el mensaje de error pudiera reconocerse de más de una manera.
+
+**La idea clave:** elegir un color y elegir cómo utilizarlo son dos decisiones diferentes.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Un color, dos fondos">
+
+<ColorSimultaneo />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para trabajar con color">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Mide el contraste del texto, no lo adivines</h3>
+      <p>Un color llamativo puede parecer legible y, aun así, no tener suficiente diferencia de luminancia con el fondo. Utiliza una herramienta que calcule la razón de contraste. Como referencia, WCAG 2.2 establece un mínimo de 4,5:1 para texto normal y de 3:1 para texto grande en el nivel AA. Cumplir el mínimo no garantiza que cualquier persona vaya a leer cómodamente el texto, pero permite detectar combinaciones que no alcanzan el umbral recomendado.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No dejes que el color sea la única señal</h3>
+      <p>Si el rojo indica un error, acompáñalo con una palabra, un símbolo o una forma. Si el verde indica que una operación terminó, incluye un mensaje que lo confirme. El color puede reforzar el significado, pero la información importante no debería desaparecer cuando alguien no distingue los tonos o cuando la pantalla se ve en condiciones desfavorables.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Prueba cada color en el contexto donde aparecerá</h3>
+      <p>No evalúes una muestra de color de forma aislada. Colócala sobre el fondo real y observa cómo cambia su apariencia. Después convierte la composición a escala de grises. Si un texto, una categoría o un estado importante deja de distinguirse, revisa si dependía demasiado del tono y si necesita más diferencia de luminancia u otra señal visual.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Dos errores que se repiten
+
+Cada ejercicio comienza con un problema. Modifica los controles y observa cómo cambia la composición.
+
+</div>
+
+<div style="margin-top: 2.5rem">
+  <ColorContraste />
+</div>
+
+<div style="margin-top: 1.5rem">
+  <ColorRoles />
+</div>
+
+<div class="dv-texto">
+
+### La interacción del color en piezas reales
+
+Tres ejemplos muestran cómo el color puede organizar la información, destacar un elemento o cambiar de apariencia según el fondo.
+
+</div>
+
+<ColorEjemplos />
+
+<div class="dv-texto">
+
+El color no tiene una legibilidad fija. La relación entre los colores determina qué usos son adecuados.
+
+</div>
+
+</Paso>
+
+<Paso id="juega" titular="¿Ves el mismo color?">
+
+<ColorJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="Lo que produce el efecto">
+
+La apariencia de un color depende de las relaciones que establece con su entorno. Un mismo gris puede parecer más claro sobre un fondo oscuro y más oscuro sobre uno claro. Este efecto se conoce como *contraste simultáneo*.
+
+También puede cambiar la percepción de la saturación: un color puede parecer más apagado junto a un color intenso, dependiendo de la combinación y de las condiciones en las que se observa.
+
+Josef Albers convirtió estas relaciones en el centro de su enseñanza del color. En *Interaction of Color* (1963) propone ejercicios con superficies de color para mostrar que la apariencia de un color no puede entenderse por completo si se observa de manera aislada.
+
+El instrumento de los dos centros permite explorar esa idea. El color central permanece igual mientras cambian sus fondos. Cuando unes ambos centros con una franja del mismo color, puedes comprobar que la diferencia que percibías no estaba en el color en sí, sino en la relación con el contexto.
+
+</Seccion>
+
+<Seccion titulo="Percepción, función y accesibilidad">
+
+Al tomar una decisión de color, conviene distinguir tres preguntas.
+
+**Percepción. ¿Cómo se ve este color aquí?** Se responde observando la combinación real. El mismo color puede parecer diferente sobre un fondo claro, uno oscuro o uno muy saturado. Una muestra de paleta no basta para predecir por completo su apariencia final.
+
+**Función. ¿Qué tiene que comunicar?** El color puede separar categorías, marcar un estado, destacar un dato o guiar la mirada. Su uso depende del propósito de la pieza y de las convenciones que la persona ha aprendido a reconocer.
+
+**Accesibilidad. ¿La información sigue siendo comprensible?** Hay que comprobar si las diferencias importantes se perciben con suficiente claridad y si el mensaje sigue siendo comprensible cuando alguien no distingue ciertos colores, utiliza una pantalla con características diferentes o consulta la pieza en condiciones de iluminación desfavorables.
+
+Una combinación puede funcionar en una de estas dimensiones y fallar en otra. El amarillo de un botón puede ser coherente con la identidad de una marca, pero el texto blanco sobre ese amarillo puede tener un contraste insuficiente.
+
+</Seccion>
+
+<Seccion titulo="La razón de contraste es un umbral, no una garantía">
+
+WCAG 2.2, la guía de accesibilidad para contenido web del W3C, define la razón de contraste a partir de la luminancia relativa de los colores.
+
+La razón va de 1:1, cuando ambos colores tienen la misma luminancia, a 21:1, cuando se comparan el negro y el blanco.
+
+Para el nivel AA:
+
+- El texto normal necesita una razón mínima de 4,5:1.
+- El texto grande necesita una razón mínima de 3:1.
+- Los componentes de interfaz y los objetos gráficos esenciales que transmiten información también tienen requisitos de contraste específicos, generalmente de 3:1 respecto a los colores adyacentes, según el criterio aplicable.
+
+Para el texto grande, WCAG considera como referencia 24 píxeles CSS o aproximadamente 18,66 píxeles CSS en negrita.
+
+En el nivel AAA, los mínimos para texto son más exigentes: 7:1 para texto normal y 4,5:1 para texto grande.
+
+La fórmula de contraste no mide todas las diferencias que percibimos entre los colores. En particular, no utiliza el tono como medida de contraste. Por eso un rojo y un verde pueden parecer muy diferentes, pero tener una razón de contraste cercana a 1:1 si sus luminancias son parecidas.
+
+La cifra es útil para comprobar una condición importante de accesibilidad, pero no garantiza por sí sola que un diseño sea cómodo de leer. También importan el tamaño del texto, la tipografía, el grosor, la longitud de línea y las condiciones de uso.
+
+</Seccion>
+
+<Seccion titulo="Cuando el color tiene un significado">
+
+En una interfaz, el rojo suele asociarse con errores, el verde con confirmaciones y el ámbar con advertencias. Estas asociaciones no son propiedades naturales de los colores: se aprenden mediante convenciones, experiencias y contextos culturales.
+
+El ejercicio de los cuatro mensajes permite observar qué ocurre cuando los colores se asignan de una manera convencional y cuando se intercambian.
+
+Una paleta cruzada puede hacer que una persona necesite más tiempo para interpretar los mensajes porque contradice asociaciones conocidas. Una paleta de un solo tono, por su parte, puede reducir las diferencias entre estados.
+
+La solución no consiste necesariamente en evitar el color. Consiste en utilizarlo como una señal dentro de un sistema que también incluya palabras, formas, iconos o patrones.
+
+</Seccion>
+
+<Seccion titulo="Lo que el color no explica por sí solo">
+
+**No predice exactamente cuánto cambiará la apariencia.** El efecto depende de los colores vecinos, del tamaño de las superficies, de la distancia de observación y de las condiciones de la pantalla. Por eso conviene probar las combinaciones en su contexto real.
+
+**No determina qué combinación es correcta.** Una combinación que funciona para destacar un dato en un cartel puede resultar excesiva en una interfaz de lectura prolongada. El propósito de la pieza determina qué tipo de contraste y qué relaciones de color convienen.
+
+**No se ve igual en todas las pantallas.** El mismo código de color puede verse diferente según el brillo, la configuración de color, las características del dispositivo y la luz del entorno. Los valores del instrumento son reproducibles, pero la apariencia que percibe cada persona puede variar.
+
+**La razón de contraste no mide toda la comodidad visual.** Un texto puede superar el mínimo de contraste y aun así resultar incómodo si es demasiado pequeño, utiliza una tipografía difícil de leer o forma bloques muy densos. La legibilidad surge de varias decisiones combinadas.
+
+**El tono no sustituye a la estructura.** Un mensaje de error puede ser rojo, pero también debe estar identificado como un error en el contenido y en la estructura de la interfaz. Una persona que utiliza tecnologías de asistencia necesita recibir esa información, no solo el nombre o el valor de un color.
+
+</Seccion>
+
+</Paso>

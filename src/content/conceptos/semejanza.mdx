@@ -1,0 +1,204 @@
+---
+titulo: Semejanza
+territorio: percepcion
+pregunta: ¿Por qué reconocemos elementos como parte de un mismo grupo, aunque estén lejos unos de otros?
+resumen: "Los elementos que comparten rasgos tienden a percibirse como relacionados. Compara su apariencia con la distancia entre ellos y descubre cómo señalar relaciones sin depender únicamente del color."
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 2
+relaciones:
+  - concepto: proximidad
+    porQue: Es la otra señal principal que explora este instrumento. La proximidad agrupa elementos por la distancia que los separa; la semejanza, por los atributos que comparten. En una composición suelen actuar a la vez.
+  - concepto: region-comun
+    porQue: Un fondo o un marco compartido puede agrupar elementos por el espacio que los contiene. La agrupación no depende únicamente de la apariencia de los elementos individuales.
+  - concepto: interaccion-del-color
+    porQue: El color es uno de los atributos más utilizados para crear semejanza, pero su percepción depende del contexto. Dos colores pueden parecer distintos o similares según la claridad y los colores que los rodean.
+  - concepto: accesibilidad-del-color
+    porQue: Una agrupación que depende exclusivamente del tono puede dejar de ser legible para algunas personas o al reproducirse sin color. Reforzar las diferencias con otros atributos hace que la información sea más accesible.
+  - concepto: sistemas-y-excepciones
+    porQue: Un sistema visual define qué elementos comparten una apariencia y qué diferencias distinguen sus funciones. Una excepción rompe ese patrón de manera intencional para señalar algo particular.
+  - concepto: enfasis
+    porQue: Un elemento que rompe la semejanza con su entorno puede destacar. El énfasis aprovecha la diferencia respecto de un patrón que ya hemos aprendido a reconocer.
+fuentes:
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: Describe factores de agrupamiento perceptivo, entre ellos la semejanza y la proximidad.
+  - autor: Johan Wagemans y otros
+    obra: "A century of Gestalt psychology in visual perception: I. Perceptual grouping and figure–ground organization. Psychological Bulletin, 138(6), 1172–1217"
+    anio: 2012
+    url: https://doi.org/10.1037/a0029333
+    nota: Revisión de la investigación sobre agrupamiento perceptivo y organización figura-fondo.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import SemejanzaIdea from '../../components/diseno-visual/experiencias/SemejanzaIdea.astro';
+import SemejanzaMiralo from '../../components/diseno-visual/experiencias/SemejanzaMiralo.astro';
+import Semejanza from '../../components/diseno-visual/experiencias/Semejanza.astro';
+import SemejanzaTono from '../../components/diseno-visual/experiencias/SemejanzaTono.astro';
+import SemejanzaAgenda from '../../components/diseno-visual/experiencias/SemejanzaAgenda.astro';
+import SemejanzaEjemplos from '../../components/diseno-visual/experiencias/SemejanzaEjemplos.astro';
+import SemejanzaJuego from '../../components/diseno-visual/experiencias/SemejanzaJuego.astro';
+
+<Paso id="idea" titular="El parecido también organiza">
+
+<SemejanzaIdea />
+
+<p class="dv-frase">Los elementos que comparten rasgos tienden a percibirse como parte de un mismo grupo.</p>
+
+<div class="dv-texto">
+
+En diseño, este principio se llama *semejanza*. Cuando varios elementos comparten una característica visual, como la forma, el tamaño, la claridad o el color, tendemos a relacionarlos entre sí, incluso cuando están separados.
+
+También ocurre lo contrario: un elemento que rompe el patrón puede llamar la atención y parecer diferente de los demás.
+
+La semejanza suele actuar junto con la [proximidad](/diseno-visual/proximidad). A veces ambas señales coinciden y refuerzan la misma agrupación. Otras veces se contradicen: unos elementos están cerca, pero otros se parecen más. En esos casos, la percepción depende de la fuerza de cada señal.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarla</h3>
+  <dl>
+    <dt>Atributo</dt>
+    <dd>Una característica visual que puede compartirse entre varios elementos: forma, tamaño, orientación, claridad o tono.</dd>
+    <dt>Claridad</dt>
+    <dd>Qué tan claro u oscuro se ve un elemento, independientemente de su tono.</dd>
+    <dt>Tono</dt>
+    <dd>La característica que nombramos al decir rojo, verde o azul.</dd>
+    <dt>Señal</dt>
+    <dd>Una característica que nos ayuda a reconocer qué elementos están relacionados. La distancia es una señal; el parecido visual es otra.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Tres enlaces, dos maneras de reconocerlos">
+
+<div class="dv-texto">
+
+Lee los dos ejemplos. Contienen el mismo texto y los mismos tres enlaces. Solo cambia la manera de representarlos.
+
+Toca los números para observar qué facilita o dificulta reconocer los elementos interactivos.
+
+</div>
+
+<SemejanzaMiralo />
+
+<div class="dv-texto">
+
+En el primer ejemplo, el problema no es que cada estilo sea incorrecto por separado. El problema es que las diferencias visuales no permiten identificar con claridad qué elementos cumplen la misma función.
+
+En el segundo, la semejanza permite reconocer una función común sin tener que descifrar cada elemento por separado. Una vez que identificas el patrón, puedes anticipar qué otros elementos funcionan de la misma manera.
+
+**La regla práctica:** los elementos que cumplen la misma función deberían compartir una apariencia reconocible. Los elementos que cumplen funciones distintas deberían poder distinguirse.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Dos señales, una misma composición">
+
+<Semejanza />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para aplicar la semejanza">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Decide qué elementos cumplen la misma función</h3>
+      <p>Identifica los tipos de elementos de tu composición: enlaces, botones, títulos, categorías, etiquetas o indicadores. Los elementos que cumplen la misma función deben compartir rasgos visuales que permitan reconocerlos como una familia.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Asigna rasgos con intención</h3>
+      <p>Si los enlaces están subrayados, evita subrayar otros elementos que no sean interactivos. Si utilizas una forma para identificar una categoría, procura que esa forma no signifique otra cosa en el mismo contexto. Un atributo compartido ayuda a agrupar, pero también puede generar confusión si se utiliza para señalar funciones diferentes.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No dependas de una sola diferencia</h3>
+      <p>Si el color distingue dos categorías, refuerza esa diferencia mediante la forma, la claridad, un símbolo o una etiqueta. Una buena comprobación consiste en observar la composición en escala de grises. Si los elementos dejan de distinguirse, quizá la diferencia dependa demasiado del tono.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Dos errores frecuentes
+
+Cada ejercicio comienza con un problema visual. Modifica los controles para corregirlo y observa qué cambia.
+
+</div>
+
+<div class="dv-especimenes">
+  <SemejanzaAgenda />
+  <SemejanzaTono />
+</div>
+
+<div class="dv-texto">
+
+### La semejanza en piezas reales
+
+Un horario de buses, un gráfico con su leyenda y una barra de pestañas utilizan la semejanza para organizar información. Toca los números para observar cómo cambia la lectura.
+
+</div>
+
+<SemejanzaEjemplos />
+
+<div class="dv-texto">
+
+En los tres ejemplos, la semejanza permite reconocer familias de elementos. También permite señalar una excepción cuando un elemento necesita destacar sobre los demás.
+
+</div>
+
+</Paso>
+
+<Paso id="juega" titular="¿Qué elementos van juntos?">
+
+<SemejanzaJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="La semejanza es una relación, no una propiedad aislada">
+
+Cuando varios elementos comparten un atributo, tendemos a percibirlos como un grupo. Max Wertheimer describió la semejanza como uno de los factores de agrupamiento perceptivo en su trabajo de 1923, junto con la proximidad.
+
+Pero el parecido no actúa en el vacío. En una composición, la semejanza y la distancia pueden reforzarse o competir entre sí.
+
+En el instrumento puedes observarlo con las filas y las columnas. Cuando las diferencias entre filas son débiles, la separación entre columnas puede hacer que percibas columnas. Cuando las diferencias se vuelven más fuertes, las filas recuperan protagonismo.
+
+Entre ambos extremos hay configuraciones ambiguas: puedes interpretar la misma composición de dos maneras y alternar entre ambas lecturas. El «Mapa de mezclas», en «Más controles», permite explorar esa zona.
+
+</Seccion>
+
+<Seccion titulo="No todos los atributos tienen el mismo peso">
+
+Prueba el mapa con cada atributo. En esta composición concreta, la claridad y la orientación pueden imponerse con una diferencia relativamente pequeña. La forma puede necesitar un cambio más marcado para competir con la distancia.
+
+El tamaño introduce otra dificultad: al cambiarlo, también cambia el espacio que ocupa cada elemento y la distancia aparente entre ellos. Por eso, la semejanza de tamaño no siempre funciona como una señal independiente de la proximidad. Cuando eliges «Tamaño» en el instrumento, estás modificando dos señales relacionadas, no aislando la semejanza.
+
+Estos resultados dependen de los elementos, sus dimensiones y la distancia desde la que se observan. No hay una jerarquía universal de atributos que funcione igual en cualquier composición.
+
+La regla general es más útil: cuando dos señales se contradicen, observa cuál domina en el contexto concreto y ajusta el diseño según la lectura que necesitas conseguir.
+
+</Seccion>
+
+<Seccion titulo="Lo que la semejanza no resuelve">
+
+**No decide qué significa cada atributo.** La semejanza permite agrupar elementos, pero no determina por sí sola qué característica conviene utilizar. La elección depende del contexto. Por ejemplo, si el rojo ya representa un error en una interfaz, usarlo para identificar una categoría sin relación con los errores puede crear una asociación confusa. El mismo atributo puede cumplir funciones distintas, pero esas funciones deben ser legibles.
+
+**No garantiza que todo el mundo perciba la diferencia.** Si dos grupos se distinguen exclusivamente por el tono, una persona que no distingue esos tonos puede no reconocer la agrupación. Lo mismo puede ocurrir cuando una composición se reproduce en blanco y negro. Combinar tono, claridad, forma, patrones o etiquetas puede hacer que la diferencia sea más robusta. En interfaces, además, las categorías y relaciones importantes deben estar representadas en la estructura y no depender únicamente de la apariencia visual.
+
+**También puede producir énfasis.** La semejanza agrupa los elementos que comparten rasgos. El efecto inverso aparece cuando un elemento rompe el patrón y destaca frente a los demás. Si todos los botones tienen la misma apariencia, uno diferente puede llamar la atención. Esa diferencia puede señalar una acción principal, una excepción o un estado especial. Pero si demasiados elementos rompen el patrón, el énfasis pierde fuerza.
+
+**Un patrón coherente también puede confundir.** La consistencia visual ayuda a reconocer funciones, pero un mismo rasgo no debería representar funciones incompatibles sin una razón clara. Si una palabra en negrita puede ser un enlace, un título o simplemente un énfasis, el parecido deja de ser una guía fiable. La pregunta no es solo qué elementos se parecen, sino qué interpretación invita a hacer ese parecido.
+
+</Seccion>
+
+</Paso>

@@ -1,0 +1,267 @@
+---
+// Semejanza contra proximidad. La distancia agrupa en columnas; el atributo
+// que cambia agrupa en filas. El instrumento no decide quién gana: lo dice
+// quien mira, y el mapa permite comparar muchas mezclas de un vistazo.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Haz aparecer las filas.',
+    hacer: 'Sube «Cuánto cambia» hasta que las filas alternas se distingan por su claridad.',
+    pista: 'Supera el 30 %. Las filas alternas empezarán a distinguirse.',
+    logro: 'Ningún punto se ha movido. Solo ha cambiado su apariencia y, aun así, ahora reconoces filas. Eso es la semejanza: los elementos que comparten un atributo tienden a leerse juntos.',
+  },
+  {
+    titulo: 'Cambia la claridad por la forma.',
+    hacer: 'En «Qué cambia entre filas», selecciona «Forma».',
+    pista: 'Elige la segunda opción del primer control.',
+    logro: 'Las filas se mantienen, pero ahora están formadas por círculos y cuadrados. La agrupación no depende exclusivamente del color o de la claridad. También puede surgir de la forma, el tamaño o la orientación.',
+  },
+  {
+    titulo: 'Deja que gane la distancia.',
+    hacer: 'Aumenta «Espacio entre columnas» hasta que empieces a ver columnas en lugar de filas.',
+    pista: 'Prueba con una separación de tres veces la distancia entre filas o más.',
+    preparar: { atributo: 'color', dif: 15, prox: 1 },
+    logro: 'Ahora hay dos señales que apuntan en direcciones distintas: el parecido sugiere filas, mientras que el espacio sugiere columnas. Cuando la diferencia visual entre las filas es pequeña y la separación entre columnas es grande, la distancia puede imponerse.',
+  },
+  {
+    titulo: 'Refuerza la semejanza.',
+    hacer: 'Sin modificar «Espacio entre columnas», aumenta «Cuánto cambia» hasta el máximo.',
+    pista: 'Lleva el control al 100 %. También puedes pulsar la tecla Fin cuando el control esté seleccionado.',
+    logro: 'Las filas vuelven a dominar, aunque las columnas estén muy separadas. La semejanza se ha vuelto suficientemente fuerte para competir con la distancia. Ninguna señal gana siempre: el resultado depende de cómo se combinan.',
+  },
+  {
+    titulo: 'Haz que las dos señales coincidan.',
+    hacer: 'Abre «Más controles». En «Qué elementos cambian», selecciona «Columnas alternas».',
+    abrir: true,
+    logro: 'Ahora el parecido y la distancia apuntan hacia la misma agrupación: las columnas. Como las dos señales coinciden, se refuerzan. Esta es una decisión útil cuando necesitas que la organización de una composición se entienda con claridad.',
+  },
+];
+
+const lab = 'semejanza';
+const pasosProx = [1, 1.5, 2, 3, 4];
+const pasosDif = [100, 75, 50, 25, 0];
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · dos señales a la vez"
+  consigna="Seis filas de seis puntos. Todos comienzan con el mismo aspecto y están distribuidos a la misma distancia. Puedes cambiar el parecido entre las filas y el espacio entre las columnas: observa cómo cada decisión modifica la manera en que agrupas los puntos."
+  nota="Usa «Fijar como A y comparar» para guardar una configuración y contrastarla con otra. No busques una respuesta única: intenta explicar qué cambió en tu percepción y qué señal parece tener más peso en cada caso."
+>
+  <svg slot="escenario" viewBox="0 0 400 300" role="img" aria-label="Seis filas de seis puntos iguales.">
+    {[0, 1, 2, 3, 4, 5].map((f) => [0, 1, 2, 3, 4, 5].map((c) => (
+      <circle cx={100 + c * 40} cy={50 + f * 40} r="9" fill="#222" />
+    )))}
+  </svg>
+
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Cambia los controles libremente. Busca configuraciones en las que una señal domine, en las que ambas se contradigan y en las que la agrupación se vuelva ambigua." />
+
+  <Opciones
+    lab={lab}
+    variable="atributo"
+    etiqueta="Qué cambia entre filas"
+    valor="color"
+    opciones={[
+      { valor: 'color', texto: 'Claridad' },
+      { valor: 'forma', texto: 'Forma' },
+      { valor: 'tamano', texto: 'Tamaño' },
+      { valor: 'orientacion', texto: 'Orientación' },
+    ]}
+    ayuda="Claridad: unas filas más claras y otras más oscuras. Forma: alterna las formas. Tamaño: cambia el tamaño, y con él el espacio aparente entre los puntos. Orientación: cambia la dirección de los trazos."
+  />
+  <Deslizador lab={lab} variable="dif" etiqueta="Cuánto cambia" min={0} max={100} paso={5} valor={0} unidad="%" ayuda="Con un valor bajo, los elementos se parecen mucho. Con un valor alto, la diferencia se vuelve más evidente." />
+  <Deslizador lab={lab} variable="prox" etiqueta="Espacio entre columnas" min={1} max={4} paso={0.1} valor={1} decimales={1} unidad="× el de las filas" ayuda="El valor inicial, 1 ×, es la misma distancia que hay entre las filas." />
+
+  <Fragment slot="avanzados">
+  <Opciones
+    lab={lab}
+    variable="patron"
+    etiqueta="Qué elementos cambian"
+    valor="filas"
+    opciones={[
+      { valor: 'filas', texto: 'Filas alternas' },
+      { valor: 'columnas', texto: 'Columnas alternas' },
+      { valor: 'tablero', texto: 'Damero' },
+    ]}
+    ayuda="Filas alternas: la semejanza sugiere filas. Columnas alternas: el espacio y el parecido apuntan hacia la misma agrupación. Damero: un patrón alternado."
+  />
+
+  <div class="sem-mapa" data-mapa>
+    <p class="sem-mapa-titulo" id="sem-mapa-titulo">Mapa de mezclas</p>
+    <p class="dv-ayuda">Cada casilla combina una intensidad distinta de semejanza con una separación diferente entre columnas. Selecciona una casilla para verla en grande y observar qué señal domina.</p>
+    <div class="sem-mapa-rejilla" role="group" aria-labelledby="sem-mapa-titulo">
+      <span class="sem-eje sem-eje-y" aria-hidden="true">más diferencia entre filas ↑</span>
+      {pasosDif.map((d) => pasosProx.map((p) => (
+        <button
+          type="button"
+          class="sem-celda"
+          data-preset={JSON.stringify({ dif: d, prox: p })}
+          data-celda={`${d}-${p}`}
+          aria-label={`Cambio ${d} %, espacio entre columnas ${String(p).replace('.', ',')} veces`}
+        ></button>
+      )))}
+      <span class="sem-eje sem-eje-x" aria-hidden="true">más espacio entre columnas →</span>
+    </div>
+  </div>
+  </Fragment>
+</Instrumento>
+
+<style>
+  .sem-mapa { padding: 0.9rem 0 0.2rem; border-bottom: 1px solid var(--regla); }
+  .sem-mapa-titulo {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--tinta);
+  }
+  .sem-mapa-rejilla {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    margin: 0.6rem 0 0.4rem;
+    max-width: 16rem;
+  }
+  .sem-eje {
+    grid-column: 1 / -1;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    color: var(--secundario);
+  }
+  .sem-celda {
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid var(--regla);
+    background: var(--papel);
+    cursor: pointer;
+    display: block;
+    min-width: 0;
+  }
+  .sem-celda :global(svg) { display: block; width: 100%; height: 100%; }
+  .sem-celda:hover { border-color: var(--tinta); }
+  .sem-celda[aria-pressed='true'] { border: 2px solid var(--tinta); background: var(--amarillo); }
+  .sem-celda:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+</style>
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+
+  type E = { atributo: string; dif: number; prox: number; patron: string };
+
+  const FILAS = 6;
+  const COLS = 6;
+
+  /** ¿Este elemento lleva el atributo distinto? */
+  const distinto = (e: E, f: number, c: number) =>
+    e.patron === 'filas' ? f % 2 === 1 : e.patron === 'columnas' ? c % 2 === 1 : (f + c) % 2 === 1;
+
+  function figura(e: E, cx: number, cy: number, r: number, otro: boolean): SVGElement {
+    const k = otro ? e.dif / 100 : 0;
+    const TINTA = '#222222';
+    if (e.atributo === 'color') {
+      // De #222 a #b8b8b8: solo cambia el valor.
+      const v = Math.round(0x22 + (0xb8 - 0x22) * k);
+      return svg('circle', { cx, cy, r, fill: `rgb(${v},${v},${v})` });
+    }
+    if (e.atributo === 'forma') {
+      // Del círculo al cuadrado, redondeo intermedio.
+      const lado = r * 2 * (1 - 0.12 * k);
+      return svg('rect', {
+        x: cx - lado / 2, y: cy - lado / 2, width: lado, height: lado,
+        rx: (lado / 2) * (1 - k), fill: TINTA,
+      });
+    }
+    if (e.atributo === 'tamano') {
+      return svg('circle', { cx, cy, r: r * (1 - 0.6 * k), fill: TINTA });
+    }
+    // orientación: trazos que giran hasta 90°
+    const ang = 90 * k;
+    const l = r * 1.4;
+    const g = svg('line', {
+      x1: cx, y1: cy - l, x2: cx, y2: cy + l, stroke: TINTA,
+      'stroke-width': Math.max(2, r * 0.45), 'stroke-linecap': 'butt',
+      transform: `rotate(${ang} ${cx} ${cy})`,
+    });
+    return g;
+  }
+
+  function dibujar(e: E, ancho: number, alto: number, r: number, margen: number): SVGSVGElement {
+    const gapFila = r * 2 + r * 1.6;           // centro a centro entre filas
+    const gapCol = r * 2 + r * 1.6 * e.prox;   // centro a centro entre columnas
+    const w = gapCol * (COLS - 1);
+    const h = gapFila * (FILAS - 1);
+    const escala = Math.min(1, (ancho - margen * 2 - r * 2) / w, (alto - margen * 2 - r * 2) / h);
+    const ox = (ancho - w * escala) / 2;
+    const oy = (alto - h * escala) / 2;
+    const raiz = svg('svg', { viewBox: `0 0 ${ancho} ${alto}`, width: ancho, height: alto });
+    for (let f = 0; f < FILAS; f++) {
+      for (let c = 0; c < COLS; c++) {
+        raiz.append(figura(e, ox + c * gapCol * escala, oy + f * gapFila * escala, r * escala, distinto(e, f, c)));
+      }
+    }
+    return raiz;
+  }
+
+  const nombreAtributo: Record<string, string> = {
+    color: 'la claridad', forma: 'la forma', tamano: 'el tamaño', orientacion: 'la orientación',
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const ancho = Math.max(destino.clientWidth, 240);
+    const alto = Math.round(Math.min(380, Math.max(240, ancho * 0.62)));
+    const raiz = dibujar(e, ancho, alto, Math.min(13, ancho / 32), 24);
+    raiz.setAttribute('role', 'img');
+    raiz.setAttribute('aria-label', `Seis por seis elementos. Cambia ${nombreAtributo[e.atributo]} un ${e.dif} % en ${e.patron === 'filas' ? 'filas alternas' : e.patron === 'columnas' ? 'columnas alternas' : 'damero'}; el espacio entre columnas es ${n(e.prox)} veces el espacio entre filas.`);
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const atr = nombreAtributo[e.atributo];
+    const prox = `<b class="dv-cifra">${n(e.prox)} veces</b>`;
+    const sinDist = e.prox < 1.15;
+    const sinSem = e.dif === 0;
+    if (sinDist && sinSem) return 'No hay ninguna señal: todo está a la misma distancia y nada cambia. Se ve una superficie uniforme, sin grupos.';
+    if (sinSem) return `Solo actúa la distancia: el espacio entre columnas es ${prox} el espacio entre filas. Se ven columnas.`;
+    if (e.patron === 'columnas') {
+      return sinDist
+        ? `Solo actúa la semejanza: ${atr} cambia por columnas, y las columnas se ven sin ayuda del espacio.`
+        : `Las dos señales coinciden: ${atr} y la distancia indican columnas. Se refuerzan.`;
+    }
+    const grupoSem = e.patron === 'filas' ? 'filas' : 'diagonales';
+    if (e.atributo === 'tamano') {
+      const aviso = ' Al encoger unos puntos también crece el espacio a su alrededor: el tamaño cambia el parecido y la distancia aparente a la vez.';
+      return (sinDist
+        ? `El tamaño cambia un ${e.dif} % y se ven ${grupoSem}.`
+        : `Las señales se contradicen. La distancia indica columnas (${prox} más espacio que entre filas). El tamaño indica ${grupoSem} (cambio del ${e.dif} %).`) + aviso;
+    }
+    if (sinDist) return `Solo actúa la semejanza: ${atr} cambia un ${e.dif} % y se ven ${grupoSem}, aunque todo esté a la misma distancia.`;
+    return `Las señales se contradicen. La distancia indica columnas (${prox} más espacio que entre filas). ${atr[0].toUpperCase() + atr.slice(1)} indica ${grupoSem} (cambio del ${e.dif} %). Lo que ves primero es la señal que domina aquí.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="semejanza"]')) {
+    const celdas = [...raiz.querySelectorAll<HTMLButtonElement>('.sem-celda')];
+    const pintarMapa = (e: E) => {
+      for (const b of celdas) {
+        const { dif, prox } = JSON.parse(b.dataset.preset!);
+        const m = dibujar({ ...e, dif, prox }, 60, 60, 3.6, 2);
+        m.setAttribute('aria-hidden', 'true');
+        b.replaceChildren(m);
+        b.setAttribute('aria-pressed', String(dif === e.dif && Math.abs(prox - e.prox) < 0.05));
+      }
+    };
+    raiz.addEventListener('estado', (ev) => pintarMapa((ev as CustomEvent<E>).detail));
+    guiar<E>(raiz, [
+      (e) => e.prox < 1.15 && e.patron === 'filas' && e.dif >= 30,
+      (e) => e.atributo === 'forma' && e.dif > 0,
+      (e) => e.prox >= 3 && e.dif > 0 && e.dif <= 20,
+      (e) => e.prox >= 2.5 && e.dif >= 90,
+      (e) => e.patron === 'columnas',
+    ]);
+    const ins = conectar<E>({ raiz, pintar, describir });
+    pintarMapa(ins.estado());
+  }
+</script>

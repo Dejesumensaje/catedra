@@ -1,0 +1,30 @@
+---
+// Marco del juego de una entrada. Las rondas las genera el script de cada
+// experiencia con `jugar()` (src/lib/diseno-visual/juego.ts).
+interface Props {
+  slug: string;
+  rondas: number;
+  /** Qué se va a poner a prueba, en una frase. */
+  descripcion: string;
+  /** Un segundo párrafo: qué pasa después de responder. */
+  despues?: string;
+}
+
+const { slug, rondas, descripcion, despues = 'Después de cada respuesta podrás consultar la explicación.' } = Astro.props;
+---
+
+<div class="dv-juego" data-juego={slug} id={`juego-${slug}`}>
+  <div class="dv-juego-cab">
+    <p class="dv-juego-titulo">Ponte a prueba</p>
+    <p class="dv-juego-ronda-n" data-juego-n aria-live="polite">{rondas} rondas</p>
+  </div>
+  <div class="dv-juego-intro" data-juego-intro>
+    <p>{descripcion}</p>
+    <p>{despues}</p>
+    <noscript><p>El juego necesita JavaScript.</p></noscript>
+    <div class="dv-juego-acciones">
+      <button type="button" class="dv-boton dv-boton-fuerte" data-juego-empezar hidden>Empezar</button>
+    </div>
+  </div>
+  <div data-juego-zona></div>
+</div>

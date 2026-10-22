@@ -1,0 +1,118 @@
+---
+// Paso 4 de semejanza: tres piezas reales con marcas. Una tabla, un gráfico
+// con su leyenda y la barra de pestañas de una aplicación.
+import Anotada from '../Anotada.astro';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const T = '#222222';
+const G = '#6f6f6f';
+
+// ── horario ─────────────────────────────────────
+const HW = 340; const HH = 300;
+const filas = [
+  ['Centro', '6:10', '6:45'],
+  ['Robledo', '6:25', '7:05'],
+  ['Belén', '6:40', '7:20'],
+  ['Envigado', '7:00', '7:50'],
+  ['Bello', '7:15', '8:00'],
+  ['Itagüí', '7:30', '8:15'],
+];
+const hz = (x: number, y: number, w: number, h: number) => ({ x: (x / HW) * 100, y: (y / HH) * 100, w: (w / HW) * 100, h: (h / HH) * 100 });
+
+// ── gráfico ─────────────────────────────────────
+const GW = 340; const GH = 260;
+const xs = [50, 105, 160, 215, 270, 310];
+const a = [190, 170, 176, 140, 128, 104];
+const b = [210, 204, 186, 190, 168, 160];
+const gz = (x: number, y: number, w: number, h: number) => ({ x: (x / GW) * 100, y: (y / GH) * 100, w: (w / GW) * 100, h: (h / GH) * 100 });
+
+// ── pestañas ────────────────────────────────────
+const PW = 360; const PH = 110;
+const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100, y: (y / PH) * 100, w: (w / PW) * 100, h: (h / PH) * 100 });
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    rotulo="Un horario de buses"
+    notas={[
+      { x: 100, y: (34 / HH) * 100, titulo: 'Encabezados', texto: 'Comparten el uso de la negrita. Esa semejanza los distingue de los datos que aparecen debajo.', zona: hz(12, 16, 316, 28) },
+      { x: 100, y: (124 / HH) * 100, titulo: 'Filas alternas', texto: 'Un fondo compartido ayuda a seguir una fila completa, incluso cuando las columnas están separadas.', zona: hz(12, 104, 316, 36) },
+      { x: 62, y: (290 / HH) * 100, titulo: 'Horas', texto: 'Todas usan la misma tipografía y el mismo ancho, lo que facilita compararlas entre sí.', zona: hz(150, 48, 180, 240) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${HW} ${HH}`} role="img" aria-label="Tabla de horarios con seis rutas, la hora de salida y la de llegada. Las filas alternas tienen fondo gris claro.">
+      <text x="20" y="36" font-family={SANS} font-weight="700" font-size="13" fill={T}>Ruta</text>
+      <text x="170" y="36" font-family={SANS} font-weight="700" font-size="13" fill={T}>Sale</text>
+      <text x="260" y="36" font-family={SANS} font-weight="700" font-size="13" fill={T}>Llega</text>
+      <line x1="12" y1="46" x2="328" y2="46" stroke={T} stroke-width="1.5" />
+      {filas.map(([r, s, l], i) => (
+        <g>
+          {i % 2 === 1 && <rect x="12" y={50 + i * 38} width="316" height="38" fill="#ecece6" />}
+          <text x="20" y={74 + i * 38} font-family={SANS} font-size="14" fill={T}>{r}</text>
+          <text x="170" y={74 + i * 38} font-family={SANS} font-size="14" fill={T} style="font-variant-numeric: tabular-nums">{s}</text>
+          <text x="260" y={74 + i * 38} font-family={SANS} font-size="14" fill={T} style="font-variant-numeric: tabular-nums">{l}</text>
+        </g>
+      ))}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="Un gráfico y su leyenda"
+    notas={[
+      { x: 100, y: (26 / GH) * 100, titulo: 'Conexión entre la leyenda y el gráfico', texto: 'Cada muestra de la leyenda repite el trazo y la marca de la línea correspondiente. El parecido permite identificar qué representa cada serie.', zona: gz(16, 10, 300, 30) },
+      { x: 100, y: (150 / GH) * 100, titulo: 'Diferenciación de las series', texto: 'Una línea continua con círculos se distingue de una línea punteada con cuadrados. Así, las series no dependen exclusivamente del color.', zona: gz(40, 90, 285, 130) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${GW} ${GH}`} role="img" aria-label="Gráfico de dos líneas, una continua con círculos y otra punteada con cuadrados, y su leyenda arriba con las mismas marcas.">
+      <line x1="24" y1="26" x2="48" y2="26" stroke={T} stroke-width="2.5" />
+      <circle cx="36" cy="26" r="4.5" fill={T} />
+      <text x="56" y="30" font-family={SANS} font-size="12" fill={T}>Préstamos</text>
+      <line x1="150" y1="26" x2="174" y2="26" stroke={T} stroke-width="2" stroke-dasharray="4 3" />
+      <rect x="157.5" y="21.5" width="9" height="9" fill="#fff" stroke={T} stroke-width="2" />
+      <text x="182" y="30" font-family={SANS} font-size="12" fill={T}>Visitas</text>
+      <line x1="40" y1="226" x2="326" y2="226" stroke={G} />
+      <line x1="40" y1="60" x2="40" y2="226" stroke={G} />
+      <polyline points={xs.map((x, i) => `${x},${a[i]}`).join(' ')} fill="none" stroke={T} stroke-width="2.5" />
+      <polyline points={xs.map((x, i) => `${x},${b[i]}`).join(' ')} fill="none" stroke={T} stroke-width="2" stroke-dasharray="4 3" />
+      {xs.map((x, i) => <circle cx={x} cy={a[i]} r="4.5" fill={T} />)}
+      {xs.map((x, i) => <rect x={x - 4.5} y={b[i] - 4.5} width="9" height="9" fill="#fff" stroke={T} stroke-width="2" />)}
+      {['ene', 'feb', 'mar', 'abr', 'may', 'jun'].map((m, i) => (
+        <text x={xs[i]} y="244" text-anchor="middle" font-family={SANS} font-size="11" fill={G}>{m}</text>
+      ))}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    rotulo="La barra de pestañas de una aplicación"
+    notas={[
+      { x: 100, y: 30, titulo: 'Unidad visual', texto: 'Los iconos comparten grosor de trazo, tamaño y estilo. Se reconocen como parte de un mismo sistema.', zona: pz(100, 12, 250, 86) },
+      { x: 4, y: 92, titulo: 'Estado activo', texto: 'La pestaña seleccionada incorpora relleno y negrita. Al romper el patrón de las demás, señala dónde se encuentra la persona.', zona: pz(8, 12, 84, 86) },
+    ]}
+  >
+    <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="Barra con cuatro pestañas: Inicio, Buscar, Guardados y Perfil. Inicio está activa, con ícono relleno y texto en negrita.">
+      <line x1="0" y1="8" x2={PW} y2="8" stroke="#e5e5e5" />
+      {/* Inicio, activa: relleno */}
+      <g transform="translate(50 42)">
+        <path d="M-13 0 L0 -12 L13 0 L13 14 L-13 14 Z" fill={T} stroke={T} stroke-width="2.2" stroke-linejoin="miter" />
+      </g>
+      <text x="50" y="84" text-anchor="middle" font-family={SANS} font-weight="900" font-size="12" fill={T}>Inicio</text>
+      {/* Buscar */}
+      <g transform="translate(140 42)" fill="none" stroke={T} stroke-width="2.2">
+        <circle cx="-3" cy="-2" r="9" />
+        <line x1="4" y1="5" x2="12" y2="13" />
+      </g>
+      <text x="140" y="84" text-anchor="middle" font-family={SANS} font-size="12" fill={G}>Buscar</text>
+      {/* Guardados */}
+      <g transform="translate(225 42)" fill="none" stroke={T} stroke-width="2.2" stroke-linejoin="miter">
+        <path d="M-9 -13 L9 -13 L9 14 L0 6 L-9 14 Z" />
+      </g>
+      <text x="225" y="84" text-anchor="middle" font-family={SANS} font-size="12" fill={G}>Guardados</text>
+      {/* Perfil */}
+      <g transform="translate(310 42)" fill="none" stroke={T} stroke-width="2.2">
+        <circle cx="0" cy="-6" r="6" />
+        <path d="M-12 14 C-12 4 12 4 12 14" />
+      </g>
+      <text x="310" y="84" text-anchor="middle" font-family={SANS} font-size="12" fill={G}>Perfil</text>
+    </svg>
+  </Anotada>
+</div>

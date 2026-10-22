@@ -1,0 +1,61 @@
+---
+// Alineación en una tabla: las mismas cifras, alineadas a la izquierda, al
+// centro o a la derecha. Un solo control.
+import Instrumento from '../controles/Instrumento.astro';
+import Opciones from '../controles/Opciones.astro';
+---
+
+<div class="dv-especimenes">
+  <Instrumento id="ret-tabla" titulo="Arregla una tabla" comparar={false} consigna="¿Qué sala recibió más visitas? Las cifras están alineadas de una manera que obliga a leerlas una por una. Cambia la alineación para que las cantidades se puedan comparar con una sola mirada. Prueba las tres opciones y observa cómo cambia la lectura.">
+    <Opciones
+      lab="ret-tabla"
+      variable="alin"
+      etiqueta="Alineación de las cifras"
+      valor="izquierda"
+      opciones={[
+        { valor: 'izquierda', texto: 'Izquierda' },
+        { valor: 'centro', texto: 'Centro' },
+        { valor: 'derecha', texto: 'Derecha' },
+      ]}
+    />
+  </Instrumento>
+</div>
+
+<script>
+  import { conectar } from '../../../lib/diseno-visual/estado';
+
+  type T = { alin: string };
+  // Cifras de ejemplo, inventadas para la tabla.
+  const FILAS: [string, string][] = [
+    ['Sala norte', '1.204'],
+    ['Sala de lectura', '987'],
+    ['Hemeroteca', '12.310'],
+    ['Sala infantil', '4.562'],
+    ['Auditorio', '86'],
+  ];
+
+  function pintar(destino: HTMLElement, e: T) {
+    const align = e.alin === 'derecha' ? 'right' : e.alin === 'centro' ? 'center' : 'left';
+    destino.innerHTML = `
+      <table style="margin: 18px 20px; border-collapse: collapse; font-family: Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #222; font-variant-numeric: tabular-nums;">
+        <caption class="sr-solo">Visitas por sala en un mes (cifras de ejemplo)</caption>
+        <thead><tr>
+          <th scope="col" style="text-align:left; font-weight:700; padding: 4px 28px 6px 0; border-bottom: 1px solid #222;">Sala</th>
+          <th scope="col" style="text-align:${align}; font-weight:700; padding: 4px 0 6px; border-bottom: 1px solid #222; min-width: 6.5em;">Visitas</th>
+        </tr></thead>
+        <tbody>
+          ${FILAS.map(([s, v]) => `<tr><td style="padding: 5px 28px 5px 0; border-bottom: 1px solid #e5e5e5;">${s}</td><td style="text-align:${align}; padding: 5px 0; border-bottom: 1px solid #e5e5e5;">${v}</td></tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function describir(e: T) {
+    if (e.alin === 'derecha') return 'A la derecha, las unidades quedan bajo las unidades y los miles bajo los miles. <b class="dv-cifra">El largo de cada cifra ya indica su tamaño</b>. 12.310 se distingue sin leerlo.';
+    if (e.alin === 'centro') return 'Centradas, cada cifra tiene su propio eje. Los dígitos no quedan alineados, así que para comparar hay que leer cada cifra.';
+    return 'A la izquierda, quedan uno sobre otro dígitos que valen distinto. 987 y 1.204 empiezan en el mismo punto y parecen de la misma magnitud.';
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="ret-tabla"]')) {
+    conectar<T>({ raiz, pintar, describir });
+  }
+</script>

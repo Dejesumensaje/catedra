@@ -1,0 +1,1362 @@
+/* ==================================================================
+   /diseno-visual — registro editorial de la sección.
+   Hereda §9 de AGENTS.md (tinta, papel, amarillo con significado, PT
+   Serif + Roboto, sin radios, sin sombras suaves, sin degradados) y le
+   suma lo que una publicación de instrumentos necesita: escenarios,
+   controles, cotas y lecturas.
+
+   El amarillo aquí significa una sola cosa: «esto es lo que acabas de
+   cambiar» o «esto es la excepción». Nunca relleno.
+================================================================== */
+
+.dv {
+  --dv-lienzo: #fbfbf9;
+  --dv-cota: #b3261e;          /* rojo de cota: 5.6:1 sobre papel */
+  --dv-columna-margen: 12rem;
+  --dv-columna-texto: 38rem;
+}
+
+/* ── cabecera de la sección (miga) ─────────────── */
+.dv-miga {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  align-items: baseline;
+  padding: 2.5rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secundario);
+}
+
+.dv-miga a { color: var(--texto); text-decoration: none; border-bottom: 1px solid var(--regla); }
+.dv-miga a:hover { color: var(--tinta); border-bottom-color: var(--tinta); }
+.dv-miga .sep { color: var(--secundario); }
+
+/* ── cabecera de entrada ───────────────────────── */
+.dv-entrada-cab {
+  padding: 1.25rem 0 2.25rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.dv-entrada-cab h1 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(2.6rem, 9vw, 6.2rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--tinta);
+  /* el título se parte por sílabas en móvil antes que desbordar */
+  hyphens: auto;
+}
+
+.dv-entrada-cab .dv-pregunta {
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.6vw, 1.45rem);
+  line-height: 1.45;
+  color: var(--texto);
+  max-width: 34ch;
+}
+
+.dv-modos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin-top: 0.5rem;
+}
+
+.dv-modos li {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto);
+  border: 1px solid var(--tinta);
+  padding: 0.22rem 0.55rem;
+}
+
+/* ── secciones de texto: rótulo al margen ──────── */
+.dv-seccion {
+  display: grid;
+  grid-template-columns: var(--dv-columna-margen) minmax(0, var(--dv-columna-texto));
+  column-gap: 3rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--regla);
+}
+
+.dv-seccion > h2 {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tinta);
+  letter-spacing: -0.005em;
+  padding-top: 0.2rem;
+}
+
+.dv-seccion-texto > * + * { margin-top: 1rem; }
+.dv-seccion-texto p,
+.dv-seccion-texto li { font-size: 1.02rem; }
+.dv-seccion-texto ul,
+.dv-seccion-texto ol { padding-left: 1.2rem; }
+.dv-seccion-texto li + li { margin-top: 0.5rem; }
+.dv-seccion-texto strong { color: var(--tinta); }
+.dv-seccion-texto h3 {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--tinta);
+  margin-top: 1.75rem;
+}
+.dv-seccion-texto a { text-decoration-color: var(--secundario); text-underline-offset: 0.15em; }
+.dv-seccion-texto a:hover { text-decoration-color: var(--tinta); color: var(--tinta); }
+
+/* La primera frase de una sección de lectura después de un instrumento:
+   la que conecta lo que se vio con su nombre. */
+.dv-seccion-texto > p:first-child { color: var(--tinta); }
+
+.dv-seccion-texto .dv-nota {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--secundario);
+}
+
+/* ══════════ INSTRUMENTO ══════════ */
+.dv-instrumento {
+  margin: 1rem 0 3rem;
+  border-top: 2px solid var(--tinta);
+  padding-top: 1.1rem;
+  scroll-margin-top: 1rem;
+}
+
+.dv-ins-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.5rem;
+  margin-bottom: 1.1rem;
+}
+
+.dv-ins-cab h2 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+
+.dv-consigna {
+  font-style: italic;
+  color: var(--texto);
+  font-size: 1rem;
+  max-width: 52ch;
+}
+
+.dv-ins-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 17rem;
+  column-gap: 2rem;
+  align-items: start;
+}
+
+/* Escenario, lectura y diferencias acompañan mientras se recorren los
+   controles: si no, se cambia algo que ya no se ve. */
+.dv-visor {
+  position: sticky;
+  top: 1rem;
+  min-width: 0;
+}
+
+.dv-instrumento-ancho .dv-ins-cuerpo { grid-template-columns: minmax(0, 1fr); }
+.dv-instrumento-ancho .dv-visor { position: static; }
+
+.dv-instrumento-ancho .dv-ins-controles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0 2rem;
+  align-items: start;
+  padding-top: 1rem;
+}
+
+.dv-instrumento-ancho .dv-pruebas,
+.dv-instrumento-ancho .dv-acciones,
+.dv-instrumento-ancho .dv-aviso { grid-column: 1 / -1; }
+
+.dv-ins-escenas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.dv-instrumento.comparando .dv-ins-escenas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.dv-escena { margin: 0; min-width: 0; }
+
+.dv-escena > figcaption {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin-bottom: 0.4rem;
+}
+
+.dv-lienzo {
+  position: relative;
+  background: var(--dv-lienzo);
+  border: 1px solid var(--tinta);
+  aspect-ratio: var(--proporcion, auto);
+  overflow: hidden;
+  min-height: 12rem;
+}
+
+.dv-lienzo > svg { display: block; width: 100%; height: 100%; }
+
+.dv-lectura {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--tinta);
+  padding: 0.85rem 0 0;
+  min-height: 3.6em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dv-lectura b,
+.dv-lectura strong { font-weight: 900; }
+
+/* La cifra que nombra la relación. */
+.dv-cifra {
+  font-weight: 900;
+  background: linear-gradient(to top, var(--amarillo) 40%, transparent 40%);
+  padding: 0 0.1em;
+}
+
+.dv-ins-controles {
+  min-width: 0;
+}
+
+.dv-diferencias {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--texto);
+  padding-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 2rem;
+  align-content: start;
+}
+
+.dv-diferencias .dif-titulo {
+  flex-basis: 100%;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin-top: 0.5rem;
+}
+
+.dv-diferencias ul { list-style: none; flex-basis: 100%; }
+.dv-diferencias .dif-igual { flex-basis: 100%; color: var(--secundario); margin-top: 0.4rem; line-height: 1.45; }
+.dv-diferencias li { padding: 0.12rem 0; font-variant-numeric: tabular-nums; }
+
+.dv-instrumento:not(.comparando) .dv-solo-comparando { display: none; }
+.dv-instrumento.comparando .dv-solo-sin-comparar { display: none; }
+
+/* ── controles ─────────────────────────────────── */
+.dv-control {
+  border: 0;
+  padding: 0.7rem 0 0.8rem;
+  border-bottom: 1px solid var(--regla);
+  font-family: var(--sans);
+  min-width: 0;
+}
+
+.dv-control:first-child { padding-top: 0; }
+
+.dv-control-cab {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.dv-control label,
+.dv-control legend {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--tinta);
+  line-height: 1.3;
+}
+
+.dv-control legend { padding: 0; margin-bottom: 0.45rem; float: left; width: 100%; }
+.dv-opciones-fila { clear: both; }
+
+.dv-control output {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dv-ayuda {
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--secundario);
+  margin-top: 0.15rem;
+}
+
+/* deslizador: una regla y un bloque, como una escala de taller */
+.dv input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2rem;
+  background: transparent;
+  cursor: pointer;
+  margin: 0.15rem 0 0;
+}
+
+.dv input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--tinta);
+}
+
+.dv input[type="range"]::-moz-range-track {
+  height: 2px;
+  background: var(--tinta);
+}
+
+.dv input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.05rem;
+  height: 1.35rem;
+  margin-top: calc(-0.675rem + 1px);
+  background: var(--tinta);
+  border: 2px solid var(--papel);
+  box-shadow: 0 0 0 1px var(--tinta);
+}
+
+.dv input[type="range"]::-moz-range-thumb {
+  width: 0.9rem;
+  height: 1.2rem;
+  background: var(--tinta);
+  border: 2px solid var(--papel);
+  border-radius: 0;
+  box-shadow: 0 0 0 1px var(--tinta);
+}
+
+.dv input[type="range"]:focus-visible::-webkit-slider-thumb { background: var(--amarillo); }
+.dv input[type="range"]:focus-visible::-moz-range-thumb { background: var(--amarillo); }
+
+/* opciones: segmentos de borde a borde */
+.dv-opciones-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.dv-opcion { position: relative; cursor: pointer; }
+
+.dv-opcion input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.dv-opcion span {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--tinta);
+  color: var(--tinta);
+  background: var(--papel);
+  line-height: 1.2;
+}
+
+.dv-opcion input:checked + span { background: var(--tinta); color: var(--papel); }
+.dv-opcion input:focus-visible + span { outline: 2px solid var(--tinta); outline-offset: 2px; background: var(--amarillo); color: var(--tinta); }
+.dv-opcion:hover input:not(:checked) + span { background: var(--regla); }
+
+/* interruptor */
+.dv-interruptor label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.dv-interruptor input {
+  position: absolute;
+  opacity: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+}
+
+.dv-caja {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1.5px solid var(--tinta);
+  background: var(--papel);
+  margin-top: 0.05rem;
+  position: relative;
+}
+
+.dv-interruptor input:checked + .dv-caja { background: var(--tinta); }
+.dv-interruptor input:checked + .dv-caja::after {
+  content: '';
+  position: absolute;
+  left: 0.28rem;
+  top: 0.08rem;
+  width: 0.3rem;
+  height: 0.55rem;
+  border: solid var(--papel);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.dv-interruptor input:focus-visible + .dv-caja { outline: 2px solid var(--tinta); outline-offset: 2px; background: var(--amarillo); }
+.dv-interruptor input:focus-visible:checked + .dv-caja { background: var(--tinta); }
+
+/* botones */
+.dv-boton {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  background: var(--papel);
+  border: 1px solid var(--tinta);
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.dv-boton:hover { background: var(--tinta); color: var(--papel); }
+.dv-boton:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+.dv-boton[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+
+.dv-boton-fuerte { border-width: 2px; }
+
+.dv-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: 1rem;
+}
+
+.dv-aviso {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--secundario);
+  min-height: 1.3em;
+  margin-top: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+/* configuraciones sugeridas */
+.dv-pruebas { padding: 0.9rem 0 0; }
+.dv-pruebas-titulo {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secundario);
+  margin-bottom: 0.4rem;
+}
+.dv-pruebas-fila { display: flex; flex-direction: column; gap: 0.3rem; }
+.dv-pruebas-fila .dv-boton {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  font-size: 0.8rem;
+  border-color: var(--regla);
+  border-left: 3px solid var(--tinta);
+}
+.dv-pruebas-fila .dv-boton:hover { background: var(--regla); color: var(--tinta); }
+
+/* ── especímenes: instrumentos pequeños dentro del texto ─── */
+.dv-especimenes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 2rem;
+  padding: 1rem 0 2.5rem;
+}
+
+.dv-especimenes .dv-instrumento { margin: 0; }
+.dv-especimenes .dv-ins-cuerpo { grid-template-columns: minmax(0, 1fr); }
+.dv-especimenes .dv-visor { position: static; }
+.dv-especimenes .dv-ins-escenas { position: static; }
+.dv-especimenes .dv-lectura { min-height: 0; font-size: 0.85rem; }
+.dv-especimenes .dv-acciones { display: none; }
+.dv-especimenes .dv-aviso { display: none; }
+
+/* ── relaciones y fuentes ──────────────────────── */
+.dv-relaciones { list-style: none; padding: 0 !important; }
+
+.dv-relaciones li {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: 0.25rem 1.5rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--regla);
+  margin: 0 !important;
+}
+
+.dv-relaciones li:first-child { padding-top: 0; }
+
+.dv-relaciones .dv-rel-nombre {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--tinta);
+}
+
+.dv-relaciones a.dv-rel-nombre { text-decoration: none; }
+.dv-relaciones a.dv-rel-nombre span { border-bottom: 2px solid var(--tinta); }
+.dv-relaciones a.dv-rel-nombre:hover span { background: var(--amarillo); }
+
+.dv-relaciones .dv-rel-pendiente {
+  display: block;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secundario);
+  margin-top: 0.2rem;
+}
+
+.dv-relaciones p { font-size: 0.98rem; }
+
+.dv-fuentes { list-style: none; padding: 0 !important; }
+.dv-fuentes li { font-size: 0.95rem; padding-left: 1.2rem; text-indent: -1.2rem; }
+.dv-fuentes .dv-nota { display: block; text-indent: 0; }
+
+/* ── pie de entrada: vecinos del territorio ─────── */
+.dv-vecinos {
+  border-top: 2px solid var(--tinta);
+  margin-top: 1rem;
+  padding: 1.5rem 0 3rem;
+  display: grid;
+  grid-template-columns: var(--dv-columna-margen) minmax(0, 1fr);
+  column-gap: 3rem;
+  row-gap: 1rem;
+}
+
+.dv-vecinos h2 {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.dv-vecinos ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+}
+
+.dv-vecinos a { color: var(--tinta); font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.dv-vecinos a:hover { background: var(--amarillo); }
+.dv-vecinos .sin-entrada { color: var(--secundario); }
+.dv-vecinos .actual { color: var(--tinta); }
+
+/* ══════════ ÍNDICE ══════════ */
+.dv-indice-cab {
+  padding: 3rem 0 2.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 1.5rem 3rem;
+  align-items: end;
+}
+
+.dv-indice-cab h1 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(2.3rem, 6.4vw, 4.6rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--tinta);
+}
+
+.dv-indice-cab .dv-intro p + p { margin-top: 0.9rem; }
+.dv-indice-cab .dv-intro p:first-child { color: var(--tinta); font-size: 1.08rem; }
+
+/* leyenda de modos */
+.dv-leyenda {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--tinta);
+  border-bottom: 1px solid var(--tinta);
+  margin-bottom: 1rem;
+}
+
+.dv-leyenda div { padding: 1rem 1.25rem 1.1rem 0; }
+.dv-leyenda div + div { padding-left: 1.25rem; border-left: 1px solid var(--regla); }
+.dv-leyenda dt {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--tinta);
+  margin-bottom: 0.25rem;
+}
+.dv-leyenda dd { font-size: 0.88rem; line-height: 1.45; }
+
+/* filtro */
+.dv-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: end;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.dv-filtro-buscar label,
+.dv-filtro legend {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin-bottom: 0.4rem;
+}
+
+.dv-filtro input[type="search"] {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--tinta);
+  background: var(--papel);
+  border: 0;
+  border-bottom: 2px solid var(--tinta);
+  padding: 0.35rem 0;
+  width: min(22rem, 100%);
+  border-radius: 0;
+}
+
+.dv-filtro input[type="search"]::placeholder { color: var(--secundario); }
+
+.dv-filtro-buscar { flex: 1 1 16rem; }
+
+.dv-filtro-resultado {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--secundario);
+  min-height: 1.3em;
+  padding-bottom: 0.5rem;
+}
+
+/* territorios */
+.dv-territorio {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  column-gap: 3rem;
+  padding: 2.25rem 0 2.5rem;
+  border-top: 1px solid var(--tinta);
+  scroll-margin-top: 1rem;
+}
+
+.dv-territorio-cab .num {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--secundario);
+  margin-bottom: 0.35rem;
+}
+
+.dv-territorio h2 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 1.9rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tinta);
+}
+
+.dv-territorio-cab p {
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  margin-top: 0.6rem;
+}
+
+.dv-conceptos { list-style: none; }
+
+.dv-concepto-entrada > a {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0 1.25rem;
+  align-items: start;
+  text-decoration: none;
+  padding: 0.85rem 0.75rem 0.95rem 0;
+  border-bottom: 1px solid var(--regla);
+  transition: background-color 0.15s ease;
+}
+
+.dv-concepto-entrada > a:hover,
+.dv-concepto-entrada > a:focus-visible { background: var(--dv-lienzo); }
+
+.dv-glifo {
+  width: 5.5rem;
+  height: 4rem;
+  border: 1px solid var(--tinta);
+  background: var(--dv-lienzo);
+  display: block;
+}
+
+.dv-concepto-entrada h3 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 1.35rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+.dv-concepto-entrada h3 .flecha { display: inline-block; transition: transform 0.18s ease; }
+.dv-concepto-entrada > a:hover h3 .flecha { transform: translateX(4px); }
+
+.dv-concepto-entrada .resumen {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin-top: 0.3rem;
+  color: var(--texto);
+}
+
+.dv-concepto-entrada .dv-modos { margin-top: 0.55rem; }
+.dv-concepto-entrada .dv-modos li { border-color: var(--regla); font-size: 0.62rem; }
+
+.dv-previstos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.1rem;
+  list-style: none;
+  padding-top: 0.9rem;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  color: var(--secundario);
+}
+
+.dv-previstos-titulo {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secundario);
+  padding-top: 1rem;
+}
+
+.dv-oculto { display: none !important; }
+
+/* ══════════ RESPONSIVE ══════════ */
+@media (max-width: 52rem) {
+  .dv-ins-cuerpo { grid-template-columns: minmax(0, 1fr); }
+
+  /* En pantalla estrecha solo el escenario se queda fijo: el visor se
+     disuelve para que el escenario sea pegajoso respecto al instrumento
+     entero y no solo a su caja. */
+  .dv-visor { display: contents; }
+
+  /* En pantallas estrechas el escenario queda a la vista mientras se
+     mueven los controles: si no, se cambia algo que no se ve. */
+  .dv-ins-escenas {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--papel);
+    padding: 0.5rem 0;
+  }
+
+  .dv-ins-escenas .dv-lienzo { max-height: 46vh; }
+
+  .dv-ins-controles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0 1.5rem;
+  }
+  .dv-pruebas, .dv-acciones, .dv-aviso { grid-column: 1 / -1; }
+  .dv-control:first-child { padding-top: 0.7rem; }
+
+  .dv-seccion,
+  .dv-vecinos,
+  .dv-territorio,
+  .dv-indice-cab {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1rem;
+  }
+
+  .dv-leyenda { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dv-leyenda div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .dv-leyenda div:nth-child(n + 3) { border-top: 1px solid var(--regla); }
+}
+
+@media (max-width: 30rem) {
+  .dv-leyenda { grid-template-columns: minmax(0, 1fr); }
+  .dv-leyenda div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--regla); }
+  .dv-relaciones li { grid-template-columns: minmax(0, 1fr); }
+  .dv-concepto-entrada > a { grid-template-columns: 4.25rem minmax(0, 1fr); gap: 0 0.9rem; }
+  .dv-glifo { width: 4.25rem; height: 3.2rem; }
+  .dv input[type="range"]::-webkit-slider-thumb { width: 1.3rem; height: 1.6rem; margin-top: calc(-0.8rem + 1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dv *, .dv *::before, .dv *::after { transition: none !important; animation: none !important; }
+}
+
+/* ══════════ RECORRIDO PARA APRENDER ══════════
+   Una entrada se lee en seis pasos: la idea, míralo, pruébalo, úsalo,
+   ponte a prueba y a fondo. Quien ya sabe salta con el índice de pasos. */
+
+/* ── índice de pasos de la entrada ─────────────── */
+.dv-recorrido {
+  border-top: 1px solid var(--tinta);
+  border-bottom: 1px solid var(--tinta);
+  margin: 0 0 1rem;
+  padding: 0.75rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.25rem;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+}
+
+.dv-recorrido p { color: var(--secundario); font-size: 0.78rem; flex-basis: 100%; }
+.dv-recorrido ol { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; counter-reset: paso; }
+.dv-recorrido li { counter-increment: paso; }
+.dv-recorrido a { color: var(--tinta); text-decoration: none; font-weight: 500; }
+.dv-recorrido a::before { content: counter(paso) ' '; font-weight: 900; color: var(--secundario); margin-right: 0.15rem; }
+.dv-recorrido a:hover span { background: var(--amarillo); }
+.dv-recorrido a span { border-bottom: 1px solid var(--regla); }
+
+/* ── paso ──────────────────────────────────────── */
+.dv-paso {
+  padding: 3rem 0 1rem;
+  scroll-margin-top: 1rem;
+}
+
+.dv-paso-cab {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  column-gap: 1rem;
+  align-items: baseline;
+  border-top: 3px solid var(--tinta);
+  padding-top: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.dv-paso-num {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 3.2rem;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--tinta);
+  grid-row: span 2;
+}
+
+.dv-paso-cab h2 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.6vw, 2.3rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+
+.dv-paso-cab p {
+  font-style: italic;
+  color: var(--texto);
+  margin-top: 0.4rem;
+  max-width: 48ch;
+}
+
+/* texto de un paso: columna de lectura cómoda */
+.dv-texto { max-width: 38rem; }
+.dv-texto > * + * { margin-top: 1rem; }
+.dv-texto p, .dv-texto li { font-size: 1.05rem; }
+.dv-texto strong { color: var(--tinta); }
+.dv-texto ul, .dv-texto ol { padding-left: 1.2rem; }
+.dv-texto li + li { margin-top: 0.5rem; }
+
+/* La idea en una frase */
+.dv-frase {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.7rem, 4.6vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--tinta);
+  max-width: 20ch;
+  margin-bottom: 1.5rem;
+}
+
+/* vocabulario mínimo */
+.dv-vocabulario {
+  border-left: 3px solid var(--tinta);
+  padding: 0.25rem 0 0.25rem 1.1rem;
+  margin: 1.75rem 0;
+  max-width: 38rem;
+}
+.dv-vocabulario h3 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin-bottom: 0.6rem;
+}
+.dv-vocabulario dl { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 0.5rem 1rem; }
+.dv-vocabulario dt { font-family: var(--sans); font-weight: 700; font-size: 0.9rem; color: var(--tinta); }
+.dv-vocabulario dd { font-size: 0.98rem; }
+
+/* pregunta con respuesta escondida: primero se mira, luego se lee */
+.dv-pregunta-visual { margin: 1.5rem 0 2rem; max-width: 44rem; }
+.dv-pregunta-visual .dv-pv-lienzo { border: 1px solid var(--tinta); background: var(--dv-lienzo); }
+.dv-pregunta-visual .dv-pv-lienzo svg { display: block; width: 100%; height: auto; }
+.dv-pregunta-visual > p { font-family: var(--sans); font-weight: 700; color: var(--tinta); margin: 0.75rem 0 0.5rem; }
+.dv-pregunta-visual details { font-size: 1.02rem; }
+.dv-pregunta-visual summary {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-block;
+  border: 1px solid var(--tinta);
+  padding: 0.45rem 0.7rem;
+  color: var(--tinta);
+}
+.dv-pregunta-visual summary:hover { background: var(--tinta); color: var(--papel); }
+.dv-pregunta-visual summary:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+.dv-pregunta-visual details[open] summary { margin-bottom: 0.75rem; }
+
+/* ── composición anotada ───────────────────────── */
+.dv-anotadas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 2rem 2.5rem;
+  margin: 1rem 0 2rem;
+}
+
+.dv-anotada { margin: 0; min-width: 0; }
+
+.dv-anotada-veredicto {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin-bottom: 0.5rem;
+}
+.dv-anotada-veredicto .marca {
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid var(--tinta);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+}
+.dv-anotada.es-bien .marca { background: var(--tinta); color: var(--papel); }
+
+.dv-anotada-pieza { position: relative; border: 1px solid var(--tinta); background: var(--papel); }
+.dv-anotada.es-mal .dv-anotada-pieza { border-style: dashed; }
+.dv-anotada-pieza > svg { display: block; width: 100%; height: auto; }
+
+.dv-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 1.55rem;
+  height: 1.55rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--tinta);
+  background: var(--amarillo);
+  border: 2px solid var(--tinta);
+  pointer-events: none;
+}
+
+.dv-zona {
+  position: absolute;
+  border: 2px dashed var(--dv-cota);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.dv-anotada[data-activa] .dv-zona.es-activa { opacity: 1; }
+.dv-anotada[data-activa] .dv-pin:not(.es-activa) { opacity: 0.35; }
+
+.dv-anotada-notas { list-style: none; margin-top: 0.75rem; counter-reset: nota; }
+.dv-anotada-notas li { counter-increment: nota; }
+.dv-anotada-notas button {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1.55rem minmax(0, 1fr);
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.45rem 0.25rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--texto);
+  border-bottom: 1px solid var(--regla);
+}
+.dv-anotada-notas button::before {
+  content: counter(nota);
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--tinta);
+  border: 2px solid var(--tinta);
+  background: var(--amarillo);
+}
+.dv-anotada-notas button:hover,
+.dv-anotada-notas button[aria-pressed="true"] { background: var(--dv-lienzo); color: var(--tinta); }
+.dv-anotada-notas button:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+.dv-anotada-notas b { color: var(--tinta); font-family: var(--sans); font-weight: 700; }
+
+/* ── receta ────────────────────────────────────── */
+.dv-receta { list-style: none; counter-reset: r; display: grid; gap: 1.5rem; margin: 1rem 0 2.5rem; max-width: 46rem; }
+.dv-receta > li {
+  counter-increment: r;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0 1rem;
+}
+.dv-receta > li::before {
+  content: counter(r);
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--tinta);
+}
+.dv-receta h3 { font-family: var(--sans); font-size: 1.05rem; font-weight: 700; color: var(--tinta); line-height: 1.3; }
+.dv-receta p { margin-top: 0.3rem; font-size: 1.02rem; }
+
+/* ── guía ──────────────────────────────────────── */
+.dv-guia {
+  border: 2px solid var(--tinta);
+  background: var(--papel);
+  padding: 0.85rem 0.95rem 0.9rem;
+  margin-bottom: 1rem;
+  font-family: var(--sans);
+}
+.dv-guia-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.5rem; }
+.dv-guia-titulo { font-size: 0.7rem; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; color: var(--tinta); }
+.dv-guia-avance { font-size: 0.75rem; font-weight: 500; color: var(--secundario); font-variant-numeric: tabular-nums; }
+.dv-guia-lista { list-style: none; counter-reset: g; }
+.dv-guia-paso { counter-increment: g; padding: 0.35rem 0; }
+.dv-guia-paso + .dv-guia-paso { border-top: 1px solid var(--regla); }
+.dv-guia-hacer { font-size: 0.86rem; line-height: 1.4; color: var(--tinta); }
+.dv-guia-hacer::before { content: counter(g) '. '; font-weight: 900; }
+.dv-guia-hacer:focus { outline: none; }
+.dv-guia-logro {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--tinta);
+  background: var(--dv-lienzo);
+  border-left: 3px solid var(--amarillo);
+  padding: 0.45rem 0.6rem;
+  margin-top: 0.45rem;
+}
+.dv-guia-check { font-family: var(--sans); font-weight: 900; }
+.dv-guia-pista { font-size: 0.8rem; line-height: 1.4; color: var(--texto); margin-top: 0.35rem; }
+
+/* con JS: solo el paso actual se lee completo; los hechos se pliegan */
+.dv-guia-activa .dv-guia-paso.es-futuro { display: none; }
+.dv-guia-activa .dv-guia-paso.es-hecho:not(.es-actual) .dv-guia-hacer { color: var(--secundario); }
+.dv-guia-activa .dv-guia-paso.es-hecho:not(.es-actual) .dv-guia-hacer::before { content: '✓ '; }
+.dv-guia-activa .dv-guia-paso.es-hecho:not(.es-actual) .dv-guia-logro { display: none; }
+.dv-guia-activa .dv-guia-paso.es-actual .dv-guia-hacer { font-weight: 700; font-size: 0.95rem; }
+.dv-guia-saltada .dv-guia-lista { display: none; }
+
+.dv-guia-final { font-family: var(--serif); font-size: 0.95rem; color: var(--tinta); margin-top: 0.4rem; }
+.dv-guia-acciones { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.dv-guia-acciones [hidden] { display: none; }
+.dv-guia-saltar { border-color: var(--regla); color: var(--secundario); }
+
+/* ── controles avanzados plegados ──────────────── */
+.dv-avanzados { border-bottom: 1px solid var(--regla); }
+.dv-avanzados summary {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--tinta);
+  padding: 0.75rem 0;
+  cursor: pointer;
+}
+.dv-avanzados summary:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+.dv-avanzados-cuerpo > .dv-control:last-child { border-bottom: 0; }
+
+/* ── juego ─────────────────────────────────────── */
+.dv-juego {
+  border: 2px solid var(--tinta);
+  padding: 1.5rem clamp(1rem, 3vw, 2rem) 1.75rem;
+  margin: 1rem 0 2rem;
+  scroll-margin-top: 1rem;
+}
+.dv-juego-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.dv-juego-cab .dv-juego-titulo { font-family: var(--sans); font-size: 0.72rem; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; color: var(--tinta); }
+.dv-juego-ronda-n { font-family: var(--sans); font-size: 0.8rem; color: var(--secundario); font-variant-numeric: tabular-nums; }
+.dv-juego-intro p { max-width: 46ch; font-size: 1.05rem; }
+.dv-juego-intro p + p { margin-top: 0.6rem; }
+.dv-juego-pregunta {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.2rem, 2.6vw, 1.55rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+  max-width: 34ch;
+  margin-bottom: 0.4rem;
+}
+.dv-juego-pregunta:focus { outline: none; }
+.dv-juego-ayuda { font-size: 0.95rem; color: var(--texto); margin-bottom: 1rem; max-width: 52ch; }
+.dv-juego-escena { border: 1px solid var(--tinta); background: var(--dv-lienzo); margin-bottom: 1rem; }
+.dv-juego-escena svg { display: block; width: 100%; height: auto; }
+.dv-juego-opciones { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+.dv-juego-opciones.solo-texto { grid-template-columns: minmax(0, 1fr); max-width: 40rem; }
+.dv-juego-opcion {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: 2px solid var(--tinta);
+  background: var(--papel);
+  padding: 0.6rem;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--tinta);
+  line-height: 1.35;
+}
+.dv-juego-opcion:hover:not([disabled]) { background: var(--dv-lienzo); box-shadow: 4px 4px 0 var(--tinta); }
+.dv-juego-opcion:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; }
+.dv-juego-opcion .letra { font-weight: 900; font-size: 0.8rem; letter-spacing: 0.1em; }
+.dv-juego-opcion svg { display: block; width: 100%; height: auto; background: var(--dv-lienzo); border: 1px solid var(--regla); }
+.dv-juego-opcion[disabled] { cursor: default; }
+.dv-juego-opcion.es-correcta { background: var(--amarillo); }
+.dv-juego-opcion.es-elegida-mal { border-style: dashed; color: var(--texto); }
+.dv-juego-opcion .veredicto { font-weight: 900; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.dv-juego-ajuste { max-width: 26rem; margin-bottom: 0.5rem; }
+.dv-juego-respuesta {
+  margin-top: 1.1rem;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid var(--tinta);
+  background: var(--dv-lienzo);
+  max-width: 48rem;
+}
+.dv-juego-respuesta:focus { outline: 2px solid var(--tinta); outline-offset: 2px; }
+.dv-juego-respuesta .resultado { font-family: var(--sans); font-weight: 900; color: var(--tinta); margin-bottom: 0.25rem; }
+.dv-juego-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.dv-juego-final h3 { font-family: var(--sans); font-weight: 900; font-size: 1.6rem; color: var(--tinta); letter-spacing: -0.02em; }
+.dv-juego-final ul { margin-top: 0.75rem; padding-left: 1.2rem; max-width: 48rem; }
+.dv-juego-final li + li { margin-top: 0.5rem; }
+
+@media (max-width: 40rem) {
+  .dv-paso-cab { grid-template-columns: 3rem minmax(0, 1fr); }
+  .dv-paso-num { font-size: 2.3rem; }
+  .dv-vocabulario dl { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .dv-vocabulario dd { margin-bottom: 0.5rem; }
+}
+
+.dv-texto h3 {
+  font-family: var(--sans);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+  margin-top: 2.5rem;
+}
+.dv-paso > .dv-seccion:first-of-type { border-top: 0; padding-top: 0.5rem; }
+
+/* Mientras la guía está en curso, lo demás espera: quien empieza tiene una
+   sola cosa que hacer. Al terminar o saltar la guía aparecen las pruebas y
+   la comparación. */
+.dv-instrumento.con-guia .dv-pruebas,
+.dv-instrumento.con-guia .dv-acciones,
+.dv-instrumento.con-guia .dv-aviso { display: none; }
+
+/* Dentro de un paso, el filete del paso ya separa: el instrumento no repite. */
+.dv-paso .dv-instrumento { border-top: 0; padding-top: 0; margin-top: 0; }
+
+.dv-nota-ir {
+  display: inline-block;
+  margin: 0.15rem 0 0.4rem 2.15rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+.dv-nota-ir:hover { background: var(--amarillo); }
+
+@media (min-width: 52rem) {
+  .dv-anotada-ancha {
+    display: grid;
+    grid-template-columns: minmax(0, 23rem) minmax(0, 1fr);
+    gap: 0 2.5rem;
+    align-items: start;
+  }
+  .dv-anotada-ancha .dv-anotada-veredicto { grid-column: 1 / -1; }
+  .dv-anotada-ancha .dv-anotada-notas { margin-top: 0; }
+}
+
+/* ── índice: puerta de entrada ─────────────────── */
+.dv-puerta { padding: 2.5rem 0 1rem; border-top: 3px solid var(--tinta); }
+.dv-puerta > h2, .dv-ruta > h2 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.6vw, 2.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+}
+.dv-puerta > p, .dv-ruta > p { font-size: 1.05rem; max-width: 46ch; margin: 0.6rem 0 1.5rem; }
+
+.dv-ruta { padding: 2.5rem 0 2.5rem; border-top: 3px solid var(--tinta); }
+.dv-ruta ol { list-style: none; counter-reset: ruta; display: grid; gap: 0; max-width: 52rem; }
+.dv-ruta li { counter-increment: ruta; border-bottom: 1px solid var(--regla); }
+.dv-ruta a {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  gap: 0 1rem;
+  align-items: baseline;
+  padding: 0.85rem 0.25rem;
+  text-decoration: none;
+  color: var(--texto);
+}
+.dv-ruta a::before {
+  content: counter(ruta);
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--tinta);
+}
+.dv-ruta a:hover { background: var(--dv-lienzo); }
+.dv-ruta a:hover strong { background: var(--amarillo); }
+.dv-ruta strong { font-family: var(--sans); font-weight: 900; font-size: 1.1rem; color: var(--tinta); }
+.dv-ruta .porque { display: block; font-size: 0.98rem; margin-top: 0.15rem; }
+.dv-ruta .hecho { font-family: var(--sans); font-size: 0.75rem; font-weight: 700; color: var(--tinta); white-space: nowrap; }
+.dv-ruta .hecho:empty { display: none; }
+
+.dv-todos-titulo {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.6vw, 2.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--tinta);
+  border-top: 3px solid var(--tinta);
+  padding-top: 2.5rem;
+  scroll-margin-top: 1rem;
+}
+.dv-todos-intro { font-size: 1.05rem; margin: 0.6rem 0 1rem; max-width: 44rem; }
+.dv-nota-concepto { display: block; font-size: 1rem; }
+@media (max-width: 52rem) {
+  .dv-guia { margin-top: 1rem; grid-column: 1 / -1; }
+}
+
+/* Las escenas del juego no llenan la pantalla: se miran de un vistazo. */
+.dv-juego-escena svg { max-height: 22rem; margin: 0 auto; }
+
+/* Aviso de logro dentro del escenario: solo hace falta cuando el escenario
+   fijo puede tapar la guía (pantallas estrechas). */
+.dv-guia-aviso { display: none; }
+@media (max-width: 52rem) {
+  .dv-ins-escenas { position: sticky; }
+  .dv-guia-aviso:not([hidden]) {
+    display: block;
+    width: 100%;
+    margin-top: 0.4rem;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: left;
+    color: var(--tinta);
+    background: var(--amarillo);
+    border: 2px solid var(--tinta);
+    padding: 0.5rem 0.7rem;
+    cursor: pointer;
+  }
+  .dv-guia-aviso:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+}
+.dv-visor.dv-visor-suelto { position: static; }
+.dv-paso * + .dv-instrumento { margin-top: 2.5rem; }
+
+.dv-leyenda-titulo {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin: 1.5rem 0 0.6rem;
+}
+.dv-todos-intro strong { color: var(--tinta); }
+
+/* Titular propio de un paso, bajo su nombre. */
+.dv-paso-cab .dv-paso-titular {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--tinta);
+  margin-top: 0.5rem;
+}
+
+/* Nombre corto del paso de una guía; al quedar atrás, solo se ve el nombre. */
+.dv-guia-nombre { font-weight: 900; }
+.dv-guia-activa .dv-guia-paso.es-hecho:not(.es-actual) .dv-guia-nombre ~ .dv-guia-instruccion { display: none; }
+
+/* Invitación a comparar, junto a las acciones del instrumento. */
+.dv-ins-nota { flex-basis: 100%; font-family: var(--serif); font-size: 0.92rem; color: var(--texto); max-width: 46ch; }
+.dv-guia-activa .dv-guia-paso.es-actual .dv-guia-nombre ~ .dv-guia-instruccion { font-weight: 400; }

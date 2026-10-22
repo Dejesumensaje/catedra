@@ -1,0 +1,250 @@
+---
+titulo: Escalas tipográficas
+territorio: tipografia
+pregunta: ¿Por qué algunas palabras se leen antes que otras, incluso cuando no has empezado a leer?
+resumen: "El tamaño de las letras influye en qué leemos primero. Experimenta con una portada, construye una escala a partir de dos tamaños y aplícala a recetas, fichas y pantallas."
+modos: [laboratorio, comparacion, diseccion, provocacion]
+orden: 3
+relaciones:
+  - concepto: proximidad
+    porQue: El interlineado y el espacio alrededor de los intertítulos influyen en qué textos se perciben como parte de una misma unidad. La escala organiza los tamaños; la proximidad ayuda a reconocer las relaciones entre los bloques.
+  - concepto: jerarquia
+    porQue: La escala es una de las herramientas que construyen jerarquía. El grosor, la posición, el espacio y el color también pueden establecer un orden de lectura.
+  - concepto: sistemas-y-excepciones
+    porQue: Una escala es una regla compartida. Un título o una cita que se aparta de ella puede llamar la atención precisamente porque el resto de la composición mantiene un patrón.
+  - concepto: reticulas-y-alineacion
+    porQue: La retícula organiza el espacio de la página; la escala organiza los tamaños de los textos. Ambas pueden trabajar juntas para producir una composición coherente.
+  - concepto: interlineado
+    porQue: La distancia entre renglones modifica la densidad del texto y la facilidad con la que se sigue la lectura. No tiene por qué ser igual para todos los niveles tipográficos.
+  - concepto: ancho-de-linea
+    porQue: El tamaño de la letra y el ancho disponible determinan cuántos caracteres caben en cada renglón. Por eso conviene ajustar ambas variables en conjunto.
+  - concepto: ritmo-tipografico
+    porQue: La escala establece cuánto cambia el tamaño entre niveles. El ritmo aparece en la sucesión de esos tamaños y en las distancias que los separan a lo largo de la composición.
+fuentes:
+  - autor: Robert Bringhurst
+    obra: The Elements of Typographic Style
+    anio: 1992
+    nota: Referencia sobre proporciones, composición tipográfica y longitud de línea en textos de lectura continua.
+---
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import EscalaTipograficaIdea from '../../components/diseno-visual/experiencias/EscalaTipograficaIdea.astro';
+import EscalaTipograficaMiralo from '../../components/diseno-visual/experiencias/EscalaTipograficaMiralo.astro';
+import EscalaTipografica from '../../components/diseno-visual/experiencias/EscalaTipografica.astro';
+import EscalaTipograficaArreglos from '../../components/diseno-visual/experiencias/EscalaTipograficaArreglos.astro';
+import EscalaTipograficaEjemplos from '../../components/diseno-visual/experiencias/EscalaTipograficaEjemplos.astro';
+import EscalaTipograficaJuego from '../../components/diseno-visual/experiencias/EscalaTipograficaJuego.astro';
+
+<Paso id="idea" titular="El tamaño propone un recorrido">
+
+<EscalaTipograficaIdea />
+
+<p class="dv-frase">El tamaño ayuda a establecer qué se lee primero, qué después y qué puede esperar.</p>
+
+<div class="dv-texto">
+
+A ese orden de importancia visual lo llamamos *jerarquía tipográfica*. El tamaño de la letra es una de sus herramientas más evidentes, aunque no es la única. También intervienen el grosor, el tipo de letra, la posición, el espacio y el color.
+
+Para construir una jerarquía coherente, puedes organizar los tamaños mediante una escala tipográfica. En lugar de elegir cada tamaño por separado, defines el tamaño del texto normal y cuánto aumenta cada nivel respecto al anterior. A partir de esas dos decisiones puedes calcular el resto.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Las palabras que vas a usar</h3>
+  <dl>
+    <dt>Jerarquía</dt>
+    <dd>El orden visual que permite reconocer qué información destaca, qué viene después y qué tiene menor protagonismo.</dd>
+    <dt>Tamaño base</dt>
+    <dd>El tamaño que utilizas para el texto normal, generalmente el de los párrafos. En el instrumento se llama «Tamaño del texto normal».</dd>
+    <dt>Nivel</dt>
+    <dd>Una posición dentro de la escala. Por ejemplo: texto normal, entrada, intertítulo y título.</dd>
+    <dt>Razón</dt>
+    <dd>El número por el que multiplicas un tamaño para obtener el siguiente nivel. En el instrumento se llama «Cuánto crece cada nivel».</dd>
+    <dt>Escala tipográfica</dt>
+    <dd>Un conjunto organizado de tamaños que siguen una relación común.</dd>
+    <dt>Entrada</dt>
+    <dd>El párrafo breve que acompaña al título y presenta el contenido.</dd>
+    <dt>Interlineado</dt>
+    <dd>La distancia vertical entre las líneas de un texto, medida a partir de la altura asignada a cada renglón.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Las mismas palabras, dos jerarquías">
+
+<div class="dv-texto">
+
+Imagina dos versiones de una receta. Tienen las mismas palabras, el mismo tipo de letra y el mismo orden. Solo cambia la organización tipográfica.
+
+Toca los números para observar qué función cumple cada nivel.
+
+</div>
+
+<EscalaTipograficaMiralo />
+
+<div class="dv-texto">
+
+En la primera versión, la información está completa, pero la composición no ayuda a distinguir sus partes. En la segunda, las palabras no cambiaron de lugar. Lo que cambió fue la relación entre sus tamaños.
+
+Ahora puedes reconocer el tema, localizar una sección y leer el contenido en el orden que necesitas. La jerarquía no solo decora la página: modifica cómo se recorre y se utiliza.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Una página, dos números">
+
+<EscalaTipografica />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para construir una escala">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Empieza por el texto que más se lee</h3>
+      <p>Define el tamaño del texto normal a partir de una prueba de lectura real. No basta con que un número parezca correcto: importa cómo se ve el párrafo completo en el medio donde se utilizará.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Elige una relación entre niveles</h3>
+      <p>Selecciona una razón y construye tres o cuatro niveles para empezar. Una razón pequeña produce diferencias graduales; una razón grande crea saltos más pronunciados. No necesitas utilizar todos los niveles posibles. Elige los que realmente necesita tu composición.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Asigna una función a cada nivel</h3>
+      <p>Decide qué textos utilizarán cada tamaño: título, entrada, intertítulos, párrafos, notas. Después observa la composición completa. Si dos elementos compiten por la atención, revisa su tamaño y también su grosor, posición y espacio. La jerarquía surge de cómo funcionan juntos esos recursos.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+Cada ejercicio comienza con un problema. Ajusta el control correspondiente y observa cómo cambia la lectura.
+
+</div>
+
+<EscalaTipograficaArreglos />
+
+<div class="dv-texto">
+
+### La escala en piezas reales
+
+En estos ejemplos, la información más importante no siempre está en la parte superior. Observa qué texto recibe mayor protagonismo y por qué.
+
+</div>
+
+<EscalaTipograficaEjemplos />
+
+<div class="dv-texto">
+
+Los tres ejemplos utilizan tamaños para organizar la atención, pero cada uno responde a una necesidad diferente. La escala se adapta al contenido y a la tarea de quien lo consulta.
+
+</div>
+
+</Paso>
+
+<Paso id="juega" titular="¿Qué se lee primero?">
+
+<EscalaTipograficaJuego />
+
+</Paso>
+
+<Paso id="a-fondo">
+
+<Seccion titulo="La relación que produce el efecto">
+
+Una escala tipográfica organiza los tamaños mediante una relación común. Si cada nivel se obtiene multiplicando el anterior por la misma razón, puedes calcular los tamaños de toda la composición a partir del tamaño base.
+
+Por ejemplo, si el texto normal mide 17 px y la razón es 1,5:
+
+- Texto normal: 17 px.
+- Un nivel por encima: 25,5 px.
+- Dos niveles por encima: 38,25 px.
+- Tres niveles por encima: 57,375 px.
+- Cuatro niveles por encima: 86,0625 px.
+
+En la práctica, estos valores se suelen redondear y ajustar visualmente. No siempre tiene sentido utilizar todos los niveles calculados.
+
+El tamaño base decide la dimensión general de la escala. La razón decide cuánto aumenta cada nivel respecto al anterior.
+
+</Seccion>
+
+<Seccion titulo="¿Qué significan los números?">
+
+Las razones disponibles en el instrumento son valores que permiten construir escalas con diferencias progresivas. Algunas reciben nombres relacionados con los intervalos musicales:
+
+- 1,125: segunda mayor.
+- 1,2: tercera menor.
+- 1,25: tercera mayor.
+- 1,333: cuarta justa.
+- 1,5: quinta justa.
+- 1,618: aproximación a la sección áurea.
+
+Estos nombres son una convención para identificar las proporciones. No garantizan que una escala resulte adecuada para una página concreta.
+
+Una razón pequeña puede funcionar cuando hay muchos niveles y necesitas diferencias moderadas. Una razón grande puede ser útil cuando tienes pocos niveles y necesitas contrastes visibles. En ambos casos, el resultado depende de los tamaños, la tipografía y el contenido.
+
+</Seccion>
+
+<Seccion titulo="Todo al mismo tamaño">
+
+Activa «Todo al mismo tamaño». Aunque los textos midan lo mismo, el título puede seguir destacando porque aparece en otra posición, utiliza un peso diferente o tiene más espacio a su alrededor.
+
+Si también igualas el grosor, todavía pueden quedar la posición y el espacio.
+
+La prueba permite distinguir dos conceptos:
+
+**La escala tipográfica** organiza las diferencias de tamaño.
+
+**La jerarquía tipográfica** organiza el protagonismo y el orden de lectura mediante distintos recursos visuales.
+
+La escala es una herramienta para construir jerarquía, no una solución completa por sí sola.
+
+</Seccion>
+
+<Seccion titulo="Ancho de línea e interlineado">
+
+El tamaño de la letra no actúa de manera aislada. También importa cuánto espacio ocupa el texto horizontalmente y qué distancia hay entre sus renglones.
+
+Una letra pequeña, una línea muy larga y un interlineado reducido pueden formar un bloque denso y difícil de recorrer. En cambio, una línea demasiado corta puede interrumpir el ritmo de lectura con saltos constantes.
+
+Robert Bringhurst recoge como referencia habitual una longitud de entre 45 y 75 caracteres por línea para texto corrido en una columna. Es un punto de partida, no una regla universal: la tipografía, el tamaño, el idioma y el medio modifican el resultado.
+
+En el instrumento, el ancho de línea se expresa de manera aproximada en caracteres. La cantidad real que cabe depende de la fuente, el tamaño y el espacio disponible.
+
+El interlineado también necesita ajustarse según el nivel. Una separación adecuada para los párrafos puede resultar excesiva para un título de varias líneas. Por eso el instrumento permite controlar ambos de manera independiente.
+
+</Seccion>
+
+<Seccion titulo="Dónde aparece">
+
+En una revista o un periódico, la escala distingue el antetítulo, el título, la entrada, los intertítulos y el texto normal. La repetición de esos niveles también ayuda a dar coherencia a las distintas páginas.
+
+En una interfaz, la misma idea aparece en los tamaños tipográficos definidos por un sistema de diseño. En lugar de inventar un tamaño nuevo para cada elemento, se utilizan unos pocos niveles con funciones reconocibles.
+
+En una aplicación con muchos datos puede ser conveniente una razón pequeña, porque necesitas varios niveles sin saltos excesivos. En un cartel o una portada, una razón grande puede producir diferencias visibles desde lejos.
+
+Ninguna proporción es correcta en todos los contextos. Lo importante es que los tamaños permitan reconocer las relaciones que necesitas comunicar.
+
+</Seccion>
+
+<Seccion titulo="Lo que la escala no resuelve">
+
+**No decide qué es importante.** La escala ofrece una serie de tamaños, pero la decisión de qué texto merece cada nivel es editorial. Un precio puede ser el elemento principal de una ficha comercial; en una exposición, puede ser el título de la obra.
+
+**El cálculo no basta.** Dos familias tipográficas con el mismo tamaño en píxeles pueden parecer de dimensiones distintas. La altura de las minúsculas, las proporciones de las letras y el peso visual influyen en el resultado. Por eso los tamaños calculados deben probarse y ajustarse.
+
+**La pantalla cambia las condiciones.** Una escala que funciona en una pantalla grande puede producir títulos demasiado extensos en un teléfono. Es posible que necesites modificar los tamaños, la razón o la cantidad de niveles según el espacio disponible.
+
+**El tamaño no es estructura.** Un lector de pantalla no transmite que un texto se ve grande. Los títulos deben marcarse también en la estructura del documento, mediante encabezados como `h1` y `h2`, y los párrafos deben identificarse como tales. La apariencia visual y la estructura semántica tienen que trabajar juntas.
+
+</Seccion>
+
+</Paso>

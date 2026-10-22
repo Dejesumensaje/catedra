@@ -1,0 +1,186 @@
+---
+// Paso 5 de escalas: cinco rondas generadas con azar. De ver (qué se lee
+// primero) a decidir (qué jerarquía funciona, qué tamaño sigue) a hacer
+// (darle tamaño a un título) y al límite (jerarquía sin tamaño).
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="escalas-tipograficas"
+  rondas={5}
+  descripcion="Cinco rondas para comprobar cómo interpretas y construyes jerarquías tipográficas. Tendrás que identificar qué elemento destaca, elegir una composición clara, continuar una escala, ajustar un título y reconocer una jerarquía que se mantiene incluso cuando todos los textos tienen el mismo tamaño."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { svg } from '../../../lib/diseno-visual/estado';
+
+  const T = '#222222';
+  const G = '#a3a39c';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const entre = (a: number, b: number) => a + Math.floor(Math.random() * (b - a + 1));
+  const fmt = (v: number, d = 1) => new Intl.NumberFormat('es-CO', { maximumFractionDigits: d }).format(v);
+
+  const lienzo = (w: number, h: number) => svg('svg', { viewBox: `0 0 ${w} ${h}`, width: w, height: h });
+  const texto = (s: SVGSVGElement, x: number, y: number, t: string, attrs: Record<string, string | number> = {}) => {
+    const e = svg('text', { x, y, 'font-family': SANS, 'font-size': 13, fill: T, ...attrs });
+    e.textContent = t;
+    s.append(e);
+    return e;
+  };
+  const barras = (s: SVGSVGElement, x: number, y: number, w: number, n: number, alto = 5, paso = 11) => {
+    for (let i = 0; i < n; i++) s.append(svg('rect', { x, y: y + i * paso, width: i === n - 1 ? w * 0.6 : w, height: alto, fill: G }));
+  };
+
+  // ── 1. qué se lee primero ────────────────────────
+  function primero(): Ronda {
+    const textos = barajar(['Concierto gratuito', 'Sábado 14', 'Plaza central', 'Trae tu silla']);
+    const tamanos = barajar([44, 22, 16, 13]);
+    // El más grande nunca va arriba: así la respuesta no es «el primero».
+    const grande = tamanos.indexOf(44);
+    if (grande === 0) [tamanos[0], tamanos[2]] = [tamanos[2], tamanos[0]];
+    const correcto = textos[tamanos.indexOf(44)];
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué lees primero en este aviso?',
+      ayuda: 'Responde según lo que miraste primero, no según lo que está arriba.',
+      escena: (el) => {
+        const c = lienzo(460, 230);
+        let y = 14;
+        textos.forEach((t, i) => {
+          y += tamanos[i];
+          texto(c, 30, y, t, { 'font-size': tamanos[i], 'font-weight': tamanos[i] > 20 ? 900 : 400, 'letter-spacing': tamanos[i] > 30 ? -1 : 0 });
+          y += 20;
+        });
+        el.append(c);
+      },
+      escenaDescrita: `Aviso con cuatro textos de tamaños distintos: ${textos.map((t, i) => `«${t}» a ${tamanos[i]} píxeles`).join(', ')}.`,
+      opciones: textos.map((t) => ({ texto: `«${t}»` })),
+      correcta: textos.indexOf(correcto),
+      porque: `«${correcto}» mide el doble que el siguiente texto y más del doble que los otros dos. Por eso tiende a leerse primero aunque no esté arriba. Cuando la diferencia de tamaño es grande, suele pesar más que la posición.`,
+      repaso: 'El tamaño ordena la lectura',
+    };
+  }
+
+  // ── 2. qué jerarquía funciona ────────────────────
+  function jerarquia(): Ronda {
+    // [título, entrada, texto] en px
+    const variantes = barajar([
+      { t: [16, 15, 14], bien: false, d: 'título, entrada y texto casi del mismo tamaño' },
+      { t: [30, 18, 12], bien: true, d: 'título grande, entrada mediana y texto pequeño' },
+      { t: [27, 24, 21], bien: false, d: 'tres tamaños grandes y parecidos que compiten' },
+    ]);
+    const pinta = (v: { t: number[] }) => (el: HTMLElement) => {
+      const c = lienzo(300, 210);
+      let y = 20 + v.t[0];
+      texto(c, 16, y, 'Vuelve el tranvía', { 'font-size': v.t[0], 'font-weight': 700, 'letter-spacing': -0.5 });
+      y += v.t[1] + 12;
+      texto(c, 16, y, 'Gratis la primera', { 'font-size': v.t[1], 'font-family': SERIF, 'font-style': 'italic' });
+      y += v.t[2] + 10;
+      texto(c, 16, y, 'Las obras terminan en', { 'font-size': v.t[2], 'font-family': SERIF });
+      texto(c, 16, y + v.t[2] * 1.4, 'diciembre y habrá', { 'font-size': v.t[2], 'font-family': SERIF });
+      el.append(c);
+    };
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál está más claro qué leer primero, qué después y qué al final?',
+      opciones: variantes.map((v) => ({ pintar: pinta(v), describir: v.d })),
+      correcta: variantes.findIndex((v) => v.bien),
+      porque: 'Una jerarquía necesita diferencias claras entre niveles. Si los tamaños son casi iguales, ninguno destaca. Si todos son grandes, todos compiten a la vez. Funciona la que tiene un nivel claramente mayor, uno intermedio y uno para leer.',
+      repaso: 'Diferencias claras entre niveles',
+    };
+  }
+
+  // ── 3. continuar la escala ───────────────────────
+  function escala(): Ronda {
+    const base = barajar([14, 16, 18])[0];
+    const razon = barajar([1.25, 1.5, 1.2])[0];
+    const s = [base, base * razon, base * razon * razon];
+    const sig = base * razon ** 3;
+    const sumando = s[2] + (s[2] - s[1]);
+    const opciones = barajar([
+      { v: sig, bien: true },
+      { v: sumando, bien: false },
+      { v: s[2] + (s[1] - s[0]), bien: false },
+      { v: s[2] * 2, bien: false },
+    ].filter((o, i, a) => a.findIndex((x) => Math.abs(x.v - o.v) < 0.6) === i));
+    return {
+      tipo: 'eleccion',
+      pregunta: `Una escala empieza así: ${s.map((x) => `${fmt(x)} px`).join(', ')}… ¿Qué tamaño sigue?`,
+      ayuda: 'Pista: calcula por cuánto se multiplica cada número para obtener el siguiente.',
+      escena: (el) => {
+        const c = lienzo(460, 120);
+        let x = 24;
+        [...s, null].forEach((v) => {
+          if (v === null) { texto(c, x, 90, '?', { 'font-size': 40, 'font-weight': 900 }); return; }
+          texto(c, x, 90, 'Aa', { 'font-size': v * 1.6, 'font-weight': 700 });
+          x += v * 1.6 * 1.3 + 22;
+        });
+        el.append(c);
+      },
+      escenaDescrita: `Tres muestras de letra que crecen: ${s.map((x) => fmt(x)).join(', ')} píxeles, y un signo de pregunta.`,
+      opciones: opciones.map((o) => ({ texto: `${fmt(o.v)} px` })),
+      correcta: opciones.findIndex((o) => o.bien),
+      porque: `Cada tamaño es el anterior multiplicado por ${fmt(razon, 2)}: ${fmt(s[2])} × ${fmt(razon, 2)} = ${fmt(sig)}. En una escala los niveles se multiplican, no se suman. Por eso la diferencia entre niveles crece a medida que sube el tamaño.`,
+      repaso: 'Una escala multiplica',
+    };
+  }
+
+  // ── 4. darle tamaño a un título ──────────────────
+  function ajuste(): Ronda {
+    const inicio = entre(15, 17);
+    const titular = barajar(['Una huerta en la azotea', 'El barrio tiene cine', 'Taller de bicicletas'])[0];
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El título no se distingue del texto. Ajusta su tamaño.',
+      ayuda: 'El texto mide 14 px. Sube el título hasta que se lea primero, sin que ocupe más que el párrafo. Luego toca «Comprobar».',
+      control: { etiqueta: 'Tamaño del título', min: 12, max: 72, valor: inicio, unidad: 'px' },
+      pintar: (el, v) => {
+        el.replaceChildren();
+        const c = lienzo(420, 110 + v * 1.3);
+        texto(c, 24, 20 + v, titular, { 'font-size': v, 'font-weight': 700, 'letter-spacing': v > 30 ? -1 : 0 });
+        const y = 20 + v + 26;
+        texto(c, 24, y, 'Empezó con tres macetas y una manguera prestada.', { 'font-size': 14, 'font-family': SERIF });
+        texto(c, 24, y + 21, 'Hoy da tomates a seis familias del edificio.', { 'font-size': 14, 'font-family': SERIF });
+        el.append(c);
+      },
+      cumple: (v) => v / 14 >= 1.8 && v / 14 <= 4,
+      falta: (v) => v / 14 < 1.8
+        ? `Con ${v} px el título mide ${fmt(v / 14)} veces el texto y todavía compite con él. Hace falta una diferencia que se vea sin buscarla.`
+        : `Con ${v} px el título mide ${fmt(v / 14)} veces el texto y resulta desproporcionado. Bájalo un poco.`,
+      porque: 'Como punto de partida, un título de entre 1,8 y 4 veces el texto se lee primero sin quitarle protagonismo al párrafo. El rango exacto depende del espacio disponible y del grosor de la letra.',
+      repaso: 'Cuánto más grande debe ser el título',
+    };
+  }
+
+  // ── 5. el límite: jerarquía sin tamaño ───────────
+  function limite(): Ronda {
+    const opciones = barajar([
+      { t: 'Porque va primero, es más grueso y tiene espacio alrededor', bien: true },
+      { t: 'No se puede saber: sin diferencia de tamaño no hay jerarquía', bien: false },
+      { t: 'Porque está en otro color', bien: false },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Aquí todo el texto mide lo mismo. Aun así, ¿cómo sabes cuál es el título?',
+      escena: (el) => {
+        const c = lienzo(460, 190);
+        texto(c, 30, 46, 'El último relojero de la plaza', { 'font-size': 15, 'font-weight': 900 });
+        texto(c, 30, 86, 'Durante cuarenta años arregló los relojes de medio pueblo.', { 'font-size': 15, 'font-family': SERIF });
+        texto(c, 30, 108, 'Ahora le enseña a su nieta a escuchar un mecanismo', { 'font-size': 15, 'font-family': SERIF });
+        texto(c, 30, 130, 'antes de abrirlo.', { 'font-size': 15, 'font-family': SERIF });
+        el.append(c);
+      },
+      escenaDescrita: 'Un título y un párrafo, los dos a 15 píxeles. El título va en negrita, arriba y separado.',
+      opciones: opciones.map((o) => ({ texto: o.t })),
+      correcta: opciones.findIndex((o) => o.bien),
+      porque: 'Todo el texto es del mismo color, así que el color no ayuda. Sin diferencia de tamaño, el orden se apoya en la posición, el grosor y el espacio.',
+      repaso: 'La jerarquía usa varios recursos',
+    };
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-juego="escalas-tipograficas"]')) {
+    jugar(raiz, () => [primero(), jerarquia(), escala(), ajuste(), limite()]);
+  }
+</script>

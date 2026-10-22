@@ -1,0 +1,56 @@
+---
+// Paso 2 de proximidad: la misma tarjeta con todos los renglones a la misma
+// distancia y con el aire organizado en tres bloques.
+import Anotada from '../Anotada.astro';
+
+const W = 360;
+const H = 230;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const lineas = [
+  { t: 'Laura Restrepo', peso: 700, tam: 19 },
+  { t: 'Diseñadora de servicios', peso: 400, tam: 13 },
+  { t: '+57 300 555 0142', peso: 400, tam: 13 },
+  { t: 'laura@estudio.co', peso: 400, tam: 13 },
+  { t: 'Calle 10 # 43-12, Medellín', peso: 400, tam: 13 },
+];
+
+// Antes: el mismo aire debajo de cada renglón.
+const igual = [34, 69, 104, 139, 174];
+// Después: aire chico dentro de cada bloque, grande entre bloques.
+const agrupado = [40, 60, 116, 136, 190];
+const pct = (y: number) => (y / H) * 100;
+---
+
+<div class="dv-anotadas">
+  <Anotada
+    veredicto="mal"
+    rotulo="Cuando todos los espacios son iguales"
+    notas={[
+      { x: 86, y: pct(52), texto: 'Los cinco renglones tienen la misma separación. Ninguno parece pertenecer a un bloque distinto.', zona: { x: 6, y: pct(14), w: 88, h: pct(170) } },
+      { x: 86, y: pct(121), texto: 'El cargo queda tan separado del nombre como el teléfono. Cuesta reconocer qué información corresponde a Laura.', zona: { x: 6, y: pct(55), w: 88, h: pct(55) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tarjeta de presentación con cinco renglones igualmente espaciados.">
+      {lineas.map((l, i) => (
+        <text x="28" y={igual[i]} font-family={SANS} font-weight={l.peso} font-size={l.tam} fill="#222">{l.t}</text>
+      ))}
+    </svg>
+  </Anotada>
+
+  <Anotada
+    veredicto="bien"
+    rotulo="Cuando el espacio crea bloques"
+    notas={[
+      { x: 86, y: pct(46), titulo: 'Quién es', texto: 'El nombre y el cargo están cerca, así que se leen como una unidad.', zona: { x: 6, y: pct(20), w: 88, h: pct(48) } },
+      { x: 86, y: pct(88), titulo: 'Un cambio de tema', texto: 'Una separación mayor marca el límite entre bloques.', zona: { x: 6, y: pct(68), w: 88, h: pct(30) } },
+      { x: 86, y: pct(126), titulo: 'Cómo contactarla', texto: 'El teléfono y el correo están juntos porque cumplen una función relacionada.', zona: { x: 6, y: pct(100), w: 88, h: pct(44) } },
+      { x: 86, y: pct(186), titulo: 'Dónde está', texto: 'La dirección queda aparte para distinguirla de los datos de contacto.', zona: { x: 6, y: pct(172), w: 88, h: pct(28) } },
+    ]}
+  >
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma tarjeta con el nombre y el cargo juntos, el teléfono y el correo juntos y la dirección aparte.">
+      {lineas.map((l, i) => (
+        <text x="28" y={agrupado[i]} font-family={SANS} font-weight={l.peso} font-size={l.tam} fill="#222">{l.t}</text>
+      ))}
+    </svg>
+  </Anotada>
+</div>

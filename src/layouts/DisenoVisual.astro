@@ -1,0 +1,21 @@
+---
+// Layout de las páginas de /diseno-visual. Envuelve Base (fuentes, paleta,
+// cabecera y pie del sitio) y agrega el registro de la sección.
+import Base from './Base.astro';
+import '../styles/diseno-visual.css';
+
+interface Props {
+  titulo: string;
+  descripcion?: string;
+  volverHref?: string;
+  volverTexto?: string;
+}
+
+const { titulo, descripcion, volverHref, volverTexto } = Astro.props;
+---
+
+<Base titulo={titulo} descripcion={descripcion} volverHref={volverHref} volverTexto={volverTexto}>
+  <div class="dv">
+    <slot />
+  </div>
+</Base>
