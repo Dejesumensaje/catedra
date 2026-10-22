@@ -35,9 +35,9 @@ const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100,
   <Anotada
     rotulo="Un horario de buses"
     notas={[
-      { x: 100, y: (34 / HH) * 100, texto: 'Los tres encabezados comparten la negrita. Se leen como una fila distinta de los datos.', zona: hz(12, 16, 316, 28) },
-      { x: 100, y: (124 / HH) * 100, texto: 'Las filas alternas tienen fondo. Toda la fila comparte ese fondo, así que es fácil seguirla aunque las columnas estén lejos.', zona: hz(12, 104, 316, 36) },
-      { x: 62, y: (290 / HH) * 100, texto: 'Todas las horas tienen la misma letra y el mismo ancho. Se leen como una columna de datos comparables.', zona: hz(150, 48, 180, 240) },
+      { x: 100, y: (34 / HH) * 100, titulo: 'Encabezados', texto: 'Comparten el uso de la negrita. Esa semejanza los distingue de los datos que aparecen debajo.', zona: hz(12, 16, 316, 28) },
+      { x: 100, y: (124 / HH) * 100, titulo: 'Filas alternas', texto: 'Un fondo compartido ayuda a seguir una fila completa, incluso cuando las columnas están separadas.', zona: hz(12, 104, 316, 36) },
+      { x: 62, y: (290 / HH) * 100, titulo: 'Horas', texto: 'Todas usan la misma tipografía y el mismo ancho, lo que facilita compararlas entre sí.', zona: hz(150, 48, 180, 240) },
     ]}
   >
     <svg viewBox={`0 0 ${HW} ${HH}`} role="img" aria-label="Tabla de horarios con seis rutas, la hora de salida y la de llegada. Las filas alternas tienen fondo gris claro.">
@@ -59,8 +59,8 @@ const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100,
   <Anotada
     rotulo="Un gráfico y su leyenda"
     notas={[
-      { x: 100, y: (26 / GH) * 100, texto: 'Cada muestra de la leyenda repite el trazo y la marca de su línea. El parecido conecta la leyenda con el gráfico.', zona: gz(16, 10, 300, 30) },
-      { x: 100, y: (150 / GH) * 100, texto: 'Las dos líneas se distinguen por el trazo (continuo o punteado) y por la marca (círculo o cuadrado). No dependen del color.', zona: gz(40, 90, 285, 130) },
+      { x: 100, y: (26 / GH) * 100, titulo: 'Conexión entre la leyenda y el gráfico', texto: 'Cada muestra de la leyenda repite el trazo y la marca de la línea correspondiente. El parecido permite identificar qué representa cada serie.', zona: gz(16, 10, 300, 30) },
+      { x: 100, y: (150 / GH) * 100, titulo: 'Diferenciación de las series', texto: 'Una línea continua con círculos se distingue de una línea punteada con cuadrados. Así, las series no dependen exclusivamente del color.', zona: gz(40, 90, 285, 130) },
     ]}
   >
     <svg viewBox={`0 0 ${GW} ${GH}`} role="img" aria-label="Gráfico de dos líneas, una continua con círculos y otra punteada con cuadrados, y su leyenda arriba con las mismas marcas.">
@@ -85,8 +85,8 @@ const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100,
   <Anotada
     rotulo="La barra de pestañas de una aplicación"
     notas={[
-      { x: 100, y: 30, texto: 'Los cuatro íconos comparten grosor de trazo, tamaño y estilo. Se leen como un conjunto.', zona: pz(100, 12, 250, 86) },
-      { x: 4, y: 92, texto: 'La pestaña activa deja de parecerse a las demás: tiene relleno y negrita. Por eso sabes dónde estás sin leer.', zona: pz(8, 12, 84, 86) },
+      { x: 100, y: 30, titulo: 'Unidad visual', texto: 'Los iconos comparten grosor de trazo, tamaño y estilo. Se reconocen como parte de un mismo sistema.', zona: pz(100, 12, 250, 86) },
+      { x: 4, y: 92, titulo: 'Estado activo', texto: 'La pestaña seleccionada incorpora relleno y negrita. Al romper el patrón de las demás, señala dónde se encuentra la persona.', zona: pz(8, 12, 84, 86) },
     ]}
   >
     <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="Barra con cuatro pestañas: Inicio, Buscar, Guardados y Perfil. Inicio está activa, con ícono relleno y texto en negrita.">

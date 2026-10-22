@@ -45,23 +45,23 @@ type Pieza = typeof bien;
 
 <div class="dv-anotadas">
   {[
-    { p: mal as Pieza, ver: 'mal', rotulo: 'Cada bloque puesto a ojo', columnas: false },
-    { p: bien, ver: 'bien', rotulo: 'Los mismos bloques sobre seis columnas', columnas: true },
+    { p: mal as Pieza, ver: 'mal', rotulo: 'Cuando cada bloque se coloca a ojo', columnas: false },
+    { p: bien, ver: 'bien', rotulo: 'Cuando los bloques comparten una retícula', columnas: true },
   ].map(({ p, ver, rotulo, columnas }) => (
     <Anotada
       veredicto={ver as 'mal' | 'bien'}
       rotulo={rotulo}
       notas={ver === 'mal'
         ? [
-            { ...pct(W, 40), texto: 'El título, la imagen y los textos empiezan cada uno en un borde distinto. Donde podría haber un solo borde común hay cuatro.', zona: zona(16, 24, 30, 260) },
-            { ...pct(W, 240), texto: 'Las dos columnas de texto tienen casi el mismo ancho, pero no el mismo. Una diferencia tan pequeña suele leerse como descuido.', zona: zona(20, 216, 316, 50) },
-            { ...pct(W, 80), texto: 'El número no se apoya en nada: ni en el borde de la imagen ni en el del texto de abajo.', zona: zona(244, 66, 94, 40) },
+            { ...pct(W, 40), titulo: 'Los bordes no coinciden', texto: 'El título, la imagen y los textos empiezan en posiciones ligeramente distintas. En lugar de compartir una línea, cada bloque parece tener la suya.', zona: zona(16, 24, 30, 260) },
+            { ...pct(W, 240), titulo: 'Los anchos casi coinciden', texto: 'Las dos columnas de texto tienen medidas parecidas, pero no iguales. La diferencia es pequeña, aunque puede percibirse como un descuido.', zona: zona(20, 216, 316, 50) },
+            { ...pct(W, 80), titulo: 'El número queda suelto', texto: 'No comparte una línea clara con la imagen ni con el texto que aparece debajo.', zona: zona(244, 66, 94, 40) },
           ]
         : [
-            { ...pct(W, 16), texto: 'Las franjas claras son las seis columnas. No se imprimen: sirven para decidir dónde va cada cosa.', zona: zona(M, 18, W - M * 2, 262) },
-            { ...pct(W, 120), texto: 'Título, imagen, pie y texto empiezan en el mismo borde izquierdo. Comparten una sola línea.', zona: zona(M - 3, 24, 6, 256) },
-            { ...pct(W, 240), texto: 'Cada texto ocupa tres columnas. Tienen el mismo ancho sin necesidad de medirlo.', zona: zona(M, 216, W - M * 2, 50) },
-            { ...pct(W, 80), texto: 'El número empieza en una columna y termina en el margen derecho, igual que el texto de abajo.', zona: zona(cx(4) - 3, 60, span(4, 6) + 6, 214) },
+            { ...pct(W, 16), titulo: 'Las columnas', texto: 'Las franjas claras muestran las seis columnas de la retícula. No se imprimen: sirven para decidir dónde empieza y termina cada bloque.', zona: zona(M, 18, W - M * 2, 262) },
+            { ...pct(W, 120), titulo: 'Un borde común', texto: 'El título, la imagen, el pie y el texto comienzan en la misma línea vertical.', zona: zona(M - 3, 24, 6, 256) },
+            { ...pct(W, 240), titulo: 'Anchos coherentes', texto: 'Cada columna de texto ocupa tres columnas de la retícula. Ambas tienen el mismo ancho sin necesidad de medirlas por separado.', zona: zona(M, 216, W - M * 2, 50) },
+            { ...pct(W, 80), titulo: 'Una relación compartida', texto: 'El número empieza en una columna y termina en el mismo borde que el texto de abajo.', zona: zona(cx(4) - 3, 60, span(4, 6) + 6, 214) },
           ]}
     >
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={ver === 'mal' ? 'Página con título, imagen, dato, pie y dos columnas de texto, cada bloque con bordes distintos.' : 'La misma página con los bloques sobre seis columnas dibujadas en un tono claro.'}>

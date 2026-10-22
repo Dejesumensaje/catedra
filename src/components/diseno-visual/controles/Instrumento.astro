@@ -19,9 +19,11 @@ interface Props {
   /** El escenario pide todo el ancho y los controles van debajo. */
   ancho?: boolean;
   clase?: string;
+  /** Una invitación a comparar, junto a las acciones. */
+  nota?: string;
 }
 
-const { id, titulo, consigna, comparar = true, proporcion, ancho = false, clase = '' } = Astro.props;
+const { id, titulo, consigna, comparar = true, proporcion, ancho = false, clase = '', nota } = Astro.props;
 const tienePruebas = Astro.slots.has('pruebas');
 const tieneAvanzados = Astro.slots.has('avanzados');
 ---
@@ -85,6 +87,7 @@ const tieneAvanzados = Astro.slots.has('avanzados');
       )}
 
       <div class="dv-acciones">
+        {nota && <p class="dv-ins-nota">{nota}</p>}
         {comparar && (
           <>
             <button type="button" class="dv-boton dv-boton-fuerte dv-solo-sin-comparar" data-accion="fijar">Fijar como A y comparar</button>

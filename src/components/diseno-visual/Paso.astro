@@ -8,9 +8,11 @@ interface Props {
   id: IdPaso;
   /** Reemplaza el propósito por defecto del paso. */
   proposito?: string;
+  /** Titular propio del paso, bajo su nombre. Con él no se muestra el propósito por defecto. */
+  titular?: string;
 }
 
-const { id, proposito } = Astro.props;
+const { id, proposito, titular } = Astro.props;
 const i = PASOS.findIndex((p) => p.id === id);
 const paso = PASOS[i];
 ---
@@ -19,7 +21,8 @@ const paso = PASOS[i];
   <header class="dv-paso-cab">
     <span class="dv-paso-num" aria-hidden="true">{i + 1}</span>
     <h2 id={`paso-${paso.id}`}>{paso.titulo}</h2>
-    <p>{proposito ?? paso.proposito}</p>
+    {titular && <h3 class="dv-paso-titular">{titular}</h3>}
+    {(proposito || !titular) && <p>{proposito ?? paso.proposito}</p>}
   </header>
   <slot />
 </section>

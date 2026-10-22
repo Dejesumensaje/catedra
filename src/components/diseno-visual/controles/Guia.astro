@@ -4,6 +4,8 @@
 // viven en el script de la experiencia (ver src/lib/diseno-visual/guia.ts);
 // aquí solo el texto, que también se lee sin JS.
 export interface PasoGuia {
+  /** Nombre corto del paso, en imperativo («Haz desaparecer los grupos.»). */
+  titulo?: string;
   /** Lo que hay que hacer, en imperativo y con el nombre exacto del control. */
   hacer: string;
   /** Lo que acaba de pasar y por qué importa. Se muestra al lograrlo. */
@@ -18,28 +20,28 @@ export interface PasoGuia {
 
 interface Props {
   pasos: PasoGuia[];
+  /** Lo que se dice al terminar la guía. */
+  final?: string;
 }
 
-const { pasos } = Astro.props;
+const { pasos, final = 'Guía completada. Ahora puedes cambiar cualquier control y observar qué ocurre.' } = Astro.props;
 ---
 
 <div class="dv-guia" data-guia data-pasos={JSON.stringify(pasos)}>
   <div class="dv-guia-cab">
-    <p class="dv-guia-titulo">Guía</p>
+    <p class="dv-guia-titulo">Guía de exploración</p>
     <p class="dv-guia-avance" data-guia-avance>{pasos.length} pasos</p>
   </div>
   <ol class="dv-guia-lista">
     {pasos.map((p, i) => (
       <li class="dv-guia-paso" data-guia-paso={i}>
-        <p class="dv-guia-hacer">{p.hacer}</p>
+        <p class="dv-guia-hacer">{p.titulo && <span class="dv-guia-nombre">{p.titulo}</span>}{p.titulo && ' '}<span class="dv-guia-instruccion">{p.hacer}</span></p>
         <p class="dv-guia-logro" hidden><span class="dv-guia-check" aria-hidden="true">✓</span> {p.logro}</p>
         {p.pista && <p class="dv-guia-pista" hidden>Pista: {p.pista}</p>}
       </li>
     ))}
   </ol>
-  <p class="dv-guia-final" data-guia-final hidden>
-    Terminaste la guía. Ahora puedes cambiar cualquier control y observar qué pasa.
-  </p>
+  <p class="dv-guia-final" data-guia-final hidden>{final}</p>
   <div class="dv-guia-acciones">
     <button type="button" class="dv-boton dv-boton-fuerte" data-guia-sig hidden>Siguiente paso →</button>
     <button type="button" class="dv-boton" data-guia-pista-btn hidden>Necesito una pista</button>

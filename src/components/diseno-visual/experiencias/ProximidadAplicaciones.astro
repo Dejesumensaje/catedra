@@ -7,17 +7,17 @@ import Interruptor from '../controles/Interruptor.astro';
 ---
 
 <div class="dv-especimenes">
-  <Instrumento id="prox-formulario" titulo="Arregla · un formulario" comparar={false} consigna="La etiqueta «Correo» está a la misma distancia de dos campos. Muévela hasta que quede claro a cuál pertenece.">
+  <Instrumento id="prox-formulario" titulo="Arregla un formulario" comparar={false} consigna="La etiqueta «Correo» está situada entre dos campos y no queda claro a cuál pertenece. Mueve la etiqueta hasta que su relación con el campo correspondiente resulte evidente. Observa cómo cambia la lectura sin necesidad de modificar el texto.">
     <Deslizador lab="prox-formulario" variable="p" etiqueta="Posición de la etiqueta" min={0} max={100} valor={50} unidad="%" ayuda="0 %: junto a su campo. 100 %: junto al campo anterior." />
   </Instrumento>
 
-  <Instrumento id="prox-titular" titulo="Arregla · un artículo" comparar={false} consigna="El intertítulo está más cerca del párrafo de arriba y parece su final. Ajusta el espacio para que presente el párrafo de abajo.">
-    <Deslizador lab="prox-titular" variable="k" etiqueta="Espacio sobre el intertítulo" min={0} max={100} valor={30} unidad="%" ayuda="El espacio total no cambia: lo que se suma arriba se resta abajo." />
+  <Instrumento id="prox-titular" titulo="Arregla un artículo" comparar={false} consigna="El intertítulo está más cerca del párrafo anterior que del que presenta. Parece cerrar una idea en lugar de introducir la siguiente. Ajusta el espacio por encima del intertítulo: la distancia debe ayudar a reconocer qué texto está encabezando.">
+    <Deslizador lab="prox-titular" variable="k" etiqueta="Espacio sobre el intertítulo" min={0} max={100} valor={30} unidad="%" ayuda="El espacio total se mantiene: lo que añades arriba se resta abajo." />
   </Instrumento>
 
-  <Instrumento id="prox-menu" titulo="Arregla · un menú" comparar={false} consigna="Ocho enlaces de dos temas distintos se leen como una sola lista. Sepáralos en dos grupos.">
+  <Instrumento id="prox-menu" titulo="Arregla un menú" comparar={false} consigna="Ocho enlaces pertenecen a dos temas, pero todos parecen formar una sola lista. Aumenta la distancia entre los dos bloques y observa si se distinguen mejor. Después, compara esa solución con la posibilidad de separarlos mediante una línea.">
     <Deslizador lab="prox-menu" variable="sep" etiqueta="Espacio entre los dos bloques" min={0} max={40} valor={0} unidad="px" />
-    <Interruptor lab="prox-menu" variable="linea" etiqueta="Separar con una línea en lugar de espacio" />
+    <Interruptor lab="prox-menu" variable="linea" etiqueta="Separar mediante una línea" />
   </Instrumento>
 </div>
 

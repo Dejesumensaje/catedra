@@ -1342,3 +1342,21 @@
   margin: 1.5rem 0 0.6rem;
 }
 .dv-todos-intro strong { color: var(--tinta); }
+
+/* Titular propio de un paso, bajo su nombre. */
+.dv-paso-cab .dv-paso-titular {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--tinta);
+  margin-top: 0.5rem;
+}
+
+/* Nombre corto del paso de una guía; al quedar atrás, solo se ve el nombre. */
+.dv-guia-nombre { font-weight: 900; }
+.dv-guia-activa .dv-guia-paso.es-hecho:not(.es-actual) .dv-guia-nombre ~ .dv-guia-instruccion { display: none; }
+
+/* Invitación a comparar, junto a las acciones del instrumento. */
+.dv-ins-nota { flex-basis: 100%; font-family: var(--serif); font-size: 0.92rem; color: var(--texto); max-width: 46ch; }
+.dv-guia-activa .dv-guia-paso.es-actual .dv-guia-nombre ~ .dv-guia-instruccion { font-weight: 400; }

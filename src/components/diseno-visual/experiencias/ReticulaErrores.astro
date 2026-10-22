@@ -18,8 +18,8 @@ const barras = (x: number, y: number, w: number, n: number) =>
     veredicto="mal"
     rotulo="Casi alineado"
     notas={[
-      { ...pc(W, 70), titulo: 'Qué pasa', texto: 'La imagen empieza cuatro píxeles a la derecha del título y del texto. La diferencia es tan pequeña que parece un error.', zona: zn(20, 22, 40, 160) },
-      { ...pc(W, 150), titulo: 'Cómo se arregla', texto: 'Alinéala exactamente, o muévela lo suficiente para que se vea intencional. Una diferencia mínima es lo que peor se ve.' },
+      { ...pc(W, 70), texto: 'La imagen empieza cuatro píxeles a la derecha del título y del texto. La diferencia es mínima, pero precisamente por eso puede parecer un descuido: los elementos parecen querer compartir una línea sin llegar a hacerlo.', zona: zn(20, 22, 40, 160) },
+      { ...pc(W, 150), titulo: 'Cómo corregirlo', texto: 'Alinea exactamente la imagen con los otros bloques. Si necesitas que destaque por su posición, muévela lo suficiente para que la ruptura se perciba como intencional.' },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Un texto y una imagen cuyos bordes izquierdos casi coinciden, con cuatro píxeles de diferencia.">
@@ -34,8 +34,8 @@ const barras = (x: number, y: number, w: number, n: number) =>
     veredicto="mal"
     rotulo="Una alineación distinta en cada bloque"
     notas={[
-      { ...pc(W, 40), titulo: 'Qué pasa', texto: 'El título va centrado, el texto a la izquierda y el dato a la derecha. Ningún borde coincide con otro.', zona: zn(14, 16, 272, 170) },
-      { ...pc(W, 150), titulo: 'Cómo se arregla', texto: 'Elige una alineación para todo lo que va junto. Centrar solo funciona si todo lo demás también va centrado.' },
+      { ...pc(W, 40), texto: 'El título está centrado, el texto se alinea a la izquierda y el dato aparece a la derecha. Los elementos no comparten una dirección visual clara.', zona: zn(14, 16, 272, 170) },
+      { ...pc(W, 150), titulo: 'Cómo corregirlo', texto: 'Elige una alineación coherente para los elementos que forman parte de un mismo conjunto. No significa que toda la página deba usar siempre la misma alineación, sino que las diferencias deben responder a una función reconocible.' },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Un título centrado, un párrafo alineado a la izquierda y un dato alineado a la derecha.">
@@ -50,8 +50,8 @@ const barras = (x: number, y: number, w: number, n: number) =>
     veredicto="mal"
     rotulo="Todo alineado, nada importante"
     notas={[
-      { ...pc(W, 40), titulo: 'Qué pasa', texto: 'Seis bloques iguales y bien alineados. Ninguno indica por dónde empezar a leer.', zona: zn(16, 16, 268, 168) },
-      { ...pc(W, 150), titulo: 'Cómo se arregla', texto: 'La retícula ya ordenó las posiciones. Ahora dale a un bloque más columnas, más tamaño o más contraste.' },
+      { ...pc(W, 40), texto: 'Los seis bloques están perfectamente alineados y tienen el mismo protagonismo. La composición se ve ordenada, pero cuesta reconocer dónde empezar.', zona: zn(16, 16, 268, 168) },
+      { ...pc(W, 150), titulo: 'Cómo corregirlo', texto: 'La retícula ya organiza las posiciones. Ahora introduce jerarquía: dale a un bloque más espacio, mayor tamaño o más contraste. La estructura y el protagonismo cumplen funciones distintas.' },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Seis rectángulos grises iguales en dos filas de tres, perfectamente alineados.">

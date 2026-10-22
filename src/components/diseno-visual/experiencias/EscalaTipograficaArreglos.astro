@@ -6,18 +6,18 @@ import Deslizador from '../controles/Deslizador.astro';
 ---
 
 <div class="dv-especimenes">
-  <Instrumento id="esc-titulo" titulo="Arregla · un título que no se distingue" comparar={false} consigna="El título casi no se distingue del texto. Dale el tamaño necesario para que se lea primero.">
+  <Instrumento id="esc-titulo" titulo="Arregla un título que no se distingue" comparar={false} consigna="El título tiene casi el mismo tamaño que el texto normal. Aumenta su tamaño hasta que se distinga sin necesidad de leerlo. ¿En qué momento se vuelve evidente la diferencia? ¿Cuánto crecimiento necesita esta composición, y cuánto sería excesivo?">
     <Deslizador lab="esc-titulo" variable="t" etiqueta="Tamaño del título" min={14} max={64} valor={17} unidad="px" ayuda="El texto mide 15 px." />
   </Instrumento>
 
-  <Instrumento id="esc-interlineado" titulo="Arregla · un párrafo apretado" comparar={false} consigna="Los renglones casi se tocan y cuesta seguirlos. Dales más espacio.">
+  <Instrumento id="esc-interlineado" titulo="Arregla un párrafo apretado" comparar={false} consigna="Los renglones están demasiado juntos y cuesta seguir el texto sin perder la línea. Aumenta el interlineado y observa cómo cambia la lectura. ¿Más espacio siempre mejora la lectura? Prueba qué sucede cuando los renglones quedan tan separados que dejan de percibirse como parte del mismo párrafo.">
     <Deslizador lab="esc-interlineado" variable="lh" etiqueta="Interlineado" min={0.9} max={2.6} paso={0.05} valor={1} decimales={2} ayuda="Altura de cada renglón, en número de veces el tamaño de la letra." />
   </Instrumento>
 </div>
 
 <div class="dv-especimenes">
-  <Instrumento id="esc-ancho" titulo="Arregla · líneas demasiado largas" comparar={false} consigna="Cada renglón es tan largo que, al terminarlo, cuesta encontrar el comienzo del siguiente. Reduce el ancho del bloque.">
-    <Deslizador lab="esc-ancho" variable="c" etiqueta="Ancho del bloque" min={20} max={120} valor={115} unidad="caracteres" ayuda="Caracteres por renglón, contando espacios." />
+  <Instrumento id="esc-ancho" titulo="Arregla unas líneas demasiado largas" comparar={false} consigna="Los renglones ocupan tanto espacio que, al terminar uno, cuesta encontrar el comienzo del siguiente. Reduce el ancho del bloque y vuelve a leer el texto. ¿Qué cambia cuando el ojo necesita recorrer una distancia menor antes de pasar al siguiente renglón?">
+    <Deslizador lab="esc-ancho" variable="c" etiqueta="Ancho de línea" min={20} max={120} valor={115} unidad="caracteres" ayuda="Caracteres por renglón, contando espacios." />
   </Instrumento>
 </div>
 

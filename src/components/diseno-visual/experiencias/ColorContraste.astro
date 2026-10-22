@@ -10,8 +10,9 @@ const lab = 'color-contraste';
 
 <Instrumento
   id={lab}
-  titulo="Arregla · un aviso que no se lee"
-  consigna="Gris claro sobre un fondo casi blanco: la razón de contraste no llega a 3:1. Oscurece el texto hasta alcanzar el mínimo para un párrafo, 4,5:1."
+  titulo="Arregla un aviso que no se lee"
+  consigna="El texto de un horario aparece en gris claro sobre un fondo casi blanco. La diferencia de luminancia es insuficiente para alcanzar el mínimo de contraste de un párrafo. Oscurece el texto hasta alcanzar una razón de contraste de al menos 4,5:1. Después prueba las otras combinaciones: dos colores que parecen muy diferentes por su tono pueden tener una razón de contraste baja."
+  nota="Fija una configuración A y compárala con B para observar qué cambio mejora la lectura."
 >
   <div slot="escenario" style="background:#f3e8d6; color:#9aa0ab; padding: 1.4rem 1.5rem; min-height: 12rem;">
     <p style="font-family: Roboto, sans-serif; font-weight: 700; font-size: 1.5rem; line-height: 1.15; margin: 0 0 0.6rem;">Horario de la biblioteca</p>
@@ -28,7 +29,7 @@ const lab = 'color-contraste';
 
   <Fragment slot="pruebas">
     <button type="button" class="dv-boton" data-preset='{"th":0,"ts":0,"tl":60,"bh":0,"bs":0,"bl":100}'>Gris claro sobre blanco</button>
-    <button type="button" class="dv-boton" data-preset='{"th":0,"ts":0,"tl":46,"bh":0,"bs":0,"bl":100}'>Pasa por poco</button>
+    <button type="button" class="dv-boton" data-preset='{"th":0,"ts":0,"tl":46,"bh":0,"bs":0,"bl":100}'>Una combinación que apenas alcanza el mínimo</button>
     <button type="button" class="dv-boton" data-preset='{"th":0,"ts":85,"tl":50,"bh":120,"bs":70,"bl":35}'>Rojo sobre verde</button>
     <button type="button" class="dv-boton" data-preset='{"th":220,"ts":60,"tl":22,"bh":45,"bs":90,"bl":75}'>Azul noche sobre amarillo</button>
   </Fragment>

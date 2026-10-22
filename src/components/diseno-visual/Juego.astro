@@ -6,9 +6,11 @@ interface Props {
   rondas: number;
   /** Qué se va a poner a prueba, en una frase. */
   descripcion: string;
+  /** Un segundo párrafo: qué pasa después de responder. */
+  despues?: string;
 }
 
-const { slug, rondas, descripcion } = Astro.props;
+const { slug, rondas, descripcion, despues = 'Después de cada respuesta podrás consultar la explicación.' } = Astro.props;
 ---
 
 <div class="dv-juego" data-juego={slug} id={`juego-${slug}`}>
@@ -18,6 +20,7 @@ const { slug, rondas, descripcion } = Astro.props;
   </div>
   <div class="dv-juego-intro" data-juego-intro>
     <p>{descripcion}</p>
+    <p>{despues}</p>
     <noscript><p>El juego necesita JavaScript.</p></noscript>
     <div class="dv-juego-acciones">
       <button type="button" class="dv-boton dv-boton-fuerte" data-juego-empezar hidden>Empezar</button>

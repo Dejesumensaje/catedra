@@ -7,33 +7,33 @@ modos: [laboratorio, comparacion, diseccion, provocacion]
 orden: 1
 relaciones:
   - concepto: semejanza
-    porQue: Compite con la proximidad. Cuando la distancia indica un grupo y el color o la forma indican otro, solemos ver la señal más fuerte, que no siempre es la distancia.
+    porQue: La proximidad puede competir con la apariencia. Si la distancia agrupa unos elementos, pero el color o la forma los relacionan con otros, las señales pueden entrar en conflicto.
   - concepto: region-comun
-    porQue: Un marco o un fondo compartido agrupa elementos aunque estén lejos. Sirve cuando el espacio no basta para separar.
+    porQue: Un marco o un fondo compartido puede agrupar elementos aunque estén separados por la distancia.
   - concepto: escalas-tipograficas
-    porQue: El espacio encima y debajo de un título indica a qué texto pertenece. Parte de la jerarquía tipográfica depende de la proximidad.
+    porQue: El espacio encima y debajo de un título ayuda a identificar qué texto presenta. Parte de la jerarquía tipográfica también depende de la proximidad.
   - concepto: reticulas-y-alineacion
-    porQue: Los medianiles (el espacio entre columnas) y los márgenes fijan distancias para toda la página. Son decisiones de proximidad tomadas una sola vez.
+    porQue: Los márgenes y los espacios entre columnas establecen distancias que organizan una página entera.
   - concepto: espacio-negativo
-    porQue: El espacio vacío entre grupos es lo que permite verlos como grupos.
+    porQue: El espacio vacío que rodea los elementos ayuda a distinguirlos, separarlos y reconocer sus relaciones.
   - concepto: densidad-visual
-    porQue: Cuando todos los elementos están cerca entre sí, la distancia ya no distingue grupos. En una composición densa, la proximidad pierde fuerza.
+    porQue: Cuando muchos elementos están muy cerca, las distancias pierden capacidad para distinguir grupos. La composición puede empezar a percibirse como una unidad densa.
 fuentes:
   - autor: Max Wertheimer
     obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
     anio: 1923
     url: https://doi.org/10.1007/BF00410640
-    nota: El artículo donde se describen los factores de agrupamiento, entre ellos la proximidad.
+    nota: El trabajo describe factores de agrupamiento perceptivo, entre ellos la proximidad.
   - autor: Stephen E. Palmer
     obra: "Common region: A new principle of perceptual grouping. Cognitive Psychology, 24(3), 436–447"
     anio: 1992
     url: https://doi.org/10.1016/0010-0285(92)90014-S
-    nota: Propone la región común como principio de agrupamiento.
+    nota: Estudia la región común como principio de agrupamiento.
   - autor: Johan Wagemans y otros
     obra: "A century of Gestalt psychology in visual perception: I. Perceptual grouping and figure–ground organization. Psychological Bulletin, 138(6), 1172–1217"
     anio: 2012
     url: https://doi.org/10.1037/a0029333
-    nota: Revisión de lo que la investigación posterior confirmó, matizó o descartó.
+    nota: Revisión de la investigación sobre agrupamiento perceptivo y organización figura-fondo.
 ---
 import Paso from '../../components/diseno-visual/Paso.astro';
 import Seccion from '../../components/diseno-visual/Seccion.astro';
@@ -44,73 +44,79 @@ import ProximidadAplicaciones from '../../components/diseno-visual/experiencias/
 import ProximidadEjemplos from '../../components/diseno-visual/experiencias/ProximidadEjemplos.astro';
 import ProximidadJuego from '../../components/diseno-visual/experiencias/ProximidadJuego.astro';
 
-<Paso id="idea">
+<Paso id="idea" titular="El espacio también organiza">
 
 <ProximidadIdea />
 
-<p class="dv-frase">Lo que está cerca parece ir junto.</p>
+<p class="dv-frase">Lo que está cerca tiende a verse como parte de lo mismo.</p>
 
 <div class="dv-texto">
 
-Seguramente viste tres grupos sin detenerte a pensarlo. Solemos juntar lo que está cerca y separar lo que está lejos, y lo hacemos antes de mirar con atención.
+Agrupamos los elementos cercanos y distinguimos los que están más separados, muchas veces sin detenernos a pensarlo. En diseño, este principio se llama *proximidad*.
 
-En diseño, a este efecto se le llama **proximidad**, y es una de las herramientas más económicas que existen. Acerca dos elementos y quien mira tenderá a leerlos como un conjunto; aléjalos y parecerán cosas distintas. No hacen falta líneas, cajas ni colores. Basta con el espacio.
+Acerca dos elementos y tenderán a leerse como una unidad. Aléjalos y será más probable que parezcan independientes. El espacio puede organizar una composición sin necesidad de añadir líneas, recuadros o colores.
 
 </div>
 
 <aside class="dv-vocabulario">
-  <h3>Las palabras que vas a usar</h3>
+  <h3>Cuatro palabras para explorarla</h3>
   <dl>
     <dt>Elemento</dt>
-    <dd>Cada cosa que se ve por separado: un punto, una palabra, una imagen.</dd>
+    <dd>Cada pieza que puedes distinguir: un punto, una palabra, una imagen.</dd>
     <dt>Grupo</dt>
-    <dd>Varios elementos que se leen como una sola unidad.</dd>
+    <dd>Varios elementos que percibimos como una unidad.</dd>
     <dt>Espacio dentro del grupo</dt>
-    <dd>La distancia entre los elementos de un mismo grupo. También se llama espacio interno.</dd>
+    <dd>La distancia entre los elementos que forman una misma unidad.</dd>
     <dt>Espacio entre grupos</dt>
-    <dd>La distancia que separa un grupo del siguiente. Para que los grupos se vean, tiene que ser claramente mayor que el espacio dentro del grupo.</dd>
+    <dd>La distancia que separa una unidad de otra. Para que los grupos se distingan, esta distancia suele ser mayor que la que hay entre sus elementos.</dd>
   </dl>
 </aside>
 
 </Paso>
 
-<Paso id="miralo" proposito="La misma tarjeta dos veces, con los mismos datos y el mismo tamaño de letra. Solo cambia el espacio entre renglones. Toca cada número para ver dónde actúa.">
+<Paso id="miralo" titular="La misma información, dos maneras de organizarla">
+
+<div class="dv-texto">
+
+Estas dos tarjetas contienen los mismos datos, con el mismo tamaño de letra. Lo que cambia es el espacio entre los renglones. Selecciona los números para observar cómo se organiza la información.
+
+</div>
 
 <ProximidadMiralo />
 
 <div class="dv-texto">
 
-La primera tarjeta usa una sola medida de espacio, y los cinco renglones se leen como datos sueltos. La segunda usa dos: una pequeña dentro de cada bloque y otra mayor entre bloques. Con ese único cambio aparecen tres ideas: quién es, cómo contactarla y dónde está.
+No se añadió información ni se cambió la tipografía. Bastó con organizar el espacio para que los datos empezaran a contar una historia más clara: quién es Laura, cómo contactarla y dónde encontrarla.
 
 </div>
 
 </Paso>
 
-<Paso id="pruebalo">
+<Paso id="pruebalo" titular="Doce puntos, muchas maneras de agruparlos">
 
 <Proximidad />
 
 </Paso>
 
-<Paso id="usalo">
+<Paso id="usalo" titular="Tres decisiones para organizar el espacio">
 
 <ol class="dv-receta">
   <li>
     <div>
-      <h3>Decide qué va junto antes de mover nada</h3>
-      <p>Haz una lista de lo que vas a incluir y agrúpalo según la pregunta que responde: quién, cuándo, dónde, cuánto. Cada respuesta será un grupo.</p>
+      <h3>Decide qué información va junta</h3>
+      <p>Antes de ajustar márgenes y separaciones, piensa qué relación existe entre los datos. ¿Qué responde a quién, cuándo, dónde o cuánto? Agrupa la información que cumple una función común.</p>
     </div>
   </li>
   <li>
     <div>
-      <h3>Usa dos medidas de espacio</h3>
-      <p>Una pequeña dentro de cada grupo y otra claramente mayor entre grupos. Como punto de partida, prueba con el doble o el triple. Después ajusta mirando el resultado.</p>
+      <h3>Distingue el espacio interior del exterior</h3>
+      <p>Empieza con una separación pequeña dentro de cada grupo y otra mayor entre grupos. Puedes probar con el doble o el triple como punto de partida, pero no lo tomes como una fórmula universal. Ajusta las distancias según el tamaño, la forma y la cantidad de elementos.</p>
     </div>
   </li>
   <li>
     <div>
-      <h3>Comprueba con la vista desenfocada</h3>
-      <p>Entrecierra los ojos o aléjate de la pantalla. Si distingues los bloques sin leer el texto, la proximidad funciona. Si ves una mancha uniforme, falta diferencia entre los dos espacios.</p>
+      <h3>Comprueba la composición de un vistazo</h3>
+      <p>Aléjate de la pantalla o entrecierra los ojos. ¿Puedes distinguir los bloques sin leer cada palabra? Si todo parece una sola mancha, quizá las distancias no están diferenciando suficientemente los grupos.</p>
     </div>
   </li>
 </ol>
@@ -119,25 +125,29 @@ La primera tarjeta usa una sola medida de espacio, y los cinco renglones se leen
 
 ### Tres errores frecuentes
 
-Cada caso empieza con el error. Corrígelo con su control.
-
 </div>
 
 <ProximidadAplicaciones />
 
 <div class="dv-texto">
 
-### En piezas reales
+### La proximidad en piezas reales
 
-Un menú, una pantalla de ajustes y un cartel resuelven el mismo problema con espacio. Toca los números para ver cómo lo hace cada uno.
+El mismo principio aparece en un menú, una pantalla de ajustes y un cartel. Selecciona los números para observar cómo se organiza cada composición.
 
 </div>
 
 <ProximidadEjemplos />
 
+<div class="dv-texto">
+
+En los tres casos, el espacio hace más que separar elementos: ayuda a decidir qué pertenece a qué y en qué orden recorrer la composición.
+
+</div>
+
 </Paso>
 
-<Paso id="juega">
+<Paso id="juega" titular="¿Puedes reconocer los grupos?">
 
 <ProximidadJuego />
 
@@ -145,39 +155,49 @@ Un menú, una pantalla de ajustes y un cartel resuelven el mismo problema con es
 
 <Paso id="a-fondo">
 
-<Seccion titulo="La relación que produce el efecto">
+<Seccion titulo="La clave está en la relación entre distancias">
 
-El efecto depende de una comparación: el espacio dentro de un grupo frente al espacio entre grupos. A esa comparación se le llama razón: cuántas veces es mayor un espacio que el otro. Si duplicas las dos distancias, la razón no cambia y los grupos se mantienen. Si las igualas, los grupos desaparecen, aunque ninguna de las dos sea pequeña.
+La proximidad no depende de una medida aislada, sino de la comparación entre el espacio interior de un grupo y el espacio que lo separa de los demás.
 
-Max Wertheimer describió la proximidad en 1923 como uno de los factores con los que la percepción agrupa lo que vemos.
+Si el espacio entre grupos es mucho mayor que el espacio dentro de cada grupo, la agrupación suele ser más clara. Si ambas distancias se acercan, los límites entre grupos se vuelven ambiguos.
 
-</Seccion>
+Prueba a duplicar las dos distancias a la vez. Aunque ahora todo ocupe más espacio, la relación entre ellas se mantiene y los grupos pueden seguir siendo igual de reconocibles. En cambio, si igualas las dos distancias, los grupos pueden desaparecer aunque ninguna de las medidas sea especialmente pequeña.
 
-<Seccion titulo="No hay un número fijo">
-
-El «doble o triple» de la receta es solo un punto de partida; no proviene de una medición. Los rangos que nombra la lectura del instrumento (sin grupos, zona dudosa, grupos claros) describen esa composición en particular.
-
-El punto en que un grupo deja de verse depende también de otros factores. En «Más controles», sube «Tamaño de cada elemento» sin tocar las distancias. Con elementos grandes, 10 px de espacio parecen poco; con elementos pequeños, la misma distancia los separa. Prueba también la opción «En bloque»: un grupo compacto tiende a mantenerse unido con menos espacio alrededor que una fila larga.
-
-Por eso la proximidad se ajusta mirando: la razón entre los dos espacios te dice dónde poner la atención.
+En 1923, Max Wertheimer describió la proximidad como uno de los factores que intervienen en la organización perceptiva.
 
 </Seccion>
 
-<Seccion titulo="Fuera de la pantalla">
+<Seccion titulo="No existe una distancia mágica">
 
-Fuera de la pantalla el recurso es el mismo: alguien decide dos distancias. En un periódico, el pie de foto va junto a su imagen y lejos de la columna vecina. En una señal de aeropuerto, la flecha va junto al destino que indica. En una tabla, el espacio entre columnas influye en si leemos por filas o por columnas.
+La regla del doble o el triple es un punto de partida, no una medida universal. El resultado depende también del tamaño de los elementos, de cuántos hay y de cómo están dispuestos.
+
+Con puntos grandes, una separación de 10 px puede parecer pequeña. Con puntos pequeños, esa misma distancia puede ser suficiente para distinguirlos. Una disposición compacta en bloque también puede conservar su unidad con menos espacio alrededor que una fila larga.
+
+Por eso conviene ajustar la proximidad mirando el resultado, no aplicando una cifra automáticamente.
 
 </Seccion>
 
-<Seccion titulo="Lo que no explica">
+<Seccion titulo="La proximidad en otros diseños">
 
-**No actúa sola.** En el instrumento, «Encerrar los vecinos de grupos distintos» y «Dar otro relleno a los vecinos de grupos distintos» reúnen puntos que la distancia separa, y a menudo se imponen. Stephen Palmer propuso en 1992 la región común (un marco o un fondo compartido) como otro principio de agrupamiento.
+La proximidad no se limita a las páginas web ni a las aplicaciones. También organiza la información en objetos impresos y espacios físicos.
 
-**No explica qué significa el grupo.** La distancia indica que unos elementos van juntos, pero no por qué. Eso lo explican el título, el orden y el contenido.
+- **En un periódico**, el pie de foto aparece cerca de la imagen a la que corresponde, separado de las columnas vecinas.
+- **En un aeropuerto**, las indicaciones se colocan junto a la información del destino al que se refieren.
+- **En una tabla**, el espacio entre filas y columnas ayuda a reconocer qué datos pertenecen a cada grupo.
 
-**No llega a todas las personas.** Quien usa un lector de pantalla no percibe el espacio. Si un grupo solo existe como espacio, para esa persona no existe. La estructura también debe estar en el código: una lista, un encabezado o un grupo de campos de formulario (`fieldset`).
+En todos estos casos, las distancias ayudan a entender qué elementos están relacionados, incluso cuando no hay líneas ni recuadros que los separen.
 
-**Puede usarse para crear ambigüedad.** Si los dos espacios son casi iguales, no queda claro qué va con qué. A veces es un error. Otras veces es intencional: un cartel puede buscar que el lector dude.
+</Seccion>
+
+<Seccion titulo="Lo que la proximidad no resuelve">
+
+**Otras señales pueden imponerse.** Un marco o un fondo compartido puede mantener unidos elementos que están lejos. Un color o una forma común también puede hacer que veamos juntos elementos separados. Stephen Palmer estudió la región común como otro principio de agrupamiento en 1992.
+
+**Agrupar no es lo mismo que explicar.** La distancia puede sugerir que varios elementos pertenecen a una unidad, pero no explica qué significa esa unidad. Para eso también necesitamos el contenido, los títulos y el contexto.
+
+**El espacio por sí solo no garantiza accesibilidad.** Una persona que utiliza un lector de pantalla no percibe las distancias visuales de la misma manera. Si un formulario agrupa sus campos únicamente mediante el espacio, esa relación puede perderse. La estructura debe estar representada también en el código, mediante listas, encabezados y grupos de campos como `fieldset`.
+
+**La ambigüedad también puede ser intencional.** Cuando dos distancias son parecidas, no siempre queda claro qué elemento pertenece a qué grupo. En una interfaz funcional puede ser un problema. En un cartel o una composición artística, esa duda puede ser parte del efecto buscado.
 
 </Seccion>
 

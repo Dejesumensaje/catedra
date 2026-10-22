@@ -15,28 +15,33 @@ const ninguna = Object.fromEntries(piezas.map((_, i) => [`x${i}`, false]));
 
 const pasos: PasoGuia[] = [
   {
+    titulo: 'Cambia el color de las fichas.',
     hacer: 'En «Regla · color de las fichas», elige otro color.',
-    logro: 'Las doce fichas cambiaron a la vez. Ninguna decide su propio color: lo toman de una regla compartida. Eso es un sistema, decisiones que se toman una vez y valen para todas las piezas.',
+    logro: 'Las doce fichas cambian al mismo tiempo. Ninguna decide su color por separado: todas responden a una regla compartida. Eso es un sistema.',
   },
   {
+    titulo: 'Quita la variación.',
     hacer: 'Lleva «Variación del contenido» hasta 0 %.',
     pista: 'Mueve el control hasta el extremo izquierdo, o selecciónalo y pulsa la tecla Inicio.',
-    logro: 'Doce copias de la misma ficha. El conjunto está ordenado, pero no queda ninguna diferencia que leer. A eso lo llamamos uniformidad.',
+    logro: 'Las doce fichas se convierten en copias de una misma pieza. El conjunto conserva el orden, pero desaparecen las diferencias entre sus contenidos. Esto es uniformidad: repetir una misma solución no equivale a construir un sistema capaz de organizar información diversa.',
   },
   {
-    hacer: 'Ahora sube «Variación del contenido» por encima de 50 %.',
-    logro: 'Cada ficha tiene su título, su imagen y su forma, y aun así se reconocen como parte de un mismo conjunto. Eso es consistencia: las reglas no cambian y el contenido sí.',
+    titulo: 'Devuelve la variación.',
+    hacer: 'Sube «Variación del contenido» por encima de 50 %.',
+    logro: 'Ahora las fichas tienen títulos, imágenes y formas diferentes, pero siguen compartiendo las mismas reglas visuales. Eso es consistencia: las piezas pueden variar sin dejar de pertenecer al mismo sistema.',
   },
   {
-    hacer: 'En «Excepciones», marca una sola ficha.',
+    titulo: 'Crea una excepción.',
+    hacer: 'Marca una sola ficha en «Excepciones».',
     pista: 'Toca un número. Las casillas marcadas aparecen tachadas.',
     preparar: { variacion: 80, ...ninguna },
-    logro: 'Esa ficha tiende a verse antes que las otras once porque rompe una regla. Es una excepción: indica «esta es distinta» sin necesidad de escribirlo.',
+    logro: 'Esa ficha rompe una regla y empieza a destacar frente a las otras once. La diferencia funciona como una señal: indica que esa pieza merece una atención especial.',
   },
   {
-    hacer: 'Sigue marcando fichas hasta que más de la mitad sean excepción.',
+    titulo: 'Multiplica las excepciones.',
+    hacer: 'Sigue marcando fichas hasta que más de la mitad sean excepciones.',
     pista: 'Marca siete o más.',
-    logro: 'Ahora destacan las fichas que siguen la regla. Cuando casi todo es excepción, las excepciones dejan de indicar algo; por eso conviene reservarlas para una sola cosa.',
+    logro: 'Cuando casi todas las fichas rompen la regla, las pocas que la conservan pasan a destacar. La excepción pierde fuerza cuando se vuelve habitual. Por eso conviene reservarla para una diferencia que realmente importe.',
   },
 ];
 ---
@@ -44,11 +49,12 @@ const pasos: PasoGuia[] = [
 <Instrumento
   id={lab}
   titulo="Instrumento · doce fichas, unas pocas reglas"
-  consigna="Doce fichas de la programación de un centro cultural. Todas siguen las mismas reglas."
+  consigna="Estas doce fichas representan la programación de un centro cultural. Comparten unas reglas visuales, pero cada una puede presentar un título, una imagen y una forma diferentes. Experimenta con las reglas y observa qué cambia cuando una ficha se aparta de ellas."
+  nota="Fija una configuración como A y compárala con B. No busques una única respuesta correcta: pregúntate qué regla reconoces, qué diferencia percibes y qué información te comunica."
 >
   <p slot="escenario" class="sx-sin-js">Doce fichas de una programación cultural, hechas con las mismas reglas.</p>
 
-  <Guia slot="guia" pasos={pasos} />
+  <Guia slot="guia" pasos={pasos} final="Terminaste la guía. Ahora puedes cambiar cualquier control y observar qué sucede. En «Más controles», prueba qué pasa cuando una excepción cambia el color, el tamaño o la alineación." />
 
   <Opciones
     lab={lab}

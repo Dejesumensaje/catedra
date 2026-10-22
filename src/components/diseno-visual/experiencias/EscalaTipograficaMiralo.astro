@@ -28,10 +28,10 @@ const plano = [
 <div class="dv-anotadas">
   <Anotada
     veredicto="mal"
-    rotulo="Un solo tamaño"
+    rotulo="Cuando todo tiene el mismo tamaño"
     notas={[
-      { x: 100, y: pct(30), texto: 'El título mide lo mismo que todo lo demás. Parece el primer renglón de la receta, no su nombre.', zona: { x: 5, y: pct(14), w: 90, h: pct(24) } },
-      { x: 100, y: pct(140), texto: 'Para encontrar los ingredientes hay que leer desde arriba. Nada te lleva directo a la parte que buscas.', zona: { x: 5, y: pct(62), w: 90, h: pct(300) } },
+      { x: 100, y: pct(30), titulo: 'El título', texto: 'Parece un renglón más de la receta. Cuesta reconocerlo como el nombre de todo lo que sigue.', zona: { x: 5, y: pct(14), w: 90, h: pct(24) } },
+      { x: 100, y: pct(140), titulo: 'Los ingredientes', texto: 'Para encontrarlos, tienes que recorrer la página y leer hasta llegar a ellos. Nada te permite localizarlos de inmediato.', zona: { x: 5, y: pct(62), w: 90, h: pct(300) } },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Receta de arepas con todos los textos del mismo tamaño.">
@@ -43,12 +43,12 @@ const plano = [
 
   <Anotada
     veredicto="bien"
-    rotulo="Cuatro niveles"
+    rotulo="Cuando hay cuatro niveles"
     notas={[
-      { x: 100, y: pct(40), titulo: 'Título', texto: 'El nivel más grande. Dice de qué trata todo y se lee primero.', zona: { x: 5, y: pct(14), w: 90, h: pct(36) } },
-      { x: 100, y: pct(104), titulo: 'Intertítulos', texto: 'Un nivel intermedio. Te permiten ir directo a la parte que buscas sin leer lo demás.', zona: { x: 5, y: pct(90), w: 90, h: pct(24) } },
-      { x: 100, y: pct(150), titulo: 'Texto normal', texto: 'El tamaño cómodo para leer de corrido. Es el tamaño base: los demás salen de él.', zona: { x: 5, y: pct(118), w: 90, h: pct(92) } },
-      { x: 100, y: pct(372), titulo: 'Nota', texto: 'Un nivel por debajo del texto normal. Se puede leer, pero no compite con el resto.', zona: { x: 5, y: pct(358), w: 90, h: pct(24) } },
+      { x: 100, y: pct(40), titulo: 'Título', texto: 'Es el nivel más destacado y permite reconocer el tema general.', zona: { x: 5, y: pct(14), w: 90, h: pct(36) } },
+      { x: 100, y: pct(104), titulo: 'Intertítulos', texto: 'Dividen el contenido en secciones y ayudan a encontrar una parte concreta.', zona: { x: 5, y: pct(90), w: 90, h: pct(24) } },
+      { x: 100, y: pct(150), titulo: 'Texto normal', texto: 'Tiene un tamaño adecuado para leer los párrafos de corrido. Es el tamaño base de la escala.', zona: { x: 5, y: pct(118), w: 90, h: pct(92) } },
+      { x: 100, y: pct(372), titulo: 'Nota', texto: 'Tiene menor protagonismo y queda disponible para quien necesita consultarla.', zona: { x: 5, y: pct(358), w: 90, h: pct(24) } },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma receta con título grande, intertítulos medianos, texto normal y una nota pequeña.">

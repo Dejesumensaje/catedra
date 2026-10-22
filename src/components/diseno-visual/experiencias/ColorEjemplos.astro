@@ -31,9 +31,9 @@ const NARANJA = '#ff7a1a'; const NOCHE = '#1d2b45';
   <Anotada
     rotulo="Un plano de transporte"
     notas={[
-      { ...pp(320, 44), texto: 'Cada línea tiene un color y una letra. Quien no distingue el verde del rojo puede guiarse por la letra.', zona: pz(10, 30, 44, 34) },
-      { ...pp(320, 252), texto: 'La línea en obras va en gris y punteada. Se ve menos a propósito: aquí el bajo contraste es una decisión.', zona: pz(20, 236, 280, 32) },
-      { ...pp(320, 148), texto: 'La estación de cambio es más grande y tiene el borde más grueso. Se reconoce por la forma, además del color.', zona: pz(140, 128, 40, 40) },
+      { ...pp(320, 44), titulo: 'Las líneas', texto: 'Cada recorrido tiene un color y una letra. Si una persona no distingue el verde del rojo, puede seguir utilizando las letras para identificar las rutas.', zona: pz(10, 30, 44, 34) },
+      { ...pp(320, 252), titulo: 'La línea en obras', texto: 'Aparece en gris y con un trazo discontinuo. Tiene menos protagonismo porque representa un servicio temporal o alterado.', zona: pz(20, 236, 280, 32) },
+      { ...pp(320, 148), titulo: 'La estación de intercambio', texto: 'Es más grande y tiene un borde más grueso. Se reconoce por su forma y tamaño, además de su color.', zona: pz(140, 128, 40, 40) },
     ]}
   >
     <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="Plano de tres líneas de transporte, A azul, B verde y C roja, con una estación de cambio y una línea en obra en gris punteado.">
@@ -59,9 +59,9 @@ const NARANJA = '#ff7a1a'; const NOCHE = '#1d2b45';
   <Anotada
     rotulo="Un gráfico de barras"
     notas={[
-      { ...gp(320, 120), texto: 'Solo una barra tiene color, y por eso tiende a mirarse primero. Destaca por contraste con el gris de las demás.', zona: gz(246, 60, 50, 170) },
-      { ...gp(320, 196), texto: 'Las demás van en gris claro. Si todas tuvieran color, ninguna destacaría.', zona: gz(26, 110, 220, 120) },
-      { ...gp(320, 36), texto: 'La barra destacada también lleva un rótulo con el dato. Quien no percibe el color puede leerlo.', zona: gz(210, 22, 106, 26) },
+      { ...gp(320, 120), titulo: 'La barra destacada', texto: 'Una sola barra tiene color mientras las demás aparecen en gris. Esa diferencia hace que la mirada se dirija primero hacia ella.', zona: gz(246, 60, 50, 170) },
+      { ...gp(320, 196), titulo: 'Las barras secundarias', texto: 'El gris mantiene la estructura del gráfico sin competir con el dato destacado.', zona: gz(26, 110, 220, 120) },
+      { ...gp(320, 36), titulo: 'La etiqueta', texto: 'La barra principal también incluye un rótulo con su valor. La información no depende exclusivamente de que la persona perciba el color.', zona: gz(210, 22, 106, 26) },
     ]}
   >
     <svg viewBox={`0 0 ${GW} ${GH}`} role="img" aria-label="Gráfico de barras de préstamos de libros por año. Las barras de 2021 a 2025 son grises; la de 2026 es naranja y lleva el rótulo «2026: récord».">
@@ -85,9 +85,9 @@ const NARANJA = '#ff7a1a'; const NOCHE = '#1d2b45';
   <Anotada
     rotulo="Un color de marca sobre dos fondos"
     notas={[
-      { ...ap(320, 64), texto: 'Sobre blanco, este naranja tiene una razón de contraste de 2,6:1 y no sirve para texto. Aquí solo subraya; el texto va en un color oscuro.', zona: az(10, 30, 300, 60) },
-      { ...ap(320, 236), texto: 'El mismo naranja sobre azul oscuro se ve más intenso y ya sirve para texto: razón de contraste de 5,4:1.', zona: az(24, 214, 272, 40) },
-      { ...ap(320, 300), texto: 'Un color de marca necesita una regla de uso para cada fondo en el que aparece.', zona: az(10, 120, 300, 210) },
+      { ...ap(320, 64), titulo: 'Naranja sobre blanco', texto: 'La razón de contraste es de 2,6:1. No alcanza el mínimo para texto normal, aunque puede utilizarse en ciertos elementos gráficos que no dependan de ese contraste para comunicar información.', zona: az(10, 30, 300, 60) },
+      { ...ap(320, 236), titulo: 'El mismo naranja sobre azul oscuro', texto: 'La razón de contraste es de 5,4:1. La diferencia de luminancia es mayor y el naranja puede utilizarse para texto que cumpla los requisitos de contraste del nivel AA, según su tamaño y función.', zona: az(24, 214, 272, 40) },
+      { ...ap(320, 300), titulo: 'Una regla de uso', texto: 'Un color de marca no necesita funcionar de la misma manera sobre todos los fondos. El sistema visual debe especificar qué combinaciones se utilizan para textos, fondos, iconos y elementos gráficos.', zona: az(10, 120, 300, 210) },
     ]}
   >
     <svg viewBox={`0 0 ${AW} ${AH}`} role="img" aria-label="Pantalla de una tienda: arriba, sobre blanco, un título subrayado en naranja; abajo, una tarjeta azul oscuro con el texto «Envío gratis» en el mismo naranja.">

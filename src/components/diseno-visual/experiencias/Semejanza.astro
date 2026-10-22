@@ -9,30 +9,35 @@ import Guia, { type PasoGuia } from '../controles/Guia.astro';
 
 const pasos: PasoGuia[] = [
   {
-    hacer: 'Todos los puntos están a la misma distancia y son iguales. Sube «Cuánto cambia» hasta que aparezcan filas.',
-    pista: 'Llévalo por encima de 30 %. Las filas alternas se vuelven más claras.',
-    logro: 'Ningún punto se movió. Solo se aclararon las filas alternas, y ahora se ven filas. Los elementos que se parecen tienden a leerse juntos: eso es la semejanza.',
+    titulo: 'Haz aparecer las filas.',
+    hacer: 'Sube «Cuánto cambia» hasta que las filas alternas se distingan por su claridad.',
+    pista: 'Supera el 30 %. Las filas alternas empezarán a distinguirse.',
+    logro: 'Ningún punto se ha movido. Solo ha cambiado su apariencia y, aun así, ahora reconoces filas. Eso es la semejanza: los elementos que comparten un atributo tienden a leerse juntos.',
   },
   {
-    hacer: 'En «Qué cambia entre filas», elige «Forma».',
-    pista: 'Es la segunda opción del primer control.',
-    logro: 'Las filas se mantienen, ahora formadas por círculos y cuadrados. Cualquier rasgo compartido puede agrupar: claridad, forma, tamaño u orientación.',
+    titulo: 'Cambia la claridad por la forma.',
+    hacer: 'En «Qué cambia entre filas», selecciona «Forma».',
+    pista: 'Elige la segunda opción del primer control.',
+    logro: 'Las filas se mantienen, pero ahora están formadas por círculos y cuadrados. La agrupación no depende exclusivamente del color o de la claridad. También puede surgir de la forma, el tamaño o la orientación.',
   },
   {
-    hacer: 'Sube «Espacio entre columnas» hasta que veas columnas en lugar de filas.',
-    pista: 'Llévalo a 3 veces o más. Las filas apenas se distinguen, así que el espacio empieza a dominar.',
+    titulo: 'Deja que gane la distancia.',
+    hacer: 'Aumenta «Espacio entre columnas» hasta que empieces a ver columnas en lugar de filas.',
+    pista: 'Prueba con una separación de tres veces la distancia entre filas o más.',
     preparar: { atributo: 'color', dif: 15, prox: 1 },
-    logro: 'Ahora las dos señales se contradicen: el espacio pide columnas y la claridad, muy tenue, pide filas. Con tanto espacio y tan poca diferencia, suele ganar la distancia.',
+    logro: 'Ahora hay dos señales que apuntan en direcciones distintas: el parecido sugiere filas, mientras que el espacio sugiere columnas. Cuando la diferencia visual entre las filas es pequeña y la separación entre columnas es grande, la distancia puede imponerse.',
   },
   {
-    hacer: 'Sin tocar «Espacio entre columnas», sube «Cuánto cambia» hasta el final.',
-    pista: 'Arrástralo hasta 100 %, o pulsa la tecla Fin con el control seleccionado.',
-    logro: 'Con una diferencia tan grande, las filas vuelven a dominar aunque haya mucho espacio entre columnas. Ninguna señal se impone siempre: depende de la fuerza de cada una.',
+    titulo: 'Refuerza la semejanza.',
+    hacer: 'Sin modificar «Espacio entre columnas», aumenta «Cuánto cambia» hasta el máximo.',
+    pista: 'Lleva el control al 100 %. También puedes pulsar la tecla Fin cuando el control esté seleccionado.',
+    logro: 'Las filas vuelven a dominar, aunque las columnas estén muy separadas. La semejanza se ha vuelto suficientemente fuerte para competir con la distancia. Ninguna señal gana siempre: el resultado depende de cómo se combinan.',
   },
   {
-    hacer: 'Abre «Más controles» y en «Qué elementos cambian» elige «Columnas alternas».',
+    titulo: 'Haz que las dos señales coincidan.',
+    hacer: 'Abre «Más controles». En «Qué elementos cambian», selecciona «Columnas alternas».',
     abrir: true,
-    logro: 'Ahora la distancia y la semejanza indican lo mismo: columnas. Cuando las dos señales coinciden, se refuerzan. Es lo que conviene buscar cuando quieres que un grupo se lea sin dudas.',
+    logro: 'Ahora el parecido y la distancia apuntan hacia la misma agrupación: las columnas. Como las dos señales coinciden, se refuerzan. Esta es una decisión útil cuando necesitas que la organización de una composición se entienda con claridad.',
   },
 ];
 
@@ -44,7 +49,8 @@ const pasosDif = [100, 75, 50, 25, 0];
 <Instrumento
   id={lab}
   titulo="Instrumento · dos señales a la vez"
-  consigna="Seis filas de seis puntos. Puedes cambiar en qué se parecen las filas y cuánto espacio hay entre columnas."
+  consigna="Seis filas de seis puntos. Todos comienzan con el mismo aspecto y están distribuidos a la misma distancia. Puedes cambiar el parecido entre las filas y el espacio entre las columnas: observa cómo cada decisión modifica la manera en que agrupas los puntos."
+  nota="Usa «Fijar como A y comparar» para guardar una configuración y contrastarla con otra. No busques una respuesta única: intenta explicar qué cambió en tu percepción y qué señal parece tener más peso en cada caso."
 >
   <svg slot="escenario" viewBox="0 0 400 300" role="img" aria-label="Seis filas de seis puntos iguales.">
     {[0, 1, 2, 3, 4, 5].map((f) => [0, 1, 2, 3, 4, 5].map((c) => (
@@ -52,7 +58,7 @@ const pasosDif = [100, 75, 50, 25, 0];
     )))}
   </svg>
 
-  <Guia slot="guia" pasos={pasos} />
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Cambia los controles libremente. Busca configuraciones en las que una señal domine, en las que ambas se contradigan y en las que la agrupación se vuelva ambigua." />
 
   <Opciones
     lab={lab}
@@ -65,10 +71,10 @@ const pasosDif = [100, 75, 50, 25, 0];
       { valor: 'tamano', texto: 'Tamaño' },
       { valor: 'orientacion', texto: 'Orientación' },
     ]}
-    ayuda="Claridad: más claro o más oscuro, sin cambiar de tono."
+    ayuda="Claridad: unas filas más claras y otras más oscuras. Forma: alterna las formas. Tamaño: cambia el tamaño, y con él el espacio aparente entre los puntos. Orientación: cambia la dirección de los trazos."
   />
-  <Deslizador lab={lab} variable="dif" etiqueta="Cuánto cambia" min={0} max={100} paso={5} valor={0} unidad="%" />
-  <Deslizador lab={lab} variable="prox" etiqueta="Espacio entre columnas" min={1} max={4} paso={0.1} valor={1} decimales={1} unidad="× el de las filas" ayuda="1 ×: todo a la misma distancia." />
+  <Deslizador lab={lab} variable="dif" etiqueta="Cuánto cambia" min={0} max={100} paso={5} valor={0} unidad="%" ayuda="Con un valor bajo, los elementos se parecen mucho. Con un valor alto, la diferencia se vuelve más evidente." />
+  <Deslizador lab={lab} variable="prox" etiqueta="Espacio entre columnas" min={1} max={4} paso={0.1} valor={1} decimales={1} unidad="× el de las filas" ayuda="El valor inicial, 1 ×, es la misma distancia que hay entre las filas." />
 
   <Fragment slot="avanzados">
   <Opciones
@@ -81,14 +87,14 @@ const pasosDif = [100, 75, 50, 25, 0];
       { valor: 'columnas', texto: 'Columnas alternas' },
       { valor: 'tablero', texto: 'Damero' },
     ]}
-    ayuda="Con columnas alternas, las dos señales indican lo mismo."
+    ayuda="Filas alternas: la semejanza sugiere filas. Columnas alternas: el espacio y el parecido apuntan hacia la misma agrupación. Damero: un patrón alternado."
   />
 
   <div class="sem-mapa" data-mapa>
     <p class="sem-mapa-titulo" id="sem-mapa-titulo">Mapa de mezclas</p>
-    <p class="dv-ayuda">Cada casilla combina las dos señales en distinta medida. Elige una para verla en grande.</p>
+    <p class="dv-ayuda">Cada casilla combina una intensidad distinta de semejanza con una separación diferente entre columnas. Selecciona una casilla para verla en grande y observar qué señal domina.</p>
     <div class="sem-mapa-rejilla" role="group" aria-labelledby="sem-mapa-titulo">
-      <span class="sem-eje sem-eje-y" aria-hidden="true">más cambio ↑</span>
+      <span class="sem-eje sem-eje-y" aria-hidden="true">más diferencia entre filas ↑</span>
       {pasosDif.map((d) => pasosProx.map((p) => (
         <button
           type="button"
@@ -226,6 +232,12 @@ const pasosDif = [100, 75, 50, 25, 0];
         : `Las dos señales coinciden: ${atr} y la distancia indican columnas. Se refuerzan.`;
     }
     const grupoSem = e.patron === 'filas' ? 'filas' : 'diagonales';
+    if (e.atributo === 'tamano') {
+      const aviso = ' Al encoger unos puntos también crece el espacio a su alrededor: el tamaño cambia el parecido y la distancia aparente a la vez.';
+      return (sinDist
+        ? `El tamaño cambia un ${e.dif} % y se ven ${grupoSem}.`
+        : `Las señales se contradicen. La distancia indica columnas (${prox} más espacio que entre filas). El tamaño indica ${grupoSem} (cambio del ${e.dif} %).`) + aviso;
+    }
     if (sinDist) return `Solo actúa la semejanza: ${atr} cambia un ${e.dif} % y se ven ${grupoSem}, aunque todo esté a la misma distancia.`;
     return `Las señales se contradicen. La distancia indica columnas (${prox} más espacio que entre filas). ${atr[0].toUpperCase() + atr.slice(1)} indica ${grupoSem} (cambio del ${e.dif} %). Lo que ves primero es la señal que domina aquí.`;
   }

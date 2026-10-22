@@ -11,29 +11,34 @@ const lab = 'color-centro';
 
 const pasos: PasoGuia[] = [
   {
-    hacer: 'Mira los dos cuadros del centro. Luego activa «Unir los dos centros».',
-    logro: 'La franja tiene el color de los dos cuadros y los toca a ambos: son un solo color. Lo que cambiaba era lo que los rodea.',
+    titulo: 'Comprueba que los centros son iguales.',
+    hacer: 'Mira los dos cuadros centrales y activa «Unir los dos centros».',
+    logro: 'Una franja conecta ambos cuadros. Como tiene el mismo color que los centros, puedes comprobar que los tres forman una sola superficie de color. Lo que parecía una diferencia entre los centros era, en realidad, un efecto de su contexto.',
   },
   {
-    hacer: 'Baja la luminosidad del «Fondo izquierdo» hasta que sea casi negro.',
-    pista: 'Lleva el deslizador «Luminosidad» del fondo izquierdo cerca de 0 %.',
+    titulo: 'Oscurece el fondo izquierdo.',
+    hacer: 'Baja la luminosidad del «Fondo izquierdo» hasta acercarlo al negro.',
+    pista: 'Lleva el control de luminosidad del fondo izquierdo cerca del 0 %.',
     preparar: { unir: false },
-    logro: 'Con los dos fondos oscuros, los centros se parecen mucho más. El efecto necesita dos fondos distintos.',
+    logro: 'Con ambos fondos oscuros, los centros deberían parecerse mucho más. La diferencia entre ellos pierde fuerza porque ahora comparten un contexto similar.',
   },
   {
-    hacer: 'Ahora sube la luminosidad del «Fondo izquierdo» hasta el blanco.',
-    pista: 'Llévala por encima del 92 %.',
-    logro: 'Sobre el fondo blanco, el centro tiende a verse más oscuro. Sobre el fondo oscuro de la derecha, más claro. Cada fondo cambia la apariencia del centro en la dirección contraria.',
+    titulo: 'Lleva el fondo izquierdo hacia el blanco.',
+    hacer: 'Aumenta su luminosidad hasta acercarlo al blanco.',
+    pista: 'Lleva la luminosidad del fondo izquierdo por encima del 92 %.',
+    logro: 'El centro de la izquierda tiende a parecer más oscuro. El centro de la derecha, sobre un fondo oscuro, tiende a parecer más claro. El color de los centros no cambió: cambió la relación entre cada centro y lo que lo rodea.',
   },
   {
-    hacer: 'Mueve la luminosidad del «Color del centro» hasta que el cuadro de la derecha casi se pierda en su fondo.',
-    pista: 'Bájala poco a poco, hacia un 20 %, mientras miras el cuadro de la derecha. El texto bajo el dibujo avisa cuando las luminancias se parecen.',
-    logro: 'Centro y fondo tienen ahora casi la misma luminancia. El cuadro se distingue solo por el tono y su borde parece vibrar. En una foto en blanco y negro desaparecería. Así se pierde un texto sobre un fondo, y esa diferencia de luminancia es la que mide la razón de contraste.',
+    titulo: 'Haz que el centro y su fondo se parezcan en luminancia.',
+    hacer: 'Modifica la luminosidad del «Color del centro» hasta que el cuadro de la derecha casi desaparezca sobre su fondo.',
+    pista: 'Baja poco a poco la luminosidad del centro, hacia el 20 %, mientras observas el cuadro de la derecha. El texto bajo el instrumento te indica cuándo las luminancias se parecen.',
+    logro: 'Cuando dos colores tienen una luminancia parecida, sus límites pueden resultar difíciles de distinguir, aunque sus tonos sean diferentes. En una imagen en blanco y negro, el cuadro se perdería todavía más. Para diseñar textos, iconos y controles, la diferencia de tono no garantiza una diferencia suficiente de luminancia.',
   },
   {
+    titulo: 'Añade un borde.',
     hacer: 'Abre «Más controles» y activa «Rodear los centros con un filo».',
     abrir: true,
-    logro: 'La línea negra separa el color de su fondo y el cuadro vuelve a verse, aunque los dos colores se parezcan. Un borde es una solución cuando dos colores que se tocan tienen poca diferencia.',
+    logro: 'La línea negra crea una separación visible entre cada centro y su fondo, y el cuadro se reconoce mejor aunque los colores tengan una luminancia similar. El borde no cambia el color central, pero modifica la manera en que se percibe su forma.',
   },
 ];
 ---
@@ -41,7 +46,7 @@ const pasos: PasoGuia[] = [
 <Instrumento
   id={lab}
   titulo="Instrumento · un color, dos fondos"
-  consigna="Los dos cuadros del centro son del mismo color, aunque no lo parezca."
+  consigna="Los dos cuadros del centro tienen exactamente el mismo color. Sin embargo, pueden parecer distintos porque cada uno está rodeado por un fondo diferente. Modifica los controles y observa cuándo cambia tu percepción."
   comparar={false}
 >
   <svg slot="escenario" viewBox="0 0 640 280" role="img" aria-label="El mismo cuadro de color sobre un fondo claro y sobre uno oscuro.">
@@ -51,14 +56,14 @@ const pasos: PasoGuia[] = [
     <rect x="430" y="90" width="100" height="100" fill="#a67c52" />
   </svg>
 
-  <Guia slot="guia" pasos={pasos} />
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Ahora cambia los controles libremente. Busca combinaciones en las que el color parezca transformarse, otras en las que los cuadros pierdan sus límites y otras en las que el borde permita recuperarlos." />
 
   <ColorHSL lab={lab} prefijo="c" etiqueta="Color del centro" h={30} s={33} l={49} canales="l" />
   <ColorHSL lab={lab} prefijo="i" etiqueta="Fondo izquierdo" h={42} s={86} l={63} canales="l" />
-  <Interruptor lab={lab} variable="unir" etiqueta="Unir los dos centros" ayuda="Una franja del mismo color conecta los cuadros." />
+  <Interruptor lab={lab} variable="unir" etiqueta="Unir los dos centros" ayuda="Añade una franja del mismo color que los dos centros para comprobar que son idénticos." />
 
   <Fragment slot="avanzados">
-    <Interruptor lab={lab} variable="filo" etiqueta="Rodear los centros con un filo" ayuda="Dibuja una línea negra entre el centro y su fondo." />
+    <Interruptor lab={lab} variable="filo" etiqueta="Rodear los centros con un filo" ayuda="Dibuja una línea negra entre los cuadros centrales y sus fondos." />
     <ColorHSL lab={lab} prefijo="d" etiqueta="Fondo derecho" h={259} s={38} l={27} />
     <ColorHSL lab={lab} prefijo="c" etiqueta="Color del centro: tono y saturación" h={30} s={33} l={49} canales="hs" selector={false} />
     <ColorHSL lab={lab} prefijo="i" etiqueta="Fondo izquierdo: tono y saturación" h={42} s={86} l={63} canales="hs" selector={false} />

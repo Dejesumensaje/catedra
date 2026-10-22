@@ -10,30 +10,35 @@ import Guia, { type PasoGuia } from '../controles/Guia.astro';
 
 const pasos: PasoGuia[] = [
   {
-    hacer: 'Mueve «Espacio entre grupos» hacia la izquierda hasta que dejes de ver tres grupos.',
-    pista: 'Bájalo hasta que mida casi lo mismo que «Espacio dentro del grupo»: unos 10 px.',
-    logro: 'Los doce puntos no cambiaron de tamaño, color ni orden. Solo se igualaron los espacios, y con eso desaparecieron los grupos.',
+    titulo: 'Haz desaparecer los grupos.',
+    hacer: 'Reduce el espacio entre grupos hasta que los puntos parezcan formar una sola unidad.',
+    pista: 'Acerca el espacio entre grupos al espacio dentro del grupo. Prueba con unos 10 px.',
+    logro: 'Los puntos no han cambiado. Al acercar los grupos entre sí, la diferencia entre las dos distancias disminuye y la agrupación se vuelve menos evidente.',
   },
   {
-    hacer: 'Ahora muévelo hacia la derecha, hasta que los grupos se vean separados sin esfuerzo.',
-    pista: 'El texto bajo el dibujo dice cuántas veces es mayor el espacio entre grupos. Busca 3 veces o más.',
-    logro: 'Con el espacio entre grupos varias veces mayor que el de dentro, los grupos aparecen sin que tengas que buscarlos. Los produce la diferencia entre esos dos espacios.',
+    titulo: 'Vuelve a separarlos.',
+    hacer: 'Aumenta el espacio entre grupos hasta que puedas distinguirlos de un vistazo.',
+    pista: 'Prueba con una diferencia de tres veces o más.',
+    logro: 'Cuando la distancia entre grupos es varias veces mayor que la distancia entre sus elementos, la organización se vuelve más evidente.',
   },
   {
-    hacer: 'Sin tocar «Espacio entre grupos», sube «Espacio dentro del grupo» hasta que los grupos se vuelvan a confundir.',
-    pista: '«Espacio entre grupos» quedó en 40 px. Sube «Espacio dentro del grupo» hasta acercarte a esa cifra.',
+    titulo: 'Cambia la distancia interior.',
+    hacer: 'Sin modificar el espacio entre grupos, aumenta el espacio dentro de cada uno hasta que vuelvan a confundirse.',
+    pista: 'Deja el espacio entre grupos en 40 px y aumenta el espacio interior hacia esa misma medida.',
     preparar: { d: 10, s: 40 },
-    logro: 'No tocaste el espacio entre grupos y, aun así, los grupos se confunden. Cuenta la comparación entre los dos espacios, no cuánto mide cada uno por separado.',
+    logro: 'Esto revela algo importante: no importa solo cuánto mide cada espacio, sino cómo se comparan entre sí.',
   },
   {
-    hacer: 'Activa «Mostrar las medidas» y lee los dos números.',
+    titulo: 'Haz visibles las medidas.',
+    hacer: 'Activa «Mostrar las medidas» y compara los dos valores.',
     preparar: { d: 10, s: 40 },
-    logro: 'Esos dos números resumen la decisión que tomas cada vez que agrupas algo: cuánto espacio dejar dentro de cada grupo y cuánto entre uno y otro.',
+    logro: 'Estás decidiendo cuánto espacio necesita cada grupo por dentro y cuánto espacio necesita para distinguirse de los demás.',
   },
   {
+    titulo: 'Deja que otra señal intervenga.',
     hacer: 'Abre «Más controles» y activa «Encerrar los vecinos de grupos distintos».',
     abrir: true,
-    logro: 'El marco reúne puntos que la distancia separaba. La proximidad es una señal fuerte, y otras pueden imponerse: un marco, un color, una forma. La semejanza tiene su propia entrada.',
+    logro: 'Aunque la distancia sugiera grupos separados, el marco puede hacer que los puntos se perciban como parte de una misma unidad. La proximidad influye en la percepción, pero no actúa sola.',
   },
 ];
 
@@ -43,7 +48,8 @@ const lab = 'proximidad';
 <Instrumento
   id={lab}
   titulo="Instrumento · doce puntos iguales"
-  consigna="Todos los puntos tienen el mismo tamaño, color y forma. Solo cambia el espacio."
+  consigna="Todos los puntos tienen el mismo tamaño, color y forma. Solo cambia la distancia entre ellos. Mueve los controles y observa cuándo aparecen los grupos, cuándo se confunden y qué otras señales pueden alterar lo que ves."
+  nota="Fija una configuración como A y compárala con B. Observa qué cambió y decide si la agrupación sigue siendo clara."
 >
   <svg slot="escenario" viewBox="0 0 640 260" role="img" aria-label="Doce puntos iguales en tres grupos de cuatro.">
     {[0, 1, 2].map((g) => [0, 1, 2, 3].map((i) => (
@@ -51,32 +57,33 @@ const lab = 'proximidad';
     )))}
   </svg>
 
-  <Guia slot="guia" pasos={pasos} />
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Ahora cambia cualquier control, combina varias opciones y busca el punto en el que la composición deja de leerse como esperabas." />
 
-  <Deslizador lab={lab} variable="s" etiqueta="Espacio entre grupos" min={2} max={160} valor={56} unidad="px" ayuda="La distancia entre un grupo y el siguiente." />
-  <Deslizador lab={lab} variable="d" etiqueta="Espacio dentro del grupo" min={2} max={80} valor={10} unidad="px" ayuda="La distancia entre los puntos de un mismo grupo." />
-  <Interruptor lab={lab} variable="cotas" etiqueta="Mostrar las medidas" ayuda="Dibuja las dos distancias sobre los puntos." />
+  <Deslizador lab={lab} variable="s" etiqueta="Espacio entre grupos" min={2} max={160} valor={56} unidad="px" ayuda="Distancia de una unidad a la siguiente." />
+  <Deslizador lab={lab} variable="d" etiqueta="Espacio dentro del grupo" min={2} max={80} valor={10} unidad="px" ayuda="Distancia entre los puntos de una misma unidad." />
+  <Interruptor lab={lab} variable="cotas" etiqueta="Mostrar las medidas" ayuda="Dibuja las dos distancias sobre la composición." />
 
   <Fragment slot="avanzados">
-    <Deslizador lab={lab} variable="g" etiqueta="Elementos por grupo" min={1} max={12} valor={4} />
-    <Deslizador lab={lab} variable="n" etiqueta="Número de elementos" min={2} max={48} valor={12} />
-    <Deslizador lab={lab} variable="t" etiqueta="Tamaño de cada elemento" min={4} max={40} valor={16} unidad="px" />
+    <Deslizador lab={lab} variable="g" etiqueta="Elementos por grupo" min={1} max={12} valor={4} ayuda="Cambia cuántos puntos forman cada unidad." />
+    <Deslizador lab={lab} variable="n" etiqueta="Número de elementos" min={2} max={48} valor={12} ayuda="Añade o quita puntos." />
+    <Deslizador lab={lab} variable="t" etiqueta="Tamaño de cada elemento" min={4} max={40} valor={16} unidad="px" ayuda="Comprueba cómo influye el tamaño en la percepción del espacio." />
     <Opciones
       lab={lab}
       variable="forma"
       etiqueta="Forma de cada grupo"
+      ayuda="Compara la agrupación en línea y en bloque."
       valor="linea"
       opciones={[{ valor: 'linea', texto: 'En línea' }, { valor: 'bloque', texto: 'En bloque' }]}
     />
-    <Interruptor lab={lab} variable="region" etiqueta="Encerrar los vecinos de grupos distintos" ayuda="Dibuja un marco que compite con la distancia." />
-    <Interruptor lab={lab} variable="semejanza" etiqueta="Dar otro relleno a los vecinos de grupos distintos" ayuda="Vacía esos puntos: un relleno distinto compite con la distancia." />
+    <Interruptor lab={lab} variable="region" etiqueta="Encerrar los vecinos de grupos distintos" ayuda="Añade un marco que compite con la distancia." />
+    <Interruptor lab={lab} variable="semejanza" etiqueta="Dar otro relleno a los vecinos de grupos distintos" ayuda="Introduce una diferencia de apariencia que también influye en la agrupación." />
   </Fragment>
 
   <Fragment slot="pruebas">
     <button type="button" class="dv-boton" data-preset='{"d":24,"s":24}'>Iguala los dos espacios</button>
     <button type="button" class="dv-boton" data-preset='{"d":20,"s":30}'>Busca la zona dudosa</button>
-    <button type="button" class="dv-boton" data-preset='{"d":46,"s":8}'>Invierte: más espacio dentro que entre grupos</button>
-    <button type="button" class="dv-boton" data-preset='{"d":20,"s":112}'>Dobla las dos distancias del inicio</button>
+    <button type="button" class="dv-boton" data-preset='{"d":46,"s":8}'>Invierte la relación: más espacio dentro que entre grupos</button>
+    <button type="button" class="dv-boton" data-preset='{"d":20,"s":112}'>Duplica las dos distancias iniciales</button>
   </Fragment>
 </Instrumento>
 

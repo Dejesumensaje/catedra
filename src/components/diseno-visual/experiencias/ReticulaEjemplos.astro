@@ -39,9 +39,9 @@ const barras = (x: number, y: number, w: number, n: number, paso = 9, alto = 3) 
   <Anotada
     rotulo="Una página web"
     notas={[
-      { ...pw(WW, 26), texto: 'Doce columnas, una convención muy usada en la web porque el doce se divide en mitades, tercios y cuartos.', zona: zw(wm, 12, WW - wm * 2, WH - 24) },
-      { ...pw(WW, 112), texto: 'El texto ocupa seis columnas, la imagen cinco y entre los dos queda una vacía: seis, una y cinco suman doce. No hace falta medir cada bloque.', zona: zw(wm, 54, WW - wm * 2, 110) },
-      { ...pw(WW, 228), texto: 'Tres tarjetas de cuatro columnas cada una. Las tres tienen el mismo ancho y el mismo espacio entre ellas.', zona: zw(wm, 186, WW - wm * 2, 96) },
+      { ...pw(WW, 26), titulo: 'Doce columnas', texto: 'Es una convención frecuente porque doce puede dividirse en mitades, tercios y cuartos. La estructura permite organizar bloques de distintos anchos sin inventar una medida para cada uno.', zona: zw(wm, 12, WW - wm * 2, WH - 24) },
+      { ...pw(WW, 112), titulo: 'Texto e imagen', texto: 'El texto ocupa seis columnas y la imagen cinco. Entre ambos queda una columna vacía. Seis, una y cinco suman doce.', zona: zw(wm, 54, WW - wm * 2, 110) },
+      { ...pw(WW, 228), titulo: 'Tres tarjetas', texto: 'Cada tarjeta ocupa cuatro columnas. Así comparten el mismo ancho y mantienen una separación coherente.', zona: zw(wm, 186, WW - wm * 2, 96) },
     ]}
   >
     <svg viewBox={`0 0 ${WW} ${WH}`} role="img" aria-label="Página web con una barra superior, un titular junto a una imagen y tres tarjetas iguales debajo, sobre doce columnas.">
@@ -65,9 +65,9 @@ const barras = (x: number, y: number, w: number, n: number, paso = 9, alto = 3) 
   <Anotada
     rotulo="Una página de revista"
     notas={[
-      { ...pr(RW, 30), texto: 'Tres columnas de texto. El ancho de cada columna fija cuántas palabras caben en una línea.', zona: zr(rm, 20, RW - rm * 2, RH - 40) },
-      { ...pr(RW, 160), texto: 'La foto ocupa dos columnas exactas. Sus bordes coinciden con los del texto, arriba y abajo.', zona: zr(rx(1) - 3, 112, rc * 2 + rg + 6, 132) },
-      { ...pr(RW, 262), texto: 'El pie de foto empieza donde empieza la foto. Por eso se entiende que es de esa foto.', zona: zr(rx(1), 248, rc * 2 + rg, 16) },
+      { ...pr(RW, 30), titulo: 'Columnas de texto', texto: 'Tres columnas determinan el ancho disponible para los renglones. Ese ancho influye en cuántas palabras caben en cada línea.', zona: zr(rm, 20, RW - rm * 2, RH - 40) },
+      { ...pr(RW, 160), titulo: 'Fotografía', texto: 'La imagen ocupa dos columnas exactas y comparte sus bordes con la estructura de la página.', zona: zr(rx(1) - 3, 112, rc * 2 + rg + 6, 132) },
+      { ...pr(RW, 262), titulo: 'Pie de foto', texto: 'Empieza en el mismo borde que la imagen. La alineación ayuda a reconocer que ambos elementos están relacionados.', zona: zr(rx(1), 248, rc * 2 + rg, 16) },
     ]}
   >
     <svg viewBox={`0 0 ${RW} ${RH}`} role="img" aria-label="Página de revista con título, tres columnas de texto y una foto que ocupa dos columnas.">
@@ -86,9 +86,9 @@ const barras = (x: number, y: number, w: number, n: number, paso = 9, alto = 3) 
   <Anotada
     rotulo="Una aplicación"
     notas={[
-      { ...pa(AW, 70), texto: 'Una pantalla de teléfono no tiene espacio para doce columnas. Le bastan dos líneas verticales de alineación: una para los íconos y otra para el texto.', zona: za(linea1 - 2, 52, linea2 - linea1 + 6, 340) },
-      { ...pa(AW, 150), texto: 'Todos los nombres empiezan en la segunda línea, aunque los íconos sean de formas distintas. Así la lista se lee de arriba abajo sin saltos.', zona: za(linea2 - 3, 120, 6, 270) },
-      { ...pa(AW, 30), texto: 'El título se alinea con los íconos. Como es de otro nivel, empieza más a la izquierda.', zona: za(linea1 - 3, 14, AW - linea1 * 2, 30) },
+      { ...pa(AW, 70), titulo: 'Dos líneas verticales', texto: 'Una sirve para alinear los iconos y otra para alinear los textos. En una pantalla estrecha no hace falta utilizar doce columnas para organizar una lista.', zona: za(linea1 - 2, 52, linea2 - linea1 + 6, 340) },
+      { ...pa(AW, 150), titulo: 'Nombres alineados', texto: 'Aunque los iconos tengan formas distintas, todos los nombres empiezan en la misma posición. Esto facilita recorrer la lista de arriba abajo.', zona: za(linea2 - 3, 120, 6, 270) },
+      { ...pa(AW, 30), titulo: 'Título', texto: 'El título se alinea con los iconos y se diferencia del resto mediante su posición y su nivel de protagonismo.', zona: za(linea1 - 3, 14, AW - linea1 * 2, 30) },
     ]}
   >
     <svg viewBox={`0 0 ${AW} ${AH}`} role="img" aria-label="Pantalla de una aplicación con una lista de contactos: íconos a la izquierda y nombres alineados en una misma línea.">

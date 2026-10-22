@@ -26,9 +26,9 @@ const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100,
   <Anotada
     rotulo="Una aplicación del clima"
     notas={[
-      { ...cp(300, 120), texto: 'La temperatura es el dato que se viene a buscar. Por eso es, por mucho, el nivel más grande.', zona: cz(18, 62, 200, 100) },
-      { ...cp(300, 40), texto: 'La ciudad va arriba, pero en tamaño pequeño, porque ya sabes dónde estás. Estar arriba y ser lo más grande son dos decisiones distintas.', zona: cz(18, 22, 200, 30) },
-      { ...cp(300, 320), texto: 'El pronóstico de la semana usa el tamaño más pequeño. Está disponible para quien lo busque.', zona: cz(18, 250, 264, 150) },
+      { ...cp(300, 120), titulo: 'Temperatura', texto: 'Es el dato que muchas personas buscan de inmediato, por eso tiene el mayor tamaño.', zona: cz(18, 62, 200, 100) },
+      { ...cp(300, 40), titulo: 'Ciudad', texto: 'Puede estar arriba y tener un tamaño menor. La posición y el tamaño son decisiones distintas.', zona: cz(18, 22, 200, 30) },
+      { ...cp(300, 320), titulo: 'Pronóstico semanal', texto: 'Tiene menor protagonismo, pero sigue disponible para quien quiere consultar los próximos días.', zona: cz(18, 250, 264, 150) },
     ]}
   >
     <svg viewBox={`0 0 ${CW} ${CH}`} role="img" aria-label="Pantalla de una aplicación del clima con la temperatura en grande.">
@@ -49,10 +49,10 @@ const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100,
   <Anotada
     rotulo="La ficha junto a un cuadro (artista y obra inventadas)"
     notas={[
-      { ...mp(340, 66), texto: 'El título de la obra es el nivel mayor: es lo que la gente va a buscar o a recordar.', zona: mz(16, 42, 300, 34) },
-      { ...mp(340, 30), texto: 'El nombre de la artista, un nivel por debajo y en negrita. Se encuentra rápido sin quitarle el lugar a la obra.', zona: mz(16, 14, 300, 26) },
-      { ...mp(340, 98), texto: 'Año y técnica en el nivel más pequeño: datos para consultar, no para leer de lejos.', zona: mz(16, 84, 300, 22) },
-      { ...mp(340, 170), texto: 'El texto que explica la obra usa un tamaño cómodo para leer de pie, a un metro de distancia.', zona: mz(16, 118, 300, 112) },
+      { ...mp(340, 66), titulo: 'Título de la obra', texto: 'Tiene el mayor tamaño porque permite identificar qué obra se está viendo.', zona: mz(16, 42, 300, 34) },
+      { ...mp(340, 30), titulo: 'Nombre de la artista', texto: 'Se reconoce rápidamente mediante un tamaño intermedio y el uso de negrita.', zona: mz(16, 14, 300, 26) },
+      { ...mp(340, 98), titulo: 'Año y técnica', texto: 'Son datos de consulta y pueden tener menor protagonismo.', zona: mz(16, 84, 300, 22) },
+      { ...mp(340, 170), titulo: 'Texto explicativo', texto: 'Necesita un tamaño cómodo para leer de pie, a cierta distancia de la pared.', zona: mz(16, 118, 300, 112) },
     ]}
   >
     <svg viewBox={`0 0 ${MW} ${MH}`} role="img" aria-label="Ficha de museo con nombre de la artista, título de la obra, datos y un párrafo.">
@@ -71,9 +71,9 @@ const pz = (x: number, y: number, w: number, h: number) => ({ x: (x / PW) * 100,
   <Anotada
     rotulo="Un producto en una tienda en línea"
     notas={[
-      { ...pp(300, 230), texto: 'El precio es lo más grande de la ficha porque es lo que decide la compra.', zona: pz(18, 206, 160, 36) },
-      { ...pp(300, 186), texto: 'El nombre, un nivel por debajo: dice qué es sin competir con el precio.', zona: pz(18, 168, 264, 28) },
-      { ...pp(300, 300), texto: 'La descripción y el envío van en tamaño de lectura o menor. Responden dudas sin llamar la atención.', zona: pz(18, 256, 264, 100) },
+      { ...pp(300, 230), titulo: 'Precio', texto: 'Destaca porque es una información relevante para decidir la compra.', zona: pz(18, 206, 160, 36) },
+      { ...pp(300, 186), titulo: 'Nombre del producto', texto: 'Identifica el objeto y conserva suficiente protagonismo para que se reconozca de inmediato.', zona: pz(18, 168, 264, 28) },
+      { ...pp(300, 300), titulo: 'Descripción y envío', texto: 'Responden preguntas adicionales sin competir necesariamente con el precio y el nombre.', zona: pz(18, 256, 264, 100) },
     ]}
   >
     <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="Ficha de producto con imagen, nombre, precio grande y descripción.">

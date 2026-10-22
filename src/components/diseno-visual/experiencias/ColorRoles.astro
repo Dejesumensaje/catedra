@@ -12,8 +12,8 @@ const lab = 'color-roles';
 
 <Instrumento
   id={lab}
-  titulo="Arregla · cuatro mensajes que dependen solo del color"
-  consigna="Estos mensajes se distinguen solo por el color. Activa «Ver sin color» y trata de encontrar el error. Después desactiva «Dejar solo el color»."
+  titulo="Arregla cuatro mensajes que dependen solo del color"
+  consigna="Estos cuatro mensajes empiezan con «Dejar solo el color» activado: se distinguen únicamente por el color. Activa «Ver sin color», que convierte cada color en un gris con la misma luminancia, y observa si los estados siguen distinguiéndose. Después desactiva «Dejar solo el color» para devolver la forma y la palabra que nombran cada estado. Cuando la forma, el texto y el color se utilizan juntos, el mensaje conserva varias señales."
   comparar={false}
 >
   <ul slot="escenario" class="cr-mensajes">
@@ -33,10 +33,10 @@ const lab = 'color-roles';
       { valor: 'cruzada', texto: 'Cruzada' },
       { valor: 'mono', texto: 'Un solo tono' },
     ]}
-    ayuda="Cruzada: los mismos colores, asignados a otros estados."
+    ayuda="Convencional: colores según asociaciones habituales de estado. Cruzada: los mismos colores, asignados a estados diferentes. Un solo tono: reduce las diferencias entre los tonos."
   />
-  <Interruptor lab={lab} variable="gris" etiqueta="Ver sin color" ayuda="Convierte cada color en el gris de la misma luminancia." />
-  <Interruptor lab={lab} variable="solo" etiqueta="Dejar solo el color" activo ayuda="Quita la forma y la palabra que nombra el estado." />
+  <Interruptor lab={lab} variable="gris" etiqueta="Ver sin color" ayuda="Convierte cada color en un gris de la misma luminancia para comprobar qué información se conserva sin el tono." />
+  <Interruptor lab={lab} variable="solo" etiqueta="Dejar solo el color" activo ayuda="Quita la forma y la palabra que identifican cada estado: el color queda como única señal." />
 </Instrumento>
 
 <style is:global>

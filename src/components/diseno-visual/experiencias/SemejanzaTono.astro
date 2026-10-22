@@ -11,8 +11,8 @@ const lab = 'semejanza-tono';
 
 <Instrumento
   id={lab}
-  titulo="Arregla · filas que dependen del tono"
-  consigna="Activa «Ver sin color»: las filas desaparecen. Sube «Diferencia de claridad entre los dos tonos» hasta que las filas se vean también sin color."
+  titulo="Arregla unas filas que dependen del tono"
+  consigna="Una tabla distingue sus filas mediante dos tonos de color. Activa «Ver sin color» y aumenta «Diferencia de claridad entre los dos tonos» hasta que las filas vuelvan a ser reconocibles. Dos colores diferentes pueden tener una claridad muy parecida: si la única diferencia está en el tono, la agrupación se pierde al imprimir en blanco y negro o para quien no distingue esos colores."
   comparar={false}
 >
   <Deslizador lab={lab} variable="luz" etiqueta="Diferencia de claridad entre los dos tonos" min={0} max={40} valor={0} unidad="%" ayuda="0 %: los dos tonos se ven igual de claros." />

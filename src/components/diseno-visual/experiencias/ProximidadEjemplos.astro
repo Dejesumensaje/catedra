@@ -34,10 +34,10 @@ const cp = (x: number, y: number) => ({ x: (x / CW) * 100, y: (y / CH) * 100 });
   <Anotada
     rotulo="Un menú"
     notas={[
-      { ...mp(320, 66), texto: 'El nombre y la descripción van muy cerca porque hablan del mismo plato.', zona: { x: 5, y: (54 / MH) * 100, w: 90, h: (30 / MH) * 100 } },
-      { ...mp(320, 100), texto: 'Entre un plato y otro hay más espacio que dentro de cada plato. Por eso se leen tres platos y no seis renglones.', zona: { x: 5, y: (92 / MH) * 100, w: 90, h: (14 / MH) * 100 } },
-      { ...mp(320, 222), texto: 'El espacio más grande va antes de cada sección. El título «Platos fuertes» queda más cerca de sus platos que de los anteriores.', zona: { x: 5, y: (196 / MH) * 100, w: 90, h: (60 / MH) * 100 } },
-      { ...mp(320, 280), texto: 'El precio está lejos del nombre, pero en la misma línea. Aquí la alineación une lo que el espacio separa.', zona: { x: 66, y: (264 / MH) * 100, w: 30, h: (22 / MH) * 100 } },
+      { ...mp(320, 66), texto: 'El nombre y la descripción de un plato están juntos porque hablan de lo mismo.', zona: { x: 5, y: (54 / MH) * 100, w: 90, h: (30 / MH) * 100 } },
+      { ...mp(320, 100), texto: 'Una separación mayor entre platos permite distinguir cada opción sin convertir cada renglón en una pieza independiente.', zona: { x: 5, y: (92 / MH) * 100, w: 90, h: (14 / MH) * 100 } },
+      { ...mp(320, 222), texto: 'El título de una sección está más cerca de los platos que presenta que de los anteriores.', zona: { x: 5, y: (196 / MH) * 100, w: 90, h: (60 / MH) * 100 } },
+      { ...mp(320, 280), texto: 'El precio puede estar lejos del nombre y seguir relacionado con él gracias a la alineación. El espacio no es la única señal que organiza la lectura.', zona: { x: 66, y: (264 / MH) * 100, w: 30, h: (22 / MH) * 100 } },
     ]}
   >
     <svg viewBox={`0 0 ${MW} ${MH}`} role="img" aria-label="Menú de restaurante con dos secciones, Entradas y Platos fuertes.">
@@ -61,11 +61,11 @@ const cp = (x: number, y: number) => ({ x: (x / CW) * 100, y: (y / CH) * 100 });
   </Anotada>
 
   <Anotada
-    rotulo="La pantalla de ajustes de una aplicación"
+    rotulo="Una pantalla de ajustes"
     notas={[
-      { ...ap(320, 92), texto: 'Cada título de sección tiene más espacio encima que debajo. Así queda junto a las filas que nombra.', zona: { x: 5, y: (72 / AH) * 100, w: 90, h: (106 / AH) * 100 } },
-      { ...ap(320, 196), texto: 'El espacio entre secciones es el más grande de la pantalla. Separa temas distintos.', zona: { x: 5, y: (180 / AH) * 100, w: 90, h: (26 / AH) * 100 } },
-      { ...ap(160, 248), texto: 'Aquí la etiqueta y su interruptor están lejos, en los dos extremos. Las líneas entre filas mantienen unido lo que el espacio separa.', zona: { x: 5, y: (228 / AH) * 100, w: 90, h: (30 / AH) * 100 } },
+      { ...ap(320, 92), texto: 'Cada título de sección tiene más espacio encima que debajo. Así queda visualmente asociado con las opciones que introduce.', zona: { x: 5, y: (72 / AH) * 100, w: 90, h: (106 / AH) * 100 } },
+      { ...ap(320, 196), texto: 'La separación mayor aparece entre secciones, porque cada una trata un tema distinto.', zona: { x: 5, y: (180 / AH) * 100, w: 90, h: (26 / AH) * 100 } },
+      { ...ap(160, 248), texto: 'La etiqueta y el interruptor pueden estar en extremos opuestos de una fila. La alineación y las líneas divisorias ayudan a mantener su relación.', zona: { x: 5, y: (228 / AH) * 100, w: 90, h: (30 / AH) * 100 } },
     ]}
   >
     <svg viewBox={`0 0 ${AW} ${AH}`} role="img" aria-label="Pantalla de ajustes con tres secciones: Cuenta, Notificaciones y Privacidad.">
@@ -96,9 +96,9 @@ const cp = (x: number, y: number) => ({ x: (x / CW) * 100, y: (y / CH) * 100 });
   <Anotada
     rotulo="Un cartel"
     notas={[
-      { ...cp(320, 40), texto: 'Las tres líneas del título están muy juntas. Es una sola frase y se lee como un solo bloque.', zona: { x: 5, y: (20 / CH) * 100, w: 90, h: (104 / CH) * 100 } },
-      { ...cp(320, 348), texto: 'Fecha, lugar y precio van muy juntos. Toda la información práctica queda en un mismo sitio y se lee de una vez.', zona: { x: 5, y: (330 / CH) * 100, w: 64, h: (56 / CH) * 100 } },
-      { ...cp(320, 418), texto: 'El nombre de quien organiza va aparte, más pequeño y lejos de la información práctica. Así no compite con la fecha.', zona: { x: 5, y: (402 / CH) * 100, w: 90, h: (28 / CH) * 100 } },
+      { ...cp(320, 40), texto: 'Las líneas del título están muy juntas y se perciben como una sola unidad.', zona: { x: 5, y: (20 / CH) * 100, w: 90, h: (104 / CH) * 100 } },
+      { ...cp(320, 348), texto: 'La fecha, el lugar y el precio aparecen agrupados para que la información práctica se encuentre de un vistazo.', zona: { x: 5, y: (330 / CH) * 100, w: 64, h: (56 / CH) * 100 } },
+      { ...cp(320, 418), texto: 'El nombre de quien organiza queda separado y tiene menos protagonismo. Así no compite con los datos necesarios para asistir.', zona: { x: 5, y: (402 / CH) * 100, w: 90, h: (28 / CH) * 100 } },
     ]}
   >
     <svg viewBox={`0 0 ${CW} ${CH}`} role="img" aria-label="Cartel de un festival de cine de barrio, con título, una figura geométrica y los datos prácticos agrupados abajo.">

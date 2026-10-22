@@ -10,28 +10,33 @@ import Guia, { type PasoGuia } from '../controles/Guia.astro';
 
 const guia: PasoGuia[] = [
   {
+    titulo: 'Reduce las diferencias.',
     hacer: 'En «Cuánto crece cada nivel», elige 1,125.',
-    pista: 'Es el primer botón: el número más pequeño.',
-    logro: 'Con 1,125 el título mide apenas 1,6 veces el texto normal. Título, entrada y párrafos se parecen tanto que compiten entre sí, y la página ya no indica por dónde empezar.',
+    pista: 'Selecciona el primer botón, el número más pequeño.',
+    logro: 'Los tamaños se acercan entre sí. El título pierde protagonismo y la entrada empieza a competir con los párrafos.',
   },
   {
+    titulo: 'Amplía las diferencias.',
     hacer: 'Ahora elige 1,5.',
-    pista: 'Es el quinto botón.',
-    logro: 'Con 1,5 el título mide unas cinco veces el texto normal, y el orden aparece sin esfuerzo: primero el título, después la entrada, al final los párrafos.',
+    pista: 'Selecciona el quinto botón.',
+    logro: 'El título crece considerablemente respecto al texto normal. La entrada y los intertítulos también se distinguen con más claridad. No cambió el contenido, pero ahora tienes más pistas para decidir dónde empezar a leer.',
   },
   {
-    hacer: 'Mueve «Tamaño del texto normal» en cualquier dirección y observa el título.',
-    pista: 'Usa las flechas del teclado o arrastra el control unas cuantas posiciones.',
-    logro: 'Toda la página crece o se reduce a la vez, pero el orden se mantiene: el título sigue midiendo las mismas veces el texto normal. El tamaño base decide qué tan grande es todo; la razón, cuánto se distinguen los niveles.',
+    titulo: 'Cambia el tamaño base.',
+    hacer: 'Mueve «Tamaño del texto normal» hacia arriba o hacia abajo. Observa qué sucede con el título y los demás niveles.',
+    pista: 'Arrastra el control o utiliza las flechas del teclado.',
+    logro: 'Toda la escala crece o se reduce a partir del mismo tamaño base. La relación entre los niveles se conserva.',
   },
   {
+    titulo: 'Descubre la fórmula.',
     hacer: 'Activa «Mostrar de dónde sale cada tamaño».',
-    logro: 'Sobre cada texto aparece su cálculo: el tamaño base multiplicado por la razón una vez para la entrada, dos para los intertítulos y cuatro para el título. Dos números bastan para decidir todos los tamaños de la página.',
+    logro: 'La entrada está un nivel por encima del texto normal, los intertítulos dos niveles por encima y el título cuatro. Cada nivel se obtiene multiplicando el tamaño anterior por la razón elegida. Así puedes construir un sistema completo a partir de dos decisiones.',
   },
   {
-    hacer: 'Abre «Más controles» y activa «Todo al mismo tamaño».',
+    titulo: 'Quita las diferencias de tamaño.',
+    hacer: 'Abre «Más controles» y activa «Todo al mismo tamaño». ¿Todavía reconoces el título?',
     abrir: true,
-    logro: 'Todo mide lo mismo y, aun así, reconoces el título: va primero, usa otro tipo de letra, es más grueso y tiene espacio alrededor. El tamaño es el recurso más visible de la jerarquía, pero trabaja junto con los demás.',
+    logro: 'Aunque todos los textos midan lo mismo, el título puede seguir destacando por su posición, su grosor, el tipo de letra o el espacio que lo rodea. Una escala ayuda a construir jerarquía, pero no la produce por sí sola.',
   },
 ];
 
@@ -60,7 +65,8 @@ const razones = [
 <Instrumento
   id={lab}
   titulo="Instrumento · una página, dos números"
-  consigna="Todos los tamaños de esta página salen de dos números: el tamaño del texto normal y cuánto crece cada nivel sobre el anterior. Cambia uno y la página entera responde."
+  consigna="Todos los tamaños de esta página salen de dos decisiones: cuánto mide el texto normal y cuánto crece cada nivel respecto al anterior. Cambia los controles y observa cómo responde la composición completa."
+  nota="Fija una configuración como A y compárala con B. No te limites a decidir cuál se ve mejor: pregúntate qué información reconoces primero, qué puedes localizar de inmediato y qué tienes que leer con más atención."
 >
   <div slot="escenario" class="et" data-et>
     <aside class="et-escalera" aria-label="La escala de esta página, del nivel mayor al menor">
@@ -106,11 +112,11 @@ const razones = [
     </article>
   </div>
 
-  <Guia slot="guia" pasos={guia} />
+  <Guia slot="guia" pasos={guia} final="Guía completada. Ahora puedes modificar cualquier control, comparar configuraciones y buscar el punto en el que la página deja de guiar tu lectura." />
 
-  <Opciones lab={lab} variable="razon" etiqueta="Cuánto crece cada nivel" valor="1.25" opciones={razones} ayuda="Cada nivel es el anterior multiplicado por este número." />
-  <Deslizador lab={lab} variable="base" etiqueta="Tamaño del texto normal" min={12} max={24} valor={17} unidad="px" ayuda="El de los párrafos. Los demás tamaños salen de él." />
-  <Interruptor lab={lab} variable="diseccion" etiqueta="Mostrar de dónde sale cada tamaño" ayuda="Muestra sobre cada texto su nivel y su tamaño." />
+  <Opciones lab={lab} variable="razon" etiqueta="Cuánto crece cada nivel" valor="1.25" opciones={razones} ayuda="Cuanto mayor sea la razón, más rápido crecerán los tamaños de los niveles superiores." />
+  <Deslizador lab={lab} variable="base" etiqueta="Tamaño del texto normal" min={12} max={24} valor={17} unidad="px" ayuda="El tamaño base de los párrafos. Los demás niveles se calculan a partir de él." />
+  <Interruptor lab={lab} variable="diseccion" etiqueta="Mostrar de dónde sale cada tamaño" ayuda="Muestra el nivel asignado y su tamaño calculado." />
 
   <Fragment slot="avanzados">
     <Opciones
@@ -119,11 +125,12 @@ const razones = [
       etiqueta="Grosor de los títulos"
       valor="700"
       opciones={[{ valor: '400', texto: 'Normal' }, { valor: '700', texto: 'Negrita' }, { valor: '900', texto: 'Extranegrita' }]}
+      ayuda="Compara los efectos del peso normal, la negrita y la extranegrita."
     />
-    <Deslizador lab={lab} variable="lhc" etiqueta="Interlineado de los párrafos" min={1} max={2.2} paso={0.05} valor={1.55} decimales={2} ayuda="Altura de cada renglón, en número de veces el tamaño de la letra." />
-    <Deslizador lab={lab} variable="lht" etiqueta="Interlineado de los títulos" min={0.85} max={1.8} paso={0.05} valor={1.1} decimales={2} />
-    <Deslizador lab={lab} variable="medida" etiqueta="Ancho de línea" min={25} max={120} valor={64} unidad="caracteres" ayuda="Es aproximado: la lectura bajo la página dice cuántos caracteres caben realmente." />
-    <Interruptor lab={lab} variable="plano" etiqueta="Todo al mismo tamaño" ayuda="¿Se sigue entendiendo qué es el título?" />
+    <Deslizador lab={lab} variable="lhc" etiqueta="Interlineado de los párrafos" min={1} max={2.2} paso={0.05} valor={1.55} decimales={2} ayuda="Ajusta el espacio vertical entre renglones del texto normal." />
+    <Deslizador lab={lab} variable="lht" etiqueta="Interlineado de los títulos" min={0.85} max={1.8} paso={0.05} valor={1.1} decimales={2} ayuda="Ajusta por separado el espacio entre las líneas de los títulos." />
+    <Deslizador lab={lab} variable="medida" etiqueta="Ancho de línea" min={25} max={120} valor={64} unidad="caracteres" ayuda="Cuántos caracteres caben aproximadamente en cada renglón. La lectura bajo la página dice cuántos caben realmente." />
+    <Interruptor lab={lab} variable="plano" etiqueta="Todo al mismo tamaño" ayuda="Elimina las diferencias de tamaño para comprobar qué otros recursos sostienen la jerarquía." />
   </Fragment>
 
   <Fragment slot="pruebas">

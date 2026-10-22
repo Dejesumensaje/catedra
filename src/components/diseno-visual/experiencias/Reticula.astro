@@ -11,29 +11,34 @@ import Guia, { type PasoGuia } from '../controles/Guia.astro';
 
 const pasos: PasoGuia[] = [
   {
-    hacer: 'Activa «Mostrar la retícula» y mira dónde empieza y termina cada bloque.',
-    logro: 'Las franjas son las columnas. Cada bloque empieza y termina en el borde de una de ellas, y por eso el cartel se ve ordenado aunque esas líneas nunca se impriman.',
+    titulo: 'Haz visible la retícula.',
+    hacer: 'Activa «Mostrar la retícula». Observa dónde empieza y termina cada bloque.',
+    logro: 'Las franjas muestran las columnas que sirven como referencia para colocar los bloques. Cuando varios bloques comparten los bordes de esas columnas, la composición mantiene relaciones reconocibles sin necesidad de dibujar líneas entre sus elementos.',
   },
   {
-    hacer: 'Sube «Desorden» hasta que el cartel se vea descuidado.',
-    pista: 'Llévalo por encima del 30 %. Compara los bordes de los bloques con las franjas.',
-    logro: 'Ningún bloque se movió mucho. Basta con que dejen de compartir bordes para que la página parezca descuidada, como si alguien se hubiera equivocado.',
+    titulo: 'Introduce desorden.',
+    hacer: 'Sube el control «Desorden» hasta que el cartel empiece a verse descuidado.',
+    pista: 'Supera el 30 %. Compara los bordes de los bloques con las franjas de la retícula.',
+    logro: 'Los bloques no se desplazan demasiado. Sin embargo, dejan de compartir algunos bordes y la composición pierde parte de su coherencia.',
   },
   {
-    hacer: 'Con el desorden en cero, baja «Columnas» a 6 o menos.',
+    titulo: 'Cambia el número de columnas.',
+    hacer: 'Devuelve «Desorden» a cero y reduce «Columnas» a seis o menos.',
     pista: 'Primero lleva «Desorden» a 0 %. Luego mueve «Columnas» hacia la izquierda.',
-    logro: 'Con menos columnas, los bloques se reparten con otras medidas y el cartel cambia de aspecto, pero sigue ordenado. Cuántas columnas usar también es una decisión de diseño.',
+    logro: 'El cartel cambia de proporciones. Los bloques tienen otras posibilidades de distribución, pero la composición puede seguir viéndose ordenada. El número de columnas no es una constante universal: depende del espacio disponible y de los elementos que necesitas organizar.',
   },
   {
+    titulo: 'Rompe la retícula con intención.',
     hacer: 'Abre «Más controles» y activa «Sacar el bloque elegido de la retícula».',
     preparar: { columnas: 12, desorden: 0, bloque: 'imagen' },
     abrir: true,
-    logro: 'La imagen atraviesa el margen y llega al borde de la página. Se movió mucho más que con el desorden y, sin embargo, se lee como algo intencional: es el único bloque que sale.',
+    logro: 'La imagen atraviesa el margen y llega hasta el borde de la página. Se desplaza mucho más que con el control de desorden, pero puede leerse como una decisión deliberada: es una excepción dentro de una composición que mantiene el orden en el resto de sus elementos.',
   },
   {
-    hacer: 'Ahora, en «Reparto de los bloques», elige «Todos iguales».',
+    titulo: 'Alinea todo, pero quita la jerarquía.',
+    hacer: 'En «Reparto de los bloques», elige «Todos iguales».',
     preparar: { ruptura: false },
-    logro: 'Todo está alineado y, aun así, nada indica por dónde empezar. La retícula decide dónde va cada cosa; qué se lee primero lo deciden el tamaño y el contraste.',
+    logro: 'Los elementos siguen la retícula, pero ahora tienen un protagonismo parecido. La página está ordenada y, aun así, no resulta evidente por dónde empezar a leer. La retícula decide dónde se colocan los elementos; el tamaño, el contraste y otras decisiones visuales ayudan a establecer qué destaca.',
   },
 ];
 
@@ -51,7 +56,8 @@ const bloques = [
 <Instrumento
   id={lab}
   titulo="Instrumento · un cartel sobre columnas"
-  consigna="Seis bloques —título, número, imagen, dos textos y pie— apoyados en columnas que no se ven."
+  consigna="Seis bloques: título, número, imagen, dos textos y pie de foto. Puedes cambiar su posición, el número de columnas, los márgenes y la manera en que se reparten dentro de la página. La retícula está ahí, aunque no siempre la veas."
+  nota="Fija una composición como A y compárala con B. No busques únicamente la versión que se ve más ordenada: pregúntate qué relaciones establece cada una y qué ocurre cuando un elemento deja de seguir la estructura."
 >
   <svg slot="escenario" viewBox="0 0 720 518" role="img" aria-label="Cartel de seis bloques sobre una retícula de doce columnas.">
     <rect width="720" height="518" fill="#fff" />
@@ -59,14 +65,14 @@ const bloques = [
     <rect x="32" y="140" width="320" height="250" fill="#222" />
   </svg>
 
-  <Guia slot="guia" pasos={pasos} />
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Ahora cambia los controles libremente. Busca configuraciones en las que la retícula organice bien los bloques, otras en las que el desorden sea evidente y otras en las que una ruptura deliberada atraiga la mirada." />
 
   <Interruptor lab={lab} variable="guias" etiqueta="Mostrar la retícula" ayuda="Dibuja las columnas sobre las que se apoyan los bloques." />
-  <Deslizador lab={lab} variable="desorden" etiqueta="Desorden" min={0} max={100} valor={0} unidad="%" ayuda="Mueve cada bloque un poco, sin ningún motivo." />
-  <Deslizador lab={lab} variable="columnas" etiqueta="Columnas" min={2} max={12} valor={12} ayuda="En cuántas franjas iguales se divide la página." />
+  <Deslizador lab={lab} variable="desorden" etiqueta="Desorden" min={0} max={100} valor={0} unidad="%" ayuda="Mueve los bloques ligeramente para que dejen de compartir algunos bordes." />
+  <Deslizador lab={lab} variable="columnas" etiqueta="Columnas" min={2} max={12} valor={12} ayuda="Cuántas franjas iguales dividen el ancho de la página. Al cambiar el número, cambian las medidas y las combinaciones posibles." />
 
   <Fragment slot="avanzados">
-    <Interruptor lab={lab} variable="ruptura" etiqueta="Sacar el bloque elegido de la retícula" ayuda="Saca un solo bloque, a propósito. El bloque se elige abajo." />
+    <Interruptor lab={lab} variable="ruptura" etiqueta="Sacar el bloque elegido de la retícula" ayuda="Saca un elemento de la estructura. El bloque se elige abajo." />
     <fieldset class="dv-control dv-opciones rt-mover">
       <legend>Bloque que mueves</legend>
       <div class="dv-opciones-fila">
@@ -107,6 +113,7 @@ const bloques = [
         { valor: 'cartel', texto: 'Con jerarquía' },
         { valor: 'uniforme', texto: 'Todos iguales' },
       ]}
+      ayuda="Con jerarquía: los bloques tienen distintos niveles de protagonismo. Todos iguales: un tratamiento más uniforme."
     />
     <Opciones
       lab={lab}
@@ -120,8 +127,8 @@ const bloques = [
         { valor: 'mixta', texto: 'Una distinta en cada bloque' },
       ]}
     />
-    <Deslizador lab={lab} variable="medianil" etiqueta="Medianil" min={0} max={48} valor={16} unidad="px" ayuda="El espacio entre una columna y la siguiente." />
-    <Deslizador lab={lab} variable="margen" etiqueta="Márgenes" min={8} max={96} valor={32} unidad="px" ayuda="El espacio entre los bloques y el borde de la página (medido sobre una página de 720 px de ancho)." />
+    <Deslizador lab={lab} variable="medianil" etiqueta="Medianil" min={0} max={48} valor={16} unidad="px" ayuda="El espacio entre una columna y la siguiente. El valor inicial es de 16 px." />
+    <Deslizador lab={lab} variable="margen" etiqueta="Márgenes" min={8} max={96} valor={32} unidad="px" ayuda="El espacio entre el contenido y el borde de la página. El valor inicial es de 32 px, medido sobre una página de 720 px de ancho." />
   </Fragment>
 
   <Fragment slot="pruebas">

@@ -37,9 +37,9 @@ const desfase = 2; // el mes empieza en miércoles
   <Anotada
     rotulo="Los movimientos de una cuenta"
     notas={[
-      { ...mp(320, 66), texto: 'Cada fila sigue las mismas reglas: fecha pequeña y gris, concepto, valor a la derecha. Por eso se leen con facilidad.', zona: mz(44, 44) },
-      { ...mp(320, 158), texto: 'Una sola fila rompe la regla: valor en rojo, tachado y la palabra «Rechazado». Es lo primero que conviene ver.', zona: mz(136, 52) },
-      { ...mp(320, 278), texto: 'Si cada gasto tuviera su color, el pago rechazado se perdería entre ellos.', zona: mz(44, 240) },
+      { ...mp(320, 66), texto: 'Todas las filas siguen las mismas reglas: fecha en un tono discreto, concepto en el centro y valor alineado a la derecha. La repetición facilita comparar los movimientos.', zona: mz(44, 44) },
+      { ...mp(320, 158), texto: 'Una fila rompe el patrón: el valor aparece en rojo y tachado, acompañado de la palabra «Rechazado». La diferencia señala un estado que conviene reconocer rápidamente.', zona: mz(136, 52) },
+      { ...mp(320, 278), texto: 'Si cada gasto tuviera su propio color, el movimiento rechazado perdería su singularidad. La señal funciona porque las demás filas comparten un tratamiento.', zona: mz(44, 240) },
     ]}
   >
     <svg viewBox={`0 0 ${MW} ${MH}`} role="img" aria-label="Lista de cinco movimientos bancarios; uno, el pago de internet, aparece rechazado.">
@@ -62,8 +62,8 @@ const desfase = 2; // el mes empieza en miércoles
   <Anotada
     rotulo="Los botones de un pago"
     notas={[
-      { ...bp(0, 134), texto: 'Los dos botones secundarios comparten la regla: borde fino y fondo blanco.', zona: { x: 4, y: (114 / BH) * 100, w: 56, h: (40 / BH) * 100 } },
-      { ...bp(320, 134), texto: 'Solo uno va relleno: la acción principal. Si los tres fueran iguales, habría que leerlos todos para decidir.', zona: { x: 61, y: (114 / BH) * 100, w: 35, h: (40 / BH) * 100 } },
+      { ...bp(0, 134), texto: 'Los botones secundarios comparten una apariencia: borde fino y fondo blanco.', zona: { x: 4, y: (114 / BH) * 100, w: 56, h: (40 / BH) * 100 } },
+      { ...bp(320, 134), texto: 'El botón principal tiene fondo relleno. Esa diferencia establece una jerarquía y ayuda a reconocer la acción prioritaria sin tener que evaluar todos los botones por igual.', zona: { x: 61, y: (114 / BH) * 100, w: 35, h: (40 / BH) * 100 } },
     ]}
   >
     <svg viewBox={`0 0 ${BW} ${BH}`} role="img" aria-label="Final de un formulario de pago con tres botones: Cancelar y Guardar con borde, y Pagar relleno de negro.">
@@ -82,8 +82,8 @@ const desfase = 2; // el mes empieza en miércoles
   <Anotada
     rotulo="Un calendario"
     notas={[
-      { ...cp(320, 110), texto: 'Todos los días tienen el mismo tamaño, la misma letra y su lugar en la cuadrícula. Esa es la regla.', zona: { x: 4, y: (60 / CH) * 100, w: 92, h: (200 / CH) * 100 } },
-      { ...cp(320, 188), texto: 'Hoy rompe la regla: fondo negro y número blanco. Suele ser lo primero que busca quien abre un calendario.', zona: { x: (58 / CW) * 100, y: (170 / CH) * 100, w: (42 / CW) * 100, h: (36 / CH) * 100 } },
+      { ...cp(320, 110), texto: 'Todos los días comparten tamaño, tipografía y posición dentro de la cuadrícula. Esa regularidad permite recorrer el calendario y localizar fechas.', zona: { x: 4, y: (60 / CH) * 100, w: 92, h: (200 / CH) * 100 } },
+      { ...cp(320, 188), texto: 'El día actual rompe el patrón con fondo negro y número blanco. La diferencia lo convierte en un punto de referencia dentro de una estructura que permanece estable.', zona: { x: (58 / CW) * 100, y: (170 / CH) * 100, w: (42 / CW) * 100, h: (36 / CH) * 100 } },
     ]}
   >
     <svg viewBox={`0 0 ${CW} ${CH}`} role="img" aria-label="Calendario de octubre; el día 21 aparece destacado con fondo negro.">

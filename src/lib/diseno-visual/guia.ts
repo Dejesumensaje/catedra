@@ -10,6 +10,7 @@ import type { Estado } from './estado';
 export type Condicion<E extends Estado> = (estado: E, inicio: E) => boolean;
 
 interface Paso {
+  titulo?: string;
   hacer: string;
   logro: string;
   pista?: string;
@@ -84,7 +85,7 @@ export function guiar<E extends Estado>(raiz: HTMLElement, condiciones: Condicio
     if (p?.preparar) raiz.dispatchEvent(new CustomEvent('aplicar', { detail: p.preparar }));
     inicio = ultimo;
     mostrar();
-    if (p) anuncio.textContent = `Paso ${i + 1}: ${p.hacer}`;
+    if (p) anuncio.textContent = `Paso ${i + 1}. ${p.titulo ? p.titulo + ' ' : ''}${p.hacer}`;
   };
 
   raiz.addEventListener('estado', (ev) => {

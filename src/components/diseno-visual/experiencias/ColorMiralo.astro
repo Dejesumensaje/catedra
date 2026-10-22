@@ -17,10 +17,10 @@ const zona = (y: number, h: number) => ({ x: 5, y: pct(y), w: 90, h: pct(h) });
 <div class="dv-anotadas">
   <Anotada
     veredicto="mal"
-    rotulo="El color como única señal"
+    rotulo="Cuando el color tiene que hacerlo todo"
     notas={[
-      { x: 100, y: pct(76), texto: 'El único aviso de error es el borde rojo. Quien no distingue el rojo, o mira la pantalla a pleno sol, puede no notar nada.', zona: zona(44, 60) },
-      { x: 100, y: pct(214), texto: 'Blanco sobre amarillo: razón de contraste de 1,6:1. Esa cifra mide la diferencia de luminancia y va de 1:1 (colores iguales) a 21:1 (negro sobre blanco). El botón más importante de la pantalla es el que peor se lee.', zona: zona(186, 56) },
+      { x: 100, y: pct(76), titulo: 'El aviso de error', texto: 'El único indicador es un borde rojo. Si alguien no distingue ese color o no percibe bien el contraste de la pantalla, puede pasar por alto el error.', zona: zona(44, 60) },
+      { x: 100, y: pct(214), titulo: 'El botón de pago', texto: 'El texto blanco está sobre un fondo amarillo. Ambos colores tienen una luminancia relativamente alta y la diferencia entre ellos es pequeña. La razón de contraste es de 1,6:1, insuficiente para texto normal.', zona: zona(186, 56) },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Formulario de pago: un campo con borde rojo y un botón amarillo con texto blanco.">
@@ -35,10 +35,10 @@ const zona = (y: number, h: number) => ({ x: 5, y: pct(y), w: 90, h: pct(h) });
 
   <Anotada
     veredicto="bien"
-    rotulo="Cada color junto al color adecuado"
+    rotulo="Cuando cada color tiene una función clara"
     notas={[
-      { x: 100, y: pct(76), texto: 'El error se indica de tres formas: el borde, un símbolo y una frase que explica qué falta. Si el color no se percibe, quedan las otras dos.', zona: zona(44, 82) },
-      { x: 100, y: pct(214), texto: 'El mismo amarillo con texto oscuro: razón de contraste de 9,8:1.', zona: zona(186, 56) },
+      { x: 100, y: pct(76), titulo: 'El aviso de error', texto: 'El borde rojo se acompaña de un símbolo y una frase que explica qué falta. Aunque el color no se perciba, quedan otras señales.', zona: zona(44, 82) },
+      { x: 100, y: pct(214), titulo: 'El botón de pago', texto: 'El amarillo conserva su lugar en la identidad visual, pero ahora lleva texto oscuro. La razón de contraste es de 9,8:1, una diferencia mucho mayor que facilita la lectura.', zona: zona(186, 56) },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo formulario: el campo con borde rojo, un símbolo y el texto «Faltan 4 dígitos», y el botón amarillo con texto oscuro.">

@@ -24,10 +24,10 @@ const pct = (y: number) => (y / H) * 100;
 <div class="dv-anotadas">
   <Anotada
     veredicto="mal"
-    rotulo="Todo con el mismo espacio"
+    rotulo="Cuando todos los espacios son iguales"
     notas={[
-      { x: 86, y: pct(52), texto: 'Cada renglón está a la misma distancia del siguiente. Se leen cinco datos sueltos, sin orden.', zona: { x: 6, y: pct(14), w: 88, h: pct(170) } },
-      { x: 86, y: pct(121), texto: 'El cargo está tan lejos del nombre como el teléfono. Nada indica que el cargo es de Laura y que el teléfono es para llamarla.', zona: { x: 6, y: pct(55), w: 88, h: pct(55) } },
+      { x: 86, y: pct(52), texto: 'Los cinco renglones tienen la misma separación. Ninguno parece pertenecer a un bloque distinto.', zona: { x: 6, y: pct(14), w: 88, h: pct(170) } },
+      { x: 86, y: pct(121), texto: 'El cargo queda tan separado del nombre como el teléfono. Cuesta reconocer qué información corresponde a Laura.', zona: { x: 6, y: pct(55), w: 88, h: pct(55) } },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tarjeta de presentación con cinco renglones igualmente espaciados.">
@@ -39,12 +39,12 @@ const pct = (y: number) => (y / H) * 100;
 
   <Anotada
     veredicto="bien"
-    rotulo="El espacio organizado en bloques"
+    rotulo="Cuando el espacio crea bloques"
     notas={[
-      { x: 86, y: pct(46), titulo: 'Quién es', texto: 'Nombre y cargo van muy cerca. Se leen como una sola unidad.', zona: { x: 6, y: pct(20), w: 88, h: pct(48) } },
-      { x: 86, y: pct(88), titulo: 'Cambio de tema', texto: 'Este espacio es mucho mayor que el de dentro de los bloques. Indica que empieza otro tema.', zona: { x: 6, y: pct(68), w: 88, h: pct(30) } },
-      { x: 86, y: pct(126), titulo: 'Cómo encontrarla', texto: 'Teléfono y correo van juntos porque los dos sirven para contactarla.', zona: { x: 6, y: pct(100), w: 88, h: pct(44) } },
-      { x: 86, y: pct(186), titulo: 'Dónde está', texto: 'La dirección va aparte porque es otro tipo de dato.', zona: { x: 6, y: pct(172), w: 88, h: pct(28) } },
+      { x: 86, y: pct(46), titulo: 'Quién es', texto: 'El nombre y el cargo están cerca, así que se leen como una unidad.', zona: { x: 6, y: pct(20), w: 88, h: pct(48) } },
+      { x: 86, y: pct(88), titulo: 'Un cambio de tema', texto: 'Una separación mayor marca el límite entre bloques.', zona: { x: 6, y: pct(68), w: 88, h: pct(30) } },
+      { x: 86, y: pct(126), titulo: 'Cómo contactarla', texto: 'El teléfono y el correo están juntos porque cumplen una función relacionada.', zona: { x: 6, y: pct(100), w: 88, h: pct(44) } },
+      { x: 86, y: pct(186), titulo: 'Dónde está', texto: 'La dirección queda aparte para distinguirla de los datos de contacto.', zona: { x: 6, y: pct(172), w: 88, h: pct(28) } },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma tarjeta con el nombre y el cargo juntos, el teléfono y el correo juntos y la dirección aparte.">

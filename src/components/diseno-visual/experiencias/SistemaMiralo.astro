@@ -26,11 +26,11 @@ const fila = (y: number) => ({ x: (20 / W) * 100, y: (y / H) * 100, w: (320 / W)
 <div class="dv-anotadas">
   <Anotada
     veredicto="mal"
-    rotulo="Cada tarjeta con su propio estilo"
+    rotulo="No funciona: cada tarjeta tiene su propio estilo"
     notas={[
-      { ...pc(180, 34), texto: 'Cada tarjeta tiene su borde, su letra y su alineación. Parecen sacadas de cuatro lugares distintos.', zona: fila(20) },
-      { ...pc(180, 174), texto: 'El evento principal está aquí, pero nada lo indica. Entre tantas diferencias, ninguna destaca de verdad.', zona: zc(2) },
-      { ...pc(348, 174), texto: 'La tarjeta más llamativa es la del taller, que no es la más importante. Destaca por accidente.', zona: zc(3) },
+      { ...pc(180, 34), texto: 'Cada tarjeta tiene su propio borde, tipografía y alineación. Cuesta reconocerlas como parte de una misma agenda.', zona: fila(20) },
+      { ...pc(180, 174), texto: 'El evento principal está presente, pero su importancia no se distingue visualmente de la de los demás.', zona: zc(2) },
+      { ...pc(348, 174), texto: 'La tarjeta del taller llama más la atención, aunque no sea el evento más importante. Su protagonismo es accidental.', zona: zc(3) },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cuatro tarjetas de eventos, cada una con un estilo distinto: borde grueso, fondo gris, borde punteado y fondo negro.">
@@ -62,11 +62,11 @@ const fila = (y: number) => ({ x: (20 / W) * 100, y: (y / H) * 100, w: (320 / W)
 
   <Anotada
     veredicto="bien"
-    rotulo="Las mismas reglas y una excepción"
+    rotulo="Funciona: reglas compartidas y una excepción"
     notas={[
-      { ...pc(180, 34), texto: 'Mismo borde, misma letra, mismo orden en las cuatro: categoría, título, fecha. Se reconocen como parte de un mismo conjunto.', zona: fila(20) },
-      { ...pc(180, 174), texto: 'Una sola tarjeta rompe la regla: fondo azul y la palabra «Principal». Como es la única, tiende a verse primero.', zona: zc(2) },
-      { ...pc(348, 174), texto: 'Títulos y fechas cambian de una tarjeta a otra y no rompen nada.', zona: zc(3) },
+      { ...pc(180, 34), texto: 'Las cuatro tarjetas usan el mismo borde, la misma tipografía y el mismo orden: categoría, título y fecha. La información cambia, pero la estructura se reconoce.', zona: fila(20) },
+      { ...pc(180, 174), texto: 'Una sola tarjeta rompe una regla: tiene fondo azul y lleva la palabra «Principal». La diferencia dirige la mirada hacia ella.', zona: zc(2) },
+      { ...pc(348, 174), texto: 'Los títulos y las fechas varían sin alterar el sistema. No necesitan ser idénticos para mantener una presentación consistente.', zona: zc(3) },
     ]}
   >
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Las mismas cuatro tarjetas con el mismo estilo; solo la del concierto de apertura tiene fondo azul y la palabra Principal.">
