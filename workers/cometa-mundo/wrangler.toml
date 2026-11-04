@@ -1,0 +1,16 @@
+# Servidor de salas de COMETA (/demos/cometa/).
+# Desplegar: npx wrangler deploy   (desde esta carpeta)
+# Ver public/demos/cometa/LEEME.md para conectarlo al sitio de Pages.
+
+name = "cometa-mundo"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+[[durable_objects.bindings]]
+name = "MUNDO_COMETA"
+class_name = "Mundo"
+
+# Clase con almacenamiento SQLite: disponible también en el plan gratuito de Workers.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Mundo"]

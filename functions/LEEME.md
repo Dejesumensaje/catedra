@@ -132,3 +132,16 @@ de cada partida multijugador. Necesita, una sola vez:
 Sin el binding responde 503 y el juego lo dice en pantalla. Todo lo demás
 (cómo probarlo, los parámetros, la tabla de equilibrio) está en
 `public/demos/sisifo/LEEME.md`.
+
+## Cielos de COMETA (`api/cometa/[[ruta]].js`)
+
+Igual que la de Sísifo: no guarda nada y reenvía `/api/cometa/*` al Durable
+Object `Mundo` del Worker `cometa-mundo` (`workers/cometa-mundo`). Necesita, una
+sola vez:
+
+1. `cd workers/cometa-mundo && npx wrangler deploy`
+2. Panel de Pages → **Settings → Bindings → Durable Object namespace**:
+   `MUNDO_COMETA` → Worker `cometa-mundo`, clase `Mundo`.
+
+Sin el binding responde 503 y el juego sigue sin servidor (presencia generada o
+pestañas del mismo navegador). Lo demás está en `public/demos/cometa/LEEME.md`.
