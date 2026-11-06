@@ -2,8 +2,8 @@
 titulo: Sistemas y excepciones
 territorio: sistemas
 pregunta: ¿Por qué una pieza distinta se ve primero y cuándo deja de verse?
-resumen: "Un sistema establece reglas que se repiten; una excepción introduce una diferencia con intención. Descubre cómo funcionan en un equipo de fútbol, construye uno con doce fichas y explora cómo destacar una pieza sin perder la coherencia del conjunto."
-modos: [laboratorio, comparacion, diseccion, provocacion]
+resumen: "Un sistema establece reglas que se repiten; una excepción introduce una diferencia con intención. Mira cómo funcionan en un equipo de fútbol, construye uno con doce fichas y explora cómo destacar una pieza sin perder la coherencia del conjunto."
+modos: [provocacion, diseccion]
 orden: 6
 relaciones:
   - concepto: tokens
@@ -19,11 +19,20 @@ relaciones:
   - concepto: escalas-tipograficas
     porQue: El tamaño del título es una de las reglas que puede compartir un sistema. Cambiarlo en una sola ficha puede convertirla en una excepción tipográfica.
   - concepto: reticulas-y-alineacion
-    porQue: La retícula organiza el espacio de una página. Una pieza que ocupa más columnas de lo habitual o se aparta deliberadamente del eje puede romper esa estructura para producir un efecto.
+    porQue: La retícula organiza el espacio de una página. Una pieza que ocupa más columnas de lo habitual o se aparta con intención del eje puede romper esa estructura para producir un efecto.
   - concepto: interaccion-del-color
     porQue: Un mismo color puede percibirse de forma diferente según los colores que lo rodean. Cambiar el color de una ficha modifica su apariencia y puede alterar la manera en que se perciben las piezas vecinas.
   - concepto: semejanza
     porQue: Las piezas de un sistema comparten características que permiten reconocerlas como parte de un conjunto. Una excepción se hace visible cuando rompe esa semejanza. Si varias excepciones comparten las mismas características, también pueden percibirse como un grupo.
+fuentes:
+  - autor: Karl Gerstner
+    obra: "Programme entwerfen / Designing Programmes. Arthur Niggli"
+    anio: 1964
+    nota: Propuesta fundacional sobre el diseño como programación de reglas, parámetros y variaciones controladas.
+  - autor: Josef Müller-Brockmann
+    obra: "Rastersysteme für die visuelle Gestaltung / Grid systems in graphic design"
+    anio: 1981
+    nota: Uso de sistemas modulares para articular consistencia y variación en familias de piezas.
 ---
 
 import Paso from '../../components/diseno-visual/Paso.astro';
@@ -35,7 +44,7 @@ import SistemaErrores from '../../components/diseno-visual/experiencias/SistemaE
 import SistemaEjemplos from '../../components/diseno-visual/experiencias/SistemaEjemplos.astro';
 import SistemaJuego from '../../components/diseno-visual/experiencias/SistemaJuego.astro';
 
-<Paso id="idea" proposito="Entiende el principio antes de experimentar.">
+<Paso id="idea" titular="Sin una regla común, ninguna diferencia significa nada">
 
 <SistemaIdea />
 
@@ -45,7 +54,7 @@ import SistemaJuego from '../../components/diseno-visual/experiencias/SistemaJue
 
 En una página, una aplicación o una serie de carteles sucede algo parecido. Las piezas siguen unas reglas comunes: usan los mismos colores, comparten una tipografía o presentan la información en el mismo orden. Ese conjunto de decisiones forma un sistema.
 
-Cuando una pieza rompe deliberadamente una de esas reglas, se convierte en una excepción. Puede destacar, indicar una prioridad o advertir que algo requiere atención.
+Cuando una pieza rompe con intención una de esas reglas, se convierte en una excepción. Puede destacar, indicar una prioridad o advertir que algo requiere atención.
 
 Pero hay una condición: la excepción funciona mientras exista un patrón reconocible del que pueda apartarse. Si todo es diferente, ninguna diferencia tiene el mismo poder para llamar la atención.
 
@@ -59,17 +68,17 @@ Pero hay una condición: la excepción funciona mientras exista un patrón recon
     <dt>Sistema</dt>
     <dd>El conjunto de reglas compartidas que permite reconocer distintas piezas como parte de una misma familia.</dd>
     <dt>Excepción</dt>
-    <dd>Una pieza que rompe deliberadamente una regla para señalar que algo es distinto o merece atención.</dd>
+    <dd>Una pieza que rompe a propósito una regla para señalar que algo es distinto o merece atención.</dd>
   </dl>
 </aside>
 
 </Paso>
 
-<Paso id="miralo" proposito="Compara dos maneras de organizar la misma información.">
+<Paso id="miralo" titular="Cuatro eventos, dos maneras de distinguir el principal">
 
 <div class="dv-texto">
 
-Las mismas cuatro tarjetas de una agenda, presentadas dos veces. Toca cada número para observar qué cambia y qué efecto produce.
+Las mismas cuatro tarjetas de una agenda: en la primera versión todas cambian sin criterio común; en la segunda comparten la misma estructura salvo la excepción.
 
 </div>
 
@@ -87,13 +96,13 @@ En la segunda, las tarjetas comparten una estructura. Sobre ese fondo de consist
 
 </Paso>
 
-<Paso id="pruebalo" proposito="Modifica las reglas, cambia el contenido y observa cómo se transforma el conjunto.">
+<Paso id="pruebalo" titular="Doce fichas, cinco reglas y el poder de la excepción">
 
 <Sistema />
 
 </Paso>
 
-<Paso id="usalo" proposito="Tres decisiones para construir un sistema y utilizar las excepciones con intención.">
+<Paso id="usalo" titular="Tres decisiones para construir un sistema con intención">
 
 <ol class="dv-receta">
   <li>
@@ -111,7 +120,7 @@ En la segunda, las tarjetas comparten una estructura. Sobre ese fondo de consist
   <li>
     <div>
       <h3>Reserva la excepción para algo que importe</h3>
-      <p>Decide qué merece destacar y elige qué regla vas a romper para hacerlo visible. Si varias piezas necesitan la misma diferencia, quizá no sean excepciones individuales: puede que estés definiendo una categoría que necesita su propia regla. Una excepción debe responder a una intención que puedas explicar. De lo contrario, puede parecer un error o competir innecesariamente con otras señales.</p>
+      <p>Decide qué merece destacar y elige qué regla vas a romper para hacerlo visible. Si varias piezas necesitan la misma diferencia, quizá no sean excepciones individuales: puede que estés definiendo una categoría que necesita su propia regla. Una excepción debe responder a una intención que puedas explicar. De lo contrario, puede parecer un error o competir sin necesidad con otras señales.</p>
     </div>
   </li>
 </ol>
@@ -119,8 +128,6 @@ En la segunda, las tarjetas comparten una estructura. Sobre ese fondo de consist
 <div class="dv-texto">
 
 ### Tres errores que se repiten
-
-Cada caso empieza con un problema. Usa los controles para corregirlo y observa el efecto de tu decisión.
 
 </div>
 
@@ -130,15 +137,13 @@ Cada caso empieza con un problema. Usa los controles para corregirlo y observa e
 
 ### En piezas reales
 
-La misma lógica aparece en una cuenta bancaria, un pago y un calendario. Toca los números para examinar cada caso.
-
 </div>
 
 <SistemaEjemplos />
 
 </Paso>
 
-<Paso id="juega" proposito="Cinco rondas para poner a prueba lo que aprendiste.">
+<Paso id="juega" titular="¿Es una excepción intencional o ruido en el sistema?">
 
 <div class="dv-texto">
 
@@ -150,7 +155,7 @@ La misma lógica aparece en una cuenta bancaria, un pago y un calendario. Toca l
 
 </Paso>
 
-<Paso id="a-fondo" proposito="Los matices del principio, sus límites y sus conexiones con otros conceptos del diseño visual.">
+<Paso id="a-fondo" titular="Consistencia frente a monotonía, tokens y límites del sistema">
 
 <Seccion titulo="Lo que produce el efecto">
 
@@ -158,7 +163,7 @@ Las doce fichas del instrumento comparten cinco reglas: color, tamaño del títu
 
 Al cambiar una regla, cambian las doce fichas. Esa relación entre una decisión común y muchas piezas es lo que hace reconocible al sistema.
 
-Una excepción rompe una de esas reglas. Tiende a destacar porque el resto de las piezas conserva el patrón. Su efecto no depende únicamente de sus características: depende también de cómo se diferencia de lo que la rodea.
+Una excepción rompe una de esas reglas. Tiende a destacar porque el resto de las piezas conserva el patrón. Su efecto no depende solo de sus características: depende también de cómo se diferencia de lo que la rodea.
 
 Cuantas más piezas siguen una regla, más evidente puede resultar una ruptura. Si muchas piezas la rompen, el efecto cambia.
 
@@ -210,9 +215,9 @@ Por eso no basta con preguntar si algo destaca. También hay que preguntar **qu�
 
 **No reemplaza el criterio de diseño.** Un sistema con reglas claras puede producir piezas aburridas, poco legibles o confusas. Las reglas ayudan a organizar decisiones, pero no garantizan que sean buenas.
 
-**No todo el mundo percibe las mismas señales.** Si una excepción cambia únicamente de color, puede pasar inadvertida para algunas personas. Cuando la diferencia comunica información importante, conviene reforzarla con otra señal visual o con texto.
+**No todo el mundo percibe las mismas señales.** Si una excepción cambia solo de color, puede pasar inadvertida para algunas personas. Cuando la diferencia comunica información importante, conviene reforzarla con otra señal visual o con texto.
 
-**No toda excepción debe ser única para siempre.** Si una misma necesidad aparece repetidamente, puede ser mejor convertirla en una categoría, un patrón o una variante con reglas propias.
+**No toda excepción debe ser única para siempre.** Si una misma necesidad se repite, conviene convertirla en una categoría, un patrón o una variante con reglas propias.
 
 </Seccion>
 

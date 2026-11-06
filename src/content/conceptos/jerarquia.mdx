@@ -1,0 +1,168 @@
+---
+titulo: Jerarquía
+territorio: tipografia
+pregunta: ¿Cómo organizar tres o cuatro niveles de información cuando no quieres depender únicamente de agrandar la letra?
+resumen: "La jerarquía tipográfica establece el orden en que se recorre una página combinando cinco variables: tamaño, peso, color/tono, posición y espacio. Cuando dos niveles se parecen demasiado, compiten; cuando se multiplican sin control, confunden."
+modos: [laboratorio, comparacion]
+orden: 13
+relaciones:
+  - concepto: escalas-tipograficas
+    porQue: Una escala define los tamaños disponibles; la jerarquía decide qué papel cumple cada escalón dentro de la página.
+  - concepto: enfasis
+    porQue: El énfasis captura la mirada en el primer segundo, mientras la jerarquía sostiene el recorrido completo por el segundo y tercer nivel.
+  - concepto: peso-y-contraste
+    porQue: El cambio franco de peso permite separar títulos, etiquetas y cuerpo de lectura incluso cuando comparten el mismo tamaño.
+  - concepto: proximidad
+    porQue: Agrupar líneas cercanas y separar bloques con espacio en blanco es la base espacial de toda jerarquía limpia.
+  - concepto: sistemas-y-excepciones
+    porQue: Mantener constantes las señales de cada nivel a lo largo de una publicación convierte la jerarquía en un sistema predecible.
+fuentes:
+  - autor: Ellen Lupton
+    obra: "Thinking with Type: A Critical Guide for Designers, Writers, Editors, & Students (2nd ed.). Princeton Architectural Press"
+    anio: 2010
+    nota: Capítulo sobre jerarquía tipográfica y ejercicios para estructurar un mismo bloque usando solo espacio, peso, alineación o escala.
+  - autor: Robert Bringhurst
+    obra: "The Elements of Typographic Style (4th ed.). Hartley & Marks"
+    anio: 2012
+    nota: Principios de economía de señales en títulos e intertítulos para distinguir niveles sin acumular marcas redundantes.
+  - autor: Emil Ruder
+    obra: "Typographie: Ein Gestaltungslehrbuch. Arthur Niggli"
+    anio: 1967
+    nota: Estudios sobre contrastes de valor, posición y proporción como articuladores del orden de lectura.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import JerarquiaExp from '../../components/diseno-visual/experiencias/JerarquiaExp.astro';
+
+<Paso id="idea" titular="Ordenar la página es decidir qué se lee primero y qué puede esperar">
+
+<JerarquiaExp paso="idea" />
+
+<p class="dv-frase">Jerarquizar decide qué va primero, qué sigue y qué espera, incluso sin cambiar el tamaño de la letra.</p>
+
+<div class="dv-texto">
+
+Casi nadie lee una tarjeta, un cartel o una interfaz de arriba abajo como si fuera una novela. Antes de leer una sola oración completa, el ojo recorre la superficie en diagonal buscando anclas que le permitan responder dos preguntas: si esa información le interesa y dónde está el dato concreto que necesita.
+
+La *jerarquía tipográfica* hace visible la estructura de un texto para que cada nivel de importancia tenga una apariencia inequívoca. Cuando todos los datos comparten el mismo aspecto, quien mira debe hacer el trabajo de edición por su cuenta; cuando los niveles están bien diferenciados, la página se deja escanear en segundos y se deja leer en calma.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Nivel jerárquico</dt>
+    <dd>Cada uno de los escalones de importancia en que se divide una pieza (por ejemplo: 1.º titular y hora, 2.º descripción, 3.º metadatos y notas).</dd>
+    <dt>Señal tipográfica</dt>
+    <dd>Cualquier variación visual —tamaño, peso, color, cursiva, mayúsculas, sangría o espacio vertical— empleada para distinguir un nivel de otro.</dd>
+    <dt>Escaneo (lectura diagonal)</dt>
+    <dd>El recorrido rápido que hace la vista saltando entre títulos, cifras o palabras destacadas antes de detenerse a leer un párrafo.</dd>
+    <dt>Sobremarcado</dt>
+    <dd>La acumulación innecesaria de varias señales sobre un mismo elemento (como poner un subtítulo en grande, negrita, mayúsculas, subrayado y dentro de una caja).</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Seis estilos en pelea frente a tres niveles claros">
+
+<div class="dv-texto">
+
+Ambas etiquetas de medicamento contienen los mismos datos clínicos y legales, pero organizan la atención de manera opuesta.
+
+</div>
+
+<JerarquiaExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la etiqueta de la izquierda cada renglón recurre a un truco distinto: fondo negro, texto rojo subrayado, cursiva en caja o signos de exclamación. Cuantas más marcas se acumulan, más cuesta encontrar que la dosis es de **1 cápsula cada 8 horas**. En la de la derecha, la información se ordena en tres niveles que responden al orden real en que una persona consulta una caja de medicamentos.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Cinco variables para construir niveles de lectura">
+
+<JerarquiaExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas prácticas para jerarquizar con economía">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Limita la mayoría de las piezas a tres niveles</h3>
+      <p>Con un primer nivel dominante (qué es), un segundo nivel de lectura o contexto (de qué trata o cuándo ocurre) y un tercer nivel silencioso para metadatos, resuelves casi cualquier tarjeta, aviso o pantalla. Si necesitas seis o siete niveles distintos, suele ser señal de que la información debe dividirse en bloques separados.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Usa una o dos señales por cambio de nivel, no cinco</h3>
+      <p>Si un intertítulo ya se separa del párrafo anterior con espacio en blanco y pasa de peso regular a negrita, no necesita además subrayado, color rojo y mayúsculas. Cada señal extra que no añade claridad recarga la página.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Dale el peso al dato variable, no al rótulo fijo</h3>
+      <p>En fichas, tablas y credenciales, evita que las etiquetas del formulario («Nombre:», «Fecha:», «Estado:») sean más grandes o más oscuras que el valor real («Ana Ríos», «18 de octubre», «Aprobado»). Quien consulta la pieza busca el dato, no el nombre del campo.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<JerarquiaExp paso="errores" />
+
+<div class="dv-texto">
+
+### La jerarquía en piezas reales
+
+</div>
+
+<JerarquiaExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Entrena el ojo para detectar niveles limpios y excesos de señales">
+
+<JerarquiaExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Economía de señales, énfasis frente a jerarquía y estructura semántica">
+
+<Seccion titulo="La regla de no acumular señales redundantes">
+
+En *The Elements of Typographic Style* (2012), Robert Bringhurst propone un criterio directo para diseñar títulos, intertítulos y destaques: utilizar la menor cantidad de cambios necesarios para que la diferencia de función resulte evidente. Si el cuerpo de texto va en redonda de 16 px, un intertítulo puede mantener *el mismo tamaño* de 16 px y distinguirse con claridad si cambia a cursiva o a negrita y va precedido de medio renglón de espacio.
+
+En su libro *Thinking with Type* (2010), Ellen Lupton convierte este principio en un ejercicio clásico de taller: tomar un bloque informativo plano e intentar jerarquizarlo introduciendo una variable cada vez —primero solo alineación y sangría, luego solo espacio vertical, después solo cambio de peso— antes de permitir cualquier cambio de tamaño. Quien domina las variables silenciosas rara vez necesita títulos gigantescos para poner orden.
+
+</Seccion>
+
+<Seccion titulo="En qué se diferencian el énfasis y la jerarquía">
+
+Aunque colaboran en casi todas las páginas, [el énfasis](/diseno-visual/enfasis) y la jerarquía resuelven problemas distintos:
+
+- **El énfasis** actúa en el *primer segundo*: crea un punto focal único que rompe la uniformidad del campo para atraer la vista hacia un lugar concreto.
+- **La jerarquía** organiza *la secuencia completa*: define la relación entre el primer nivel, el segundo, el tercero y el cuarto para que quien lee pueda recorrer o escanear toda la pieza sin perder el hilo.
+
+Un cartel callejero puede apoyarse casi por completo en el énfasis de una palabra, mientras que un diccionario, un horario de trenes o un manual técnico apenas tienen un punto focal dramático, pero dependen de una jerarquía rigurosa entre entradas, acepciones, ejemplos y notas.
+
+</Seccion>
+
+<Seccion titulo="Jerarquía visual y jerarquía semántica en la web">
+
+En documentos digitales e interfaces, la jerarquía tiene dos caras que deben trabajar alineadas: la **apariencia visual** (tamaño, peso, color y posición en CSS) y la **estructura semántica** del documento (`<h1>`, `<h2>`, `<h3>`, `<p>`, `<small>`).
+
+Quienes navegan con un lector de pantalla recorren la página saltando por la lista de encabezados semánticos, del mismo modo que el ojo salta por los títulos grandes. Sin embargo, no siempre el encabezado principal del documento (`<h1>`) tiene que ser el texto de mayor tamaño en píxeles: en la ficha de una película o en un tablero de datos, una etiqueta de categoría o una cifra clave pueden ajustarse visualmente con clases tipográficas sin romper el orden lógico de los encabezados en el código HTML.
+
+</Seccion>
+
+</Paso>

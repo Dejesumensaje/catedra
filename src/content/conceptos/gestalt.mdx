@@ -1,0 +1,181 @@
+---
+titulo: Gestalt
+territorio: percepcion
+pregunta: ¿Por qué vemos una configuración global antes de distinguir las piezas sueltas que la componen?
+resumen: "No percibimos puntos, líneas y manchas aisladas para luego sumarlos: el sistema visual organiza el conjunto de inmediato hacia la estructura más simple y estable posible."
+modos: [laboratorio, comparacion]
+orden: 8
+relaciones:
+  - concepto: proximidad
+    porQue: La cercanía espacial es el factor más directo y austero con el que el sistema visual agrupa elementos en unidades mayores.
+  - concepto: semejanza
+    porQue: Compartir color, forma o tamaño une elementos distantes dentro de una misma familia perceptual sin necesidad de encerrarlos.
+  - concepto: region-comun
+    porQue: Encerrar piezas dentro de un borde o fondo compartido introduce una señal de agrupamiento capaz de imponerse sobre la distancia.
+  - concepto: continuidad
+    porQue: El ojo integra segmentos alineados en trayectorias suaves antes que quebrar el recorrido en esquinas abruptas.
+  - concepto: cierre
+    porQue: La tendencia hacia la buena forma lleva al sistema visual a completar los tramos ausentes de un contorno conocido.
+  - concepto: figura-fondo
+    porQue: Antes de agrupar partes, la percepción necesita decidir qué región avanza como objeto y qué superficie continúa detrás.
+fuentes:
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: Formulación experimental de los factores de agrupamiento perceptivo y de la ley de la Prägnanz (buena forma).
+  - autor: Kurt Koffka
+    obra: "Principles of Gestalt Psychology. Harcourt, Brace and Company"
+    anio: 1935
+    nota: Síntesis teórica de la psicología de la Gestalt; precisa que «el todo es algo distinto de la suma de sus partes» (the whole is something else than the sum of its parts, p. 176).
+  - autor: Johan Wagemans y otros
+    obra: "A century of Gestalt psychology in visual perception: II. Conceptual and theoretical foundations. Psychological Bulletin, 138(6), 1218–1252"
+    anio: 2012
+    url: https://doi.org/10.1037/a0029334
+    nota: Revisión de un siglo de investigación sobre Prägnanz, emergencia y simplicidad perceptual.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import GestaltExp from '../../components/diseno-visual/experiencias/GestaltExp.astro';
+
+<Paso id="idea" titular="Primero vemos el conjunto, después las piezas">
+
+<GestaltExp paso="idea" />
+
+<p class="dv-frase">El todo es algo distinto de la suma de las partes, y se percibe antes que ellas.</p>
+
+<div class="dv-texto">
+
+Al abrir una página o mirar un cartel, el sistema visual no registra cada letra, cada icono y cada línea por separado para después armar un rompecabezas consciente. Antes de leer una sola palabra, el cerebro agrupa lo que parece ir junto, separa planos y busca la estructura global más simple posible.
+
+La palabra alemana *Gestalt* significa «forma», «configuración» o «estructura integrada». En diseño visual nombra ese trabajo silencioso de organización: lo que hace que doce puntos se conviertan en una rueda o que veinte controles en una pantalla se entiendan como tres bloques claros.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Emergencia</dt>
+    <dd>La aparición de una forma o cualidad global que nace de la relación entre las partes y que no existe en ninguna pieza aislada.</dd>
+    <dt>Prägnanz (buena forma)</dt>
+    <dd>La tendencia del sistema visual a organizar cualquier estímulo ambiguo en la estructura más regular, simétrica y económica posible.</dd>
+    <dt>Agrupamiento</dt>
+    <dd>El proceso por el cual elementos sueltos tienden a percibirse como conjuntos según su cercanía, parecido, continuidad o cerramiento.</dd>
+    <dt>Señal perceptiva</dt>
+    <dd>Cada pista visual —un espacio, un color compartido, un marco o una línea— que inclina al ojo a unir o separar elementos.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Señales en conflicto frente a señales que cooperan">
+
+<div class="dv-texto">
+
+Ambas versiones de este reproductor de audio contienen los mismos nueve controles: en la izquierda, las pistas de distancia, color y marco tiran en direcciones opuestas; en la derecha, cooperan para definir tres grupos funcionales.
+
+</div>
+
+<GestaltExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión defectuosa, el color une «Play» con «Borrar» y un marco encierra botones que no tienen relación entre sí. En la versión resuelta, la [proximidad](/diseno-visual/proximidad), la [semejanza](/diseno-visual/semejanza) y la [región común](/diseno-visual/region-comun) apuntan al mismo lugar: transporte arriba, sonido en el centro y gestión de lista al pie.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Cuatro señales actuando sobre el mismo tablero">
+
+<GestaltExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas para que la estructura se lea a la primera">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Alinea varias señales en la misma dirección</h3>
+      <p>Cuando dos elementos pertenecen al mismo grupo funcional, haz que coincidan su cercanía espacial y su tratamiento visual. Si el espacio dice «van juntos» y el color confirma «son de la misma familia», la lectura es directa.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Resuelve los empates cuando dos leyes se contradicen</h3>
+      <p>Si usas el color para marcar estados transversales dentro de bloques separados por espacio, cuida que una de las dos señales tenga más peso que la otra. Cuando dos pistas opuestas empatan en fuerza, la mirada oscila y duda.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Ahorra marcos cuando el espacio ya agrupa</h3>
+      <p>La buena forma prefiere la economía de medios. Antes de encerrar cada sección en una caja con borde y fondo, comprueba si basta con acercar los elementos relacionados y abrir espacio respecto al resto.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<GestaltExp paso="errores" />
+
+<div class="dv-texto">
+
+### La Gestalt en piezas reales
+
+</div>
+
+<GestaltExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Identifica qué señal organiza o rompe el conjunto">
+
+<GestaltExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Koffka, la competencia entre leyes y los límites del agrupamiento">
+
+<Seccion titulo="«Distinto de la suma», no solo «mayor»">
+
+Suele repetirse que «el todo es más que la suma de las partes», pero cuando Kurt Koffka escribió *Principles of Gestalt Psychology* (1935) precisó esa formulación: «El todo es *algo distinto* de la suma de sus partes» (*the whole is something else than the sum of its parts*).
+
+La diferencia no es un matiz verbal. Una melodía transpuesta a otra tonalidad cambia todas sus notas individuales y, sin embargo, sigue siendo la misma melodía porque conserva las relaciones de intervalo entre ellas. Del mismo modo, en una interfaz o en un cartel no recordamos las coordenadas aisladas de cada caja, sino la estructura relacional —proporción, ritmo, grupos y jerarquía— que emerge entre ellas.
+
+</Seccion>
+
+<Seccion titulo="Qué pasa cuando dos principios tiran en sentido contrario">
+
+En 1923, Max Wertheimer formuló los factores clásicos del agrupamiento (proximidad, semejanza, buena continuación, cierre y destino común) y advirtió que pueden reforzarse entre sí o entrar en conflicto. Siete décadas más tarde, Stephen E. Palmer (1992) y Palmer y Rock (1994) añadieron dos principios aún más fuertes: la [región común](/diseno-visual/region-comun) y la **conexión uniforme** (unir elementos mediante un trazo físico).
+
+Como muestran las revisiones cuantitativas de Johan Wagemans y sus colegas (2012), cuando varias señales compiten en una misma pantalla suele establecerse una jerarquía de fuerza:
+
+- **Conexión física y cerramiento** (líneas que conectan o cajas cerradas) tienden a imponerse como fronteras duras.
+- **Proximidad espacial** organiza los grupos locales con gran rapidez si la proporción entre espacio interno y espacio externo es clara.
+- **Semejanza de color o forma** permite enlazar elementos a distancia a través de toda la página, sin romper los grupos espaciales si se aplica con mesura.
+
+</Seccion>
+
+<Seccion titulo="Economía perceptual y carga visual">
+
+La ley de la *Prägnanz* —también llamada principio de simplicidad o de mínima codificación— explica por qué una composición recargada de líneas divisorias, recuadros y sombras agota a quien la mira. Cada borde explícito es una figura más que el sistema visual debe procesar y separar del fondo.
+
+Cuando el diseño confía en la alineación y en la distancia para sugerir la estructura, el ojo completa las relaciones sin ruido intermedio. La mejor aplicación de la Gestalt rara vez consiste en añadir contenedores: consiste en colocar las piezas de modo que el conjunto se ordene por sí solo.
+
+</Seccion>
+
+<Seccion titulo="Lo que el agrupamiento visual no garantiza">
+
+**El orden visual no sustituye al orden en el código.** Que cuatro tarjetas parezcan un grupo en pantalla gracias al espacio o a un fondo compartido no significa nada para un lector de pantalla si en el HTML están sueltas o desordenadas. Toda agrupación visual relevante debe corresponderse con elementos semánticos (`<section>`, `<fieldset>`, listas o encabezados).
+
+**La familiaridad cultural interviene.** Aunque los mecanismos básicos de agrupamiento operan en etapas tempranas de la visión, el sentido de lectura (de izquierda a derecha o de derecha a izquierda) y las convenciones de cada oficio modifican qué grupo se recorre primero.
+
+</Seccion>
+
+</Paso>

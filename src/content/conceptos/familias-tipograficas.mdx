@@ -1,0 +1,169 @@
+---
+titulo: Familias tipográficas
+territorio: tipografia
+pregunta: ¿Qué hace que dos tipografías funcionen juntas o se estorben, y qué cambia en un bloque de texto cuando pasas de una serif a una sans o una monoespaciada?
+resumen: "Cada familia tipográfica tiene una estructura interna —altura de la equis, abertura de las formas, contraste del trazo y proporción del ancho—. Combinar familias exige parentesco estructural y diferencia clara de función."
+modos: [comparacion, diseccion]
+orden: 14
+relaciones:
+  - concepto: peso-y-contraste
+    porQue: El contraste entre astas gruesas y finas es uno de los rasgos estructurales que distingue unas familias de otras.
+  - concepto: legibilidad
+    porQue: La altura de la equis, las aberturas y la diferenciación entre glifos determinan cómo responde una familia en lectura o señalética.
+  - concepto: escalas-tipograficas
+    porQue: Dos familias al mismo tamaño en píxeles pueden verse distintas en escala aparente si no comparten altura de minúsculas.
+  - concepto: sistemas-y-excepciones
+    porQue: En un sistema editorial cada familia asume un rol fijo —navegación, prosa, código— sin intercambiarse al azar.
+fuentes:
+  - autor: Robert Bringhurst
+    obra: "The Elements of Typographic Style (4th ed.). Hartley & Marks"
+    anio: 2012
+    nota: Capítulos 6 («Choosing & Combining Type») y 11 sobre criterios estructurales, históricos y de altura de la equis para combinar familias.
+  - autor: Gerrit Noordzij
+    obra: "The Stroke: Theory of Writing. Hyphen Press"
+    anio: 2005
+    nota: Clasificación estructural de la letra a partir de la construcción del trazo (traslación de pluma ancha frente a expansión de pluma puntiaguda).
+  - autor: Sofie Beier
+    obra: "Reading Letters: Designing for Legibility. BIS Publishers"
+    anio: 2012
+    nota: "Anatomía comparada de letras: altura de la equis, aberturas, anchura de caja y diferenciación de glifos homógrafos."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import FamiliasExp from '../../components/diseno-visual/experiencias/FamiliasExp.astro';
+
+<Paso id="idea" titular="Más allá de «con patines» o «sin patines»: el esqueleto de la letra">
+
+<FamiliasExp paso="idea" />
+
+<p class="dv-frase">Para combinar dos fuentes, hazlas distintas en su papel y compatibles en su esqueleto.</p>
+
+<div class="dv-texto">
+
+Cuando empezamos a elegir tipografías solemos fijarnos en los detalles exteriores: si las letras terminan en remates (*serif*) o en cortes rectos (*sans serif*). Sin embargo, lo que decide cómo se comporta una fuente en un párrafo —y si puede convivir en paz con otra— está en sus proporciones internas: qué tan altas son sus minúsculas respecto a las mayúsculas, qué tan abiertos son los arcos de la *c*, la *e* o la *a*, y si cada letra ocupa el mismo ancho o solo el que necesita.
+
+Entender esa anatomía permite dejar de emparejar fuentes por intuición ciega: sabes por qué dos tipografías del mismo tamaño nominal en píxeles se ven dispares al ponerlas una al lado de la otra y qué familia conviene asignar a la lectura larga, a los rótulos de interfaz o a una columna de cifras.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco palabras para explorarlo</h3>
+  <dl>
+    <dt>Altura de la equis (x-height)</dt>
+    <dd>La altura de las letras minúsculas sin ascendentes ni descendentes (como la <em>x</em>, la <em>o</em> o la <em>n</em>). Determina el tamaño aparente de una fuente.</dd>
+    <dt>Remate (serifa)</dt>
+    <dd>El pequeño trazo terminal al final de las astas de una letra, heredado del ataque y salida del pincel o de la pluma ancha.</dd>
+    <dt>Abertura</dt>
+    <dd>La entrada de espacio blanco hacia el interior de letras parcialmente cerradas como la <em>c</em>, la <em>e</em>, la <em>s</em> o la <em>a</em>. Las aberturas amplias evitan que la letra se cierre de lejos.</dd>
+    <dt>Eje de modulación</dt>
+    <dd>La inclinación del tránsito entre los trazos gruesos y los trazos finos de una letra.</dd>
+    <dt>Monoespaciada (o tabular)</dt>
+    <dd>Fuente o juego de cifras donde todos los caracteres ocupan el mismo ancho horizontal, indispensable para código y tablas numéricas.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Parecido ambiguo frente a reparto claro de funciones">
+
+<div class="dv-texto">
+
+Ambas versiones de esta cartela de museo incluyen sala, título, comentario curatorial y ficha técnica. En la primera se mezclan cuatro fuentes sin criterio funcional; en la segunda cada familia asume un papel específico.
+
+</div>
+
+<FamiliasExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la primera versión conviven dos fuentes sin remates casi iguales (Arial y Roboto) con dos fuentes distintas en el texto y cifras proporcionales que se desalinean al comparar diámetros y fechas. En la segunda, cada familia responde a una tarea: **Roboto** orienta y etiqueta, **PT Serif** acompaña la lectura del texto curatorial y las **cifras tabulares** alinean la ficha de inventario.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Rayos X anatómicos y combinador por roles">
+
+<FamiliasExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres criterios para elegir y combinar familias">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Exprime una sola familia antes de añadir la segunda</h3>
+      <p>Una buena familia con redonda, cursiva, seminegrita y versalitas resuelve un libro o una interfaz entera sin necesidad de buscar otra fuente. Añade una segunda familia solo cuando exista una función distinta (por ejemplo, separar la prosa editorial de los controles y tablas).</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Busca parentesco interno y diferencia externa</h3>
+      <p>Al combinar una serif y una sans, procura que compartan una proporción similar de altura de la equis y de anchura de letra. Así armonizan en densidad mientras se distinguen sin ambigüedad por sus terminaciones.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Reserva cifras tabulares y monoespaciadas para datos y código</h3>
+      <p>En prosa corrida convienen las cifras proporcionales para que no abran huecos alrededor del número 1. En cambio, en precios, cronómetros, calificaciones o bloques de código, activa <code>font-variant-numeric: tabular-nums</code> o usa una familia monoespaciada.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<FamiliasExp paso="errores" />
+
+<div class="dv-texto">
+
+### Las familias en piezas reales
+
+</div>
+
+<FamiliasExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba el ojo en anatomía y emparejamiento de fuentes">
+
+<FamiliasExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Construcción del trazo, pantallas modernas y el mito de serif frente a sans">
+
+<Seccion titulo="Por qué quedó atrás el tópico «serif para papel, sans para pantalla»">
+
+Durante las primeras décadas de la informática personal se repitió como dogma que las fuentes con remates solo servían para papel impreso y que las pantallas exigían siempre fuentes sin remates. Aquella recomendación respondía a una limitación física concreta: en monitores de 72 o 96 píxeles por pulgada, una letra de 12 px disponía de tan pocos píxeles que los remates finos y las curvas moduladas se deformaban o creaban bordes dentados.
+
+En las pantallas actuales de alta densidad (200 a 450 píxeles por pulgada), tanto una serif bien dibujada como una sans con buenas aberturas se renderizan con nitidez. La elección hoy ya no depende de si el soporte es papel o cristal, sino de la **función** del texto, del tamaño al que se mira y del registro editorial que busca la publicación: en este mismo sitio lees los conceptos en PT Serif y manejas los controles en Roboto.
+
+</Seccion>
+
+<Seccion titulo="La teoría del trazo de Gerrit Noordzij">
+
+En *The Stroke: Theory of Writing* (2005; edición original neerlandesa de 1985), el tipógrafo y calígrafo Gerrit Noordzij demostró que clasificar las letras únicamente por si tienen o no remates oculta lo más importante: cómo se construye el contraste de su trazo.
+
+Noordzij distingue dos grandes lógicas heredadas de la escritura manual:
+- **Traslación (pluma ancha):** la herramienta mantiene un ángulo constante respecto al renglón; el grosor del trazo cambia según la dirección del movimiento y produce un eje de modulación inclinado (como en las romanas renacentistas o en muchas sans humanistas).
+- **Expansión (pluma puntiaguda flexible):** el grosor no depende del ángulo sino de la presión ejercida al bajar el trazo, generando un eje vertical y un alto contraste entre astas gruesas y travesaños finos (como en Bodoni o Didot).
+
+Dos familias que comparten la misma lógica de construcción del trazo —por ejemplo, una romana y una sans humanista— suelen emparejarse con mucha mayor naturalidad que dos fuentes elegidas al azar.
+
+</Seccion>
+
+<Seccion titulo="Por qué dos fuentes de 16 px no miden lo mismo">
+
+El tamaño de una fuente (`font-size: 16px`) no mide la altura de las letras visibles, sino la altura del bloque virtual (*em square*) heredado del cuerpo de plomo donde cabían desde las ascendentes más altas hasta las descendentes más bajas.
+
+Como explicó Robert Bringhurst en *The Elements of Typographic Style* (2012), cada diseñador de tipos reparte ese bloque de manera distinta: una familia puede dedicar el 52 % del bloque a la altura de la equis y otra solo el 42 %. Cuando mezclas dos familias dentro del mismo párrafo —por ejemplo, palabras en código monoespaciado o términos en otra escritura—, conviene ajustar ligeramente el tamaño de la segunda (o usar la propiedad CSS `font-size-adjust`) hasta que ambas alturas de minúsculas coincidan al ojo.
+
+</Seccion>
+
+</Paso>

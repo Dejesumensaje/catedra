@@ -1,0 +1,179 @@
+---
+titulo: Densidad visual
+territorio: composicion
+pregunta: ¿Cuándo una pantalla con muchos datos es una herramienta precisa y cuándo es solo desorden acumulado?
+resumen: "La densidad visual es la cantidad de información significativa presentada por unidad de superficie. No es enemiga de la claridad: una tabla ferroviaria o un mapa pueden tener altísima densidad de datos si eliminan la tinta decorativa que no informa."
+modos: [laboratorio, diseccion]
+orden: 28
+relaciones:
+  - concepto: espacio-negativo
+    porQue: Incluso en las tablas más densas, el espacio micro entre filas y columnas es lo que permite distinguir cada cifra sin usar rejillas pesadas.
+  - concepto: proximidad
+    porQue: Acercar el dato a su unidad y separar las columnas con medianiles claros permite compactar información sin que se mezcle.
+  - concepto: reticulas-y-alineacion
+    porQue: Cuando los números y textos se alinean sobre ejes estrictos, las líneas divisorias verticales dejan de hacer falta.
+  - concepto: jerarquia
+    porQue: Cuanto mayor es la densidad de una vista, más importante resulta diferenciar encabezados, cifras principales y notas secundarias.
+  - concepto: sistemas-y-excepciones
+    porQue: Repetir una misma estructura modular (múltiplos pequeños) permite leer docenas de registros complejos de un solo vistazo.
+fuentes:
+  - autor: Edward R. Tufte
+    obra: "The Visual Display of Quantitative Information. Graphics Press"
+    anio: 1983
+    nota: Formulación de la razón tinta-datos (data-ink ratio), la densidad de datos y la crítica al ornamento burocrático (chartjunk).
+  - autor: Edward R. Tufte
+    obra: "Envisioning Information. Graphics Press"
+    anio: 1990
+    nota: Capítulos sobre lecturas micro/macro y múltiplos pequeños (small multiples) en horarios, mapas y tablas de alta densidad.
+  - autor: Ruth Rosenholtz, Yuanzhen Li y Lisa Nakano
+    obra: "Measuring visual clutter. Journal of Vision, 7(2):17, 1–22"
+    anio: 2007
+    url: https://doi.org/10.1167/7.2.17
+    nota: Demostración experimental de que el abarrotamiento perceptual proviene del exceso de bordes, colores y orientaciones dispares más que del número de datos.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import DensidadVisualExp from '../../components/diseno-visual/experiencias/DensidadVisualExp.astro';
+
+<Paso id="idea" titular="No te ahogan los datos: te ahogan las jaulas que los encierran">
+
+<DensidadVisualExp paso="idea" />
+
+<p class="dv-frase">El problema rara vez es tener demasiados datos: suele ser rodearlos de demasiadas cajas, líneas y adornos.</p>
+
+<div class="dv-texto">
+
+Cuando una pantalla o una tabla se siente saturada, el diagnóstico apresurado suele ser «aquí hay demasiada información; borremos la mitad». Sin embargo, basta abrir un buen atlas cartográfico, la tabla periódica de los elementos o un horario de trenes suizo para comprobar que el ojo humano lee con total comodidad cientos de datos por página cuando están bien organizados.
+
+La *densidad visual* mide cuánta información útil cabe en una superficie determinada. Lo que fatiga la vista casi nunca es la densidad de datos en sí, sino el abarrotamiento de *tinta no informativa*: marcos dentro de marcos, barrotes verticales gruesos, sombras, iconos decorativos repetidos y etiquetas que vuelven a escribir veinte veces lo que ya dijo el encabezado.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarla</h3>
+  <dl>
+    <dt>Densidad de datos</dt>
+    <dd>La cantidad de valores o entradas de información real presentados por centímetro cuadrado o por pantalla.</dd>
+    <dt>Razón tinta-datos</dt>
+    <dd>Concepto de Edward Tufte que mide qué proporción de los trazos visibles de una pieza se dedica a mostrar datos irrepetibles frente a bordes y adornos.</dd>
+    <dt>Abarrotamiento (clutter)</dt>
+    <dd>La congestión visual provocada por el exceso de cajas, colores y bordes que impide agrupar y recorrer la información.</dd>
+    <dt>Múltiplos pequeños</dt>
+    <dd>Una serie de vistas o minigráficos que comparten exactamente la misma escala y estructura, de modo que aprender a leer uno enseña a leer todos.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Cajas redundantes frente a comparación directa en una sola vista">
+
+<div class="dv-texto">
+
+En este monitor de materias primas, la versión izquierda parece saturada aunque solo alcanza a mostrar cuatro registros; la derecha presenta el doble de activos junto con su curva histórica de treinta días y se consulta con mayor calma.
+
+</div>
+
+<DensidadVisualExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión recargada cada cifra está metida dentro de un recuadro que a su vez vive dentro de una tarjeta con sombra, y las palabras «Activo:», «Precio:» y «Variación:» se repiten en todas las cajas. En la tabla limpia, el encabezado nombra cada columna una sola vez, desaparecen las líneas verticales y los minigráficos (*sparklines*) resumen treinta días de evolución en el espacio de una palabra.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Cantidad de datos frente a tinta no informativa">
+
+<DensidadVisualExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para mostrar más información con menos ruido">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Quita las líneas verticales y confía en la alineación</h3>
+      <p>Cuando los textos de una columna están alineados a la izquierda y los números a la derecha (en cifras tabulares), la propia columna dibuja su borde invisible. Eliminar los barrotes verticales y dejar solo filetes horizontales muy suaves reduce a la mitad la tinta estructural.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Escribe la etiqueta una sola vez</h3>
+      <p>Si tienes veinte filas con precios, fechas o estados, no escribas «Precio:», «Fecha:» y «Estado:» veinte veces. Pon el título en la cabecera de la columna o deja que el propio formato del dato (<code>14 oct 2026</code>, <code>24,50 USD</code>) se explique solo.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Ajusta la densidad a la tarea de quien mira</h3>
+      <p>Usa baja densidad cuando la persona llega por primera vez o debe tomar una única decisión rápida (una portada, un aviso de seguridad). Usa alta densidad limpia cuando la persona necesita comparar veinte opciones sin perderlas de vista haciendo scroll.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<DensidadVisualExp paso="errores" />
+
+<div class="dv-texto">
+
+### La densidad visual en piezas reales
+
+</div>
+
+<DensidadVisualExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Distingue alta densidad de información y ruido burocrático">
+
+<DensidadVisualExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="La razón tinta-datos de Tufte, el abarrotamiento y cuándo inflar es un error">
+
+<Seccion titulo="La razón tinta-datos de Edward Tufte">
+
+En *The Visual Display of Quantitative Information* (1983), el estadístico y teórico del diseño de información Edward R. Tufte propuso medir cualquier tabla o gráfico mediante una fracción sencilla:
+
+**Razón tinta-datos** = *(tinta empleada en mostrar los datos)* / *(tinta total empleada en imprimir el gráfico)*.
+
+Tufte formuló una regla de edición directa: **borra toda tinta que no comunique datos nuevos**, siempre que no comprometas la legibilidad. Cuando aplicas esa poda a una tabla —quitando marcos exteriores dobles, fondos oscuros alternos, sombras de caja y rejillas verticales—, ocurre algo revelador: no solo descansa la vista, sino que de pronto cabe el doble de información útil en el mismo espacio.
+
+</Seccion>
+
+<Seccion titulo="Qué produce realmente el abarrotamiento visual">
+
+En un estudio publicado en *Journal of Vision* (2007), Ruth Rosenholtz, Yuanzhen Li y Lisa Nakano midieron qué hace que los seres humanos sintamos que una pantalla está «abarrotada» (*cluttered*). Comprobaron que la fatiga no aumenta de forma lineal con el número de elementos, sino con la **variedad desordenada de bordes, contrastes cromáticos y orientaciones**.
+
+Veinte cifras alineadas en una columna con la misma tipografía se perciben como **un solo objeto vertical** fácil de recorrer. En cambio, cuatro tarjetas rodeadas de bordes negros, sombras, botones de tres colores e iconos distintos generan decenas de contornos en conflicto que saturan la atención.
+
+</Seccion>
+
+<Seccion titulo="El peligro opuesto: inflar tanto que obligas a recordar">
+
+Por miedo a que una interfaz parezca densa, a veces se cae en el extremo contrario: convertir cada fila de una tabla en una tarjeta enorme con `40 px` de relleno interior, de modo que en un monitor solo se ven tres registros a la vez.
+
+Tufte (1990) advirtió por qué esa fragmentación daña las tareas de análisis: **cuando repartes datos comparables a lo largo de cinco pantallas o diez pestañas, obligas a la persona a recordar cifras en la memoria de corto plazo mientras hace scroll**. Poner los datos relevantes juntos en el espacio («*adjacent in space, not stacked in time*») permite que los ojos comparen de un vistazo lo que la memoria olvidaría en segundos.
+
+</Seccion>
+
+<Seccion titulo="Lectura micro y macro en una misma superficie">
+
+Las mejores piezas de alta densidad funcionan en dos distancias de lectura a la vez:
+
+- **Lectura macro (de lejos):** al primer vistazo percibes la forma global —qué franja del día tiene más lluvia, en qué zona de la tabla periódica están los metales o qué mes tuvo el pico de ventas—.
+- **Lectura micro (de cerca):** cuando detienes la mirada en un punto concreto, puedes leer el número exacto sin confusión.
+
+Para que ambas capas convivan sin estorbarse, el secreto está en combinar [retículas y alineación](/diseno-visual/reticulas-y-alineacion) estrictas, una [jerarquía](/diseno-visual/jerarquia) de pesos clara y un [espacio negativo](/diseno-visual/espacio-negativo) micro medido al milímetro.
+
+</Seccion>
+
+</Paso>

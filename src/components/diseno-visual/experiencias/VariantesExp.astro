@@ -1,0 +1,1016 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'variantes';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const PAPEL = '#ffffff';
+const FONDO = '#fbfbf9';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Recorre el eje de jerarquía.',
+    hacer: 'En «Eje 1 · Jerarquía visual», cambia a «Discreta (terciaria)».',
+    pista: 'Elige la tercera opción del primer control.',
+    logro: 'La pieza conserva la misma familia tipográfica, altura y alineación que sus hermanas, pero pierde el relleno y atenúa el borde para ceder el protagonismo a las acciones principales.',
+  },
+  {
+    titulo: 'Cambia la densidad sin romper la familia.',
+    hacer: 'En «Eje 2 · Tamaño y densidad», selecciona «Compacto».',
+    pista: 'Elige la primera opción del segundo control.',
+    preparar: { jerarquia: 'fuerte' },
+    logro: 'Al pasar a «Compacto», se reducen el cuerpo de letra y el relleno interior de forma proporcional. Sirve para barras densas o tablas sin necesidad de inventar un componente nuevo.',
+  },
+  {
+    titulo: 'Inspecciona el estado de foco de teclado.',
+    hacer: 'En «Eje 3 · Estado interactivo», selecciona «Hover / Foco».',
+    pista: 'Elige la segunda opción del tercer control.',
+    logro: 'Un sistema de variantes tiene que prever cómo responde cada nivel de jerarquía cuando recibe el foco del teclado o el cursor, usando un anillo o segundo contorno inequívoco.',
+  },
+  {
+    titulo: 'Comprueba la explosión combinatoria.',
+    hacer: 'Abre «Más controles» y sube «Variantes de jerarquía en el catálogo» a 7 o más.',
+    pista: 'Despliega «Más controles» y arrastra el deslizador hacia la derecha.',
+    abrir: true,
+    logro: 'Con 7 niveles de jerarquía × 3 tamaños × 4 estados ya tienes 84 combinaciones que mantener y documentar, y los escalones vecinos se vuelven tan parecidos que nadie sabe cuál elegir.',
+  },
+  {
+    titulo: 'Poda la matriz a tres escalones francos.',
+    hacer: 'Con «Más controles» abierto, devuelve «Variantes de jerarquía en el catálogo» a 3 y activa «Mostrar matriz completa de familia».',
+    pista: 'Lleva el deslizador a 3 y marca la casilla inferior.',
+    abrir: true,
+    logro: 'Tres niveles de jerarquía (Fuerte, Normal, Discreta) bastan para resolver casi cualquier barra de acciones con un contraste nítido entre cada peldaño.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Comparación de dos barras de acciones: arriba tres botones idénticos donde es fácil pulsar Descartar por error; abajo tres variantes hermanas (Fuerte, Normal y Discreta) que comparten geometría pero ordenan la prioridad.">
+      <rect width="600" height="180" fill={FONDO} />
+      {/* Arriba: Sin variantes */}
+      <g transform="translate(18, 14)">
+        <rect width="564" height="68" fill={PAPEL} stroke={REGLA} stroke-width="1.5" />
+        <text x="16" y="20" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>SIN VARIANTES · TRES BOTONES CON EL MISMO PESO VISUAL</text>
+        <g transform="translate(16, 28)">
+          <rect x="0" y="0" width="148" height="28" fill={T} />
+          <text x="74" y="18" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={PAPEL}>Guardar y publicar</text>
+          <rect x="160" y="0" width="148" height="28" fill={T} />
+          <text x="234" y="18" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={PAPEL}>Guardar borrador</text>
+          <rect x="320" y="0" width="148" height="28" fill={T} />
+          <text x="394" y="18" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={PAPEL}>Descartar todo</text>
+        </g>
+      </g>
+
+      {/* Abajo: Con 3 variantes de familia */}
+      <g transform="translate(18, 96)">
+        <rect width="564" height="70" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="16" y="20" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>CON 3 VARIANTES DE JERARQUÍA · MISMA ALTURA (28 PX) Y TIPOGRAFÍA, DISTINTO ROL</text>
+        <g transform="translate(16, 28)">
+          {/* Variante 1: Fuerte */}
+          <rect x="0" y="0" width="148" height="28" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+          <text x="74" y="18" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>Guardar y publicar</text>
+          {/* Variante 2: Normal / Secundaria */}
+          <rect x="160" y="0" width="148" height="28" fill={PAPEL} stroke={T} stroke-width="1.4" />
+          <text x="234" y="18" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>Guardar borrador</text>
+          {/* Variante 3: Discreta / Enlace */}
+          <text x="348" y="18" font-family={SANS} font-size="10.5" font-weight="700" fill={G} text-decoration="underline">Descartar</text>
+        </g>
+      </g>
+    </svg>
+    <p>En la fila inferior los tres botones se reconocen como hermanos del mismo componente, pero nadie pulsa «Descartar» por accidente. ¿Qué comparten y qué varía entre ellos?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Comparten su <strong>identidad de familia</strong> (la altura de <code>28 px</code>, la tipografía Roboto, la alineación de la línea base y el espaciado interno), pero articulan tres <strong>variantes de jerarquía</strong>: <em>Fuerte</em> (fondo amarillo señal y borde firme para la acción principal), <em>Secundaria</em> (contorno sobre papel para la alternativa frecuente) y <em>Discreta</em> (sin caja para la salida destructiva o menor).</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Nueve variantes casi idénticas que paralizan al equipo"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Nombres ambiguos y solapados',
+          texto: 'Nadie puede explicar en una reunión cuándo usar «Semiprimario», «Destacado suave» o «Alternativo 2».',
+          zona: zona(16, 18, 328, 86),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Diferencias tibias de 5 % de gris',
+          texto: 'Entre tres de las variantes solo cambia el borde de #333 a #555: en una pantalla real parecen un error involuntario.',
+          zona: zona(16, 110, 328, 78),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Explosión de mantenimiento',
+          texto: '9 estilos × 3 tamaños × 4 estados generan 108 combinaciones que hay que probar cada vez que cambia el sistema.',
+          zona: zona(16, 196, 328, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Catálogo confuso con nueve variantes de botón casi indistinguibles y nombres ambiguos como Semiprimario o Alternativo 2.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="18" y="30" font-family={SANS} font-size="9.5" font-weight="900" fill={ROJO}>CATÁLOGO INFLADO · 9 VARIANTES SIN REGLA DE ELECCIÓN</text>
+        {[
+          ['Primario 1', '#222222', '#ffffff', 0, 0],
+          ['Semiprimario', '#2f2f2f', '#ffffff', 1, 0],
+          [' Énfasis A', '#3d3d3d', '#ffffff', 2, 0],
+          ['Secundario 1', '#ffffff', '#222222', 0, 1],
+          ['Secundario B', '#fbfbf9', '#333333', 1, 1],
+          ['Suave 2', '#f4f4f0', '#444444', 2, 1],
+          ['Borde fino', '#ffffff', '#555555', 0, 2],
+          ['Alternativo', '#fafafa', '#606060', 1, 2],
+          ['Neutro plus', '#f0f0ec', '#222222', 2, 2],
+        ].map(([nom, bg, fg, c, f]) => {
+          const bx = 18 + Number(c) * 110;
+          const by = 42 + Number(f) * 46;
+          return (
+            <g>
+              <rect x={bx} y={by} width="104" height="34" fill={String(bg)} stroke={T} stroke-width="1.2" />
+              <text x={bx + 52} y={by + 21} text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={String(fg)}>{nom}</text>
+            </g>
+          );
+        })}
+        <rect x="18" y="196" width="324" height="68" fill="#fbe9e7" stroke={ROJO} stroke-width="1.5" />
+        <text x="30" y="218" font-family={SANS} font-size="10.5" font-weight="900" fill={ROJO}>9 jerarquías × 3 tamaños × 4 estados = 108 piezas</text>
+        <text x="30" y="238" font-family={SERIF} font-size="11" fill={T}>Cuando las variantes se parecen tanto, el diseñador elige</text>
+        <text x="30" y="254" font-family={SERIF} font-size="11" fill={T}>al azar y el lector no percibe ninguna jerarquía.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Matriz ortogonal limpia: 3 jerarquías × 2 densidades"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Saltos francos entre jerarquías',
+          texto: 'Fuerte (amarillo señal con sombra dura), Normal (contorno nítido sobre blanco) y Discreto (enlace sin borde) no se confunden jamás.',
+          zona: zona(16, 22, 328, 92),
+        },
+        {
+          ...pct(330, 152),
+          titulo: 'Dos densidades con rasgo de familia intacto',
+          texto: 'La fila Estándar (34 px) y la Compacta (24 px) usan exactamente los mismos colores y bordes: se reconocen como la misma pieza.',
+          zona: zona(16, 120, 328, 66),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Criterio de uso en una sola frase',
+          texto: 'Máximo 1 Fuerte por bloque, Normal para acciones acompañantes y Discreto para omitir o cancelar.',
+          zona: zona(16, 194, 328, 70),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Matriz de variantes limpia con tres columnas de jerarquía (Fuerte, Normal, Discreto) por dos filas de tamaño (Estándar y Compacto).">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="18" y="30" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>MATRIZ CONTROLADA · 3 JERARQUÍAS × 2 TAMAÑOS</text>
+
+        {/* Fila 1: Estándar */}
+        <text x="18" y="50" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>DENSIDAD ESTÁNDAR (34 PX)</text>
+        <rect x="21" y="61" width="102" height="34" fill={T} />
+        <rect x="18" y="58" width="102" height="34" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="69" y="79" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>1. Fuerte</text>
+
+        <rect x="129" y="58" width="102" height="34" fill={PAPEL} stroke={T} stroke-width="1.4" />
+        <text x="180" y="79" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>2. Normal</text>
+
+        <text x="291" y="79" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={G} text-decoration="underline">3. Discreta</text>
+
+        {/* Fila 2: Compacta */}
+        <text x="18" y="132" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>DENSIDAD COMPACTA (24 PX · PARA BARRAS Y TABLAS)</text>
+        <rect x="20" y="143" width="102" height="24" fill={T} />
+        <rect x="18" y="141" width="102" height="24" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="69" y="157" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>1. Fuerte · S</text>
+
+        <rect x="129" y="141" width="102" height="24" fill={PAPEL} stroke={T} stroke-width="1.2" />
+        <text x="180" y="157" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>2. Normal · S</text>
+
+        <text x="291" y="157" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G} text-decoration="underline">3. Discreta · S</text>
+
+        <rect x="18" y="194" width="324" height="70" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="216" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>Cada celda tiene una pregunta y una respuesta única</text>
+        <text x="30" y="236" font-family={SERIF} font-size="11" fill={TXT}>Nadie duda qué variante elegir al armar una pantalla</text>
+        <text x="30" y="252" font-family={SERIF} font-size="11" fill={TXT}>nueva y todas conservan los rasgos de familia.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Matriz morfológica · ejes de jerarquía, tamaño y estado"
+    consigna="Cruza los tres ejes ortogonales de un componente (jerarquía visual, tamaño/densidad y estado interactivo) y observa cómo se articula cada variante en contexto y dentro de la matriz completa."
+    nota="Fija la variante «Fuerte + Estándar + Reposo» como A y prueba «Discreta» o «Inhabilitado» en B para verificar qué rasgos se mantienen constantes."
+  >
+    <svg slot="escenario" viewBox="0 0 640 310" role="img" aria-label="Matriz morfológica de variantes cruzando jerarquía Fuerte, Normal y Discreta con tamaños Compacto, Estándar y Amplio.">
+      <rect width="640" height="310" fill={FONDO} />
+      <rect x="24" y="24" width="592" height="262" fill={PAPEL} stroke={T} stroke-width="1.5" />
+      <text x="44" y="54" font-family={SANS} font-size="12" font-weight="900" fill={T}>MATRIZ DE VARIANTES: 3 JERARQUÍAS × 3 DENSIDADES × 4 ESTADOS</text>
+      <rect x="44" y="80" width="160" height="40" fill={AMARILLO} stroke={T} stroke-width="2" />
+      <text x="124" y="105" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill={T}>Variante Fuerte</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Compara las celdas de la matriz morfológica y comprueba cómo se dispara el número total de combinaciones al añadir variantes innecesarias." />
+
+    <Opciones
+      lab={lab}
+      variable="jerarquia"
+      etiqueta="Eje 1 · Jerarquía visual"
+      valor="fuerte"
+      opciones={[
+        { valor: 'fuerte', texto: 'Fuerte (primaria)' },
+        { valor: 'normal', texto: 'Normal (secundaria)' },
+        { valor: 'discreta', texto: 'Discreta (terciaria)' },
+      ]}
+      ayuda="Define el peso relativo de la acción dentro de su grupo."
+    />
+
+    <Opciones
+      lab={lab}
+      variable="densidad"
+      etiqueta="Eje 2 · Tamaño y densidad"
+      valor="estandar"
+      opciones={[
+        { valor: 'compacto', texto: 'Compacto' },
+        { valor: 'estandar', texto: 'Estándar' },
+        { valor: 'amplio', texto: 'Amplio' },
+      ]}
+      ayuda="Adapta la pieza a una tabla densa, un formulario normal o una portada."
+    />
+
+    <Opciones
+      lab={lab}
+      variable="estado"
+      etiqueta="Eje 3 · Estado interactivo"
+      valor="reposo"
+      opciones={[
+        { valor: 'reposo', texto: 'Reposo' },
+        { valor: 'foco', texto: 'Hover / Foco' },
+        { valor: 'activo', texto: 'Activo (pulsado)' },
+        { valor: 'inhabilitado', texto: 'Inhabilitado' },
+      ]}
+      ayuda="Comunica si la pieza puede pulsarse, si tiene el foco del teclado o si no está disponible."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="cantidadJerarquias"
+        etiqueta="Variantes de jerarquía en el catálogo"
+        min={2}
+        max={8}
+        paso={1}
+        valor={3}
+        unidad="niveles"
+        ayuda="Observa cómo a partir de 5 niveles se dispara la explosión combinatoria y cae la distancia perceptual entre variantes."
+      />
+      <Interruptor
+        lab={lab}
+        variable="matriz"
+        etiqueta="Mostrar matriz completa de familia"
+        activo={true}
+        ayuda="Muestra la tabla completa de combinaciones junto al espécimen activo."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"jerarquia":"fuerte","densidad":"estandar","estado":"reposo","cantidadJerarquias":3}'>Primaria estándar en reposo</button>
+      <button type="button" class="dv-boton" data-preset='{"jerarquia":"normal","densidad":"compacto","estado":"foco","cantidadJerarquias":3}'>Secundaria compacta con foco de teclado</button>
+      <button type="button" class="dv-boton" data-preset='{"jerarquia":"discreta","densidad":"estandar","estado":"inhabilitado","cantidadJerarquias":3}'>Terciaria inhabilitada</button>
+      <button type="button" class="dv-boton" data-preset='{"jerarquia":"fuerte","densidad":"estandar","estado":"reposo","cantidadJerarquias":8}'>Explosión combinatoria (8 × 3 × 4 = 96)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Separa las variantes con un salto visual franco"
+      comparar={false}
+      consigna="La variante primaria y la secundaria tienen ambas fondo oscuro (#222222 y #383838). En una barra de acciones parecen el mismo botón mal impreso. Aumenta la distancia entre ambas variantes."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Dos variantes con casi el mismo relleno oscuro.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="distancia"
+        etiqueta="Distancia visual entre variante Primaria y Secundaria"
+        min={0}
+        max={100}
+        paso={25}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Conserva el ADN de familia entre variantes hermanas"
+      comparar={false}
+      consigna="Al crear la variante secundaria le cambiaron la tipografía a cursiva con serifa, le pusieron bordes redondeados de 20 px y otra altura. Ya no parece hermana de la primaria, sino una pieza de otro sitio web. Restaura los rasgos de familia."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Variante secundaria que rompe la geometría y la tipografía de familia.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="familia"
+        etiqueta="Qué cambia entre la variante Primaria y la Secundaria"
+        valor="caos"
+        opciones={[
+          { valor: 'caos', texto: 'Cambia fuente, altura, radio y relleno (falsa familia)' },
+          { valor: 'coherente', texto: 'Solo cambia relleno/borde; conserva altura y fuente' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="No olvides los estados de foco de teclado e inhabilitado"
+      comparar={false}
+      consigna="Diseñaron la variante en estado de reposo, pero al navegar con la tecla Tab no se ve dónde está el foco y el botón deshabilitado tiene el mismo contraste que el activo. Completa la matriz de estados."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Estados de foco e inhabilitado sin diferenciar.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="estados"
+        etiqueta="Cobertura del eje de estados en la variante"
+        valor="incompleto"
+        opciones={[
+          { valor: 'incompleto', texto: 'Solo estado de reposo (sin foco visible)' },
+          { valor: 'completo', texto: 'Anillo de foco claro + estado inhabilitado honesto' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Este mismo sitio: las tres variantes de .dv-boton en cada instrumento"
+      notas={[
+        {
+          ...pct(90, 96),
+          titulo: '.dv-boton-fuerte (Primaria)',
+          texto: 'Fondo negro (#222222) o amarillo señal para la acción principal del momento: «Fijar como A y comparar» o «Siguiente paso →».',
+          zona: zona(18, 46, 152, 86),
+        },
+        {
+          ...pct(260, 96),
+          titulo: '.dv-boton (Secundaria / Estándar)',
+          texto: 'Fondo papel con borde de 1 px para acciones compañeras como «Restablecer», «Copiar enlace» o los presets de prueba.',
+          zona: zona(182, 46, 160, 86),
+        },
+        {
+          ...pct(180, 212),
+          titulo: '.dv-guia-saltar (Discreta)',
+          texto: 'Sin borde ni caja pesada para «Omitir la guía»: siempre disponible, pero nunca compite con el paso activo.',
+          zona: zona(18, 146, 324, 114),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Las tres variantes reales del componente botón en este sitio: dv-boton-fuerte, dv-boton y dv-guia-saltar.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="18" y="30" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.06em" fill={T}>FAMILIA DE BOTONES EN /DISENO-VISUAL</text>
+
+        <rect x="18" y="46" width="152" height="86" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="28" y="66" font-family={SANS} font-size="9" font-weight="700" fill={G}>1. VARIANTE FUERTE</text>
+        <rect x="28" y="78" width="132" height="30" fill={T} />
+        <text x="94" y="97" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={PAPEL}>Fijar como A</text>
+
+        <rect x="182" y="46" width="160" height="86" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="192" y="66" font-family={SANS} font-size="9" font-weight="700" fill={G}>2. VARIANTE NORMAL</text>
+        <rect x="192" y="78" width="108" height="30" fill={PAPEL} stroke={T} stroke-width="1.2" />
+        <text x="246" y="97" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={T}>Restablecer</text>
+
+        <rect x="18" y="146" width="324" height="114" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="168" font-family={SANS} font-size="9" font-weight="700" fill={G}>3. VARIANTE DISCRETA (.DV-GUIA-SALTAR)</text>
+        <text x="30" y="196" font-family={SANS} font-size="11" font-weight="700" fill={G} text-decoration="underline">Omitir la guía</text>
+        <text x="30" y="222" font-family={SERIF} font-size="11" fill={TXT}>Las tres comparten tipografía Roboto, altura de línea</text>
+        <text x="30" y="240" font-family={SERIF} font-size="11" fill={TXT}>y respuesta al foco de teclado, pero ordenan la atención.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Estados de una sesión en el programa del curso: tres variantes semánticas"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Variante «programada»',
+          texto: 'Borde gris fino y fondo papel para las sesiones que aún no se han dictado: muestra la pregunta central sin reclamar urgencia.',
+          zona: zona(18, 22, 324, 74),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Variante «dictada»',
+          texto: 'Borde firme en tinta (#222222) e indicador de presentación disponible, señalando que falta escribir la memoria.',
+          zona: zona(18, 104, 324, 74),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Variante «con-memoria»',
+          texto: 'Acento amarillo señal (#eeff41) y etiqueta explícita: comunica tanto por color como por texto que las dos capas están completas.',
+          zona: zona(18, 186, 324, 76),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Las tres variantes de estado de una sesión en el curso Pensamiento Sensorial: programada, dictada y con memoria.">
+        <rect width={W} height={H} fill={PAPEL} />
+        {/* Programada */}
+        <rect x="18" y="22" width="324" height="74" fill={PAPEL} stroke={REGLA} stroke-width="1.5" />
+        <rect x="30" y="34" width="88" height="18" fill={FONDO} stroke={G} stroke-width="1" />
+        <text x="74" y="46" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>PROGRAMADA</text>
+        <text x="30" y="72" font-family={SERIF} font-size="12.5" font-weight="700" fill={TXT}>S12 · ¿Qué recuerda un objeto?</text>
+
+        {/* Dictada */}
+        <rect x="18" y="104" width="324" height="74" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <rect x="30" y="116" width="132" height="18" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="96" y="128" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill={T}>DICTADA · CON DECK</text>
+        <text x="30" y="154" font-family={SERIF} font-size="12.5" font-weight="700" fill={T}>S04 · El umbral de atención</text>
+
+        {/* Con memoria */}
+        <rect x="18" y="186" width="324" height="76" fill={FONDO} stroke={T} stroke-width="2" />
+        <rect x="30" y="198" width="142" height="20" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="101" y="211" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill={T}>CON MEMORIA · COMPLETA</text>
+        <text x="30" y="238" font-family={SERIF} font-size="12.5" font-weight="700" fill={T}>S01 · Lo esperado frente a lo ocurrido</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Variantes de densidad en tarjetas: Portada amplia frente a Índice compacto"
+      notas={[
+        {
+          ...pct(180, 74),
+          titulo: 'Variante Amplia (Destacado de portada)',
+          texto: 'Despliega pregunta completa, resumen de tres líneas y modos de exploración para presentar una entrada individual.',
+          zona: zona(18, 22, 324, 110),
+        },
+        {
+          ...pct(180, 198),
+          titulo: 'Variante Compacta (Fila de índice)',
+          texto: 'Condensa el mismo concepto en una sola fila con glifo, número y título para poder escanear los 37 conceptos de un vistazo.',
+          zona: zona(18, 142, 324, 118),
+        },
+        {
+          ...pct(310, 198),
+          titulo: 'Mismos tokens y códigos de estado',
+          texto: 'Ambas densidades comparten tipografía, bordes y numeración: quien aprende pasa del índice a la entrada sin extrañeza.',
+          zona: zona(220, 142, 122, 118),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Comparación entre la variante amplia de una tarjeta de concepto y tres filas en su variante compacta de índice.">
+        <rect width={W} height={H} fill={PAPEL} />
+        {/* Variante amplia */}
+        <rect x="18" y="22" width="324" height="110" fill={PAPEL} stroke={T} stroke-width="1.8" />
+        <text x="30" y="42" font-family={SANS} font-size="9" font-weight="700" fill={G}>VARIANTE AMPLIA · FICHA DE PORTADA</text>
+        <text x="30" y="64" font-family={SERIF} font-size="15" font-weight="700" fill={T}>32 · Variantes</text>
+        <text x="30" y="84" font-family={SERIF} font-size="11" fill={TXT}>Versiones controladas de un mismo componente para</text>
+        <text x="30" y="100" font-family={SERIF} font-size="11" fill={TXT}>responder a cambios de jerarquía, estado o densidad.</text>
+        <text x="30" y="120" font-family={SANS} font-size="9" font-weight="700" fill={T}>[Laboratorio] [Comparación]</text>
+
+        {/* Variante compacta */}
+        <text x="18" y="156" font-family={SANS} font-size="9" font-weight="700" fill={G}>VARIANTE COMPACTA · ÍNDICE DE TERRITORIO</text>
+        {[
+          ['29', 'Tokens', 'Laboratorio · Disección'],
+          ['30', 'Componentes', 'Disección · Comparación'],
+          ['32', 'Variantes', 'Laboratorio · Comparación'],
+        ].map(([num, nom, mod], idx) => {
+          const fy = 166 + idx * 30;
+          return (
+            <g>
+              <rect x="18" y={fy} width="324" height="26" fill={idx === 2 ? AMARILLO : FONDO} stroke={T} stroke-width="1.2" />
+              <text x="28" y={fy + 17} font-family={SANS} font-size="10" font-weight="700" fill={G}>{num}</text>
+              <text x="52" y={fy + 17} font-family={SERIF} font-size="12" font-weight="700" fill={T}>{nom}</text>
+              <text x="332" y={fy + 17} text-anchor="end" font-family={SANS} font-size="9.5" fill={TXT}>{mod}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre ejes de variación, identidad de familia, explosión combinatoria y cuándo crear una variante frente a un componente nuevo."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    jerarquia: string;
+    densidad: string;
+    estado: string;
+    cantidadJerarquias: number;
+    matriz: boolean;
+  };
+
+  function estiloVariante(jerarquia: string, estado: string) {
+    if (estado === 'inhabilitado') {
+      return {
+        fondo: '#f2f2ee',
+        borde: '#b8b8b0',
+        texto: '#6f6f6f',
+        grosor: 1.2,
+        dash: '3 2',
+        sombra: false,
+        anilloFoco: false,
+      };
+    }
+    const base =
+      jerarquia === 'fuerte'
+        ? { fondo: '#eeff41', borde: '#222222', texto: '#222222', grosor: 2, dash: '', sombra: estado !== 'activo' }
+        : jerarquia === 'normal'
+          ? { fondo: '#ffffff', borde: '#222222', texto: '#222222', grosor: 1.5, dash: '', sombra: false }
+          : { fondo: 'transparent', borde: 'transparent', texto: '#222222', grosor: 0, dash: '', sombra: false };
+
+    return {
+      ...base,
+      anilloFoco: estado === 'foco',
+      activo: estado === 'activo',
+    };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const estrecho = W < 520;
+    const H = estrecho ? 420 : 320;
+    const totalComb = e.cantidadJerarquias * 3 * 4;
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Variante ${e.jerarquia} en densidad ${e.densidad} y estado ${e.estado}. Matriz total: ${totalComb} combinaciones.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const izqW = estrecho ? W - 28 : e.matriz ? Math.round(W * 0.46) : W - 28;
+    const izqH = estrecho ? 186 : H - 28;
+
+    // Panel izquierdo: Espécimen activo en su barra de contexto
+    raiz.append(
+      svg('rect', {
+        x: 14,
+        y: 14,
+        width: izqW,
+        height: izqH,
+        fill: '#ffffff',
+        stroke: '#222222',
+        'stroke-width': 1.5,
+      }),
+    );
+
+    const tCab = svg('text', {
+      x: 28,
+      y: 36,
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 900,
+      'letter-spacing': 0.7,
+      fill: '#6f6f6f',
+    });
+    tCab.textContent = `ESPÉCIMEN ACTIVO · ${e.jerarquia.toUpperCase()} / ${e.densidad.toUpperCase()} / ${e.estado.toUpperCase()}`;
+    raiz.append(tCab);
+
+    const dims: Record<string, { h: number; padX: number; fs: number; rotulo: string }> = {
+      compacto: { h: 26, padX: 12, fs: 10.5, rotulo: '26 px · Compacto' },
+      estandar: { h: 36, padX: 18, fs: 12.5, rotulo: '36 px · Estándar' },
+      amplio: { h: 48, padX: 26, fs: 14.5, rotulo: '48 px · Amplio' },
+    };
+    const d = dims[e.densidad] ?? dims.estandar;
+    const est = estiloVariante(e.jerarquia, e.estado);
+
+    const btnW = Math.min(izqW - 56, d.padX * 2 + 126);
+    const btnX = 28 + (est.activo ? 3 : 0);
+    const btnY = 64 + (est.activo ? 3 : 0);
+
+    if (est.sombra) {
+      raiz.append(
+        svg('rect', {
+          x: btnX + 5,
+          y: btnY + 5,
+          width: btnW,
+          height: d.h,
+          fill: '#222222',
+        }),
+      );
+    }
+
+    if (est.anilloFoco) {
+      raiz.append(
+        svg('rect', {
+          x: btnX - 4,
+          y: btnY - 4,
+          width: btnW + 8,
+          height: d.h + 8,
+          fill: 'none',
+          stroke: '#222222',
+          'stroke-width': 2,
+          'stroke-dasharray': '4 2',
+        }),
+      );
+    }
+
+    if (est.fondo !== 'transparent') {
+      raiz.append(
+        svg('rect', {
+          x: btnX,
+          y: btnY,
+          width: btnW,
+          height: d.h,
+          fill: est.fondo,
+          stroke: est.borde,
+          'stroke-width': est.grosor,
+          ...(est.dash ? { 'stroke-dasharray': est.dash } : {}),
+        }),
+      );
+    }
+
+    const txtBtn = svg('text', {
+      x: est.fondo === 'transparent' ? btnX + 4 : btnX + btnW / 2,
+      y: btnY + d.h / 2 + d.fs * 0.36,
+      'text-anchor': est.fondo === 'transparent' ? 'start' : 'middle',
+      'font-family': SANS,
+      'font-size': d.fs,
+      'font-weight': e.jerarquia === 'fuerte' ? 900 : 700,
+      ...(e.jerarquia === 'discreta' ? { 'text-decoration': 'underline' } : {}),
+      fill: est.texto,
+    });
+    txtBtn.textContent =
+      e.estado === 'inhabilitado'
+        ? 'Guardar cambios (no disponible)'
+        : e.jerarquia === 'fuerte'
+          ? 'Publicar sesión →'
+          : e.jerarquia === 'normal'
+            ? 'Guardar borrador'
+            : 'Descartar cambios';
+    raiz.append(txtBtn);
+
+    // Ficha técnica de la variante activa
+    const yFicha = btnY + d.h + 26;
+    const tRasgos = svg('text', {
+      x: 28,
+      y: yFicha,
+      'font-family': SANS,
+      'font-size': 9,
+      'font-weight': 700,
+      fill: '#222222',
+    });
+    tRasgos.textContent = `Fijo en familia: Roboto · radio 0 px · alineación centrada`;
+    raiz.append(tRasgos);
+
+    const tCambia = svg('text', {
+      x: 28,
+      y: yFicha + 18,
+      'font-family': SERIF,
+      'font-size': 11.5,
+      fill: '#444444',
+    });
+    tCambia.textContent = `Alto actual: ${d.rotulo} · Estado: ${e.estado}`;
+    raiz.append(tCambia);
+
+    // Panel derecho: Matriz morfológica completa (Gerstner / Curtis)
+    if (e.matriz) {
+      const derX = estrecho ? 14 : izqW + 26;
+      const derY = estrecho ? 210 : 14;
+      const derW = estrecho ? W - 28 : W - derX - 14;
+      const derH = estrecho ? H - 224 : H - 28;
+
+      const exceso = e.cantidadJerarquias >= 5;
+      raiz.append(
+        svg('rect', {
+          x: derX,
+          y: derY,
+          width: derW,
+          height: derH,
+          fill: '#ffffff',
+          stroke: exceso ? '#b3261e' : '#222222',
+          'stroke-width': 1.5,
+        }),
+      );
+
+      const tMat = svg('text', {
+        x: derX + 14,
+        y: derY + 22,
+        'font-family': SANS,
+        'font-size': 9.5,
+        'font-weight': 900,
+        fill: exceso ? '#b3261e' : '#222222',
+      });
+      tMat.textContent = `MATRIZ: ${e.cantidadJerarquias} JERARQUÍAS × 3 TAMAÑOS × 4 ESTADOS = ${totalComb} PIEZAS`;
+      raiz.append(tMat);
+
+      const cols = e.cantidadJerarquias;
+      const filas = 3; // Compacto, Estándar, Amplio
+      const padM = 14;
+      const gap = 5;
+      const cw = Math.floor((derW - padM * 2 - gap * (cols - 1)) / cols);
+      const ch = Math.floor((derH - 54 - gap * (filas - 1)) / filas);
+
+      const densidades = ['compacto', 'estandar', 'amplio'];
+      const jerarquiasBase = ['fuerte', 'normal', 'discreta'];
+
+      for (let f = 0; f < filas; f++) {
+        for (let c = 0; c < cols; c++) {
+          const cx = derX + padM + c * (cw + gap);
+          const cy = derY + 34 + f * (ch + gap);
+          const jerCelda = jerarquiasBase[c] ?? 'intermedia';
+          const activa = jerCelda === e.jerarquia && densidades[f] === e.densidad;
+
+          const fillCelda =
+            c === 0
+              ? '#eeff41'
+              : c === cols - 1
+                ? '#fbfbf9'
+                : exceso
+                  ? `rgb(${235 - c * 12},${235 - c * 12},${230 - c * 12})`
+                  : '#ffffff';
+
+          raiz.append(
+            svg('rect', {
+              x: cx,
+              y: cy,
+              width: cw,
+              height: ch,
+              fill: fillCelda,
+              stroke: activa ? '#222222' : exceso && c > 1 && c < cols - 1 ? '#b3261e' : '#6f6f6f',
+              'stroke-width': activa ? 2.4 : 1,
+            }),
+          );
+
+          const lbl = svg('text', {
+            x: cx + cw / 2,
+            y: cy + ch / 2 + 3,
+            'text-anchor': 'middle',
+            'font-family': SANS,
+            'font-size': cols > 5 ? 7.5 : 8.5,
+            'font-weight': activa ? 900 : 700,
+            fill: '#222222',
+          });
+          lbl.textContent = cols > 5 ? `J${c + 1}·${['S', 'M', 'L'][f]}` : `${['Fuerte', 'Normal', 'Discr.', 'J4', 'J5'][c]}·${['S', 'M', 'L'][f]}`;
+          raiz.append(lbl);
+        }
+      }
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const total = e.cantidadJerarquias * 3 * 4;
+    if (e.cantidadJerarquias >= 5) {
+      return `¡Explosión combinatoria! Con <b class="dv-cifra">${n(e.cantidadJerarquias, 0)} niveles de jerarquía</b> la matriz sube a <b class="dv-cifra">${n(total, 0)} combinaciones</b> y los niveles intermedios se vuelven casi indistinguibles.`;
+    }
+    return `Variante <b class="dv-cifra">${e.jerarquia}</b> · densidad <b class="dv-cifra">${e.densidad}</b> · estado <b class="dv-cifra">${e.estado}</b>. La matriz completa se mantiene acotada en <b class="dv-cifra">${n(total, 0)} combinaciones</b> claras.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="variantes"]')) {
+    guiar<E>(raiz, [
+      (e) => e.jerarquia === 'discreta',
+      (e) => e.densidad === 'compacto',
+      (e) => e.estado === 'foco',
+      (e) => e.cantidadJerarquias >= 7,
+      (e) => e.cantidadJerarquias === 3 && e.matriz,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { distancia: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const k = e.distancia / 100;
+    const bgSec = k < 0.3 ? '#383838' : k < 0.7 ? '#888888' : '#ffffff';
+    const fgSec = k < 0.7 ? '#ffffff' : '#222222';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#fbfbf9;border:1.5px solid #222222;display:flex;align-items:center;gap:12px;">
+        <span style="padding:8px 14px;background:#222222;color:#eeff41;border:1.5px solid #222222;font-size:11.5px;font-weight:900;">1. Primaria (Enviar)</span>
+        <span style="padding:8px 14px;background:${bgSec};color:${fgSec};border:1.5px solid #222222;font-size:11.5px;font-weight:700;">2. Secundaria (Guardar borrador)</span>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.distancia < 50) return 'Las dos variantes tienen fondo oscuro: <b class="dv-cifra">compiten entre sí</b> y parecen un descuido.';
+    if (e.distancia < 90) return 'El gris medio empieza a separarse, pero pierde contraste con el texto.';
+    return '<b class="dv-cifra">Contraste franco de rol</b>: fondo lleno para la primaria y superficie de papel con contorno para la secundaria.';
+  }
+
+  type E2 = { familia: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const caos = e.familia === 'caos';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;display:flex;align-items:center;gap:12px;">
+        <span style="padding:8px 14px;background:#eeff41;color:#222222;border:1.5px solid #222222;font-size:12px;font-weight:900;">Confirmar inscripción</span>
+        ${
+          caos
+            ? `<span style="padding:13px 20px;background:#f0f0ec;color:#444444;border:2px dotted #6f6f6f;border-radius:22px;font-family:${SERIF};font-style:italic;font-size:15px;">Descargar recibo</span>`
+            : `<span style="padding:8px 14px;background:#ffffff;color:#222222;border:1.5px solid #222222;font-size:12px;font-weight:700;">Descargar recibo</span>`
+        }
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.familia === 'caos') return 'Al cambiar fuente, altura y radio a la vez, la segunda pieza <b class="dv-cifra">pierde el parentesco</b> con la primera.';
+    return '<b class="dv-cifra">Identidad de familia intacta</b>: misma altura, misma tipografía y mismo radio; solo cambia el relleno para indicar jerarquía.';
+  }
+
+  type E3 = { estados: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const ok = e.estados === 'completo';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <span style="padding:7px 12px;background:#eeff41;color:#222222;border:1.5px solid #222222;font-size:11px;font-weight:900;">Reposo</span>
+        <span style="padding:7px 12px;background:#eeff41;color:#222222;border:1.5px solid #222222;font-size:11px;font-weight:900;${ok ? 'outline:2.5px dashed #222222;outline-offset:3px;' : ''}">Foco (Tab)</span>
+        <span style="padding:7px 12px;${ok ? 'background:#f2f2ee;color:#6f6f6f;border:1.5px dashed #888888;' : 'background:#eeff41;color:#222222;border:1.5px solid #222222;'}font-size:11px;font-weight:700;">Inhabilitado</span>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.estados === 'incompleto') return 'Sin foco visible ni estado inhabilitado, quien navega con teclado <b class="dv-cifra">pierde su posición</b>.';
+    return '<b class="dv-cifra">Estados completos</b>: el foco de teclado es inconfundible y el botón inhabilitado avisa que aún no se puede pulsar.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['variantes-e1', pintarE1 as never, describirE1 as never],
+    ['variantes-e2', pintarE2 as never, describirE2 as never],
+    ['variantes-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function r1CuandoCrearVariante(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Cuando una misma necesidad de jerarquía o densidad se repite con el mismo criterio en varias pantallas del sistema',
+        es: true,
+      },
+      {
+        texto: 'Cada vez que una página aislada tiene una ocurrencia decorativa que no volverá a repetirse',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuándo conviene formalizar una diferencia como una variante oficial del componente en lugar de dejarla como excepción puntual?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Una excepción responde a un caso único; cuando la misma diferencia hace falta en tres o más lugares con una regla clara de uso, merece convertirse en variante.',
+      repaso: 'De excepción a variante',
+    };
+  }
+
+  function r2VarianteRedundante(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Sobra una de las dos: si dos variantes cumplen el mismo rol y nadie sabe cuándo elegir cuál, solo añaden ruido',
+        es: true,
+      },
+      {
+        texto: 'Conviene añadir una tercera variante intermedia para suavizar la transición entre ambas',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En una librería de diseño existen las variantes de botón «Secundario A» y «Secundario B». Nadie en el equipo sabe explicar en qué caso se usa cada una. ¿Cuál es el diagnóstico correcto?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cada variante tiene que responder a una pregunta funcional distinta. Si dos variantes tienen la misma respuesta, deben consolidarse en una sola.',
+      repaso: 'Podar variantes redundantes',
+    };
+  }
+
+  function r3VarianteVsComponenteNuevo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Crear un componente nuevo, porque cambiaron tanto su función como su anatomía interna',
+        es: true,
+      },
+      {
+        texto: 'Llamarlo «variante calendario» del componente botón para no crear otro archivo',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Partiendo de un botón simple, necesitas ahora un selector desplegable con buscador interno y calendario de fechas. ¿Es una variante del botón o un componente nuevo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las variantes cambian la jerarquía, el tamaño o el estado manteniendo la misma estructura; cuando cambia la anatomía y el comportamiento, nace un componente distinto.',
+      repaso: 'Variante frente a componente nuevo',
+    };
+  }
+
+  function r4ExplosionCombinatoria(): Ronda {
+    const ops = barajar([
+      {
+        texto: '36 combinaciones totales (3 × 3 × 4)',
+        es: true,
+      },
+      {
+        texto: '10 combinaciones totales (3 + 3 + 4)',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En una matriz morfológica como la de Nathan Curtis (2009), si tu componente tiene 3 niveles de jerarquía, 3 tamaños y 4 estados interactivos, ¿cuántas combinaciones se generan al cruzar los tres ejes?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Los ejes ortogonales se multiplican entre sí (3 × 3 × 4 = 36). Por eso añadir una sola variante innecesaria en un eje multiplica por 12 el trabajo de mantenimiento.',
+      repaso: 'Multiplicación en la matriz morfológica',
+    };
+  }
+
+  function r5AjusteSaltoJerarquia(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'La variante Primaria y la Secundaria tienen casi el mismo peso y el usuario no distingue cuál es la acción principal. Aumenta la diferencia de contraste entre ambas (lleva el control a 75 % o más) manteniendo la misma altura y tipografía de familia.',
+      control: {
+        etiqueta: 'Diferencia visual entre Primaria y Secundaria',
+        min: 0,
+        max: 100,
+        paso: 5,
+        valor: 15,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const claro = Math.round(34 + (v / 100) * (255 - 34));
+        const colorTxt = v >= 55 ? '#222222' : '#ffffff';
+        c.innerHTML = `
+          <div style="padding:14px;font-family:${SANS};background:#fbfbf9;border:1px solid #e5e5e5;display:flex;gap:12px;justify-content:center;align-items:center;">
+            <span style="padding:8px 16px;background:#222222;color:#eeff41;border:2px solid #222222;font-size:12px;font-weight:900;">Publicar entrega</span>
+            <span style="padding:8px 16px;background:rgb(${claro},${claro},${claro});color:${colorTxt};border:1.5px solid #222222;font-size:12px;font-weight:700;">Guardar borrador</span>
+          </div>`;
+      },
+      cumple: (v) => v >= 75,
+      falta: (v) => `Al ${v} %, el fondo de la variante secundaria sigue demasiado cerca de la primaria. Sube a 75 % o más.`,
+      porque: 'Cuando la variante primaria usa relleno lleno y la secundaria usa fondo claro con contorno, el salto de jerarquía se lee en el primer vistazo sin romper la geometría compartida.',
+      repaso: 'Salto franco entre variantes',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>('[data-juego="variantes"]');
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        r1CuandoCrearVariante(),
+        r2VarianteRedundante(),
+        r3VarianteVsComponenteNuevo(),
+        r4ExplosionCombinatoria(),
+        r5AjusteSaltoJerarquia(),
+      ]),
+    );
+  }
+</script>

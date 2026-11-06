@@ -1,0 +1,353 @@
+---
+import Anotada from '../Anotada.astro';
+---
+
+<div class="dv-ejemplos">
+  <Anotada
+    rotulo="Tablero operativo: un umbral crítico entre seis métricas"
+    notas={[
+      {
+        titulo: 'Silencio del entorno',
+        texto: 'Cuatro tarjetas comparten el mismo tratamiento neutro (fondo blanco, borde gris, cifra en negro). Su uniformidad construye el fondo tranquilo.',
+        x: 34, y: 24,
+        zona: { x: 2, y: 4, w: 64, h: 90 },
+      },
+      {
+        titulo: 'Anomalía reservada al umbral crítico',
+        texto: 'Solo la métrica que cruza el umbral cambia de fondo, grosor de borde y color de etiqueta. La vista llega aquí en menos de un segundo sin leer las demás.',
+        x: 84, y: 38,
+        zona: { x: 68, y: 4, w: 30, h: 90 },
+      },
+      {
+        titulo: 'Énfasis vinculado a la acción',
+        texto: 'La anomalía no se usa para decorar ni para distinguir categorías: significa exactamente una cosa («requiere acción»).',
+        x: 84, y: 78,
+        zona: { x: 70, y: 58, w: 26, h: 30 },
+      },
+    ]}
+  >
+    <div class="ej ej-tablero">
+      <div class="ej-tb-grid">
+        <div class="ej-tb-card">
+          <span class="ej-tb-lbl">LATENCIA API</span>
+          <strong class="ej-tb-val">42 ms</strong>
+          <span class="ej-tb-meta">estable · &lt; 120 ms</span>
+        </div>
+        <div class="ej-tb-card">
+          <span class="ej-tb-lbl">SOLICITUDES / S</span>
+          <strong class="ej-tb-val">1.480</strong>
+          <span class="ej-tb-meta">promedio 15 min</span>
+        </div>
+        <div class="ej-tb-card">
+          <span class="ej-tb-lbl">USO DE MEMORIA</span>
+          <strong class="ej-tb-val">61 %</strong>
+          <span class="ej-tb-meta">4,9 de 8 GB</span>
+        </div>
+        <div class="ej-tb-card">
+          <span class="ej-tb-lbl">COLA DE TRABAJOS</span>
+          <strong class="ej-tb-val">14</strong>
+          <span class="ej-tb-meta">tiempo esp. 2 s</span>
+        </div>
+      </div>
+      <div class="ej-tb-alerta">
+        <span class="ej-tb-tag">UMBRAL SUPERADO</span>
+        <span class="ej-tb-lbl">TASA DE ERROR 5XX</span>
+        <strong class="ej-tb-val-crit">4,8 %</strong>
+        <span class="ej-tb-accion">Ver 38 fallos en /pagos →</span>
+      </div>
+    </div>
+  </Anotada>
+
+  <Anotada
+    rotulo="Portada editorial: énfasis por aislamiento y vacío"
+    notas={[
+      {
+        titulo: 'El vacío como campo activo',
+        texto: 'Casi toda la superficie está despejada. El espacio en blanco no es lo que sobró después de diseñar: es lo que empuja la mirada hacia el único elemento presente.',
+        x: 25, y: 30,
+        zona: { x: 4, y: 6, w: 92, h: 52 },
+      },
+      {
+        titulo: 'Dominancia sin gritar',
+        texto: 'El título no necesita un cuerpo gigantesco ni letras mayúsculas. Al no tener competencia alrededor, un tamaño moderado domina toda la página.',
+        x: 38, y: 72,
+        zona: { x: 10, y: 60, w: 58, h: 24 },
+      },
+      {
+        titulo: 'Acento concentrado',
+        texto: 'El punto rojo condensa el contraste cromático en una superficie mínima. Un acento pequeño en un campo silencioso pesa más que media página pintada de rojo.',
+        x: 14, y: 64,
+        zona: { x: 9, y: 58, w: 10, h: 12 },
+      },
+    ]}
+  >
+    <div class="ej ej-portada">
+      <div class="ej-po-top">
+        <span>COLECCIÓN ENSAYO · N.º 41</span>
+        <span>MARTA SEGOVIA</span>
+      </div>
+      <div class="ej-po-vacio" aria-hidden="true"></div>
+      <div class="ej-po-foco">
+        <span class="ej-po-punto" aria-hidden="true"></span>
+        <h4>El elogio de la pausa</h4>
+        <p>Notas sobre la atención en la cultura impresa</p>
+      </div>
+    </div>
+  </Anotada>
+
+  <Anotada
+    rotulo="Cartel de ciclo: ruptura de dirección dentro de una retícula estricta"
+    notas={[
+      {
+        titulo: 'Norma ortogonal de fondo',
+        texto: 'La cabecera y la ficha técnica obedecen una retícula horizontal estricta. Esa regularidad establece la norma visual en el primer vistazo.',
+        x: 30, y: 20,
+        zona: { x: 4, y: 4, w: 92, h: 26 },
+      },
+      {
+        titulo: 'Doble contraste: inclinación y color',
+        texto: 'Una sola franja rompe simultáneamente dos dimensiones: orientación y color (amarillo señal sobre carbón). El cruce de dos contrastes la vuelve magnética.',
+        x: 52, y: 54,
+        zona: { x: 4, y: 36, w: 92, h: 32 },
+      },
+      {
+        titulo: 'Regreso al orden',
+        texto: 'El pie vuelve a la retícula ortogonal para entregar los datos prácticos en calma. Después del golpe focal, la lectura informativa necesita orden.',
+        x: 45, y: 88,
+        zona: { x: 4, y: 74, w: 92, h: 22 },
+      },
+    ]}
+  >
+    <div class="ej ej-cartel">
+      <div class="ej-ca-head">
+        <span>FILMOTECA UNIVERSITARIA</span>
+        <span>CICLO OCTUBRE</span>
+      </div>
+      <div class="ej-ca-banda">
+        <span class="ej-ca-kicker">ESTRENO RESTAURADO · 35 MM</span>
+        <strong>VÉRTIGO / 1958</strong>
+      </div>
+      <div class="ej-ca-foot">
+        <span>SALA 1 · VIERNES 19:30</span>
+        <span>ENTRADA LIBRE HASTA COMPLETAR AFORO</span>
+      </div>
+    </div>
+  </Anotada>
+</div>
+
+<style>
+  .dv-ejemplos {
+    display: grid;
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .ej {
+    font-family: var(--font-sans);
+    color: #222;
+  }
+
+  /* 1. Tablero operativo */
+  .ej-tablero {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.65rem;
+    background: #f5f5f3;
+    padding: 0.85rem;
+    border: 1px solid #d8d8d8;
+  }
+
+  .ej-tb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+  }
+
+  .ej-tb-card {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    padding: 0.65rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.18rem;
+  }
+
+  .ej-tb-lbl {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #6f6f6f;
+  }
+
+  .ej-tb-val {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #222;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+
+  .ej-tb-meta {
+    font-size: 0.68rem;
+    color: #6f6f6f;
+  }
+
+  .ej-tb-alerta {
+    background: #222;
+    color: #fff;
+    border: 2px solid #222;
+    padding: 0.75rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.3rem;
+  }
+
+  .ej-tb-tag {
+    align-self: flex-start;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: #eeff41;
+    color: #222;
+    padding: 0.12rem 0.38rem;
+  }
+
+  .ej-tb-alerta .ej-tb-lbl {
+    color: #d4d4d4;
+  }
+
+  .ej-tb-val-crit {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #eeff41;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .ej-tb-accion {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #fff;
+    border-top: 1px solid #444;
+    padding-top: 0.4rem;
+  }
+
+  /* 2. Portada editorial */
+  .ej-portada {
+    background: #fbfaf6;
+    border: 1px solid #dedad0;
+    padding: 1.1rem 1.35rem;
+    min-height: 14.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .ej-po-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    color: #6f6f6f;
+    border-bottom: 1px solid #e5e1d8;
+    padding-bottom: 0.45rem;
+  }
+
+  .ej-po-vacio {
+    flex: 1;
+    min-height: 5.5rem;
+  }
+
+  .ej-po-foco {
+    display: grid;
+     gap: 0.25rem;
+  }
+
+  .ej-po-punto {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: #c83e2b;
+    margin-bottom: 0.2rem;
+  }
+
+  .ej-po-foco h4 {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #222;
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  .ej-po-foco p {
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    color: #555;
+    margin: 0;
+  }
+
+  /* 3. Cartel de ciclo */
+  .ej-cartel {
+    background: #1b1b1b;
+    color: #f4f4f0;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+    overflow: hidden;
+  }
+
+  .ej-ca-head,
+  .ej-ca-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #b8b8b2;
+  }
+
+  .ej-ca-head {
+    border-bottom: 1px solid #383838;
+    padding-bottom: 0.5rem;
+  }
+
+  .ej-ca-foot {
+    border-top: 1px solid #383838;
+    padding-top: 0.5rem;
+  }
+
+  .ej-ca-banda {
+    background: #eeff41;
+    color: #1b1b1b;
+    padding: 0.7rem 0.95rem;
+    transform: rotate(-2.5deg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    box-shadow: 6px 6px 0 #000;
+  }
+
+  .ej-ca-kicker {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .ej-ca-banda strong {
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  @media (max-width: 36rem) {
+    .ej-tablero {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

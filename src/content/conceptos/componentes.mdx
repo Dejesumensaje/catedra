@@ -1,0 +1,179 @@
+---
+titulo: Componentes
+territorio: sistemas
+pregunta: ¿Cuándo conviene empaquetar un grupo de elementos como una pieza reutilizable y cuándo forzar la misma pieza en todas partes estropea el diseño?
+resumen: "Un componente es un bloque funcional con estructura interna fija y huecos previstos para contenido variable. Resuelve una necesidad recurrente una sola vez, pero exige probarse con textos cortos, largos, ausentes y extremos antes de darse por bueno."
+modos: [diseccion, comparacion]
+orden: 30
+relaciones:
+  - concepto: sistemas-y-excepciones
+    porQue: Los componentes materializan las reglas del sistema en piezas concretas que mantienen la coherencia mientras cambia el contenido.
+  - concepto: tokens
+    porQue: Un componente bien construido no guarda colores ni medidas fijas en su interior, sino que lee tokens semánticos del sistema.
+  - concepto: variantes
+    porQue: Cuando un mismo componente necesita expresar distinta jerarquía, densidad o estado sin cambiar su estructura, desarrolla variantes controladas.
+  - concepto: patrones
+    porQue: Los componentes son los bloques de construcción; los patrones definen cómo se combinan y disponen para resolver una tarea completa.
+  - concepto: reticulas-y-alineacion
+    porQue: Un componente debe responder con elasticidad al ancho de las columnas de la retícula donde se inserta.
+fuentes:
+  - autor: Brad Frost
+    obra: "Atomic Design. Brad Frost"
+    anio: 2016
+    url: https://atomicdesign.bradfrost.com/
+    nota: Descomposición jerárquica de interfaces en elementos básicos, grupos funcionales y bloques compuestos reutilizables.
+  - autor: Alla Kholmatova
+    obra: "Design Systems: A practical guide to creating design languages for digital products. Smashing Media"
+    anio: 2017
+    nota: Criterios de modularidad, encapsulación, límites de reutilización y cuándo no convertir una pieza única en componente compartido.
+  - autor: Nathan Curtis
+    obra: "Modular Web Design: Creating Reusable Components for User Experience Design and Documentation. New Riders"
+    anio: 2009
+    nota: "Anatomía de un componente: contenedor, zonas fijas, zonas opcionales y reglas de comportamiento ante contenido extremo."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ComponentesExp from '../../components/diseno-visual/experiencias/ComponentesExp.astro';
+
+<Paso id="idea" titular="Diseña para el peor texto real, no para el caso feliz">
+
+<ComponentesExp paso="idea" />
+
+<p class="dv-frase">Un componente no se diseña para el texto ideal de la maqueta: se diseña para el peor texto real que le va a tocar.</p>
+
+<div class="dv-texto">
+
+En una maqueta estática es fácil hacer que tres tarjetas se vean ordenadas: basta con inventar tres títulos de veinte caracteres, elegir tres fotos luminosas de la misma proporción y alinear los botones a mano. El espejismo dura hasta que la plantilla se conecta con la realidad: llega una conferencia con dieciocho palabras de título, sin fotografía y con dos ponentes de apellido compuesto.
+
+Un *componente* no es un dibujo copiado y pegado. Es un contrato estructural que define qué elementos van siempre juntos, en qué orden se leen, qué ranuras pueden quedar vacías sin dejar huecos rotos y cómo crece la caja cuando el contenido se multiplica.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Componente</dt>
+    <dd>Un bloque funcional encapsulado cuya estructura interna se define una sola vez para reutilizarse en múltiples lugares del sistema.</dd>
+    <dt>Anatomía (partes fijas y ranuras)</dt>
+    <dd>La distinción entre el esqueleto invariable del componente (contenedor, orden de lectura, acción) y los huecos (<em>slots</em>) que reciben datos variables u opcionales.</dd>
+    <dt>Contenido extremo (stress test)</dt>
+    <dd>La prueba obligatoria que somete un componente a títulos muy largos, cifras de millones, traducciones extensas y ausencia de imágenes.</dd>
+    <dt>Instancia</dt>
+    <dd>Cada aparición concreta del componente en una página, rellena con sus propios datos pero gobernada por las mismas reglas.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Piezas armadas a mano frente a una estructura elástica común">
+
+<div class="dv-texto">
+
+En esta agenda académica con tres actividades, la columna izquierda muestra tarjetas armadas como casos aislados con huecos rígidos; la derecha muestra tres instancias de un mismo componente elástico.
+
+</div>
+
+<ComponentesExp paso="miralo" />
+
+<div class="dv-texto">
+
+Cuando cada tarjeta cambia el orden entre fecha, título y botón, quien lee tiene que reaprender a escanear cada recuadro. En la estructura compartida, aunque una actividad tenga foto, otra no la tenga y la tercera ocupe dos renglones de título, el ojo encuentra siempre la categoría arriba, el tema en el centro y la acción al pie.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Pon un componente al límite de palabras, huecos y ancho">
+
+<ComponentesExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para construir componentes resistentes">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Pruébalo primero con los datos más incómodos del archivo</h3>
+      <p>Antes de aprobar un componente, busca el título más largo, el nombre más corto y el registro más incompleto que exista en tu base de datos. Si el diseño solo aguanta cuando todas las frases miden tres palabras, todavía no es un componente.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Declara qué zonas son obligatorias y cuáles son condicionales</h3>
+      <p>Una tarjeta no puede existir sin título, pero a menudo tendrá que vivir sin foto, sin subtítulo o sin etiqueta de categoría. Diseña el colapso limpio de cada ranura opcional para que su ausencia nunca parezca un error de carga.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No conviertas un componente en una navaja suiza</h3>
+      <p>Si para usar una tarjeta hay que configurar veinte interruptores porque sirve a la vez para mostrar eventos, reproducir pódcast y cobrar matrículas, en realidad tienes tres componentes distintos atrapados en el mismo archivo.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<ComponentesExp paso="errores" />
+
+<div class="dv-texto">
+
+### Componentes en piezas reales
+
+</div>
+
+<ComponentesExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta cajas rígidas, huecos rotos y abstracciones prematuras">
+
+<ComponentesExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Anatomía interna, abstracción prematura y límites de la reutilización">
+
+<Seccion titulo="Qué es fijo y qué es variable dentro de un componente">
+
+En *Modular Web Design* (2009), Nathan Curtis mostró que documentar un componente por su apariencia en un único estado estático sirve de muy poco. Lo que define a un componente es su **anatomía de zonas** y sus **reglas de adaptación**:
+
+- **El contenedor y el ritmo interno:** qué [tokens](/diseno-visual/tokens) de espacio interior, borde y color de superficie envuelven la pieza, y cómo responde cuando el contenedor padre se estrecha.
+- **Las zonas obligatorias:** los elementos sin los cuales el componente pierde su sentido funcional (por ejemplo, el concepto y el importe en una fila bancaria, o el `id` y el `titulo` en [`Instrumento.astro`](/diseno-visual/componentes#usalo)).
+- **Las ranuras opcionales (*slots*):** los huecos que solo se renderizan si reciben contenido (como la guía paso a paso, los controles avanzados o la miniatura de una ficha), colapsando su margen cuando están vacíos.
+
+</Seccion>
+
+<Seccion titulo="La regla de tres contra la abstracción prematura">
+
+Cuando un equipo descubre las ventajas de trabajar con componentes, suele caer en el exceso contrario: querer convertir cada bloque nuevo en un componente universal desde el primer día. Alla Kholmatova advierte en *Design Systems* (2017) que empaquetar demasiado pronto produce abstracciones torpes.
+
+Una regla práctica saludable es **esperar a que una pieza aparezca en tres lugares reales** antes de extraerla como componente compartido. Si una composición gráfica existe únicamente para explicar un fenómeno específico —como el escenario interactivo de cada entrada de `/diseno-visual`—, debe vivir como pieza a medida dentro de un marco compartido, no forzarse dentro de una plantilla genérica.
+
+</Seccion>
+
+<Seccion titulo="De los átomos a los organismos: alcances y límites">
+
+La metáfora de *Atomic Design* propuesta por Brad Frost (2016) ayudó a visualizar que los componentes se anidan unos dentro de otros: controles simples (`Deslizador`, `Opciones`, `Interruptor`) se combinan dentro de bloques medianos (`Guia`) que a su vez habitan marcos mayores (`Instrumento`).
+
+Sin embargo, el propio trabajo con sistemas enseña que la jerarquía no es una escalera rígida. Lo decisivo es que cada nivel tenga una **responsabilidad única y clara**: el control deslizador sabe leer y mostrar un número; el marco del instrumento sabe comparar el estado A con el estado B y sincronizar la URL; el escenario sabe dibujar el fenómeno visual.
+
+</Seccion>
+
+<Seccion titulo="Cómo se relacionan tokens, componentes, variantes y patrones">
+
+Los cuatro conceptos de este territorio operan en escalas complementarias:
+
+- **Los [tokens](/diseno-visual/tokens)** guardan las decisiones atómicas con nombre semántico (`--tinta`, `--espacio-m`).
+- **Los componentes** encapsulan una pieza funcional reutilizable (un botón, una tarjeta, un instrumento).
+- **Las [variantes](/diseno-visual/variantes)** articulan las versiones hermanas de ese mismo componente (primario, secundario, compacto).
+- **Los [patrones](/diseno-visual/patrones)** describen cómo organizar varios componentes para resolver una tarea recurrente (como revelar controles avanzados bajo demanda).
+
+</Seccion>
+
+</Paso>

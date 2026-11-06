@@ -26,7 +26,7 @@ const fila = (y: number) => ({ x: (20 / W) * 100, y: (y / H) * 100, w: (320 / W)
 <div class="dv-anotadas">
   <Anotada
     veredicto="mal"
-    rotulo="No funciona: cada tarjeta tiene su propio estilo"
+    rotulo="Cada tarjeta tiene su propio estilo"
     notas={[
       { ...pc(180, 34), texto: 'Cada tarjeta tiene su propio borde, tipografía y alineación. Cuesta reconocerlas como parte de una misma agenda.', zona: fila(20) },
       { ...pc(180, 174), texto: 'El evento principal está presente, pero su importancia no se distingue visualmente de la de los demás.', zona: zc(2) },
@@ -62,7 +62,7 @@ const fila = (y: number) => ({ x: (20 / W) * 100, y: (y / H) * 100, w: (320 / W)
 
   <Anotada
     veredicto="bien"
-    rotulo="Funciona: reglas compartidas y una excepción"
+    rotulo="Reglas compartidas y una excepción"
     notas={[
       { ...pc(180, 34), texto: 'Las cuatro tarjetas usan el mismo borde, la misma tipografía y el mismo orden: categoría, título y fecha. La información cambia, pero la estructura se reconoce.', zona: fila(20) },
       { ...pc(180, 174), texto: 'Una sola tarjeta rompe una regla: tiene fondo azul y lleva la palabra «Principal». La diferencia dirige la mirada hacia ella.', zona: zc(2) },

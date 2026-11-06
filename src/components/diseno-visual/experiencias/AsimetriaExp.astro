@@ -1,0 +1,1044 @@
+---
+// Asimetría: composición axial frente a eje desplazado con contrapeso espacial
+// y adaptabilidad ante contenidos variables (Tschichold, 1935; Ruder, 1967).
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'asimetria';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TX = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Empieza en el centrado axial clásico.',
+    hacer: 'Pon «Posición del eje principal» en 50 % y «Alineación de los bloques» en «Centrada sobre el eje».',
+    pista: 'Lleva el primer deslizador a 50 % y elige la primera opción.',
+    preparar: { contrapeso: 50, contenido: 'corto' },
+    logro: 'Todo cuelga del centro geométrico. La página es estable pero estática, y el espacio vacío queda dividido en dos tiras pasivas e iguales a cada lado.',
+  },
+  {
+    titulo: 'Desplaza el eje con decisión.',
+    hacer: 'Cambia «Alineación de los bloques» a «Apoyada en eje asimétrico» y lleva «Posición del eje principal» entre 24 % y 34 %.',
+    pista: 'Elige la segunda opción de alineación y mueve el eje hacia la izquierda.',
+    logro: 'Al apoyar el contenido sobre un eje al tercio izquierdo, el espacio libre deja de ser sobrante y se reúne en un campo activo que organiza toda la superficie.',
+  },
+  {
+    titulo: 'Equilibra el eje con un contrapeso opuesto.',
+    hacer: 'Ajusta «Contrapeso en el lado opuesto» entre 55 % y 80 %.',
+    pista: 'Mueve el segundo deslizador para compensar el peso del eje principal.',
+    logro: 'El sello y la nota lateral en el costado opuesto equilibran la masa principal sin copiar su forma: pesos distintos a distancias distintas del centro.',
+  },
+  {
+    titulo: 'Somete la maqueta a contenido irregular.',
+    hacer: 'Abre «Más controles» y en «Longitud de los datos» selecciona «Variable e irregular».',
+    abrir: true,
+    logro: 'Con un eje asimétrico y bandera derecha, los títulos largos, los párrafos y las tablas conservan un borde de lectura limpio, mientras que en el centrado axial crearían siluetas dentadas difíciles de recorrer.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Dos portadas con los mismos elementos: la primera centrada en el eje del 50 % con márgenes pasivos a ambos lados; la segunda apoyada en un eje al 32 % con el espacio blanco reunido en un campo activo.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <!-- 1. Simetría axial -->
+      <rect x="44" y="14" width="212" height="152" fill="#ffffff" stroke={T} stroke-width="1.5" />
+      <line x1="150" y1="14" x2="150" y2="166" stroke={ROJO} stroke-dasharray="3 3" stroke-width="1.2" />
+      <text x="150" y="38" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" fill={G}>JAN TSCHICHOLD</text>
+      <text x="150" y="70" text-anchor="middle" font-family={SERIF} font-size="15" font-weight="700" fill={T}>Tipografía</text>
+      <text x="150" y="92" text-anchor="middle" font-family={SERIF} font-size="15" font-weight="700" fill={T}>asimétrica</text>
+      <rect x="134" y="106" width="32" height="18" fill={T} />
+      <text x="150" y="148" text-anchor="middle" font-family={SANS} font-size="9" fill={G}>BASILEA · 1935</text>
+
+      <!-- 2. Asimetría dinámica -->
+      <rect x="344" y="14" width="212" height="152" fill="#ffffff" stroke={T} stroke-width="1.5" />
+      <line x1="412" y1="14" x2="412" y2="166" stroke={ROJO} stroke-width="1.5" />
+      <rect x="354" y="54" width="50" height="72" fill={AMARILLO} opacity="0.55" />
+      <text x="406" y="40" text-anchor="end" font-family={SANS} font-size="9" font-weight="700" fill={G}>1935</text>
+      <text x="418" y="40" font-family={SANS} font-size="9" font-weight="700" fill={T}>JAN TSCHICHOLD</text>
+      <text x="418" y="72" font-family={SANS} font-size="16" font-weight="900" fill={T}>Tipografía</text>
+      <text x="418" y="94" font-family={SANS} font-size="16" font-weight="900" fill={T}>asimétrica</text>
+      <circle cx="384" cy="142" r="10" fill={T} />
+      <text x="418" y="146" font-family={SANS} font-size="9" font-weight="700" fill={G}>BASILEA · ENSAYO</text>
+    </svg>
+    <p>Ambas portadas contienen exactamente las mismas cuatro piezas. ¿Qué cambia en el espacio vacío cuando el eje deja de estar en la mitad?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En la portada centrada (izquierda), el eje del 50 % parte el blanco en dos franjas iguales y pasivas a los lados. En la portada asimétrica (derecha), el eje desplazado al tercio izquierdo reúne el espacio en una columna activa (marcada en amarillo) y equilibra el bloque de texto con un punto negro de contrapeso al otro lado del eje.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Todo centrado al medio: bordes dentados y lectura agotadora"
+      notas={[
+        {
+          ...pct(64, 114),
+          titulo: 'Párrafo centrado sin borde de inicio',
+          texto: 'Cada línea empieza en una coordenada distinta. Al terminar un renglón, el ojo debe buscar a tientas dónde arranca el siguiente.',
+          zona: zona(24, 78, 312, 74),
+        },
+        {
+          ...pct(180, 188),
+          titulo: 'Lista y metadatos flotando en el eje',
+          texto: 'Los datos de fecha, lugar y precio centrados al medio impiden comparar etiquetas y valores de un vistazo.',
+          zona: zona(52, 156, 256, 62),
+        },
+        {
+          ...pct(320, 56),
+          titulo: 'Márgenes residuales a ambos lados',
+          texto: 'El espacio blanco sobra en tiras irregulares a izquierda y derecha sin organizar jerarquía ni separar zonas.',
+          zona: zona(12, 18, 44, 240),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ficha de seminario con título, párrafo largo, lista de datos y botón todos centrados sobre el eje central.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <line x1="180" y1="14" x2="180" y2="266" stroke="#e5e5e5" stroke-dasharray="3 3" />
+        <text x="180" y="38" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={G}>SEMINARIO DE DISEÑO EDITORIAL</text>
+        <text x="180" y="64" text-anchor="middle" font-family={SANS} font-size="20" font-weight="900" fill={T}>La página en movimiento</text>
+        <text x="180" y="94" text-anchor="middle" font-family={SERIF} font-size="12" fill={TX}>Un recorrido práctico por las retículas</text>
+        <text x="180" y="112" text-anchor="middle" font-family={SERIF} font-size="12" fill={TX}>modernas, el equilibrio dinámico de pesos</text>
+        <text x="180" y="130" text-anchor="middle" font-family={SERIF} font-size="12" fill={TX}>y la composición de textos complejos</text>
+        <text x="180" y="148" text-anchor="middle" font-family={SERIF} font-size="12" fill={TX}>en publicaciones impresas y digitales.</text>
+        <text x="180" y="176" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Fecha: 22 de noviembre · 16:00 a 20:00 h</text>
+        <text x="180" y="194" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Lugar: Taller de Imprenta, Bloque 14, Aula 203</text>
+        <text x="180" y="212" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Cupo: 18 participantes con inscripción previa</text>
+        <rect x="116" y="228" width="128" height="32" fill={T} />
+        <text x="180" y="248" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">INSCRIBIRSE</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Eje asimétrico (1:2): anclaje izquierdo limpio y contrapeso activo"
+      notas={[
+        {
+          ...pct(124, 72),
+          titulo: 'Eje principal a un tercio del ancho',
+          texto: 'El titular, el párrafo y los datos comparten una plomada vertical impecable en x = 124 px que facilita la lectura continua.',
+          zona: zona(118, 22, 222, 236),
+        },
+        {
+          ...pct(64, 86),
+          titulo: 'Columna izquierda como contrapeso y respiro',
+          texto: 'El tercio izquierdo aloja la etiqueta de sección, un sello compacto y un bloque de espacio vacío que sostiene toda la composición.',
+          zona: zona(18, 22, 94, 236),
+        },
+        {
+          ...pct(216, 198),
+          titulo: 'Adaptable a cualquier longitud de texto',
+          texto: 'Aunque cambien las fechas o el párrafo crezca tres líneas, la estructura no pierde su equilibrio ni su borde de lectura.',
+          zona: zona(124, 158, 212, 98),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma ficha compuesta sobre un eje asimétrico al tercio izquierdo: columna estrecha con sello y espacio vacío a la izquierda, y cuerpo alineado a la izquierda en los dos tercios derechos.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <line x1="120" y1="20" x2="120" y2="260" stroke="#e5e5e5" stroke-width="1.5" />
+
+        <!-- Columna izquierda (1/3) -->
+        <text x="24" y="40" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1" fill={G}>SEMINARIO</text>
+        <text x="24" y="54" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1" fill={G}>EDITORIAL</text>
+        <rect x="24" y="74" width="76" height="44" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="62" y="94" text-anchor="middle" font-family={SANS} font-size="14" font-weight="900" fill={T}>22 NOV</text>
+        <text x="62" y="109" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>16:00 H</text>
+
+        <!-- Columna derecha (2/3) apoyada en el eje -->
+        <text x="134" y="44" font-family={SANS} font-size="20" font-weight="900" fill={T}>La página en</text>
+        <text x="134" y="66" font-family={SANS} font-size="20" font-weight="900" fill={T}>movimiento</text>
+        <text x="134" y="94" font-family={SERIF} font-size="12" fill={TX}>Un recorrido práctico por las retículas</text>
+        <text x="134" y="111" font-family={SERIF} font-size="12" fill={TX}>modernas, el equilibrio dinámico y la</text>
+        <text x="134" y="128" font-family={SERIF} font-size="12" fill={TX}>composición de textos complejos.</text>
+
+        <line x1="134" y1="146" x2="336" y2="146" stroke="#e5e5e5" />
+        <text x="134" y="168" font-family={SANS} font-size="11" font-weight="700" fill={T}>Taller de Imprenta · Aula 203</text>
+        <text x="134" y="186" font-family={SANS} font-size="11" fill={G}>18 cupos con inscripción previa</text>
+
+        <rect x="134" y="208" width="136" height="34" fill={T} />
+        <text x="202" y="229" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={AMARILLO}>Inscribirse →</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · del centrado axial al equilibrio asimétrico"
+    consigna="Desplaza el eje principal de la composición, cambia entre alineación centrada y alineación apoyada en el eje, y ajusta el contrapeso en la columna opuesta para equilibrar la superficie sin recurrir a la simetría."
+    nota="Fija en A una composición axial al 50 % y compárala con B en un eje al 30 % con contrapeso. Activa «Variable e irregular» en «Más controles» para ver cuál aguanta mejor los datos reales."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Composición editorial apoyada en un eje asimétrico al 32 % del ancho con un sello de contrapeso a la izquierda.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <rect x="40" y="20" width="560" height="280" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <line x1="220" y1="20" x2="220" y2="300" stroke="#b3261e" stroke-width="1.5" />
+      <rect x="64" y="48" width="124" height="58" fill="#eeff41" stroke="#222222" stroke-width="2" />
+      <rect x="236" y="48" width="280" height="28" fill="#222222" />
+      <rect x="236" y="92" width="310" height="10" fill="#6f6f6f" />
+      <rect x="236" y="112" width="290" height="10" fill="#6f6f6f" />
+      <rect x="236" y="132" width="240" height="10" fill="#6f6f6f" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba a llevar el eje a la zona tibia (46 %–49 %) para comprobar por qué una asimetría tímida parece un centrado mal hecho." />
+
+    <Deslizador
+      lab={lab}
+      variable="eje"
+      etiqueta="Posición del eje principal"
+      min={20}
+      max={75}
+      paso={1}
+      valor={32}
+      unidad="%"
+      ayuda="50 %: eje central simétrico. 25 %–36 % o 64 %–75 %: eje asimétrico franco. 45 %–49 %: asimetría tibia."
+    />
+    <Opciones
+      lab={lab}
+      variable="alineacion"
+      etiqueta="Alineación de los bloques"
+      valor="eje"
+      opciones={[
+        { valor: 'centrada', texto: 'Centrada sobre el eje' },
+        { valor: 'eje', texto: 'Apoyada en eje asimétrico' },
+      ]}
+      ayuda="En la composición asimétrica los bloques se apoyan con borde limpio contra el eje en lugar de centrarse."
+    />
+    <Deslizador
+      lab={lab}
+      variable="contrapeso"
+      etiqueta="Contrapeso en el lado opuesto"
+      min={0}
+      max={100}
+      paso={5}
+      valor={65}
+      unidad="%"
+      ayuda="Ajusta el peso visual del elemento que equilibra la columna principal desde el otro lado del eje."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="contenido"
+        etiqueta="Longitud de los datos"
+        valor="corto"
+        opciones={[
+          { valor: 'corto', texto: 'Breve y uniforme' },
+          { valor: 'variable', texto: 'Variable e irregular' },
+        ]}
+        ayuda="Comprueba cómo responde la maqueta cuando los titulares, párrafos y notas tienen longitudes muy distintas."
+      />
+      <Interruptor
+        lab={lab}
+        variable="balanza"
+        etiqueta="Mostrar plomada del eje y centro de gravedad"
+        activo={true}
+        ayuda="Muestra la línea del eje principal y el indicador de equilibrio horizontal entre izquierda y derecha."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"eje":32,"alineacion":"eje","contrapeso":65,"contenido":"variable"}'>Asimetría clásica 1:2 equilibrada</button>
+      <button type="button" class="dv-boton" data-preset='{"eje":50,"alineacion":"centrada","contrapeso":0,"contenido":"corto"}'>Simetría axial para portada breve</button>
+      <button type="button" class="dv-boton" data-preset='{"eje":50,"alineacion":"centrada","contrapeso":0,"contenido":"variable"}'>Error: párrafo y datos largos centrados</button>
+      <button type="button" class="dv-boton" data-preset='{"eje":47,"alineacion":"eje","contrapeso":10,"contenido":"corto"}'>Error: asimetría tímida al 47 % sin contrapeso</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1 · No centres párrafos largos: desplaza el bloque pero alinea sus líneas"
+      comparar={false}
+      consigna="Un texto de cinco líneas centrado al medio produce dos bordes dentados que cansan la vista. Puedes colocar el bloque en una columna asimétrica manteniendo sus renglones alineados a la izquierda."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:'PT Serif',Georgia,serif;font-size:13px;color:#222;">
+        <p style="margin:0;text-align:center;">La asimetría permite que cada línea empiece en una vertical común.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="modo"
+        etiqueta="Disposición del texto"
+        valor="centrado"
+        opciones={[
+          { valor: 'centrado', texto: 'Renglones centrados' },
+          { valor: 'bandera', texto: 'Bloque desplazado con bandera derecha' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2 · Evita la asimetría tímida (47 %) que parece un error de cálculo"
+      comparar={false}
+      consigna="El eje de esta portada está al 47 % del ancho: casi en la mitad, pero no del todo. O lo centras exactamente al 50 % o lo desplazas con decisión hacia el tercio izquierdo (28 %–34 %)."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:900;">ARCHIVO DOCUMENTAL</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="posicion"
+        etiqueta="Posición del eje vertical"
+        min={24}
+        max={50}
+        paso={1}
+        valor={47}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3 · Compensa un eje desplazado con un contrapeso en el margen opuesto"
+      comparar={false}
+      consigna="Toda la masa tipográfica cayó sobre el lado derecho y la mitad izquierda parece vacía por olvido. Añade un acento o folio activo en la columna izquierda para tensar y equilibrar el plano."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Crónica de arquitectura moderna</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="peso"
+        etiqueta="Fuerza del contrapeso izquierdo"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Arquitectura de este sitio: cabecera asimétrica 1:2"
+      notas={[
+        {
+          ...pct(68, 92),
+          titulo: 'Columna izquierda de contexto (1/3)',
+          texto: 'El número del paso y el rótulo breve ocupan una columna estrecha que ancla la sección y deja espacio libre debajo.',
+          zona: zona(18, 32, 96, 198),
+        },
+        {
+          ...pct(224, 92),
+          titulo: 'Columna principal de lectura (2/3)',
+          texto: 'El titular y los párrafos arrancan sobre un eje común a un tercio del ancho, ofreciendo un ancho de línea cómodo y constante.',
+          zona: zona(122, 32, 220, 198),
+        },
+        {
+          ...pct(68, 178),
+          titulo: 'Espacio vacío estructurado',
+          texto: 'El blanco bajo el rótulo izquierdo no es espacio desperdiciado: separa visualmente un paso del siguiente sin añadir cajas.',
+          zona: zona(18, 108, 96, 122),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Maqueta de dos columnas desiguales (1:2) como las secciones de este sitio: número de paso a la izquierda y desarrollo textual a la derecha.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <line x1="20" y1="28" x2="340" y2="28" stroke={T} stroke-width="2" />
+        <text x="20" y="54" font-family={SANS} font-size="11" font-weight="900" fill={T}>01 · LA IDEA</text>
+        <rect x="20" y="64" width="44" height="6" fill={AMARILLO} stroke={T} stroke-width="1" />
+
+        <line x1="120" y1="28" x2="120" y2="252" stroke="#e5e5e5" />
+        <text x="132" y="58" font-family={SERIF} font-size="18" font-weight="700" fill={T}>La simetría descansa;</text>
+        <text x="132" y="80" font-family={SERIF} font-size="18" font-weight="700" fill={T}>la asimetría activa</text>
+        <rect x="132" y="102" width="194" height="8" fill={TX} />
+        <rect x="132" y="118" width="182" height="8" fill={TX} />
+        <rect x="132" y="134" width="198" height="8" fill={TX} />
+        <rect x="132" y="150" width="146" height="8" fill={TX} />
+
+        <rect x="132" y="178" width="198" height="58" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="144" y="200" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>VOCABULARIO CLAVE</text>
+        <text x="144" y="220" font-family={SANS} font-size="11" font-weight="700" fill={T}>Eje desplazado · Contrapeso</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Cartel tipográfico de Jan Tschichold (1935): ejes perpendiculares"
+      notas={[
+        {
+          ...pct(132, 96),
+          titulo: 'Plomada vertical dominante',
+          texto: 'Un filete negro vertical descentrado organiza los bloques: fechas a la izquierda, titulares y programa a la derecha.',
+          zona: zona(124, 24, 16, 232),
+        },
+        {
+          ...pct(68, 76),
+          titulo: 'Acento pequeño que equilibra una masa grande',
+          texto: 'El círculo negro y el bloque amarillo en el margen izquierdo tienen la intensidad justa para sostener el gran bloque tipográfico derecho.',
+          zona: zona(26, 48, 88, 92),
+        },
+        {
+          ...pct(236, 198),
+          titulo: 'Libertad para datos desiguales',
+          texto: 'Los nombres de distinta longitud terminan con naturalidad en bandera derecha sin forzar el espaciado entre palabras.',
+          zona: zona(144, 148, 192, 96),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel al estilo de Jan Tschichold con un filete vertical en el primer tercio, un punto de acento a la izquierda y texto alineado a la izquierda en el campo derecho.">
+        <rect width={W} height={H} fill="#f7f5ee" />
+        <line x1="132" y1="22" x2="132" y2="258" stroke={T} stroke-width="3" />
+        <line x1="22" y1="124" x2="338" y2="124" stroke={T} stroke-width="1.5" />
+
+        <circle cx="74" cy="74" r="22" fill={T} />
+        <rect x="42" y="144" width="74" height="32" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="79" y="164" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill={T}>SALA 02</text>
+
+        <text x="148" y="54" font-family={SANS} font-size="11" font-weight="700" letter-spacing="1.5" fill={G}>KUNSTHALLE BASEL</text>
+        <text x="148" y="84" font-family={SANS} font-size="22" font-weight="900" fill={T}>KONSTRUKTIVISTEN</text>
+        <text x="148" y="106" font-family={SANS} font-size="12" font-weight="700" fill={TX}>16 de enero al 14 de febrero</text>
+
+        <text x="148" y="152" font-family={SANS} font-size="11" font-weight="700" fill={T}>Obras de:</text>
+        <text x="148" y="172" font-family={SANS} font-size="11" fill={TX}>Mondrian · Lissitzky · Moholy-Nagy</text>
+        <text x="148" y="190" font-family={SANS} font-size="11" fill={TX}>Gabo · Pevsner · Vantongerloo</text>
+        <text x="148" y="208" font-family={SANS} font-size="11" fill={TX}>Bill · Taeuber-Arp · Vordemberge</text>
+        <text x="148" y="242" font-family={SANS} font-size="10" font-weight="700" fill={G}>ABIERTO DE 10 A 12 Y DE 14 A 17 H</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Sumario de revista: contraste entre imagen al corte y columna ligera"
+      notas={[
+        {
+          ...pct(254, 118),
+          titulo: 'Masa pesada en los dos tercios derechos',
+          texto: 'El bloque fotográfico oscuro se apoya sobre el eje asimétrico y domina el costado derecho superior.',
+          zona: zona(156, 28, 184, 152),
+        },
+        {
+          ...pct(78, 198),
+          titulo: 'Contrapeso diagonal en la esquina inferior izquierda',
+          texto: 'El folio grande sobre fondo amarillo en la esquina opuesta equilibra la fotografía como en una balanza diagonal.',
+          zona: zona(22, 166, 112, 88),
+        },
+        {
+          ...pct(78, 84),
+          titulo: 'Índice respirando en el campo libre',
+          texto: 'Los artículos del sumario se leen sin esfuerzo gracias al margen limpio que separa ambas columnas.',
+          zona: zona(22, 32, 122, 124),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Sumario editorial donde una gran imagen a la derecha se equilibra en diagonal con un bloque de número grande abajo a la izquierda.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="26" y="46" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>SUMARIO · OTOÑO</text>
+        <text x="26" y="72" font-family={SANS} font-size="11" font-weight="700" fill={T}>12  Cartografías</text>
+        <text x="26" y="92" font-family={SANS} font-size="11" font-weight="700" fill={T}>28  El taller mecánico</text>
+        <text x="26" y="112" font-family={SANS} font-size="11" font-weight="700" fill={T}>44  Entrevista central</text>
+        <text x="26" y="132" font-family={SANS} font-size="11" font-weight="700" fill={T}>68  Reseñas de libros</text>
+
+        <rect x="26" y="176" width="96" height="72" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="74" y="224" text-anchor="middle" font-family={SANS} font-size="36" font-weight="900" fill={T}>N.º 8</text>
+
+        <rect x="158" y="32" width="176" height="142" fill={T} />
+        <circle cx="246" cy="103" r="34" fill="none" stroke={AMARILLO} stroke-width="2" />
+        <text x="158" y="198" font-family={SERIF} font-size="13" font-weight="700" fill={T}>Dossier: Arquitectura del libro</text>
+        <text x="158" y="218" font-family={SERIF} font-size="12" fill={TX}>Ocho ensayos sobre proporción, ejes</text>
+        <text x="158" y="236" font-family={SERIF} font-size="12" fill={TX}>y ritmo en la edición contemporánea.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas para distinguir entre simetría axial, asimetría tímida y equilibrio asimétrico con contrapeso."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  type E = {
+    eje: number;
+    alineacion: string;
+    contrapeso: number;
+    contenido: string;
+    balanza: boolean;
+  };
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  function calcularEquilibrio(e: E) {
+    // Desviación del centro de gravedad compuesto respecto al 50 %
+    const distEje = e.eje - 50; // negativo si el eje está a la izquierda
+    // Cuando el eje está al 32 % y la alineación es apoyada en el eje, la masa principal cae a la derecha del eje (+10),
+    // y el contrapeso está en la columna izquierda (-22)
+    const momentoPrincipal = e.alineacion === 'centrada' ? distEje * 1.1 : (e.eje - 36) * 1.2 + 12;
+    const signoOpuesto = e.eje <= 50 ? -1 : 1;
+    const momentoContrapeso = signoOpuesto * (e.contrapeso / 100) * 18;
+    const desvio = Math.round(momentoPrincipal + momentoContrapeso);
+    const tibia = Math.abs(e.eje - 50) >= 1 && Math.abs(e.eje - 50) <= 5;
+    return { desvio, tibia };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = e.balanza ? 336 : 290;
+    const { desvio, tibia } = calcularEquilibrio(e);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Maqueta editorial con eje al ${e.eje} %, alineación ${e.alineacion} y contrapeso al ${e.contrapeso} %.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 460 ? 18 : 36;
+    const padY = 18;
+    const hojaW = W - padX * 2;
+    const hojaH = 248;
+
+    raiz.append(
+      svg('rect', {
+        x: padX,
+        y: padY,
+        width: hojaW,
+        height: hojaH,
+        fill: '#ffffff',
+        stroke: TINTA,
+        'stroke-width': 1.8,
+      }),
+    );
+
+    const ejeX = padX + (e.eje / 100) * hojaW;
+    const centroX = padX + hojaW / 2;
+
+    if (e.balanza) {
+      // Línea del centro geométrico (50 %)
+      raiz.append(
+        svg('line', {
+          x1: centroX,
+          y1: padY,
+          x2: centroX,
+          y2: padY + hojaH,
+          stroke: '#d4d4ce',
+          'stroke-dasharray': '3 3',
+        }),
+      );
+      // Línea del eje activo
+      raiz.append(
+        svg('line', {
+          x1: ejeX,
+          y1: padY,
+          x2: ejeX,
+          y2: padY + hojaH,
+          stroke: COTA,
+          'stroke-width': 1.8,
+        }),
+      );
+      const tEje = svg('text', {
+        x: ejeX + (e.eje > 60 ? -6 : 6),
+        y: padY + 14,
+        'text-anchor': e.eje > 60 ? 'end' : 'start',
+        'font-family': SANS,
+        'font-size': 9.5,
+        'font-weight': 700,
+        fill: COTA,
+      });
+      tEje.textContent = `EJE ${e.eje} %`;
+      raiz.append(tEje);
+    }
+
+    const LineasCortas = [0.68, 0.64, 0.66];
+    const LineasVariables = [0.88, 0.52, 0.94, 0.44, 0.78];
+    const lineas = e.contenido === 'variable' ? LineasVariables : LineasCortas;
+
+    if (e.alineacion === 'centrada') {
+      const maxAncho = Math.min(hojaW * 0.62, Math.min(ejeX - padX - 16, padX + hojaW - ejeX - 16) * 2);
+      const wSeguro = Math.max(90, maxAncho);
+
+      const tSub = svg('text', {
+        x: ejeX,
+        y: padY + 42,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: GRIS,
+      });
+      tSub.textContent = 'CICLO ANUAL DE DISEÑO';
+      raiz.append(tSub);
+
+      const tTit = svg('text', {
+        x: ejeX,
+        y: padY + 68,
+        'text-anchor': 'middle',
+        'font-family': SERIF,
+        'font-size': 19,
+        'font-weight': 700,
+        fill: TINTA,
+      });
+      tTit.textContent = e.contenido === 'variable' ? 'Arquitectura de la página moderna' : 'La página viva';
+      raiz.append(tTit);
+
+      lineas.forEach((f, idx) => {
+        const lw = wSeguro * f;
+        raiz.append(
+          svg('rect', {
+            x: ejeX - lw / 2,
+            y: padY + 90 + idx * 16,
+            width: lw,
+            height: 7,
+            fill: TEXTO,
+          }),
+        );
+      });
+
+      const btnW = 112;
+      raiz.append(
+        svg('rect', {
+          x: ejeX - btnW / 2,
+          y: padY + 188,
+          width: btnW,
+          height: 28,
+          fill: TINTA,
+        }),
+      );
+      const tBtn = svg('text', {
+        x: ejeX,
+        y: padY + 206,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: '#ffffff',
+      });
+      tBtn.textContent = 'VER PROGRAMA';
+      raiz.append(tBtn);
+    } else {
+      // Apoyada en eje asimétrico
+      const haciaDerecha = e.eje <= 54;
+      const xTexto = haciaDerecha ? ejeX + 12 : padX + 20;
+      const wDisponible = haciaDerecha ? padX + hojaW - xTexto - 20 : ejeX - padX - 32;
+      const wCol = Math.max(100, wDisponible);
+
+      const tSub = svg('text', {
+        x: xTexto,
+        y: padY + 42,
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        'letter-spacing': 1,
+        fill: GRIS,
+      });
+      tSub.textContent = 'CICLO ANUAL DE DISEÑO';
+      raiz.append(tSub);
+
+      const tTit = svg('text', {
+        x: xTexto,
+        y: padY + 68,
+        'font-family': SANS,
+        'font-size': W < 440 ? 16 : 20,
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      tTit.textContent = e.contenido === 'variable' ? 'Arquitectura de la página' : 'La página viva';
+      raiz.append(tTit);
+
+      lineas.forEach((f, idx) => {
+        const lw = wCol * f;
+        raiz.append(
+          svg('rect', {
+            x: xTexto,
+            y: padY + 88 + idx * 16,
+            width: lw,
+            height: 7,
+            fill: TEXTO,
+          }),
+        );
+      });
+
+      raiz.append(
+        svg('rect', {
+          x: xTexto,
+          y: padY + 186,
+          width: 118,
+          height: 30,
+          fill: TINTA,
+        }),
+      );
+      const tBtn = svg('text', {
+        x: xTexto + 59,
+        y: padY + 205,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: AMARILLO,
+      });
+      tBtn.textContent = 'VER PROGRAMA →';
+      raiz.append(tBtn);
+    }
+
+    // Contrapeso en el lado opuesto del eje
+    if (e.contrapeso > 0) {
+      const k = e.contrapeso / 100;
+      const ladoIzq = e.eje <= 54;
+      const dispOpuesto = ladoIzq ? ejeX - padX - 24 : padX + hojaW - ejeX - 24;
+      const wCp = Math.max(28, Math.min(dispOpuesto, 42 + k * 56));
+      const hCp = 28 + k * 44;
+      const xCp = ladoIzq ? padX + 16 : padX + hojaW - 16 - wCp;
+      const yCp = padY + 52 + (1 - k) * 40;
+
+      raiz.append(
+        svg('rect', {
+          x: xCp,
+          y: yCp,
+          width: wCp,
+          height: hCp,
+          fill: k >= 0.45 ? AMARILLO : '#f2f2ee',
+          stroke: TINTA,
+          'stroke-width': 1.5 + k,
+        }),
+      );
+      const tCp = svg('text', {
+        x: xCp + wCp / 2,
+        y: yCp + hCp / 2 + 4,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': Math.max(9, Math.min(13, wCp / 5.5)),
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      tCp.textContent = '1935';
+      raiz.append(tCp);
+    }
+
+    // Indicador inferior de balanza
+    if (e.balanza) {
+      const by = padY + hojaH + 34;
+      raiz.append(svg('line', { x1: padX + 40, y1: by, x2: padX + hojaW - 40, y2: by, stroke: TINTA, 'stroke-width': 2 }));
+      // Fulcro central
+      raiz.append(svg('polygon', { points: `${centroX - 7},${by + 12} ${centroX + 7},${by + 12} ${centroX},${by + 1}`, fill: TINTA }));
+      // Punto de centro de gravedad compuesto
+      const cgX = Math.max(padX + 50, Math.min(padX + hojaW - 50, centroX + desvio * 3.2));
+      raiz.append(svg('circle', { cx: cgX, cy: by, r: 7, fill: Math.abs(desvio) <= 5 && !tibia ? AMARILLO : COTA, stroke: TINTA, 'stroke-width': 2 }));
+
+      const lbl = svg('text', {
+        x: padX,
+        y: by + 26,
+        'font-family': SANS,
+        'font-size': 10.5,
+        'font-weight': 700,
+        fill: Math.abs(desvio) <= 5 && !tibia ? TINTA : COTA,
+      });
+      lbl.textContent = tibia
+        ? `ASIMETRÍA TIBIA (${e.eje} %): PARECE UN CENTRADO FALLIDO`
+        : `CENTRO DE GRAVEDAD: ${desvio === 0 ? 'EQUILIBRADO (0 %)' : `${desvio > 0 ? '+' : ''}${desvio} % DESPLAZADO`}`;
+      raiz.append(lbl);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { desvio, tibia } = calcularEquilibrio(e);
+
+    if (tibia) {
+      return `El eje está al <b class="dv-cifra">${e.eje} %</b>, a solo ${Math.abs(50 - e.eje)} puntos del centro. Esa asimetría tímida no activa el espacio blanco y parece un centrado mal medido.`;
+    }
+
+    if (e.alineacion === 'centrada' && e.contenido === 'variable') {
+      return `Al centrar renglones de longitud irregular sobre el eje (<b class="dv-cifra">${e.eje} %</b>), ambos bordes quedan dentados y el ojo pierde la línea vertical de inicio.`;
+    }
+
+    if (e.eje === 50 && e.alineacion === 'centrada') {
+      return `Composición axial simétrica (<b class="dv-cifra">50 %</b>): estable para un título corto de portada, pero divide el espacio blanco en dos márgenes iguales y pasivos.`;
+    }
+
+    if (Math.abs(desvio) > 7) {
+      return `El eje asimétrico al <b class="dv-cifra">${e.eje} %</b> ordena la lectura, pero la página se inclina hacia un lado (<b class="dv-cifra">${desvio > 0 ? '+' : ''}${desvio} %</b>). Ajusta «Contrapeso en el lado opuesto» para compensar la masa.`;
+    }
+
+    return `Equilibrio asimétrico logrado (<b class="dv-cifra">eje al ${e.eje} %</b> y contrapeso al <b class="dv-cifra">${e.contrapeso} %</b>): los bloques comparten una plomada limpia y el espacio vacío participa activamente en la composición.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="asimetria"]')) {
+    guiar<E>(raiz, [
+      (e) => e.eje === 50 && e.alineacion === 'centrada',
+      (e) => e.alineacion === 'eje' && e.eje >= 24 && e.eje <= 34,
+      (e) => e.alineacion === 'eje' && e.eje <= 36 && e.contrapeso >= 55 && e.contrapeso <= 85,
+      (e) => e.contenido === 'variable' && e.alineacion === 'eje',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────────────────
+  type E1 = { modo: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const esCentrado = e.modo === 'centrado';
+    d.innerHTML = `
+      <div style="padding:16px 18px;background:#fbfbf9;font-family:${SERIF};color:#222;">
+        <div style="${esCentrado ? 'text-align:center;max-width:290px;margin:0 auto;' : 'display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:start;'}">
+          ${!esCentrado ? `<span style="font-family:${SANS};font-size:10px;font-weight:900;color:#6f6f6f;border-top:2px solid #222;padding-top:4px;">NOTA 04</span>` : ''}
+          <div>
+            <p style="margin:0 0 6px;font-family:${SANS};font-size:14px;font-weight:900;">El borde izquierdo como guía</p>
+            <p style="margin:0;font-size:12.5px;line-height:1.48;color:#444;">Cuando un párrafo supera las tres líneas, el ojo necesita volver siempre a la misma coordenada vertical para empezar el renglón siguiente sin esfuerzo.</p>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.modo === 'centrado') return 'Con <b class="dv-cifra">renglones centrados</b>, cada línea empieza en un sitio distinto y fatiga la lectura.';
+    return '<b class="dv-cifra">Eje desplazado con bandera derecha</b>: la composición es asimétrica y dinámica, pero el párrafo conserva su anclaje izquierdo intacto.';
+  }
+
+  type E2 = { posicion: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const tibia = e.posicion >= 43 && e.posicion <= 49;
+    d.innerHTML = `
+      <div style="padding:16px;background:#fbfbf9;font-family:${SANS};">
+        <div style="position:relative;height:96px;background:#fff;border:2px solid ${tibia ? COTA : '#222'};">
+          <div style="position:absolute;top:0;bottom:0;left:${e.posicion}%;border-left:2px dashed ${tibia ? COTA : '#222'};padding-left:10px;display:flex;flex-direction:column;justify-content:center;">
+            <span style="font-size:9.5px;font-weight:700;color:#6f6f6f;">EJE AL ${e.posicion} %</span>
+            <strong style="font-size:15px;color:#222;">ARCHIVO DOCUMENTAL</strong>
+            <span style="font-size:11px;color:#444;">Colección 1928–1935</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.posicion >= 43 && e.posicion <= 49) {
+      return `Al <b class="dv-cifra">${e.posicion} %</b> la desviación respecto al medio es tan pequeña que parece un error al centrar.`;
+    }
+    if (e.posicion === 50) {
+      return '<b class="dv-cifra">50 % exacto</b>: simetría franca sobre el eje medio.';
+    }
+    return `<b class="dv-cifra">Asimetría decidida (${e.posicion} %)</b>: la diferencia entre izquierda y derecha es clara e intencional.`;
+  }
+
+  type E3 = { peso: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const k = e.peso / 100;
+    d.innerHTML = `
+      <div style="padding:16px 18px;background:#fbfbf9;font-family:${SANS};display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:center;">
+        <div style="display:flex;align-items:center;justify-content:flex-start;">
+          ${
+            e.peso === 0
+              ? `<span style="font-size:10px;color:#6f6f6f;border:1px dashed #ccc;padding:8px;">Vacío sin peso</span>`
+              : `<div style="width:${34 + k * 38}px;height:${28 + k * 24}px;background:${e.peso >= 50 ? AMARILLO : '#e5e5e0'};border:2px solid #222;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#222;">07</div>`
+          }
+        </div>
+        <div style="border-left:2px solid #222;padding-left:12px;">
+          <strong style="display:block;font-size:15px;color:#222;">Crónica de arquitectura</strong>
+          <p style="margin:4px 0 0;font-size:12px;color:#444;line-height:1.4;">Dos volúmenes sobre vivienda colectiva y espacio urbano.</p>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.peso < 30) return 'Sin un elemento de anclaje en la columna izquierda, toda la ficha <b class="dv-cifra">parece caerse hacia la derecha</b>.';
+    return `<b class="dv-cifra">Contrapeso activo (${e.peso} %)</b>: el folio enmarcado en la columna estrecha equilibra la masa del bloque de texto.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['asimetria-e1', pintarE1 as never, describirE1 as never],
+    ['asimetria-e2', pintarE2 as never, describirE2 as never],
+    ['asimetria-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego (5 rondas) ──────────────────────────────────────────────
+  function rondaParrafoCentrado(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Columna desplazada a la derecha con todas las líneas alineadas sobre un eje izquierdo',
+        describir: 'Bloque ubicado asimétricamente pero con texto alineado a la izquierda.',
+        es: true,
+        html: `<div class="jg-asi-box"><div style="margin-left:44px;border-left:2px solid #222;padding-left:10px;text-align:left;font-size:11.5px;color:#222;line-height:1.35;"><strong>Programa del curso</strong><br/>16 sesiones presenciales<br/>Laboratorio y memoria pública</div></div>`,
+      },
+      {
+        texto: 'Todas las líneas del párrafo y de la lista centradas al medio de la tarjeta',
+        describir: 'Bloque con tres líneas de distinta longitud centradas al medio.',
+        es: false,
+        html: `<div class="jg-asi-box"><div style="text-align:center;font-size:11.5px;color:#222;line-height:1.35;"><strong>Programa del curso</strong><br/>16 sesiones presenciales<br/>Laboratorio y memoria pública</div></div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de las dos disposiciones aplica el principio de Tschichold para mantener un borde de lectura limpio?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La composición asimétrica desplaza el eje dentro de la página, pero alinea el inicio de los renglones sobre esa plomada para que el ojo encuentre siempre el comienzo de cada línea.',
+      repaso: 'Eje asimétrico y alineación izquierda',
+    };
+  }
+
+  function rondaAsimetriaTibia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Eje situado francamente al 30 % del ancho (proporción aproximada 1:2)',
+        es: true,
+      },
+      {
+        texto: 'Eje situado al 48 % del ancho (casi en el centro, pero desplazado 2 puntos)',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Si decides abandonar la simetría axial en una portada, ¿qué posición del eje produce una estructura clara?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Una desviación mínima respecto al 50 % (como 48 %) cae en la zona de ambigüedad y se percibe como un centrado defectuoso. Para que la asimetría funcione, la diferencia entre ambas partes debe ser inequívoca.',
+      repaso: 'Salir de la asimetría tibia',
+    };
+  }
+
+  function rondaEspacioBlanco(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Reúne el espacio libre en un campo amplio y activo que participa en el equilibrio de la pieza',
+        es: true,
+      },
+      {
+        texto: 'Parte el espacio sobrante en dos tiras iguales y pasivas a izquierda y derecha del texto',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según Emil Ruder (1967), ¿qué ocurre con el espacio en blanco cuando pasamos de una composición centrada a una asimétrica?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En la simetría axial el blanco queda partido en dos mitades residuales alrededor del centro; en la asimetría se concentra en una superficie continua que empuja y sostiene a los elementos impresos.',
+      repaso: 'Activación del espacio vacío',
+    };
+  }
+
+  function rondaCuandoSimetria(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un catálogo técnico con fichas que mezclan títulos largos, tablas de medidas, avisos y notas al pie',
+        es: true,
+      },
+      {
+        texto: 'Una portada de novela clásica con solo tres líneas breves (autor, título y sello)',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál de estos dos proyectos resulta imprescindible una estructura asimétrica?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El propio Tschichold señaló que una portada breve y solemne puede funcionar con simetría axial, pero cuando el contenido es variable, heterogéneo y funcional, forzarlo sobre un eje central destruye la legibilidad.',
+      repaso: 'Adaptabilidad al contenido variable',
+    };
+  }
+
+  function rondaAjustarContrapeso(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El bloque principal está apoyado en un eje al 35 % y vuelca el peso hacia la derecha. Aumenta el contrapeso en la columna izquierda hasta equilibrar la balanza.',
+      control: {
+        etiqueta: 'Contrapeso en la columna izquierda',
+        min: 0,
+        max: 100,
+        paso: 5,
+        valor: 10,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const k = v / 100;
+        const ok = v >= 60 && v <= 90;
+        c.innerHTML = `<div style="padding:16px;background:#fbfbf9;font-family:${SANS};display:grid;grid-template-columns:1fr 2fr;gap:12px;align-items:center;border:2px solid ${ok ? '#222' : '#ccc'};">
+          <div style="display:flex;justify-content:center;">
+            <div style="width:${20 + k * 48}px;height:${20 + k * 34}px;background:${v >= 55 ? AMARILLO : '#e0e0da'};border:2px solid #222;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#222;">A1</div>
+          </div>
+          <div style="border-left:2px solid #222;padding-left:12px;text-align:left;">
+            <strong style="font-size:14px;color:#222;display:block;">Manual de taller</strong>
+            <span style="font-size:11.5px;color:#444;">Equilibrio de masas desiguales sobre el plano.</span>
+          </div>
+        </div>`;
+      },
+      cumple: (v) => v >= 60 && v <= 90,
+      falta: (v) => v < 60
+        ? `Al ${v} %, la insignia izquierda aún es demasiado débil para compensar el bloque derecho.`
+        : `Al ${v} %, la insignia izquierda empieza a competir demasiado. Déjala entre 60 % y 90 %.`,
+      porque: 'Un elemento compacto pero con alto contraste (amarillo y borde firme) lejos del eje equilibra una masa de texto más grande al otro lado.',
+      repaso: 'Equilibrio por contrapeso',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="asimetria"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaParrafoCentrado(),
+        rondaAsimetriaTibia(),
+        rondaEspacioBlanco(),
+        rondaCuandoSimetria(),
+        rondaAjustarContrapeso(),
+      ]),
+    );
+  }
+</script>
+
+<style is:global>
+  .jg-asi-box {
+    padding: 0.85rem;
+    background: #fafaf7;
+    border: 1px solid #e0e0d8;
+    min-height: 4.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+  }
+</style>

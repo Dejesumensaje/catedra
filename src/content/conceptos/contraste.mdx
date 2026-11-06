@@ -1,0 +1,184 @@
+---
+titulo: Contraste
+territorio: color
+pregunta: ¿De cuántas maneras distintas pueden contrastar dos colores, y cuál de ellas sostiene realmente la lectura?
+resumen: "Llamamos «contraste» a cosas muy distintas: diferencia de claridad (oscuro frente a claro), de tono (azul frente a naranja), de saturación (vivo frente a apagado) o de temperatura (cálido frente a frío). Solo el contraste de luminancia sostiene las formas finas y el texto."
+modos: [laboratorio, diseccion]
+orden: 20
+relaciones:
+  - concepto: interaccion-del-color
+    porQue: El contraste entre dos colores no es fijo; cambia según el tamaño y el valor de las superficies vecinas.
+  - concepto: accesibilidad-del-color
+    porQue: Los criterios de legibilidad WCAG se basan directamente en la razón de contraste de luminancia entre figura y fondo.
+  - concepto: armonia
+    porQue: Una paleta equilibrada necesita combinar acuerdos de tono con contrastes claros de valor y de proporción de área.
+  - concepto: figura-fondo
+    porQue: La separación nítida entre una forma y el campo que la rodea depende ante todo del salto de claridad en sus bordes.
+  - concepto: enfasis
+    porQue: Concentrar un contraste de saturación o de claridad en una sola pieza es uno de los recursos más directos para crear un punto focal.
+fuentes:
+  - autor: Johannes Itten
+    obra: "Kunst der Farbe: Subjektives Erleben und objektives Erkennen als Wege zur Kunst. Otto Maier Verlag"
+    anio: 1961
+    nota: Codificación de los siete contrastes de color, incluidos el claro-oscuro, el cualitativo (saturación) y el cuantitativo (extensión).
+  - autor: Albert H. Munsell
+    obra: "A Color Notation. Geo. H. Ellis Co."
+    anio: 1905
+    nota: "Separación perceptual del color en tres dimensiones independientes: tono (hue), valor o claridad (value) y croma o saturación (chroma)."
+  - autor: Colin Ware
+    obra: "Information Visualization: Perception for Design (4th ed.). Morgan Kaufmann"
+    anio: 2020
+    nota: Demostración neurofisiológica de por qué el canal de luminancia tiene alta resolución espacial mientras que los canales cromáticos solo separan manchas amplias.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ContrasteExp from '../../components/diseno-visual/experiencias/ContrasteExp.astro';
+
+<Paso id="idea" titular="No todos los contrastes hacen el mismo trabajo">
+
+<ContrasteExp paso="idea" />
+
+<p class="dv-frase">El tono separa zonas grandes; la diferencia entre claro y oscuro sostiene las letras y los bordes.</p>
+
+<div class="dv-texto">
+
+Decir que a una composición «le falta contraste» suele llevar a elegir colores más estridentes. Sin embargo, dos colores pueden estar en extremos opuestos del círculo cromático —como un rojo intenso y un verde intenso— y aun así resultar casi imposibles de leer cuando uno se escribe sobre el otro.
+
+Esto ocurre porque el color varía en al menos tres dimensiones independientes descritas por Albert Munsell (1905) y ampliadas por Johannes Itten (1961): la **claridad** (qué tan claro u oscuro es), el **tono** (qué familia cromática tiene) y la **saturación** (qué tan vivo o apagado está), además de la **proporción de superficie** que ocupa cada uno. Cada dimensión resuelve un problema visual distinto.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro contrastes clave</h3>
+  <dl>
+    <dt>Contraste de luminancia (claro-oscuro)</dt>
+    <dd>La diferencia de luz reflejada o emitida entre dos superficies. Es el único contraste capaz de definir contornos finos, iconos detallados y tipografía legible.</dd>
+    <dt>Contraste de tono</dt>
+    <dd>La distancia entre familias cromáticas distintas (como azul frente a naranja). Sirve para distinguir categorías o bloques amplios, pero por sí solo no sostiene la lectura.</dd>
+    <dt>Contraste de saturación (croma)</dt>
+    <dd>La diferencia entre un color puro e intenso y un color apagado o neutro. Permite que un acento pequeño destaque sobre un fondo sereno sin necesidad de que todo el diseño sea estridente.</dd>
+    <dt>Contraste cuantitativo (proporción de área)</dt>
+    <dd>La relación de tamaño entre dos manchas de color. Un color muy luminoso y saturado necesita poca superficie para equilibrar una zona extensa y oscura.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Choque de tonos frente a jerarquía de contrastes">
+
+<div class="dv-texto">
+
+En la versión izquierda de este gráfico de consumo de agua, los elementos se diferencian solo con tonos vivos de claridad similar; en la derecha, el trabajo se reparte entre claridad, saturación y proporción de superficie.
+
+</div>
+
+<ContrasteExp paso="miralo" />
+
+<div class="dv-texto">
+
+Cuando todos los colores son igual de luminosos, las líneas finas y las etiquetas se desdibujan porque todas las piezas reflejan casi la misma cantidad de luz. Al separar las funciones, el contraste de claridad (tinta oscura sobre papel blanco) sostiene toda la información escrita y el contraste de saturación reserva el color intenso para la barra y el punto que requieren atención.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Aísla y combina las dimensiones del contraste">
+
+<ContrasteExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas para repartir el contraste">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Confía el texto y los trazos finos a la claridad</h3>
+      <p>Para cualquier letra, línea divisoria, borde de tabla o icono pequeño, asegura una diferencia franca entre claro y oscuro (al menos 4,5:1 para texto normal y 3:1 para elementos gráficos). Nunca intentes salvar un texto de igual luminancia cambiando solo su tono.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Apaga las superficies grandes para que los acentos destaquen</h3>
+      <p>Si el fondo de la página o de las tarjetas tiene una saturación alta, cualquier botón o alerta necesitará aún más intensidad para distinguirse. Usa fondos neutros o de baja saturación y reserva el croma alto para las piezas que deban atraer la mirada.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Ajusta el tamaño de la mancha a la fuerza luminosa del color</h3>
+      <p>Los colores muy luminosos y saturados (como el amarillo señal o el cian vivo) funcionan como imanes en dosis del 5 % al 15 % de la superficie, pero fatigan la vista cuando cubren toda la pantalla.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<ContrasteExp paso="errores" />
+
+<div class="dv-texto">
+
+### El contraste en piezas reales
+
+</div>
+
+<ContrasteExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Identifica qué tipo de contraste actúa en cada caso">
+
+<ContrasteExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Los siete contrastes de Itten y la fisiología de la visión">
+
+<Seccion titulo="Por qué el tono no puede sostener las letras">
+
+En *Information Visualization: Perception for Design* (2020), Colin Ware explica cómo el sistema visual humano procesa la luz a través de tres canales a partir de los conos de la retina: un canal acromático de **luminancia** (que suma las señales de onda larga y media, $L + M$) y dos canales cromáticos oponentes (**rojo-verde** y **amarillo-azul**).
+
+El canal de luminancia tiene una resolución espacial muy alta: es el encargado de detectar bordes nítidos, texturas finas, formas tipográficas y posición exacta. Los dos canales cromáticos, en cambio, tienen una resolución espacial mucho más baja: sirven para reconocer el color de superficies amplias, pero son miopes para el detalle fino.
+
+Si se colocan letras rojas sobre un fondo verde o azul de la misma luminancia, el canal de alta resolución no detecta ningún borde. El cerebro intenta reconstruir las letras usando solo los canales cromáticos de baja resolución, lo que produce esa sensación de desenfoque y vibración en la frontera conocida como *ilusión de borde equiluminante*.
+
+</Seccion>
+
+<Seccion titulo="Las tres dimensiones de Munsell y los contrastes de Itten">
+
+A comienzos del siglo XX, Albert H. Munsell (1905) demostró que para trabajar con rigor no basta una rueda plana de colores: hace falta un espacio tridimensional donde **tono** (*hue*), **valor o claridad** (*value*) y **croma o saturación** (*chroma*) puedan medirse por separado. Descubrió además que cada tono alcanza su máxima saturación a una claridad distinta: el amarillo puro es naturalmente muy claro, mientras que el azul ultramar o el violeta puro son naturalmente oscuros.
+
+Medio siglo después, en la Bauhaus y en su tratado *Kunst der Farbe* (1961), Johannes Itten sistematizó siete maneras de oponer colores:
+
+1. **Contraste de color en sí mismo (tono puro):** oposición de tonos saturados alejados en el círculo cromático.
+2. **Contraste claro-oscuro:** polaridad entre blanco, negro y la escala de valores intermedios.
+3. **Contraste frío-cálido:** diferencia perceptual de temperatura entre azules-verdes y rojos-naranjas.
+4. **Contraste de complementarios:** pares diametralmente opuestos cuyo cruce neutraliza el tono y cuya cercanía exalta su intensidad.
+5. **Contraste simultáneo:** modificación recíproca que un color induce sobre su vecino (desarrollado en [Interacción del color](/diseno-visual/interaccion-del-color)).
+6. **Contraste cualitativo:** oposición entre colores saturados luminosos y colores apagados o quebrados.
+7. **Contraste cuantitativo:** relación de extensión o área entre manchas grandes y pequeñas.
+
+</Seccion>
+
+<Seccion titulo="El contraste cuantitativo: cuánto espacio pide cada color">
+
+Dos colores no pesan lo mismo a igual superficie. Inspirándose en las escalas de luminosidad de Goethe, Itten propuso razones de área para que dos colores saturados se equilibren sin que uno aplaste al otro. Por ejemplo, el amarillo es unas tres veces más luminoso que el violeta; por eso una composición se percibe equilibrada cuando una parte de amarillo acompaña a tres partes de violeta.
+
+En el diseño de interfaces y publicaciones contemporáneas, esta regla explica por qué la estructura general suele apoyarse en un **80 % a 90 % de superficies neutras** (blancos, papeles cálidos, grises carbón) y reserva el **5 % a 15 % restante** para los colores de alta saturación. Cuanto más intenso es un color, menor superficie necesita para cumplir su función.
+
+</Seccion>
+
+<Seccion titulo="Cómo auditar el contraste de una pieza en diez segundos">
+
+Antes de dar por terminada una pantalla, un gráfico o un cartel, aplica dos pruebas rápidas:
+
+- **La prueba de luminancia (escala de grises):** elimina temporalmente la saturación —como hace el interruptor «Comprobar solo canal de luminancia» del instrumento—. Si los títulos, los datos del gráfico, los bordes de los controles y el botón principal siguen diferenciándose con claridad, la estructura está bien sostenida.
+- **La prueba de entrecerrar los ojos:** aléjate de la pantalla y entrecierra los ojos para difuminar el detalle fino. Comprueba si el elemento que sigue destacando por contraste cualitativo o cuantitativo coincide realmente con la información más importante de la página.
+
+</Seccion>
+
+</Paso>

@@ -1,0 +1,974 @@
+---
+// Extrañamiento (ostranenie / ex-formación): desautomatizar la percepción
+// sin destruir la comprensión (Shklovski, 1917; Hara, 2007; Norman, 2013).
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'extranamiento';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TX = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Comprueba la ceguera por costumbre.',
+    hacer: 'Lleva «Grado de extrañamiento» a 0 %.',
+    pista: 'Mueve el deslizador hasta el extremo izquierdo.',
+    preparar: { operacion: 'escala', protegerDatos: true },
+    logro: 'Al 0 %, la pieza repite el formato convencional que hemos visto miles de veces. Es legible, pero tan previsible que el ojo la clasifica en medio segundo y pasa de largo sin detenerse.',
+  },
+  {
+    titulo: 'Despierta la mirada en el punto óptimo.',
+    hacer: 'Sube «Grado de extrañamiento» entre 55 % y 75 %.',
+    pista: 'Sitúa el deslizador en la franja media-alta.',
+    logro: 'Al volver monumental un signo que normalmente es diminuto (el signo de interrogación), interrumpes el piloto automático: el objeto sigue siendo reconocible, pero obliga a mirarlo como si fuera nuevo.',
+  },
+  {
+    titulo: 'Cruza el umbral hacia lo irreconocible.',
+    hacer: 'Lleva «Grado de extrañamiento» a 100 % y en «Más controles» desactiva «Mantener legibles los datos prácticos».',
+    pista: 'Pon el deslizador al máximo y abre «Más controles» para apagar el interruptor.',
+    abrir: true,
+    logro: 'Cuando el extrañamiento invade también las fechas, horarios o controles básicos y destruye todo anclaje familiar, la curiosidad se convierte en frustración y quien mira abandona la pieza.',
+  },
+  {
+    titulo: 'Prueba otras operaciones de desautomatización.',
+    hacer: 'Vuelve a activar «Mantener legibles los datos prácticos», pon el grado en 65 % y cambia «Operación de extrañamiento» a «Encuadre inusual» o «Fricción consciente».',
+    preparar: { grado: 65, protegerDatos: true },
+    logro: 'Recortar un objeto cotidiano desde un ángulo inesperado o introducir una pausa deliberada antes de un clic crítico cumplen la misma función: frenar el hábito para activar el pensamiento.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Dos avisos con el mismo mensaje: a la izquierda una caja burocrática estándar que el ojo ignora por costumbre; a la derecha un signo de interrogación monumental que encierra la pregunta y frena el barrido automático.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <!-- 1. Cliché invisible por hábito -->
+      <rect x="32" y="24" width="244" height="132" fill="#f3f3ef" stroke="#cfcfc8" stroke-width="1.5" />
+      <rect x="32" y="24" width="244" height="24" fill="#dcdcd4" />
+      <text x="44" y="40" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>AVISO INFORMATIVO GENERAL</text>
+      <text x="154" y="76" text-anchor="middle" font-family={SANS} font-size="12" font-weight="700" fill={TX}>Jornada de lectura pública</text>
+      <text x="154" y="96" text-anchor="middle" font-family={SANS} font-size="10.5" fill={G}>Viernes 17:00 h · Patio central</text>
+      <rect x="108" y="114" width="92" height="24" fill="#e5e5de" stroke="#b8b8b0" />
+      <text x="154" y="130" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={TX}>Aceptar</text>
+
+      <!-- 2. Extrañamiento por escala y encuadre -->
+      <rect x="324" y="24" width="244" height="132" fill="#ffffff" stroke={T} stroke-width="2" />
+      <rect x="324" y="24" width="92" height="132" fill={AMARILLO} />
+      <text x="370" y="138" text-anchor="middle" font-family={SERIF} font-size="128" font-weight="700" fill={T}>¿</text>
+      <text x="430" y="56" font-family={SANS} font-size="14" font-weight="900" fill={T}>Qué libro dejaste</text>
+      <text x="430" y="74" font-family={SANS} font-size="14" font-weight="900" fill={T}>a la mitad?</text>
+      <text x="430" y="102" font-family={SERIF} font-size="11.5" fill={TX}>Tráelo este viernes.</text>
+      <text x="430" y="136" font-family={SANS} font-size="10" font-weight="700" fill={G}>17:00 H · PATIO CENTRAL</text>
+    </svg>
+    <p>Ambos recuadros invitan a la misma actividad del viernes a las cinco. ¿Por qué tu ojo salta el primero como si fuera un anuncio vacío y se detiene en el segundo?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>El primer recuadro tiene la anatomía exacta de miles de ventanas y avisos rutinarios que hemos aprendido a ignorar sin leer (*ceguera por costumbre*). El segundo aplica lo que Viktor Shklovski llamó <strong>extrañamiento</strong> (*ostranenie*): toma un signo cotidiano —el signo de abrir interrogación `¿`— y multiplica diez veces su escala hasta convertirlo en una columna arquitectónica. Al romper la expectativa automática, devuelve presencia al mensaje.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Cliché visual previsible: se reconoce al instante y se olvida igual de rápido"
+      notas={[
+        {
+          ...pct(180, 88),
+          titulo: 'Icono gastado por el uso',
+          texto: 'Un bombillo o un libro genérico en el centro de la tarjeta se procesa de forma tan automática que no despierta ninguna curiosidad.',
+          zona: zona(112, 42, 136, 86),
+        },
+        {
+          ...pct(180, 166),
+          titulo: 'Composición de plantilla estándar',
+          texto: 'Título centrado, subtítulo gris y pastilla inferior idénticos a cualquier folleto corporativo: el ojo cree que ya lo ha visto antes.',
+          zona: zona(34, 132, 292, 74),
+        },
+        {
+          ...pct(180, 238),
+          titulo: 'Cero tensión perceptiva',
+          texto: 'Nada desafía la costumbre ni invita a detener el barrido visual durante un segundo adicional.',
+          zona: zona(68, 212, 224, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel convencional sobre un taller de escritura con el cliché de una bombilla centrada y textos previsibles.">
+        <rect width={W} height={H} fill="#f7f7f4" />
+        <rect x="24" y="20" width="312" height="240" fill="#ffffff" stroke="#d4d4cc" stroke-width="1.5" />
+        <circle cx="180" cy="82" r="32" fill="#f0f0ea" stroke="#b8b8b0" stroke-width="1.5" />
+        <text x="180" y="90" text-anchor="middle" font-family={SANS} font-size="22" fill={G}>✎</text>
+        <text x="180" y="148" text-anchor="middle" font-family={SANS} font-size="16" font-weight="700" fill={T}>Taller de Escritura y Edición</text>
+        <text x="180" y="170" text-anchor="middle" font-family={SANS} font-size="12" fill={G}>Aprende técnicas para mejorar tus textos</text>
+        <text x="180" y="188" text-anchor="middle" font-family={SANS} font-size="12" fill={G}>Todos los miércoles de octubre</text>
+        <rect x="116" y="214" width="128" height="30" fill="#e5e5de" stroke="#b8b8b0" />
+        <text x="180" y="233" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={TX}>Más información</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Extrañamiento medido: hacer desconocido un signo conocido"
+      notas={[
+        {
+          ...pct(264, 114),
+          titulo: 'Cambio de escala radical de lo cotidiano',
+          texto: 'Una coma ortográfica ampliada a 220 px deja de ser un signo invisible entre palabras y se revela como una escultura gráfica.',
+          zona: zona(192, 24, 144, 174),
+        },
+        {
+          ...pct(104, 96),
+          titulo: 'Conexión directa con el tema',
+          texto: 'El extrañamiento no es un capricho decorativo: una coma gigante habla con exactitud del oficio de editar y respirar un texto.',
+          zona: zona(24, 34, 168, 128),
+        },
+        {
+          ...pct(180, 236),
+          titulo: 'Datos prácticos sin extrañar',
+          texto: 'El horario, el aula y la inscripción van en una franja limpia y previsible al pie: se extraña el pórtico para atraer, pero se ordena el dato para informar.',
+          zona: zona(24, 198, 312, 62),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel del mismo taller de escritura donde una coma tipográfica monumental sobre fondo amarillo ocupa el costado derecho mientras el título y los datos se leen con nitidez a la izquierda.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="204" y="20" width="132" height="172" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="270" y="152" text-anchor="middle" font-family={SERIF} font-size="210" font-weight="700" fill={T}>,</text>
+
+        <text x="28" y="46" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.4" fill={G}>TALLER DE EDICIÓN</text>
+        <text x="28" y="78" font-family={SERIF} font-size="22" font-weight="700" fill={T}>Dónde poner</text>
+        <text x="28" y="106" font-family={SERIF} font-size="22" font-weight="700" fill={T}>la pausa</text>
+        <text x="28" y="138" font-family={SERIF} font-size="12.5" fill={TX}>Cuatro sesiones prácticas</text>
+        <text x="28" y="156" font-family={SERIF} font-size="12.5" fill={TX}>sobre puntuación y ritmo.</text>
+
+        <line x1="28" y1="206" x2="336" y2="206" stroke={T} stroke-width="1.8" />
+        <text x="28" y="230" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>Miércoles de octubre · 18:00 h</text>
+        <text x="28" y="248" font-family={SANS} font-size="11" fill={G}>Aula 104 · Inscripción abierta</text>
+        <rect x="234" y="218" width="102" height="30" fill={T} />
+        <text x="285" y="237" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={AMARILLO}>Apuntarse →</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · la curva entre el hábito y la extrañeza"
+    consigna="Aplica distintas operaciones de extrañamiento sobre una pieza editorial o un flujo de interfaz y observa cómo evoluciona la atención consciente: desde la invisibilidad por rutina (0 %) hasta el punto óptimo de asombro comprensible (60 %–75 %) y el colapso por confusión (100 %)."
+    nota="Fija en A el estado habitual (0 %) y compáralo con B al 65 % manteniendo activos los datos prácticos legibles."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Cartel editorial con un signo tipográfico ampliado a escala monumental y una curva inferior que marca el punto óptimo de atención.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <rect x="40" y="20" width="560" height="210" fill="#ffffff" stroke="#222222" stroke-width="2" />
+      <rect x="380" y="20" width="220" height="210" fill="#eeff41" stroke="#222222" stroke-width="2" />
+      <text x="490" y="180" text-anchor="middle" font-family="'PT Serif', Georgia, serif" font-size="220" font-weight="700" fill="#222222">;</text>
+      <text x="68" y="78" font-family="Roboto, Helvetica, Arial, sans-serif" font-size="26" font-weight="900" fill="#222222">EL ARTE DE LA PAUSA</text>
+      <rect x="68" y="102" width="240" height="10" fill="#444444" />
+      <rect x="68" y="122" width="200" height="10" fill="#6f6f6f" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Recuerda la regla de oro: desautomatiza el pórtico o la acción crítica, pero mantén previsible la navegación y los datos de consulta." />
+
+    <Opciones
+      lab={lab}
+      variable="operacion"
+      etiqueta="Operación de extrañamiento"
+      valor="escala"
+      opciones={[
+        { valor: 'escala', texto: 'Escala monumental' },
+        { valor: 'encuadre', texto: 'Encuadre inusual' },
+        { valor: 'friccion', texto: 'Fricción consciente (interfaz)' },
+      ]}
+      ayuda="Tres caminos para interrumpir el piloto automático del lector o del usuario."
+    />
+    <Deslizador
+      lab={lab}
+      variable="grado"
+      etiqueta="Grado de extrañamiento"
+      min={0}
+      max={100}
+      paso={5}
+      valor={65}
+      unidad="%"
+      ayuda="0 %: fórmula trillada (se ignora). 55 %–75 %: desautomatización eficaz. 100 %: exceso que impide reconocer la pieza."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="protegerDatos"
+        etiqueta="Mantener legibles los datos prácticos"
+        activo={true}
+        ayuda="Conserva la fecha, el lugar o la acción en formato directo para que el extrañamiento no impida actuar."
+      />
+      <Interruptor
+        lab={lab}
+        variable="curva"
+        etiqueta="Mostrar curva de atención y comprensión"
+        activo={true}
+        ayuda="Grafica cómo sube el interés al salir de la rutina y cómo cae si se pierde la legibilidad."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"operacion":"escala","grado":0,"protegerDatos":true}'>0 % · Hábito invisible (cliché)</button>
+      <button type="button" class="dv-boton" data-preset='{"operacion":"escala","grado":65,"protegerDatos":true}'>65 % · Punto óptimo (ex-formación)</button>
+      <button type="button" class="dv-boton" data-preset='{"operacion":"friccion","grado":70,"protegerDatos":true}'>Fricción útil antes de borrar un proyecto</button>
+      <button type="button" class="dv-boton" data-preset='{"operacion":"escala","grado":100,"protegerDatos":false}'>100 % · Exceso incomprensible</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1 · Rompe la «ceguera al banner» saliendo del recuadro publicitario típico"
+      comparar={false}
+      consigna="Una convocatoria importante presentada dentro de una caja gris con borde y botón estándar parece un anuncio comercial y todo el mundo la salta sin leer. Cambia su presentación para integrarla con voz editorial."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Convocatoria anual de becas de investigación</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="formato"
+        etiqueta="Presentación del aviso"
+        valor="banner"
+        opciones={[
+          { valor: 'banner', texto: 'Caja de anuncio estándar' },
+          { valor: 'editorial', texto: 'Intervención tipográfica directa' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2 · Introduce una fricción consciente antes de una acción irreversible"
+      comparar={false}
+      consigna="Cuando todas las ventanas preguntan «¿Estás seguro? [Aceptar]», las personas pulsan «Aceptar» por reflejo muscular en menos de medio segundo. Añade un paso de desautomatización para proteger el borrado."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Eliminar base de datos del curso</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="confirmacion"
+        etiqueta="Tipo de confirmación"
+        valor="automatica"
+        opciones={[
+          { valor: 'automatica', texto: 'Botón «Sí, aceptar» habitual' },
+          { valor: 'consciente', texto: 'Pedir escribir el nombre para confirmar' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3 · No extrañes la navegación básica ni los datos de urgencia"
+      comparar={false}
+      consigna="Este cartel de concierto quiso ser tan original que puso la hora, la fecha y el precio al revés y con nombres inventados. Reduce el extrañamiento en los datos prácticos para que la gente pueda asistir."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Concierto de música electroacústica</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="claridadDatos"
+        etiqueta="Claridad de la fecha, hora y lugar"
+        min={0}
+        max={100}
+        paso={25}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cartel tipográfico: un signo cotidiano convertido en arquitectura"
+      notas={[
+        {
+          ...pct(112, 138),
+          titulo: 'Desautomatización por escala',
+          texto: 'Los corchetes `[ ]`, que normalmente miden 12 puntos y pasan inadvertidos en una cita, crecen hasta formar las paredes físicas de la composición.',
+          zona: zona(22, 28, 316, 178),
+        },
+        {
+          ...pct(180, 114),
+          titulo: 'Reconocimiento conservado',
+          texto: 'Cualquier lector sabe qué es un corchete en el primer vistazo, pero al verlo a este tamaño vuelve a pensar en su función: encerrar un paréntesis en el tiempo.',
+          zona: zona(68, 54, 224, 118),
+        },
+        {
+          ...pct(180, 236),
+          titulo: 'Coordenadas informativas intactas',
+          texto: 'Debajo del gesto poético, la sala y el horario se leen en medio segundo sin ningún obstáculo.',
+          zona: zona(28, 212, 304, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel para un ciclo sobre archivos donde dos corchetes gigantes enmarcan el título central.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="24" y="24" width="312" height="176" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="40" y="164" font-family={SANS} font-size="148" font-weight="900" fill={T}>[</text>
+        <text x="320" y="164" text-anchor="end" font-family={SANS} font-size="148" font-weight="900" fill={T}>]</text>
+
+        <text x="180" y="88" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" letter-spacing="1.5" fill={T}>CICLO DE CINE RECUPERADO</text>
+        <text x="180" y="116" text-anchor="middle" font-family={SERIF} font-size="20" font-weight="700" fill={T}>Lo que quedó</text>
+        <text x="180" y="142" text-anchor="middle" font-family={SERIF} font-size="20" font-weight="700" fill={T}>fuera del corte</text>
+
+        <text x="24" y="226" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>Filmoteca · Del 4 al 12 de noviembre · 19:00 h</text>
+        <text x="24" y="244" font-family={SANS} font-size="10.5" fill={G}>Copias restauradas de archivo · Entrada libre</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Ex-formación (Kenya Hara): extrañar la textura y el encuadre"
+      notas={[
+        {
+          ...pct(180, 102),
+          titulo: 'Acercamiento extremo al material',
+          texto: 'En lugar de mostrar la silueta completa y obvia de un libro, el encuadre muestra a gran escala el corte escalonado de las hojas de papel.',
+          zona: zona(26, 26, 308, 138),
+        },
+        {
+          ...pct(180, 48),
+          titulo: 'Invitación a descubrir («hacer desconocido lo conocido»)',
+          texto: 'Durante el primer segundo el espectador se pregunta qué son esas líneas paralelas; en el segundo reconoce los cantos de un volumen impreso.',
+          zona: zona(26, 26, 308, 64),
+        },
+        {
+          ...pct(180, 218),
+          titulo: 'Título que cierra el hallazgo',
+          texto: 'El rótulo «Anatomía del papel» confirma la intuición perceptual y recompensa la atención del lector.',
+          zona: zona(26, 174, 308, 84),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portada de exposición sobre el papel que muestra en primerísimo plano las fibras y hojas apiladas del canto de un libro.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="28" y="24" width="304" height="136" fill={T} />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          <line
+            x1="28"
+            y1={36 + i * 10}
+            x2={316 - (i % 3) * 8}
+            y2={36 + i * 10}
+            stroke={i === 5 ? AMARILLO : '#f2f2ec'}
+            stroke-width={i === 5 ? 3.5 : 1.5}
+          />
+        ))}
+        <text x="28" y="194" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.4" fill={G}>EXPOSICIÓN MONOGRÁFICA</text>
+        <text x="28" y="222" font-family={SERIF} font-size="22" font-weight="700" fill={T}>La materia del libro</text>
+        <text x="28" y="244" font-family={SANS} font-size="11" fill={TX}>280 páginas vistas desde el filo · Sala Sur</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Interacción: fricción deliberada para romper el clic automático"
+      notas={[
+        {
+          ...pct(180, 58),
+          titulo: 'Ruptura de la ventana modal rutinaria',
+          texto: 'No es un diálogo más con un botón azul «Aceptar» que el pulgar pulsa sin haber leído la frase superior.',
+          zona: zona(24, 22, 312, 68),
+        },
+        {
+          ...pct(180, 146),
+          titulo: 'Pausa cognitiva obligatoria',
+          texto: 'Pedir que la persona escriba el nombre exacto del repositorio traslada la tarea del Sistema 1 (hábito rápido) al Sistema 2 (atención consciente).',
+          zona: zona(24, 96, 312, 86),
+        },
+        {
+          ...pct(180, 228),
+          titulo: 'Reservado a acciones sin vuelta atrás',
+          texto: 'Esta fricción solo es legítima porque borrar el archivo es irreversible; aplicarla para guardar un borrador sería un obstáculo absurdo.',
+          zona: zona(24, 192, 312, 64),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Diálogo de eliminación permanente que exige escribir el nombre del proyecto para desautomatizar el clic.">
+        <rect width={W} height={H} fill="#f4f4f0" />
+        <rect x="24" y="20" width="312" height="240" fill="#ffffff" stroke={T} stroke-width="2" />
+        <rect x="24" y="20" width="312" height="34" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="38" y="42" font-family={SANS} font-size="11" font-weight="900" fill={T}>ACCIÓN IRREVERSIBLE · NO SE PUEDE DESHACER</text>
+
+        <text x="38" y="78" font-family={SANS} font-size="13" font-weight="900" fill={T}>Se borrarán las 16 sesiones y sus memorias.</text>
+        <text x="38" y="108" font-family={SANS} font-size="11" fill={TX}>Para confirmar que no es un clic por reflejo,</text>
+        <text x="38" y="124" font-family={SANS} font-size="11" fill={TX}>escribe <tspan font-weight="900" fill={T}>catedra-2026</tspan> en el recuadro:</text>
+
+        <rect x="38" y="138" width="284" height="34" fill="#fbfbf9" stroke={T} stroke-width="1.8" />
+        <text x="50" y="160" font-family="monospace" font-size="13" font-weight="700" fill={T}>catedra-2026|</text>
+
+        <rect x="38" y="196" width="284" height="38" fill={T} />
+        <text x="180" y="219" text-anchor="middle" font-family={SANS} font-size="11.5" font-weight="900" fill={AMARILLO}>Entiendo las consecuencias, borrar repositorio</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre Viktor Shklovski, la ex-formación de Kenya Hara, la ceguera por costumbre y cuándo usar fricción consciente."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  type E = {
+    operacion: string;
+    grado: number;
+    protegerDatos: boolean;
+    curva: boolean;
+  };
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  function curvaAtencion(g: number, proteger: boolean): number {
+    // Campana con pico alrededor de 65 %
+    // En 0 % vale 15 % (se ignora por hábito). En 65 % vale 95 %. En 100 % cae a 25 % si no se protegen datos o 55 % si se protegen.
+    if (g <= 68) {
+      return Math.round(15 + (g / 68) * 80);
+    }
+    const exceso = (g - 68) / 32;
+    const caida = proteger ? exceso * 38 : exceso * 75;
+    return Math.max(12, Math.round(95 - caida));
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = e.curva ? 336 : 268;
+    const k = e.grado / 100;
+    const eficacia = curvaAtencion(e.grado, e.protegerDatos);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Escenario de extrañamiento por ${e.operacion} al ${e.grado} %. Atención efectiva: ${eficacia} %.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 460 ? 18 : 38;
+    const padY = 18;
+    const cardW = W - padX * 2;
+    const cardH = 216;
+
+    const clipId = `clip-ext-${Math.random().toString(36).slice(2, 7)}`;
+    const defs = svg('defs');
+    const clip = svg('clipPath', { id: clipId });
+    clip.append(svg('rect', { x: padX, y: padY, width: cardW, height: cardH }));
+    defs.append(clip);
+    raiz.append(defs);
+
+    raiz.append(
+      svg('rect', {
+        x: padX,
+        y: padY,
+        width: cardW,
+        height: cardH,
+        fill: '#ffffff',
+        stroke: TINTA,
+        'stroke-width': 1.8,
+      }),
+    );
+
+    const gEscena = svg('g', { 'clip-path': `url(#${clipId})` });
+
+    if (e.operacion === 'escala') {
+      // Un signo de interrogación pasa de 18 px (cliché) a 240 px (monumental) a 520 px (irreconocible)
+      const fsSigno = 18 + k * 280;
+      const anchoBanda = Math.min(cardW * 0.45, 60 + k * 140);
+      if (k > 0.15) {
+        gEscena.append(
+          svg('rect', {
+            x: padX + cardW - anchoBanda,
+            y: padY,
+            width: anchoBanda,
+            height: cardH,
+            fill: AMARILLO,
+            stroke: TINTA,
+            'stroke-width': 1.8,
+          }),
+        );
+      }
+
+      const signo = svg('text', {
+        x: k <= 0.15 ? padX + cardW / 2 : padX + cardW - anchoBanda / 2,
+        y: k <= 0.15 ? padY + 64 : padY + 148 + (k > 0.8 ? (k - 0.8) * 180 : 0),
+        'text-anchor': 'middle',
+        'font-family': SERIF,
+        'font-size': fsSigno,
+        'font-weight': 700,
+        fill: TINTA,
+      });
+      signo.textContent = '¿';
+      gEscena.append(signo);
+
+      const xTxt = k <= 0.15 ? padX + cardW / 2 : padX + 24;
+      const anchor = k <= 0.15 ? 'middle' : 'start';
+      const giroCaos = !e.protegerDatos && k > 0.75 ? (k - 0.75) * 90 : 0;
+
+      const gTexto = svg('g', { transform: `rotate(${giroCaos} ${xTxt} ${padY + 110})` });
+      const tKicker = svg('text', {
+        x: xTxt,
+        y: padY + 44,
+        'text-anchor': anchor,
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        'letter-spacing': 1.2,
+        fill: GRIS,
+      });
+      tKicker.textContent = 'COLOQUIO DE FILOSOFÍA';
+      gTexto.append(tKicker);
+
+      const tTit = svg('text', {
+        x: xTxt,
+        y: padY + 86,
+        'text-anchor': anchor,
+        'font-family': SERIF,
+        'font-size': W < 440 ? 18 : 22,
+        'font-weight': 700,
+        fill: TINTA,
+      });
+      tTit.textContent = 'El arte de preguntar';
+      gTexto.append(tTit);
+
+      const tSub = svg('text', {
+        x: xTxt,
+        y: padY + 116,
+        'text-anchor': anchor,
+        'font-family': SANS,
+        'font-size': 12,
+        fill: TEXTO,
+      });
+      tSub.textContent = 'Desautomatizar lo que damos por sentado.';
+      gTexto.append(tSub);
+
+      const tPie = svg('text', {
+        x: xTxt,
+        y: padY + 188,
+        'text-anchor': anchor,
+        'font-family': SANS,
+        'font-size': !e.protegerDatos && k > 0.8 ? 5 : 11,
+        'font-weight': 700,
+        fill: TINTA,
+      });
+      tPie.textContent = 'Jueves 24 · 18:00 h · Aula 102';
+      gTexto.append(tPie);
+      gEscena.append(gTexto);
+    } else if (e.operacion === 'encuadre') {
+      // Una letra 'A' o llave que al hacer zoom extremo muestra su contraforma arquitectónica
+      const escala = 1 + k * 5.2;
+      const cx = padX + cardW * 0.68;
+      const cy = padY + cardH * 0.52;
+      const gZoom = svg('g', { transform: `translate(${cx} ${cy}) scale(${escala}) translate(${-cx} ${-cy})` });
+      gZoom.append(svg('circle', { cx, cy, r: 34, fill: AMARILLO, stroke: TINTA, 'stroke-width': 2 }));
+      const glifo = svg('text', {
+        x: cx,
+        y: cy + 16,
+        'text-anchor': 'middle',
+        'font-family': SERIF,
+        'font-size': 48,
+        'font-weight': 700,
+        fill: TINTA,
+      });
+      glifo.textContent = 'g';
+      gZoom.append(glifo);
+      gEscena.append(gZoom);
+
+      gEscena.append(svg('rect', { x: padX + 16, y: padY + 24, width: Math.min(220, cardW * 0.54), height: cardH - 48, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.5 }));
+      const t1 = svg('text', { x: padX + 28, y: padY + 58, 'font-family': SANS, 'font-size': 10, 'font-weight': 700, fill: GRIS });
+      t1.textContent = 'EXPOSICIÓN DE TIPOGRAFÍA';
+      const t2 = svg('text', { x: padX + 28, y: padY + 90, 'font-family': SERIF, 'font-size': 18, 'font-weight': 700, fill: TINTA });
+      t2.textContent = 'El ojal de la letra';
+      const t3 = svg('text', { x: padX + 28, y: padY + 174, 'font-family': SANS, 'font-size': !e.protegerDatos && k > 0.8 ? 5 : 11, 'font-weight': 700, fill: TINTA });
+      t3.textContent = 'Sala de Imprenta · 10:00 h';
+      gEscena.append(t1, t2, t3);
+    } else {
+      // Fricción consciente en interfaz
+      const xCentro = padX + cardW / 2;
+      const tTit = svg('text', {
+        x: xCentro,
+        y: padY + 48,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 14,
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      tTit.textContent = k < 0.25
+        ? '¿Deseas realizar esta operación?'
+        : 'Vas a borrar 140 entregas estudiantiles sin copia';
+      gEscena.append(tTit);
+
+      if (k >= 0.35 && k <= 0.85) {
+        gEscena.append(svg('rect', { x: xCentro - 130, y: padY + 72, width: 260, height: 34, fill: '#fbfbf9', stroke: TINTA, 'stroke-width': 1.8 }));
+        const tInput = svg('text', {
+          x: xCentro - 118,
+          y: padY + 94,
+          'font-family': 'monospace',
+          'font-size': 12,
+          'font-weight': 700,
+          fill: TINTA,
+        });
+        tInput.textContent = 'Escribe: BORRAR-CURSO';
+        gEscena.append(tInput);
+      }
+
+      const btnW = 220;
+      gEscena.append(
+        svg('rect', {
+          x: xCentro - btnW / 2,
+          y: padY + 132,
+          width: btnW,
+          height: 38,
+          fill: k < 0.25 ? '#e5e5de' : AMARILLO,
+          stroke: TINTA,
+          'stroke-width': 2,
+        }),
+      );
+      const tBtn = svg('text', {
+        x: xCentro,
+        y: padY + 156,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11.5,
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      tBtn.textContent = k < 0.25
+        ? 'Aceptar (clic automático)'
+        : !e.protegerDatos && k > 0.85
+          ? '¿? · X-99 / CONFIRMAR'
+          : 'Confirmar borrado definitivo';
+      gEscena.append(tBtn);
+    }
+
+    raiz.append(gEscena);
+
+    // Curva inferior de interés y comprensión (campana de Wundt / Shklovski)
+    if (e.curva) {
+      const gx = padX;
+      const gy = 252;
+      const gw = cardW;
+      const gh = 64;
+
+      raiz.append(svg('rect', { x: gx, y: gy, width: gw, height: gh, fill: '#ffffff', stroke: '#dcdcd4' }));
+
+      const pts: string[] = [];
+      for (let g = 0; g <= 100; g += 4) {
+        const px = gx + (g / 100) * gw;
+        const val = curvaAtencion(g, e.protegerDatos);
+        const py = gy + gh - 10 - (val / 100) * (gh - 24);
+        pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+      }
+      raiz.append(svg('polyline', { points: pts.join(' '), fill: 'none', stroke: TINTA, 'stroke-width': 2 }));
+
+      const actX = gx + k * gw;
+      const actY = gy + gh - 10 - (eficacia / 100) * (gh - 24);
+      raiz.append(svg('line', { x1: actX, y1: gy, x2: actX, y2: gy + gh, stroke: COTA, 'stroke-dasharray': '2 2' }));
+      raiz.append(svg('circle', { cx: actX, cy: actY, r: 6, fill: AMARILLO, stroke: TINTA, 'stroke-width': 2 }));
+
+      const lbl = svg('text', {
+        x: gx + 10,
+        y: gy + 15,
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: eficacia >= 65 ? TINTA : COTA,
+      });
+      lbl.textContent = `ATENCIÓN CONSCIENTE Y COMPRENSIÓN: ${eficacia} %`;
+      raiz.append(lbl);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const eficacia = curvaAtencion(e.grado, e.protegerDatos);
+
+    if (e.grado <= 15) {
+      return `Hábito automático (<b class="dv-cifra">${e.grado} % de extrañamiento</b>): la composición es tan previsible que el ojo la da por sabida sin leerla de verdad (atención: <b class="dv-cifra">${n(eficacia, 0)} %</b>).`;
+    }
+
+    if (e.grado >= 85 && !e.protegerDatos) {
+      return `Exceso de extrañeza (<b class="dv-cifra">${e.grado} %</b> sin proteger los datos prácticos): al alterar también las coordenadas básicas de lectura, la sorpresa se transforma en confusión y la eficacia cae a <b class="dv-cifra">${n(eficacia, 0)} %</b>.`;
+    }
+
+    if (e.grado >= 50 && e.grado <= 80) {
+      return `Punto óptimo de desautomatización (<b class="dv-cifra">${n(eficacia, 0)} % de atención</b>): un rasgo familiar cambia de escala, encuadre o ritmo para frenar el piloto automático mientras los datos prácticos siguen claros.`;
+    }
+
+    return `Extrañamiento moderado (<b class="dv-cifra">${e.grado} %</b>): empieza a romper la rutina perceptiva conservando la legibilidad del mensaje (<b class="dv-cifra">${n(eficacia, 0)} %</b>).`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="extranamiento"]')) {
+    guiar<E>(raiz, [
+      (e) => e.grado === 0,
+      (e) => e.grado >= 55 && e.grado <= 75,
+      (e) => e.grado === 100 && e.protegerDatos === false,
+      (e) => e.protegerDatos === true && e.grado >= 50 && (e.operacion === 'encuadre' || e.operacion === 'friccion'),
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────────────────
+  type E1 = { formato: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    if (e.formato === 'banner') {
+      d.innerHTML = `
+        <div style="padding:16px;background:#fbfbf9;font-family:${SANS};">
+          <div style="padding:12px;background:#efefea;border:1px solid #ccc;text-align:center;color:#6f6f6f;">
+            <span style="font-size:9px;letter-spacing:0.1em;display:block;color:#555555;">AVISO PATROCINADO · BECAS</span>
+            <strong style="font-size:13px;color:#444;display:block;margin:4px 0;">Convocatoria anual de becas de investigación</strong>
+            <span style="display:inline-block;padding:4px 10px;background:#ddd;font-size:10.5px;color:#444;">Haz clic aquí</span>
+          </div>
+        </div>`;
+      return;
+    }
+    d.innerHTML = `
+      <div style="padding:16px;background:#fbfbf9;font-family:${SANS};">
+        <div style="display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;padding:12px;background:#fff;border:2px solid #222;">
+          <div style="background:#eeff41;border:2px solid #222;height:56px;display:flex;align-items:center;justify-content:center;font-family:${SERIF};font-size:32px;font-weight:700;color:#222;">12</div>
+          <div>
+            <strong style="font-size:14px;color:#222;display:block;">Doce becas completas para proyectos de taller</strong>
+            <span style="font-size:11.5px;color:#444;">Cierre de recepción: 30 de noviembre →</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.formato === 'banner') return 'Al imitar la forma de una <b class="dv-cifra">caja publicitaria</b>, activa la ceguera por costumbre y los lectores la saltan.';
+    return '<b class="dv-cifra">Desautomatización editorial</b>: presentar el dato concreto («12 becas») con estructura propia evita que el ojo lo descarte como ruido.';
+  }
+
+  type E2 = { confirmacion: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const auto = e.confirmacion === 'automatica';
+    d.innerHTML = `
+      <div style="padding:16px 18px;background:#fff;border:1.5px solid #222;font-family:${SANS};color:#222;">
+        <strong style="font-size:13px;display:block;margin-bottom:6px;">${auto ? '¿Confirmar operación?' : 'Vas a eliminar 48 trabajos calificados'}</strong>
+        ${
+          auto
+            ? `<p style="margin:0 0 10px;font-size:11.5px;color:#6f6f6f;">Pulsa Aceptar para continuar.</p>
+               <span style="padding:5px 12px;background:#222;color:#fff;font-size:11px;font-weight:700;">Aceptar</span>`
+            : `<p style="margin:0 0 8px;font-size:11.5px;color:#444;">Marca la casilla para desbloquear el borrado permanente:</p>
+               <div style="padding:7px 10px;background:#eeff41;border:1.5px solid #222;font-size:11px;font-weight:800;">☑ Sé que estos 48 archivos no se podrán recuperar</div>`
+        }
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.confirmacion === 'automatica') return 'El botón genérico <b class="dv-cifra">«Aceptar»</b> se pulsa por hábito muscular antes de que el cerebro procese el riesgo.';
+    return '<b class="dv-cifra">Fricción consciente</b>: cambiar la mecánica habitual detiene la mano un segundo y evita accidentes irreversibles.';
+  }
+
+  type E3 = { claridadDatos: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const claro = e.claridadDatos >= 75;
+    d.innerHTML = `
+      <div style="padding:16px 18px;background:#fff;border:1.5px solid #222;font-family:${SANS};color:#222;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <span style="padding:4px 8px;background:#eeff41;border:1.5px solid #222;font-weight:900;font-size:18px;">((( )))</span>
+          <strong style="font-size:15px;">CONCIERTO DE RESONANCIA</strong>
+        </div>
+        <div style="${claro ? 'font-size:12px;font-weight:700;color:#222;' : 'transform:rotate(180deg);font-size:9px;letter-spacing:4px;color:#6f6f6f;'}">
+          Viernes 18 de octubre · 20:00 h · Auditorio Central
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.claridadDatos < 50) return 'Poner la fecha y la hora boca abajo es <b class="dv-cifra">extrañamiento en el lugar equivocado</b>: frustra a quien ya quiere ir.';
+    return '<b class="dv-cifra">Equilibrio funcional</b>: el símbolo acústico sorprende arriba y las coordenadas prácticas se leen sin obstáculos abajo.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['extranamiento-e1', pintarE1 as never, describirE1 as never],
+    ['extranamiento-e2', pintarE2 as never, describirE2 as never],
+    ['extranamiento-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego (5 rondas) ──────────────────────────────────────────────
+  function rondaShklovski(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Desautomatizar la percepción de un objeto cotidiano para que dejemos de reconocerlo por rutina y volvamos a verlo de verdad',
+        es: true,
+      },
+      {
+        texto: 'Hacer que todos los textos sean imposibles de leer para cualquier persona',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué propuso Viktor Shklovski en 1917 con el concepto de *ostranenie* (extrañamiento)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Shklovski observó que el hábito devora las cosas: las reconocemos por su silueta general sin mirarlas. El extrañamiento introduce un giro en la forma que prolonga y renueva la atención.',
+      repaso: 'Concepto de ostranenie',
+    };
+  }
+
+  function rondaDondeAplicar(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Extrañar la imagen principal de un cartel cultural o el paso previo a borrar una cuenta; mantener previsibles los menús y horarios',
+        es: true,
+      },
+      {
+        texto: 'Cambiar cada día de lugar el botón de guardar y usar iconos desconocidos en el menú principal',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál es la regla ética y funcional para aplicar el extrañamiento en diseño?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las tareas rutinarias de navegación y consulta necesitan fluidez previsible; el extrañamiento se reserva para lo que necesita ser pensado de nuevo o para frenar un clic peligroso.',
+      repaso: 'Dónde extrañar y dónde mantener la convención',
+    };
+  }
+
+  function rondaBannerBlindness(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Ceguera por costumbre (*banner blindness*): el sistema visual descarta automáticamente las cajas que parecen anuncios rutinarios',
+        es: true,
+      },
+      {
+        texto: 'Falta de contraste luminoso entre el negro y el blanco',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Pones un aviso importante dentro de un recuadro con aspecto de banner comercial en la columna derecha y nadie lo lee. ¿Qué fenómeno ocurrió?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando un formato se asocia por repetición con contenido irrelevante, el ojo aprende a saltarlo sin siquiera fijar la vista en sus palabras.',
+      repaso: 'Ceguera por costumbre',
+    };
+  }
+
+  function rondaKenyaHara(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Mostrar un objeto cotidiano desde una escala, textura o ángulo que nos haga descubrir cuánto desconocíamos de él (*ex-formación*)',
+        es: true,
+      },
+      {
+        texto: 'Acumular la mayor cantidad posible de logotipos y sellos promocionales en la portada',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En qué consiste la operación que el diseñador japonés Kenya Hara (2007) llama *ex-formación*?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Para Hara, informar no siempre consiste en dar un dato prefabricado, sino también en vaciar los clichés sobre algo conocido para despertar de nuevo el asombro y la pregunta.',
+      repaso: 'Ex-formación (Kenya Hara)',
+    };
+  }
+
+  function rondaAjustarGrado(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Al 0 %, este cartel de poesía pasa inadvertido por previsible; al 100 %, el texto se rompe tanto que no se entiende. Ajusta el grado de extrañamiento en la franja óptima (55 % a 75 %).',
+      control: {
+        etiqueta: 'Grado de extrañamiento',
+        min: 0,
+        max: 100,
+        paso: 5,
+        valor: 0,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const optimo = v >= 55 && v <= 75;
+        const exceso = v > 75;
+        c.innerHTML = `<div style="padding:16px;background:#fbfbf9;font-family:${SANS};border:2px solid ${optimo ? '#222' : '#ccc'};">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+              <strong style="font-size:${exceso ? '7px' : '15px'};color:#222;display:block;">Festival de Poesía Oral</strong>
+              <span style="font-size:11px;color:#444;">${exceso ? 'V·19H·SALA-X??' : 'Viernes · 19:00 h · Patio de Letras'}</span>
+            </div>
+            <div style="padding:6px 14px;background:${v >= 40 ? AMARILLO : '#eee'};border:2px solid #222;font-family:${SERIF};font-size:${14 + (v / 100) * 32}px;font-weight:700;color:#222;transform:rotate(${exceso ? 42 : 0}deg);">
+              « »
+            </div>
+          </div>
+        </div>`;
+      },
+      cumple: (v) => v >= 55 && v <= 75,
+      falta: (v) => v < 55
+        ? `Al ${v} % el signo de comillas aún es demasiado tímido para romper el hábito. Súbelo entre 55 % y 75 %.`
+        : `Al ${v} % ya se rompió también la legibilidad del título y del horario. Bájalo al rango de 55 % a 75 %.`,
+      porque: 'El punto óptimo de extrañamiento transforma un detalle familiar (las comillas « ») en un imán visual mientras conserva intacta la claridad del título y la hora.',
+      repaso: 'Curva óptima de extrañamiento',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="extranamiento"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaShklovski(),
+        rondaDondeAplicar(),
+        rondaBannerBlindness(),
+        rondaKenyaHara(),
+        rondaAjustarGrado(),
+      ]),
+    );
+  }
+</script>

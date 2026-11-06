@@ -65,20 +65,41 @@
 .dv-modos {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0.25rem 0.65rem;
   list-style: none;
-  margin-top: 0.5rem;
+  margin-top: 0.35rem;
 }
 
 .dv-modos li {
   font-family: var(--sans);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--secundario);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.dv-modos li + li::before {
+  content: '·';
+  color: var(--secundario);
+  font-weight: 400;
+}
+
+.dv-modos a {
   color: var(--texto);
-  border: 1px solid var(--tinta);
-  padding: 0.22rem 0.55rem;
+  text-decoration: none;
+  border-bottom: 1px solid var(--regla);
+  padding-bottom: 0.08rem;
+}
+
+.dv-modos a:hover {
+  color: var(--tinta);
+  border-bottom-color: var(--tinta);
+  background: var(--amarillo);
 }
 
 /* ── secciones de texto: rótulo al margen ──────── */
@@ -587,11 +608,11 @@
 
 /* ══════════ ÍNDICE ══════════ */
 .dv-indice-cab {
-  padding: 3rem 0 2.5rem;
+  padding: 2.5rem 0 2.25rem;
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: 1.5rem 3rem;
-  align-items: end;
+  align-items: start;
 }
 
 .dv-indice-cab h1 {
@@ -751,8 +772,8 @@
   color: var(--texto);
 }
 
-.dv-concepto-entrada .dv-modos { margin-top: 0.55rem; }
-.dv-concepto-entrada .dv-modos li { border-color: var(--regla); font-size: 0.62rem; }
+.dv-concepto-entrada .dv-modos { margin-top: 0.45rem; }
+.dv-concepto-entrada .dv-modos li { font-size: 0.66rem; }
 
 .dv-previstos {
   display: flex;
@@ -781,22 +802,27 @@
 @media (max-width: 52rem) {
   .dv-ins-cuerpo { grid-template-columns: minmax(0, 1fr); }
 
-  /* En pantalla estrecha solo el escenario se queda fijo: el visor se
-     disuelve para que el escenario sea pegajoso respecto al instrumento
-     entero y no solo a su caja. */
-  .dv-visor { display: contents; }
-
-  /* En pantallas estrechas el escenario queda a la vista mientras se
-     mueven los controles: si no, se cambia algo que no se ve. */
-  .dv-ins-escenas {
+  /* En pantallas estrechas el visor completo (escenario + lectura breve) se
+     queda fijo con un borde inferior nítido: así al mover los deslizadores
+     siempre se ve qué cambió sin tapar la lectura ni partir cajas a medias. */
+  .dv-visor {
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 3;
     background: var(--papel);
-    padding: 0.5rem 0;
+    padding: 0.4rem 0 0.55rem;
+    border-bottom: 2px solid var(--tinta);
+    margin-bottom: 0.5rem;
   }
 
-  .dv-ins-escenas .dv-lienzo { max-height: 46vh; }
+  .dv-ins-escenas .dv-lienzo { max-height: 30vh; min-height: 9.5rem; }
+
+  .dv-visor .dv-lectura {
+    font-size: 0.84rem;
+    line-height: 1.4;
+    padding: 0.45rem 0 0;
+    min-height: 0;
+  }
 
   .dv-ins-controles {
     display: grid;
@@ -826,6 +852,7 @@
   .dv-concepto-entrada > a { grid-template-columns: 4.25rem minmax(0, 1fr); gap: 0 0.9rem; }
   .dv-glifo { width: 4.25rem; height: 3.2rem; }
   .dv input[type="range"]::-webkit-slider-thumb { width: 1.3rem; height: 1.6rem; margin-top: calc(-0.8rem + 1px); }
+  .dv-instrumento.comparando .dv-ins-escenas { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -841,27 +868,37 @@
   border-top: 1px solid var(--tinta);
   border-bottom: 1px solid var(--tinta);
   margin: 0 0 1rem;
-  padding: 0.75rem 0;
+  padding: 0.65rem 0;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.4rem 1.25rem;
   font-family: var(--sans);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
+  background: var(--papel);
 }
 
-.dv-recorrido p { color: var(--secundario); font-size: 0.78rem; flex-basis: 100%; }
-.dv-recorrido ol { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; counter-reset: paso; }
+@media (min-width: 52.01rem) {
+  .dv-recorrido {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+  }
+}
+
+.dv-recorrido ol { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; counter-reset: paso; }
 .dv-recorrido li { counter-increment: paso; }
 .dv-recorrido a { color: var(--tinta); text-decoration: none; font-weight: 500; }
 .dv-recorrido a::before { content: counter(paso) ' '; font-weight: 900; color: var(--secundario); margin-right: 0.15rem; }
-.dv-recorrido a:hover span { background: var(--amarillo); }
+.dv-recorrido a:hover span,
+.dv-recorrido a.es-actual span { background: var(--amarillo); border-bottom-color: var(--tinta); }
+.dv-recorrido a.es-actual { font-weight: 700; }
 .dv-recorrido a span { border-bottom: 1px solid var(--regla); }
 
 /* ── paso ──────────────────────────────────────── */
 .dv-paso {
   padding: 3rem 0 1rem;
-  scroll-margin-top: 1rem;
+  scroll-margin-top: 3.2rem;
 }
 
 .dv-paso-cab {
@@ -881,7 +918,7 @@
   line-height: 0.85;
   letter-spacing: -0.04em;
   color: var(--tinta);
-  grid-row: span 2;
+  grid-row: 1 / span 3;
 }
 
 .dv-paso-cab h2 {
@@ -1004,15 +1041,24 @@
   transform: translate(-50%, -50%);
   width: 1.55rem;
   height: 1.55rem;
+  padding: 0;
   display: grid;
   place-items: center;
   font-family: var(--sans);
   font-size: 0.75rem;
   font-weight: 900;
+  line-height: 1;
   color: var(--tinta);
   background: var(--amarillo);
   border: 2px solid var(--tinta);
-  pointer-events: none;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease, color 0.12s ease;
+}
+.dv-pin:hover,
+.dv-pin.es-activa {
+  background: var(--tinta);
+  color: var(--amarillo);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .dv-zona {
@@ -1055,7 +1101,9 @@
   background: var(--amarillo);
 }
 .dv-anotada-notas button:hover,
+.dv-anotada-notas button.es-activa,
 .dv-anotada-notas button[aria-pressed="true"] { background: var(--dv-lienzo); color: var(--tinta); }
+.dv-anotada-notas button[aria-pressed="true"]::before { background: var(--tinta); color: var(--amarillo); }
 .dv-anotada-notas button:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
 .dv-anotada-notas b { color: var(--tinta); font-family: var(--sans); font-weight: 700; }
 
@@ -1119,7 +1167,7 @@
 .dv-guia-final { font-family: var(--serif); font-size: 0.95rem; color: var(--tinta); margin-top: 0.4rem; }
 .dv-guia-acciones { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
 .dv-guia-acciones [hidden] { display: none; }
-.dv-guia-saltar { border-color: var(--regla); color: var(--secundario); }
+.dv-guia-saltar { border-color: var(--tinta); color: var(--tinta); font-weight: 500; }
 
 /* ── controles avanzados plegados ──────────────── */
 .dv-avanzados { border-bottom: 1px solid var(--regla); }
@@ -1217,15 +1265,11 @@
 }
 .dv-paso > .dv-seccion:first-of-type { border-top: 0; padding-top: 0.5rem; }
 
-/* Mientras la guía está en curso, lo demás espera: quien empieza tiene una
-   sola cosa que hacer. Al terminar o saltar la guía aparecen las pruebas y
-   la comparación. */
-.dv-instrumento.con-guia .dv-pruebas,
-.dv-instrumento.con-guia .dv-acciones,
-.dv-instrumento.con-guia .dv-aviso { display: none; }
-
-/* Dentro de un paso, el filete del paso ya separa: el instrumento no repite. */
+/* Dentro de un paso, el filete del paso ya separa: el instrumento no repite.
+   Si el instrumento abre el paso #pruebalo, tampoco repite su propio h2
+   porque el titular del paso ya nombra la experiencia. */
 .dv-paso .dv-instrumento { border-top: 0; padding-top: 0; margin-top: 0; }
+.dv-paso#pruebalo > .dv-instrumento:first-of-type > .dv-ins-cab > h2 { display: none; }
 
 .dv-nota-ir {
   display: inline-block;
@@ -1312,7 +1356,6 @@
    fijo puede tapar la guía (pantallas estrechas). */
 .dv-guia-aviso { display: none; }
 @media (max-width: 52rem) {
-  .dv-ins-escenas { position: sticky; }
   .dv-guia-aviso:not([hidden]) {
     display: block;
     width: 100%;
@@ -1329,7 +1372,7 @@
   }
   .dv-guia-aviso:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
 }
-.dv-visor.dv-visor-suelto { position: static; }
+.dv-visor.dv-visor-suelto { position: static; border-bottom: 0; padding-bottom: 0; }
 .dv-paso * + .dv-instrumento { margin-top: 2.5rem; }
 
 .dv-leyenda-titulo {
@@ -1346,11 +1389,13 @@
 /* Titular propio de un paso, bajo su nombre. */
 .dv-paso-cab .dv-paso-titular {
   font-family: var(--sans);
+  font-style: normal;
   font-weight: 700;
-  font-size: 1.2rem;
-  line-height: 1.25;
+  font-size: 1.18rem;
+  line-height: 1.3;
   color: var(--tinta);
-  margin-top: 0.5rem;
+  margin-top: 0.45rem;
+  max-width: 48ch;
 }
 
 /* Nombre corto del paso de una guía; al quedar atrás, solo se ve el nombre. */
@@ -1360,3 +1405,106 @@
 /* Invitación a comparar, junto a las acciones del instrumento. */
 .dv-ins-nota { flex-basis: 100%; font-family: var(--serif); font-size: 0.92rem; color: var(--texto); max-width: 46ch; }
 .dv-guia-activa .dv-guia-paso.es-actual .dv-guia-nombre ~ .dv-guia-instruccion { font-weight: 400; }
+
+/* Estado practicado en las tarjetas de territorio */
+.dv-concepto-cab-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.dv-concepto-cab-linea .hecho {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--tinta);
+  background: var(--amarillo);
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--tinta);
+  white-space: nowrap;
+}
+.dv-concepto-cab-linea .hecho:empty { display: none; }
+
+/* Navegación secuencial de la ruta al pie de cada entrada */
+.dv-ruta-nav {
+  border-top: 3px solid var(--tinta);
+  padding: 2rem 0 0.5rem;
+  margin-top: 2.5rem;
+}
+.dv-ruta-nav-cab {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-family: var(--sans);
+}
+.dv-ruta-nav-cab h2 {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+.dv-ruta-nav-pos {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--secundario);
+  font-variant-numeric: tabular-nums;
+}
+.dv-ruta-nav-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.dv-ruta-nav-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1.15rem;
+  border: 2px solid var(--tinta);
+  background: var(--papel);
+  text-decoration: none;
+  color: var(--texto);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+.dv-ruta-nav-card:hover {
+  background: var(--dv-lienzo);
+  box-shadow: 6px 6px 0 var(--tinta);
+  transform: translate(-2px, -2px);
+}
+.dv-ruta-nav-card:focus-visible {
+  outline: 3px solid var(--tinta);
+  outline-offset: 3px;
+}
+.dv-ruta-nav-dir {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secundario);
+}
+.dv-ruta-nav-nombre {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+.dv-ruta-nav-card.es-siguiente:hover .dv-ruta-nav-nombre {
+  background: linear-gradient(to top, var(--amarillo) 45%, transparent 45%);
+  align-self: flex-start;
+}
+.dv-ruta-nav-porque {
+  font-size: 0.94rem;
+  line-height: 1.45;
+  color: var(--texto);
+}
+@media (max-width: 42rem) {
+  .dv-ruta-nav-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

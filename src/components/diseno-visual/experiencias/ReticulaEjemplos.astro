@@ -73,8 +73,8 @@ const barras = (x: number, y: number, w: number, n: number, paso = 9, alto = 3) 
     <svg viewBox={`0 0 ${RW} ${RH}`} role="img" aria-label="Página de revista con título, tres columnas de texto y una foto que ocupa dos columnas.">
       <rect width={RW} height={RH} fill="#fff" />
       {[0, 1, 2].map((i) => <rect x={rx(i)} y="20" width={rc} height={RH - 40} fill={COL} />)}
-      <text x={rx(0)} y="62" font-family={SERIF} font-weight="700" font-size="26" fill={T}>El oficio</text>
-      <text x={rx(0)} y="92" font-family={SERIF} font-weight="700" font-size="26" fill={T}>de esperar</text>
+      <text x={rx(0)} y="60" font-family={SERIF} font-weight="700" font-size="22" fill={T}>El oficio</text>
+      <text x={rx(0)} y="90" font-family={SERIF} font-weight="700" font-size="22" fill={T}>de esperar</text>
       {barras(rx(0), 116, rc, 26, 10).map((b) => <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={G} />)}
       <rect x={rx(1)} y="116" width={rc * 2 + rg} height="124" fill="#4a4a4a" />
       <rect x={rx(1)} y="250" width={(rc * 2 + rg) * 0.7} height="3" fill={T} />

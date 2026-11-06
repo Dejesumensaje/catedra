@@ -1,0 +1,177 @@
+---
+titulo: Tokens
+territorio: sistemas
+pregunta: ¿Cómo cambias el tono, el espaciado o el contraste de cien pantallas sin buscar y reemplazar valores uno por uno?
+resumen: "Un token de diseño es una decisión visual guardada con un nombre que describe su función («color-superficie-alerta», «espacio-entre-grupos») en lugar de su valor bruto («#eeff41», «24 px»). Separa el qué significa una decisión de cuánto vale hoy."
+modos: [laboratorio, diseccion]
+orden: 29
+relaciones:
+  - concepto: sistemas-y-excepciones
+    porQue: Los tokens son el mecanismo concreto con el que un sistema codifica sus reglas compartidas para que todas las piezas las hereden sin repetirlas a mano.
+  - concepto: roles-semanticos
+    porQue: Un token semántico traduce un rol de comunicación (alerta, superficie, texto secundario) en una variable reutilizable que puede cambiar de valor según el tema.
+  - concepto: componentes
+    porQue: Los componentes consumen tokens para definir sus colores, bordes y espacios interiores sin quedar atados a valores rígidos.
+  - concepto: variantes
+    porQue: Muchas variantes de jerarquía o de estado se construyen reasignando qué tokens lee el componente en cada situación.
+  - concepto: escalas-tipograficas
+    porQue: Los peldaños de una escala tipográfica se guardan como tokens para que todos los titulares y cuerpos mantengan la misma proporción en cualquier pantalla.
+fuentes:
+  - autor: Jina Anne y W3C Design Tokens Community Group
+    obra: "Design Tokens for Scaling Design Systems (Salesforce Lightning Design System) / Design Tokens Format Module"
+    anio: 2016
+    url: https://tr.designtokens.org/format/
+    nota: Definición original y especificación estándar de los tokens de diseño como pares nombre-valor independientes de la plataforma.
+  - autor: Nathan Curtis y Alla Kholmatova
+    obra: "Design Systems: A practical guide to creating design languages for digital products. Smashing Media"
+    anio: 2017
+    nota: "Arquitectura en capas de tokens: valores base (primitivos) frente a tokens semánticos (de propósito) y tokens de componente."
+  - autor: Karl Gerstner
+    obra: "Programme entwerfen / Designing Programmes. Arthur Niggli"
+    anio: 1964
+    nota: "El antecedente impreso directo de los tokens: definir parámetros con nombre en una matriz programática antes de dibujar las piezas."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import TokensExp from '../../components/diseno-visual/experiencias/TokensExp.astro';
+
+<Paso id="idea" titular="Nombra la función de la decisión, no su valor bruto">
+
+<TokensExp paso="idea" />
+
+<p class="dv-frase">Un valor dice cómo se ve algo; un token dice por qué se ve así y dónde más se repite.</p>
+
+<div class="dv-texto">
+
+Cuando empiezas una pieza pequeña, es tentador escribir los valores directos en cada bloque: `color: #222222`, `padding: 16 px`, `background: #eeff41`. Mientras haya una sola tarjeta, nada parece fallar. El problema aparece cuando el proyecto crece a treinta pantallas y el mismo `#222222` se ha usado para los títulos, los bordes finos, el fondo de los botones y los iconos.
+
+Un *token de diseño* introduce una capa de sentido entre el valor físico y las piezas que lo usan. En lugar de repartir `#222222` por todas partes, guardas la decisión con un nombre que explica su papel: `--tinta-principal`, `--borde-tarjeta` o `--fondo-accion`. Hoy pueden apuntar al mismo negro, pero cada uno sabe qué trabajo cumple.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Valor bruto (hardcoded)</dt>
+    <dd>Una cifra o código de color (`#eeff41`, `16 px`) escrito directo dentro de una pieza, sin indicar qué función cumple en el sistema.</dd>
+    <dt>Token primitivo (o base)</dt>
+    <dd>El inventario de materias primas permitidas en el proyecto (`--gris-900: #222222`, `--espacio-4: 16 px`), que acota la paleta pero aún no dice dónde usar cada valor.</dd>
+    <dt>Token semántico</dt>
+    <dd>Un nombre que describe el propósito o contexto de uso (`--superficie-alerta`, `--tinta-secundaria`, `--espacio-interior`) y apunta a un token primitivo.</dd>
+    <dt>Propagación</dt>
+    <dd>El efecto por el cual cambiar el valor de un único token actualiza todas las pantallas y componentes que lo consultan.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Diecinueve grises al azar frente a un vocabulario compartido">
+
+<div class="dv-texto">
+
+En estas dos radiografías del código de un proyecto, ambas intentan construir tarjetas sobrias con texto jerarquizado, pero solo la segunda permite ajustar el contraste o el espaciado sin romper el conjunto.
+
+</div>
+
+<TokensExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la primera versión no hubo mala intención: cada persona eligió un gris «parecido» (`#666666`, `#6b6b6b`, `#707070`, `#737373`) y un margen «más o menos medio» (`13 px`, `15 px`, `21 px`). Al cabo de unas semanas el sistema acumula decenas de valores huérfanos. En la segunda versión, cuatro tokens de color y cinco peldaños de espacio cubren las mismas necesidades sin ambigüedad.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Dos capas de tokens conectadas a cuatro bloques en vivo">
+
+<TokensExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas para diseñar una tabla de tokens que dure">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Nombra el papel que cumple, no el color ni la coordenada</h3>
+      <p>Si llamas a un token <code>--azul-oscuro</code>, el día que la identidad pase a verde o actives un modo oscuro tendrás una variable llamada «azul» guardando un blanco o un verde. Nómbrala por su responsabilidad: <code>--color-accion-primaria</code>, <code>--superficie-elevada</code> o <code>--borde-sutil</code>.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Empieza con pocos peldaños bien diferenciados</h3>
+      <p>Cinco tokens de espacio (por ejemplo, <code>4 px</code>, <code>8 px</code>, <code>16 px</code>, <code>24 px</code> y <code>40 px</code>) resuelven casi cualquier interfaz. Si creas veinte peldaños separados por dos píxeles, el equipo volverá a dudar en cada tarjeta qué medida elegir.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No dejes valores brutos sueltos dentro de los componentes</h3>
+      <p>Un sistema de tokens es tan fiable como su pieza menos disciplinada. Si noventa y nueve elementos leen <code>var(--tinta-principal)</code> pero uno solo tiene <code>#222222</code> escrito a mano, ese elemento quedará invisible la primera vez que cambies el tema de la superficie.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<TokensExp paso="errores" />
+
+<div class="dv-texto">
+
+### Los tokens en piezas reales
+
+</div>
+
+<TokensExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Distingue tokens semánticos, primitivos y valores infiltrados">
+
+<TokensExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Arquitectura en capas, estándar W3C y el peligro de la inflación">
+
+<Seccion titulo="Por qué hacen falta dos capas: primitivos y semánticos">
+
+En 2016, mientras dirigía el sistema *Lightning* de Salesforce, Jina Anne acuñó el término *design tokens* para resolver un problema concreto: cómo mantener sincronizadas las decisiones visuales entre la web, las aplicaciones móviles y los archivos de diseño sin copiar códigos hexadecimales a mano. Poco después, Nathan Curtis y Alla Kholmatova (2017) sistematizaron por qué una sola lista de variables no basta y conviene separar dos capas:
+
+- **La capa primitiva (el qué existe):** enumera las opciones físicas aprobadas en la paleta, como `--amarillo-400: #eeff41`, `--carbon-900: #222222` o `--escala-3: 16 px`. Restringe el caos de millones de colores posibles a una docena de valores limpios, pero todavía no sabe dónde se usa cada uno.
+- **La capa semántica (el para qué sirve):** asigna intenciones de diseño a esos primitivos, como `--superficie-papel: var(--blanco)`, `--tinta-principal: var(--carbon-900)` o `--acento-estado: var(--amarillo-400)`.
+
+Cuando los [componentes](/diseno-visual/componentes) solo leen la capa semántica, cambiar del tema «Claro» al tema «Alto contraste» en el instrumento no requiere tocar ningún botón ni tarjeta: basta con reasignar a qué primitivo apunta cada token semántico.
+
+</Seccion>
+
+<Seccion titulo="Cuándo aparece una tercera capa: tokens de componente">
+
+En la mayoría de los proyectos editoriales y productos medianos, dos capas son suficientes. Sin embargo, en sistemas muy grandes o multimarca suele aparecer un tercer nivel: los **tokens específicos de componente** (por ejemplo, `--boton-primario-fondo: var(--color-accion-primaria)`).
+
+Esta tercera capa solo se justifica cuando necesitas cambiar la apariencia de un componente concreto en una marca sin alterar los demás elementos que comparten el mismo rol semántico. Si no tienes esa necesidad real, añadir una tercera capa solo multiplica los nombres que el equipo debe memorizar.
+
+</Seccion>
+
+<Seccion titulo="El antecedente impreso y el estándar actual">
+
+Mucho antes de que existieran las variables CSS o el formato estándar del *W3C Design Tokens Community Group* (2024), el diseñador suizo Karl Gerstner propuso en *Designing Programmes* (1964) la misma operación mental: antes de dibujar una serie de carteles o páginas, definir una matriz de parámetros con nombre (proporciones, grosores de filete, familias tipográficas, gamas tonales) y hacer que cada pieza fuera una combinación regulada de esos parámetros.
+
+Hoy ese principio se expresa como pares nombre-valor en archivos JSON o en propiedades personalizadas de CSS (`--nombre-token`), pero la ventaja intelectual sigue siendo idéntica: pensar el sistema como un conjunto de relaciones con significado en vez de una colección de medidas aisladas.
+
+</Seccion>
+
+<Seccion titulo="Quince tokens claros valen más que cuatrocientos olvidados">
+
+**Crear un token para cada rincón destruye el propósito del sistema.** Si un proyecto define `--espacio-tarjeta-noticias-superior-movil`, deja de tener reglas compartidas y vuelve a tener valores individuales disfrazados con nombres largos.
+
+**Un buen conjunto de tokens cabe en la cabeza de quien diseña.** En este mismo sitio web, toda la arquitectura visual de los cursos y de la enciclopedia se sostiene sobre seis tokens de color (`--amarillo`, `--tinta`, `--texto`, `--secundario`, `--papel`, `--regla`) y dos tokens tipográficos (`--serif` y `--sans`). Cuando el vocabulario es corto y cada nombre tiene una razón evidente, nadie necesita inventar un decimonoveno gris.
+
+</Seccion>
+
+</Paso>

@@ -1,0 +1,846 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'continuidad';
+
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+// Dos trayectorias de puntos que se cruzan en el centro (X = 300, Y = 90)
+const pasosIdea = Array.from({ length: 11 }, (_, i) => {
+  const t = (i - 5) / 5; // -1 a 1
+  const x = 300 + t * 210;
+  const yRecta = 90 - t * 52;
+  const yOnda = 90 + Math.sin(t * Math.PI * 0.85) * 56;
+  return { x, yRecta, yOnda };
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Sigue una trayectoria colineal.',
+    hacer: 'Lleva «Cambio de ángulo entre pasos» a 10° o menos.',
+    pista: 'Mueve el primer deslizador hacia la izquierda.',
+    preparar: { angulo: 8, separacion: 36, ruido: 24, campo: false },
+    logro: 'Con giros menores a 15°, los diez segmentos se integran sin esfuerzo en una sola ruta continua a través de toda la pantalla.',
+  },
+  {
+    titulo: 'Comprueba la resistencia al ruido.',
+    hacer: 'Sube «Ruido del entorno» por encima de 40 distractores manteniendo el ángulo bajo.',
+    pista: 'Arrastra «Ruido del entorno» hacia la derecha.',
+    preparar: { angulo: 12, separacion: 36 },
+    logro: 'Aunque decenas de trazos sueltos rodeen el camino, tu corteza visual enlaza los segmentos porque conservan una dirección predecible.',
+  },
+  {
+    titulo: 'Supera el umbral de ruptura.',
+    hacer: 'Sube «Cambio de ángulo entre pasos» a 50° o más.',
+    pista: 'Mueve el primer deslizador hacia la derecha.',
+    preparar: { ruido: 36, separacion: 38 },
+    logro: 'Cuando cada paso dobla bruscamente más de 40°, el campo de asociación deja de conectar los tramos y la trayectoria se desintegra entre los distractores.',
+  },
+  {
+    titulo: 'Visualiza el campo de asociación.',
+    hacer: 'Abre «Más controles», activa «Mostrar campo de asociación» y baja el ángulo a 20°.',
+    pista: 'Enciende el interruptor y regresa el primer deslizador a 20°.',
+    preparar: { angulo: 20, ruido: 24, separacion: 38, campo: true },
+    abrir: true,
+    logro: 'Los conos amarillos muestran la ventana angular (±30°) dentro de la cual una neurona de la corteza visual primaria busca el siguiente segmento para continuar el contorno.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos hileras de puntos del mismo color —una recta ascendente y una curva suave— se cruzan en el centro. En los extremos se marcan las letras A, B, C y D.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        <circle cx="300" cy="90" r="24" fill={AMARILLO} stroke={T} stroke-width="1.5" stroke-dasharray="3 3" />
+        {pasosIdea.map((p) => (
+          <g>
+            <circle cx={p.x} cy={p.yRecta} r="6.5" fill={T} />
+            <circle cx={p.x} cy={p.yOnda} r="6.5" fill={T} />
+          </g>
+        ))}
+        <text x="64" y="148" font-family={SANS} font-size="13" font-weight="900" fill={T}>A</text>
+        <text x="64" y="42" font-family={SANS} font-size="13" font-weight="900" fill={T}>C</text>
+        <text x="530" y="42" font-family={SANS} font-size="13" font-weight="900" fill={T}>B</text>
+        <text x="530" y="148" font-family={SANS} font-size="13" font-weight="900" fill={T}>D</text>
+      </svg>
+    </div>
+    <p>Todos los círculos son idénticos y en el centro se tocan. ¿Ves una trayectoria que va de A hacia B y otra de C hacia D, o ves dos ángulos en «V» (A-C y B-D) que rebotan en el medio?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Nadie ve dos «V» que chocan y rebotan hacia atrás, aunque en el cruce central los puntos estén igual de cerca. El sistema visual une A con B y C con D porque esas dos trayectorias conservan su inercia direccional sin giros bruscos. Es el principio de *buena continuación* formulado por Max Wertheimer en 1923.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Recorrido quebrado en zigzag y cruces ambiguos"
+      notas={[
+        {
+          ...pct(332, 62),
+          titulo: 'Cruce en ángulo plano con el mismo trazo',
+          texto: 'Las dos series comparten estilo y se tocan en un vértice confuso: al salir del cruce cuesta saber qué línea sube y cuál baja.',
+          zona: zona(18, 22, 324, 92),
+        },
+        {
+          ...pct(332, 156),
+          titulo: 'Formulario que obliga a saltar en Z',
+          texto: 'Alternar campos a izquierda y derecha con anchos dispares rompe el eje vertical y obliga al ojo a cambiar de dirección cinco veces.',
+          zona: zona(18, 122, 324, 96),
+        },
+        {
+          ...pct(332, 240),
+          titulo: 'Ejes de entrada desalineados',
+          texto: 'Cada etiqueta empieza en una coordenada X distinta, impidiendo que los bordes izquierdos formen una línea de continuidad.',
+          zona: zona(18, 126, 180, 134),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gráfico con líneas que rebotan de forma ambigua y debajo un formulario desalineado en zigzag.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="20" y="22" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>RECORRIDO VISUAL INTERRUMPIDO</text>
+        <rect x="20" y="30" width="320" height="78" fill="#fbfbf9" stroke={REGLA} />
+        <polyline points="34,92 120,68 180,68 240,42 324,88" fill="none" stroke={T} stroke-width="2.2" />
+        <polyline points="34,44 120,68 180,68 240,94 324,46" fill="none" stroke={T} stroke-width="2.2" />
+        <circle cx="150" cy="68" r="14" fill="none" stroke={ROJO} stroke-width="1.5" stroke-dasharray="3 2" />
+
+        <text x="20" y="132" font-family={SANS} font-size="10" font-weight="700" fill={T}>1. Nombre</text>
+        <rect x="20" y="138" width="130" height="24" fill="#f5f5f2" stroke={T} stroke-width="1.4" />
+        <text x="196" y="148" font-family={SANS} font-size="10" font-weight="700" fill={T}>2. Apellidos</text>
+        <rect x="196" y="154" width="144" height="24" fill="#f5f5f2" stroke={T} stroke-width="1.4" />
+
+        <text x="58" y="186" font-family={SANS} font-size="10" font-weight="700" fill={T}>3. Correo</text>
+        <rect x="58" y="192" width="150" height="24" fill="#f5f5f2" stroke={T} stroke-width="1.4" />
+        <text x="228" y="204" font-family={SANS} font-size="10" font-weight="700" fill={T}>4. Ciudad</text>
+        <rect x="228" y="210" width="112" height="24" fill="#f5f5f2" stroke={T} stroke-width="1.4" />
+
+        <polyline points="85,150 268,166 133,204 284,222" fill="none" stroke={ROJO} stroke-width="1.5" stroke-dasharray="4 3" />
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Curvas con inercia clara y eje vertical continuo"
+      notas={[
+        {
+          ...pct(332, 62),
+          titulo: 'Cruce limpio en ángulo franco',
+          texto: 'Una curva suave continua y una recta punteada se atraviesan con pendientes distintas: el ojo sigue cada serie sin perderla en el cruce.',
+          zona: zona(18, 22, 324, 92),
+        },
+        {
+          ...pct(332, 166),
+          titulo: 'Un único eje de alineación',
+          texto: 'Al alinear etiquetas y campos sobre la coordenada X = 28, los bordes izquierdos dibujan una línea implícita de arriba abajo.',
+          zona: zona(20, 120, 40, 144),
+        },
+        {
+          ...pct(332, 232),
+          titulo: 'Secuencia sin giros oculares',
+          texto: 'La mirada desciende por un solo carril vertical desde el primer campo hasta el botón final.',
+          zona: zona(24, 122, 312, 142),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gráfico con dos curvas diferenciadas que se cruzan limpiamente y debajo un formulario alineado sobre un eje vertical continuo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="20" y="22" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>TRAYECTORIA FLUIDA Y EJE CONTINUO</text>
+        <rect x="20" y="30" width="320" height="78" fill="#fbfbf9" stroke={REGLA} />
+        <path d="M 34 94 C 120 90, 200 44, 324 38" fill="none" stroke={T} stroke-width="2.6" />
+        <path d="M 34 42 C 130 48, 210 88, 324 94" fill="none" stroke={G} stroke-width="2" stroke-dasharray="6 4" />
+
+        <line x1="28" y1="120" x2="28" y2="262" stroke={AMARILLO} stroke-width="6" />
+        <line x1="28" y1="120" x2="28" y2="262" stroke={T} stroke-width="1.2" stroke-dasharray="3 3" />
+
+        <text x="38" y="132" font-family={SANS} font-size="10" font-weight="700" fill={T}>1. Nombre y apellidos</text>
+        <rect x="38" y="137" width="298" height="22" fill="#f5f5f2" stroke={T} stroke-width="1.3" />
+
+        <text x="38" y="175" font-family={SANS} font-size="10" font-weight="700" fill={T}>2. Correo electrónico</text>
+        <rect x="38" y="180" width="298" height="22" fill="#f5f5f2" stroke={T} stroke-width="1.3" />
+
+        <text x="38" y="218" font-family={SANS} font-size="10" font-weight="700" fill={T}>3. Ciudad de residencia</text>
+        <rect x="38" y="223" width="190" height="22" fill="#f5f5f2" stroke={T} stroke-width="1.3" />
+        <rect x="238" y="223" width="98" height="22" fill={AMARILLO} stroke={T} stroke-width="1.6" />
+        <text x="287" y="238" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>Continuar →</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · el campo de asociación (Field, Hayes y Hess, 1993)"
+    consigna="Diez segmentos forman una ruta inmersa en un mar de trazos distractores. Todos los segmentos tienen el mismo grosor y el mismo color: lo único que hace visible el camino es la suavidad del giro entre un paso y el siguiente. Aumenta el cambio de ángulo y observa en qué punto exacto desaparece la ruta."
+    nota="Fija como A un cambio de ángulo de 12° y compáralo con B subiendo el giro a 50° con el mismo número de distractores."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Campo de segmentos cortos donde diez trazos colineales dibujan una curva suave entre trazos orientados al azar.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      {Array.from({ length: 10 }, (_, i) => {
+        const x = 68 + i * 56;
+        const y = 160 + Math.sin(i * 0.45) * 42;
+        const ang = Math.cos(i * 0.45) * 18;
+        return (
+          <g transform={`translate(${x} ${y}) rotate(${ang})`}>
+            <rect x="-15" y="-4" width="30" height="8" fill={AMARILLO} />
+            <line x1="-13" y1="0" x2="13" y2="0" stroke={T} stroke-width="3.2" stroke-linecap="round" />
+          </g>
+        );
+      })}
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Experimenta combinando separación entre segmentos y cambio de ángulo para encontrar el límite de integración de tu mirada." />
+
+    <Deslizador
+      lab={lab}
+      variable="angulo"
+      etiqueta="Cambio de ángulo entre pasos"
+      min={0}
+      max={75}
+      paso={5}
+      valor={15}
+      unidad="°"
+      ayuda="0°: línea recta perfecta. Más de 40°: el giro supera el cono de asociación y la ruta se rompe."
+    />
+    <Deslizador
+      lab={lab}
+      variable="separacion"
+      etiqueta="Separación entre segmentos"
+      min={24}
+      max={64}
+      paso={4}
+      valor={38}
+      unidad="px"
+      ayuda="Distancia entre los tramos de la trayectoria."
+    />
+    <Deslizador
+      lab={lab}
+      variable="ruido"
+      etiqueta="Ruido del entorno"
+      min={0}
+      max={60}
+      paso={6}
+      valor={24}
+      ayuda="Cantidad de segmentos distractores con orientación azarosa alrededor de la ruta."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="campo"
+        etiqueta="Mostrar campo de asociación"
+        ayuda="Dibuja el cono angular (±30°) dentro del cual el sistema visual enlaza un segmento con el siguiente."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"angulo":10,"separacion":36,"ruido":36,"campo":false}'>Curva suave legible entre ruido (10°)</button>
+      <button type="button" class="dv-boton" data-preset='{"angulo":25,"separacion":38,"ruido":24,"campo":true}'>Conos del campo de asociación activos</button>
+      <button type="button" class="dv-boton" data-preset='{"angulo":60,"separacion":44,"ruido":42,"campo":false}'>Giro brusco (60°): la ruta se pierde</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Endereza un formulario en zigzag"
+      comparar={false}
+      consigna="Seis campos colocados en dos columnas desparejas obligan a mover los ojos en «Z» en cada paso. Alinea las entradas sobre un eje vertical continuo."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Formulario de inscripción</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="flujo"
+        etiqueta="Disposición del recorrido"
+        valor="zigzag"
+        opciones={[
+          { valor: 'zigzag', texto: 'Saltos en zigzag' },
+          { valor: 'eje', texto: 'Eje vertical continuo' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Desambigua dos líneas que se cruzan"
+      comparar={false}
+      consigna="Cuando dos líneas idénticas se tocan en ángulo rasante y rebotan, el ojo no sabe cuál es cuál. Abre el ángulo de cruce y diferencia su textura."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Cruce de dos series temporales</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="claridad"
+        etiqueta="Diferenciación de trayectoria"
+        min={0}
+        max={100}
+        paso={25}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Aprovecha la continuidad para anunciar contenido fuera de pantalla"
+      comparar={false}
+      consigna="Si la segunda tarjeta termina justo en el borde del contenedor, parece que la galería acaba ahí. Desplázala para que el borde corte la tercera tarjeta a mitad de camino."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Carrusel horizontal de capítulos</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="corte"
+        etiqueta="Cierre en el borde derecho"
+        valor="cerrado"
+        opciones={[
+          { valor: 'cerrado', texto: 'Encaja exacto (parece el final)' },
+          { valor: 'asomado', texto: 'Corta la siguiente tarjeta' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Plano de metro: giros de 45° para mantener la continuidad de cada línea"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Curvas de radio constante en vez de quiebres a 90°',
+          texto: 'Siguiendo la tradición de Harry Beck (1933), las líneas cambian de rumbo con diagonales a 45° para que la mirada no pierda el hilo.',
+          zona: zona(22, 24, 316, 86),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Cruces ortogonales en los trasbordos',
+          texto: 'Cuando la Línea 1 y la Línea 2 se cruzan, lo hacen en ángulo amplio para que ninguna parezca doblar hacia la otra.',
+          zona: zona(132, 92, 96, 86),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Estaciones alineadas sobre el vector',
+          texto: 'Los nombres se apoyan en una misma línea base paralela al riel, reforzando la dirección del recorrido.',
+          zona: zona(22, 182, 316, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Diagrama esquemático de dos líneas de metro que se cruzan en una estación central con giros suaves a 45 grados.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="18" width="324" height="244" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <text x="32" y="40" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1" fill={G}>ESQUEMA DE RED · LÍNEAS L1 Y L2</text>
+
+        <path d="M 36 168 L 130 168 L 194 104 L 324 104" fill="none" stroke={T} stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 36 76 L 138 76 L 218 156 L 324 156" fill="none" stroke={AMARILLO} stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 36 76 L 138 76 L 218 156 L 324 156" fill="none" stroke={T} stroke-width="2" stroke-dasharray="6 4" />
+
+        {[
+          [64, 168, 'Parque'],
+          [130, 168, 'Museo'],
+          [268, 104, 'Universidad'],
+        ].map(([cx, cy, nom]) => (
+          <g>
+            <circle cx={cx} cy={cy} r="6" fill="#ffffff" stroke={T} stroke-width="2.5" />
+            <text x={cx} y={Number(cy) + 22} text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={T}>{nom}</text>
+          </g>
+        ))}
+
+        <circle cx="172" cy="126" r="9" fill={AMARILLO} stroke={T} stroke-width="3" />
+        <text x="172" y="96" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>Estación Central</text>
+        <text x="34" y="238" font-family={SANS} font-size="10" fill={G}>Giros suaves de 45° · Cruce franco sin ambigüedad</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Tabla comparativa: líneas guía sutiles que conducen el ojo de punta a punta"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Alineación izquierda como riel vertical',
+          texto: 'Los conceptos comparten coordenada X, creando un borde virtual continuo sin necesidad de dibujar una línea vertical.',
+          zona: zona(22, 42, 118, 198),
+        },
+        {
+          ...pct(330, 142),
+          titulo: 'Punteado horizontal de buena continuación',
+          texto: 'Una hilera de puntos guía la vista desde el nombre del criterio hasta su cifra en el extremo derecho sin saltar de fila.',
+          zona: zona(128, 72, 148, 152),
+        },
+        {
+          ...pct(330, 224),
+          titulo: 'Cifras alineadas por la coma decimal',
+          texto: 'La columna derecha mantiene su propio eje vertical para que las cantidades se comparen de un vistazo.',
+          zona: zona(266, 42, 74, 198),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Índice y tabla de especificaciones donde líneas punteadas horizontales unen cada concepto a la izquierda con su valor a la derecha.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="28" y="40" font-family={SANS} font-size="10" font-weight="900" letter-spacing="0.8" fill={G}>ESPECIFICACIONES ÓPTICAS</text>
+        {[
+          ['Distancia focal', '50,0 mm', 80],
+          ['Apertura máxima', 'f / 1,4', 118],
+          ['Enfoque mínimo', '0,45 m', 156],
+          ['Diámetro de filtro', '58,0 mm', 194],
+          ['Peso del cuerpo', '290,0 g', 232],
+        ].map(([izq, der, y]) => (
+          <g>
+            <text x="28" y={y} font-family={SERIF} font-size="13" fill={T}>{izq}</text>
+            <line x1="142" y1={Number(y) - 3} x2="262" y2={Number(y) - 3} stroke={G} stroke-width="1.4" stroke-dasharray="2 5" />
+            <text x="332" y={y} text-anchor="end" font-family={SANS} font-size="12.5" font-weight="700" fill={T}>{der}</text>
+          </g>
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Línea de tiempo editorial: un hilo conductor une hitos de distinto tamaño"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Espina dorsal ininterrumpida',
+          texto: 'Un eje vertical atraviesa los tres bloques históricos; aunque cambie la extensión del texto, el ojo nunca pierde la cronología.',
+          zona: zona(52, 24, 34, 232),
+        },
+        {
+          ...pct(330, 142),
+          titulo: 'Nodos sobre la misma coordenada',
+          texto: 'Los círculos de año actúan como estaciones sobre el trazo continuo, anclando fecha y comentario.',
+          zona: zona(22, 32, 316, 198),
+        },
+        {
+          ...pct(330, 236),
+          titulo: 'Flecha terminal que proyecta la línea',
+          texto: 'El extremo inferior abierto indica que la serie temporal continúa más allá del recuadro.',
+          zona: zona(48, 224, 180, 42),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cronología vertical donde una línea continua enlaza los años 1915, 1923 y 1992 con sus respectivos hitos.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <line x1="68" y1="26" x2="68" y2="252" stroke={T} stroke-width="2.2" />
+        <polygon points="63,248 68,260 73,248" fill={T} />
+        {[
+          ['1915', 'Edgar Rubin', 'Figura, fondo y pertenencia del borde.', 54, false],
+          ['1923', 'Max Wertheimer', 'Proximidad, semejanza, cierre y continuidad.', 130, true],
+          ['1992', 'Stephen Palmer', 'Experimentos sobre el principio de región común.', 206, false],
+        ].map(([anio, autor, desc, y, foco]) => (
+          <g>
+            <circle cx="68" cy={y} r="8" fill={foco ? AMARILLO : '#ffffff'} stroke={T} stroke-width="2.2" />
+            <text x="48" y={Number(y) + 4} text-anchor="end" font-family={SANS} font-size="11" font-weight="900" fill={T}>{anio}</text>
+            <text x="90" y={Number(y) - 2} font-family={SANS} font-size="12.5" font-weight="900" fill={T}>{autor}</text>
+            <text x="90" y={Number(y) + 15} font-family={SERIF} font-size="10.5" fill={TXT}>{desc}</text>
+          </g>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre cruces de trayectorias, el campo de asociación de Field y la continuidad en formularios y tablas."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const SEC = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  type E = {
+    angulo: number;
+    separacion: number;
+    ruido: number;
+    campo: boolean;
+  };
+
+  function sembrarDistractores(cantidad: number, W: number, H: number) {
+    const lista: { x: number; y: number; a: number }[] = [];
+    for (let i = 0; i < cantidad; i++) {
+      const s1 = Math.sin(i * 12.9898 + 4.1414) * 43758.5453;
+      const s2 = Math.sin(i * 78.233 + 1.618) * 24634.6345;
+      const s3 = Math.sin(i * 37.719 + 9.2) * 15731.743;
+      const rx = s1 - Math.floor(s1);
+      const ry = s2 - Math.floor(s2);
+      const ra = s3 - Math.floor(s3);
+      lista.push({
+        x: 28 + rx * (W - 56),
+        y: 28 + ry * (H - 68),
+        a: ra * 180,
+      });
+    }
+    return lista;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 320;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Campo de segmentos con cambio de ángulo de ${e.angulo} grados, separación de ${e.separacion} px y ${e.ruido} distractores.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    // 1. Distractores de fondo
+    const distractores = sembrarDistractores(e.ruido, W, H);
+    for (const d of distractores) {
+      const g = svg('g', { transform: `translate(${d.x.toFixed(1)} ${d.y.toFixed(1)}) rotate(${d.a.toFixed(1)})` });
+      g.append(
+        svg('line', {
+          x1: -10,
+          y1: 0,
+          x2: 10,
+          y2: 0,
+          stroke: TINTA,
+          'stroke-width': 2.4,
+          'stroke-linecap': 'round',
+        }),
+      );
+      raiz.append(g);
+    }
+
+    // 2. Generar los nodos de la trayectoria según el cambio de ángulo
+    const pasosRuta = Math.min(11, Math.max(6, Math.floor((W - 80) / e.separacion)));
+    const nodos: { x: number; y: number; ang: number }[] = [];
+    let x = (W - (pasosRuta - 1) * e.separacion) / 2;
+    let y = H * 0.48;
+    let rumbo = 0;
+
+    for (let i = 0; i < pasosRuta; i++) {
+      const signo = i % 2 === 0 ? 1 : -1;
+      rumbo = signo * (e.angulo * 0.65);
+      nodos.push({ x, y, ang: rumbo });
+      const rad = (rumbo * Math.PI) / 180;
+      x += e.separacion;
+      y = Math.max(44, Math.min(H - 56, y + Math.sin(rad) * e.separacion * 0.85));
+    }
+
+    // 3. Si el campo de asociación está activo, pintar los conos de integración
+    if (e.campo) {
+      for (let i = 0; i < nodos.length - 1; i++) {
+        const n = nodos[i];
+        const r = e.separacion * 0.92;
+        const a1 = ((n.ang - 28) * Math.PI) / 180;
+        const a2 = ((n.ang + 28) * Math.PI) / 180;
+        const x1 = n.x + Math.cos(a1) * r;
+        const y1 = n.y + Math.sin(a1) * r;
+        const x2 = n.x + Math.cos(a2) * r;
+        const y2 = n.y + Math.sin(a2) * r;
+        raiz.append(
+          svg('path', {
+            d: `M ${n.x} ${n.y} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`,
+            fill: AMARILLO,
+            'fill-opacity': 0.7,
+            stroke: COTA,
+            'stroke-width': 1,
+            'stroke-dasharray': '3 2',
+          }),
+        );
+      }
+    }
+
+    // 4. Segmentos de la trayectoria
+    for (const n of nodos) {
+      const g = svg('g', { transform: `translate(${n.x.toFixed(1)} ${n.y.toFixed(1)}) rotate(${n.ang.toFixed(1)})` });
+      g.append(
+        svg('line', {
+          x1: -11,
+          y1: 0,
+          x2: 11,
+          y2: 0,
+          stroke: TINTA,
+          'stroke-width': 2.8,
+          'stroke-linecap': 'round',
+        }),
+      );
+      raiz.append(g);
+    }
+
+    const pie = svg('text', {
+      x: W / 2,
+      y: H - 12,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 700,
+      fill: e.angulo > 40 ? COTA : TINTA,
+    });
+    pie.textContent = e.angulo <= 30
+      ? `DENTRO DEL CAMPO DE ASOCIACIÓN (${e.angulo}° ≤ 30°) · RUTA CONTINUA`
+      : e.angulo <= 45
+        ? `ZONA LÍMITE (${e.angulo}°) · LA CONTINUIDAD EMPIEZA A DEBILITARSE`
+        : `FUERA DEL CAMPO DE ASOCIACIÓN (${e.angulo}° > 45°) · TRAYECTORIA ROTA`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    if (e.angulo <= 25) {
+      return `Con un giro de <b class="dv-cifra">${e.angulo}°</b> entre pasos, cada segmento cae dentro del cono de asociación del anterior. La trayectoria se integra como una sola curva incluso entre <b class="dv-cifra">${e.ruido} distractores</b>.`;
+    }
+    if (e.angulo <= 40) {
+      return `A <b class="dv-cifra">${e.angulo}°</b> de cambio angular nos acercamos al umbral psicofísico de Field, Hayes y Hess (1993): si aumentas la separación o el ruido, el camino empezará a perderse.`;
+    }
+    return `Giro brusco de <b class="dv-cifra">${e.angulo}°</b>: los segmentos cambian de dirección demasiado rápido para que la corteza visual los enlace. En lugar de una ruta continua, vemos trazos sueltos.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="continuidad"]')) {
+    guiar<E>(raiz, [
+      (e) => e.angulo <= 10,
+      (e) => e.angulo <= 20 && e.ruido >= 40,
+      (e) => e.angulo >= 50,
+      (e) => e.campo && e.angulo <= 25,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { flujo: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    if (e.flujo === 'zigzag') {
+      d.innerHTML = `
+        <div style="padding:14px 16px;font-family:${SANS};color:#222;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><span style="font-size:10px;font-weight:700;color:#6f6f6f;">1. NOMBRE</span><div style="height:22px;border:1.4px solid #222;background:#fff;margin-top:2px;"></div></div>
+          <div style="margin-left:18px;"><span style="font-size:10px;font-weight:700;color:#6f6f6f;">2. TELÉFONO</span><div style="height:22px;border:1.4px solid #222;background:#fff;margin-top:2px;"></div></div>
+          <div style="margin-left:10px;"><span style="font-size:10px;font-weight:700;color:#6f6f6f;">3. CORREO</span><div style="height:22px;border:1.4px solid #222;background:#fff;margin-top:2px;"></div></div>
+          <div><span style="font-size:10px;font-weight:700;color:#6f6f6f;">4. EMPRESA</span><div style="height:22px;border:1.4px solid #222;background:#fff;margin-top:2px;"></div></div>
+        </div>`;
+    } else {
+      d.innerHTML = `
+        <div style="padding:14px 16px;font-family:${SANS};color:#222;border-left:4px solid ${AMARILLO};margin-left:16px;display:grid;gap:8px;">
+          <div><span style="font-size:10px;font-weight:700;color:#6f6f6f;">1. NOMBRE</span><div style="height:20px;border:1.4px solid #222;background:#fff;"></div></div>
+          <div><span style="font-size:10px;font-weight:700;color:#6f6f6f;">2. TELÉFONO</span><div style="height:20px;border:1.4px solid #222;background:#fff;"></div></div>
+          <div><span style="font-size:10px;font-weight:700;color:#6f6f6f;">3. CORREO</span><div style="height:20px;border:1.4px solid #222;background:#fff;"></div></div>
+        </div>`;
+    }
+  }
+  function describirE1(e: E1) {
+    if (e.flujo === 'zigzag') return 'El ojo tiene que hacer <b class="dv-cifra">3 giros diagonales bruscos</b> para recorrer cuatro campos.';
+    return '<b class="dv-cifra">Un solo eje de continuidad</b>: la mirada baja en línea recta sin cambiar de dirección.';
+  }
+
+  type E2 = { claridad: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const k = e.claridad / 100;
+    const dash = k >= 0.5 ? 'stroke-dasharray="6 4"' : '';
+    const color2 = k >= 0.75 ? '#6f6f6f' : '#222222';
+    const yMid = 48 - k * 18;
+    d.innerHTML = `
+      <div style="padding:12px 16px;">
+        <svg viewBox="0 0 300 96" style="width:100%;height:auto;background:#fbfbf9;border:1px solid #e5e5e5;">
+          <path d="M 20 80 Q 150 ${48 + k * 14} 280 18" fill="none" stroke="#222222" stroke-width="2.6" />
+          <path d="M 20 18 Q 150 ${yMid} 280 80" fill="none" stroke="${color2}" stroke-width="2.2" ${dash} />
+        </svg>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.claridad < 50) return 'Ambas líneas comparten trazo y se besan en el centro: <b class="dv-cifra">parecen dos «V» que rebotan</b>.';
+    return '<b class="dv-cifra">Cruce sin ambigüedad</b>: la pendiente continua y el trazo discontinuo permiten seguir cada serie de principio a fin.';
+  }
+
+  type E3 = { corte: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const wCard = e.corte === 'cerrado' ? '48%' : '40%';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};overflow:hidden;">
+        <div style="display:flex;gap:10px;border-right:3px solid #222;padding-right:${e.corte === 'cerrado' ? '4px' : '0'};overflow:hidden;">
+          <div style="flex:0 0 ${wCard};padding:10px;border:1.5px solid #222;background:#fff;"><strong style="font-size:12px;">01 · Introducción</strong></div>
+          <div style="flex:0 0 ${wCard};padding:10px;border:1.5px solid #222;background:#fff;"><strong style="font-size:12px;">02 · Métodos</strong></div>
+          <div style="flex:0 0 ${wCard};padding:10px;border:1.5px solid #222;background:${AMARILLO};"><strong style="font-size:12px;">03 · Resultados</strong></div>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.corte === 'cerrado') return 'Las dos tarjetas encajan exactas: la continuidad se detiene en el borde y <b class="dv-cifra">la tarjeta 03 parece no existir</b>.';
+    return '<b class="dv-cifra">Continuidad más allá del marco</b>: al ver la tercera tarjeta cortada a mitad de camino, sabemos que la fila continúa a la derecha.';
+  }
+
+  for (const [id, p, desc] of [
+    ['continuidad-e1', pintarE1, describirE1],
+    ['continuidad-e2', pintarE2, describirE2],
+    ['continuidad-e3', pintarE3, describirE3],
+  ] as const) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p as never, describir: desc as never });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────────
+  function rCruceX(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Dos líneas continuas que se atraviesan conservando su dirección',
+        es: true,
+      },
+      {
+        texto: 'Dos esquinas agudas en forma de «V» que chocan en el vértice y rebotan',
+        es: false,
+      },
+      {
+        texto: 'Cuatro segmentos sueltos sin ninguna relación entre sí',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Cuando dos líneas rectas se cruzan formando una «X», ¿cómo las organiza de inmediato el sistema visual?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Por el principio de buena continuación, el sistema visual prefiere la trayectoria colineal que mantiene la dirección (0° de giro) antes que doblar en un ángulo brusco en el punto de cruce.',
+      repaso: 'Buena continuación en cruces',
+    };
+  }
+
+  function rField(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Cuando el cambio de ángulo entre un segmento y el siguiente supera aproximadamente los 30°–45°',
+        es: true,
+      },
+      {
+        texto: 'Únicamente cuando los segmentos cambian de color a mitad del camino',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según el modelo del «campo de asociación» de Field, Hayes y Hess (1993), ¿cuándo deja el ojo de integrar una serie de segmentos como un camino continuo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las neuronas de la corteza visual primaria integran segmentos vecinos siempre que estén alineados en una curva suave; los giros mayores a ~40° rompen esa asociación local.',
+      repaso: 'Campo de asociación (Field et al., 1993)',
+    };
+  }
+
+  function rReticula(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Sus bordes izquierdos crean una línea implícita de continuidad que guía la mirada hacia abajo',
+        es: true,
+      },
+      {
+        texto: 'Ocupan el doble de memoria en el navegador',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Por qué alinear varios bloques de texto sobre una misma coordenada X vertical es una aplicación directa del principio de continuidad?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'No hace falta dibujar una línea negra para que exista continuidad: varios bordes alineados en la misma dirección bastan para que el ojo perciba un eje continuo.',
+      repaso: 'Alineación como continuidad implícita',
+    };
+  }
+
+  function rGraficoLineas(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Diferenciar el estilo del trazo (por ejemplo, continuo frente a discontinuo) y evitar tramos superpuestos',
+        es: true,
+      },
+      {
+        texto: 'Pintar ambas series del mismo grosor y color para que el gráfico sea minimalista',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En un gráfico donde dos series de datos se cruzan con ángulos parecidos, ¿qué ayuda al ojo a mantener la continuidad de cada serie después del cruce?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando las pendientes son similares en el punto de intersección, combinar la buena continuación con una diferencia de textura o grosor evita que la mirada cambie de carril por error.',
+      repaso: 'Continuidad en gráficos de líneas',
+    };
+  }
+
+  function rAjusteAngulo(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta ruta de 7 segmentos está rota por giros demasiado bruscos (65°). Suaviza el cambio de ángulo hasta que el camino se lea como una curva continua.',
+      control: {
+        etiqueta: 'Cambio de ángulo entre segmentos',
+        min: 5,
+        max: 70,
+        paso: 5,
+        valor: 65,
+        unidad: '°',
+      },
+      pintar: (esc, v) => {
+        let x = 36;
+        let y = 56;
+        const pts: string[] = [];
+        for (let i = 0; i < 7; i++) {
+          const ang = (i % 2 === 0 ? 1 : -1) * (v * 0.65);
+          pts.push(`<g transform="translate(${x} ${y}) rotate(${ang})"><line x1="-13" y1="0" x2="13" y2="0" stroke="#222" stroke-width="3.5" stroke-linecap="round"/></g>`);
+          x += 42;
+          y += Math.sin((ang * Math.PI) / 180) * 32;
+        }
+        esc.innerHTML = `<svg viewBox="0 0 320 112" style="width:100%;height:auto;background:#fbfbf9;border:1px solid #e5e5e5;">${pts.join('')}</svg>`;
+      },
+      cumple: (v) => v <= 25,
+      falta: (v) => `A ${v}° el quiebre entre pasos sigue siendo brusco. Baja el ángulo a 25° o menos.`,
+      porque: 'Por debajo de 25°, los segmentos entran en el campo de asociación colineal y la mirada los enlaza como una sola trayectoria suave.',
+      repaso: 'Umbral angular de continuidad',
+    };
+  }
+
+  const juegoEl = document.querySelector<HTMLElement>('[data-juego="continuidad"]');
+  if (juegoEl) {
+    jugar(juegoEl, () =>
+      barajar([rCruceX(), rField(), rReticula(), rGraficoLineas(), rAjusteAngulo()]),
+    );
+  }
+</script>

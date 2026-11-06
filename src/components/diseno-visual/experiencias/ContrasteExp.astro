@@ -1,0 +1,889 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'contraste';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Iguala la claridad y separa solo el tono.',
+    hacer: 'Lleva «Diferencia de claridad» a 0 % y sube «Diferencia de tono» a 180°.',
+    pista: 'Mueve el primer deslizador al extremo izquierdo y el segundo al extremo derecho.',
+    preparar: { diffSaturacion: 80, proporcion: 20, soloLuminancia: false },
+    logro: 'Con la misma claridad (luminancia cercana a 1:1), los dos colores opuestos vibran en la frontera y el texto pequeño se vuelve borroso. El tono distingue manchas grandes, pero no sostiene bordes finos.',
+  },
+  {
+    titulo: 'Comprueba qué ve el canal de luminancia.',
+    hacer: 'Abre «Más controles» y activa «Comprobar solo canal de luminancia».',
+    pista: 'Despliega los controles avanzados y marca la casilla.',
+    abrir: true,
+    logro: 'Al quitar el tono y la saturación, las dos superficies se funden en el mismo gris. Eso explica por qué el ojo no encuentra un borde estable para leer las letras.',
+  },
+  {
+    titulo: 'Sostiene la lectura con diferencia de claridad.',
+    hacer: 'Desactiva «Comprobar solo canal de luminancia» y sube «Diferencia de claridad» por encima de 65 %.',
+    pista: 'Desmarca la casilla y arrastra el primer deslizador hacia la derecha.',
+    logro: 'En cuanto un color es francamente claro y el otro francamente oscuro, la razón de contraste supera 4,5:1 y tanto el párrafo como las líneas de 1 px recuperan nitidez inmediata.',
+  },
+  {
+    titulo: 'Destaca por saturación sobre un entorno apagado.',
+    hacer: 'Lleva «Diferencia de tono» a 30° y sube «Diferencia de saturación» por encima de 75 %.',
+    pista: 'Acerca los tonos y aumenta el tercer deslizador.',
+    preparar: { diffClaridad: 70, soloLuminancia: false },
+    logro: 'Aunque los dos colores pertenecen a la misma familia tonal, la diferencia entre una superficie neutra apagada y un acento saturado crea un contraste cualitativo limpio.',
+  },
+  {
+    titulo: 'Equilibra la proporción de superficie.',
+    hacer: 'Ajusta «Proporción de superficie del acento» entre 10 % y 20 %.',
+    pista: 'Coloca el control de proporción en el tercio izquierdo.',
+    logro: 'Un color intenso y luminoso necesita poca área para equilibrar una superficie extensa y tranquila. Es el contraste cuantitativo descrito por Johannes Itten.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Dos tarjetas con el mismo texto. La izquierda usa rojo saturado sobre verde saturado de igual claridad; la derecha usa azul marino oscuro sobre crema claro.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <g transform="translate(24, 18)">
+        <rect width="264" height="144" fill="#1ca64c" stroke="#222222" stroke-width="1.5" />
+        <rect x="16" y="14" width="136" height="18" fill="#e0321f" />
+        <text x="22" y="27" font-family={SANS} font-size="10" font-weight="700" fill="#1ca64c">CONTRASTE DE TONO · 1,1:1</text>
+        <text x="16" y="56" font-family={SANS} font-size="18" font-weight="900" fill="#e0321f">Ciclo de cine</text>
+        <text x="16" y="78" font-family={SERIF} font-size="12" fill="#e0321f">Proyecciones al aire libre</text>
+        <text x="16" y="96" font-family={SERIF} font-size="12" fill="#e0321f">todos los viernes a las 19:00</text>
+        <line x1="16" y1="112" x2="248" y2="112" stroke="#e0321f" stroke-width="1" />
+        <text x="16" y="129" font-family={SANS} font-size="10" font-weight="700" fill="#e0321f">Entrada libre · Patio central</text>
+      </g>
+
+      <g transform="translate(312, 18)">
+        <rect width="264" height="144" fill="#f6f2e8" stroke="#222222" stroke-width="1.5" />
+        <rect x="16" y="14" width="176" height="18" fill="#14284b" />
+        <text x="22" y="27" font-family={SANS} font-size="10" font-weight="700" fill="#f6f2e8">CONTRASTE DE CLARIDAD · 12,4:1</text>
+        <text x="16" y="56" font-family={SANS} font-size="18" font-weight="900" fill="#14284b">Ciclo de cine</text>
+        <text x="16" y="78" font-family={SERIF} font-size="12" fill="#14284b">Proyecciones al aire libre</text>
+        <text x="16" y="96" font-family={SERIF} font-size="12" fill="#14284b">todos los viernes a las 19:00</text>
+        <line x1="16" y1="112" x2="248" y2="112" stroke="#14284b" stroke-width="1" />
+        <text x="16" y="129" font-family={SANS} font-size="10" font-weight="700" fill="#14284b">Entrada libre · Patio central</text>
+      </g>
+    </svg>
+    <p>El rojo y el verde de la izquierda son opuestos en el círculo cromático. ¿Por qué aun así cuesta tanto leer sus letras en comparación con la tarjeta derecha?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque la tarjeta izquierda tiene máximo <strong>contraste de tono</strong> pero casi nulo <strong>contraste de claridad</strong> (su razón de luminancia es de apenas 1,1:1). El sistema visual humano resuelve los bordes finos y las letras exclusivamente a través del canal de luminancia (claro frente a oscuro), mientras que los canales de color tienen baja resolución espacial y solo separan manchas grandes.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Tonos distintos con la misma claridad"
+      notas={[
+        { ...pct(180, 42), titulo: 'Títulos y ejes equiluminantes', texto: 'Las etiquetas azules y naranjas sobre el fondo gris medio comparten casi la misma luminancia: al achicar la letra, los trazos parecen temblar.', zona: zona(18, 16, 324, 52) },
+        { ...pct(140, 152), titulo: 'Barras que compiten por saturación', texto: 'Las cuatro barras usan tonos puros con idéntica claridad; ninguna serie destaca como foco y en blanco y negro son indistinguibles.', zona: zona(28, 82, 296, 118) },
+        { ...pct(248, 232), titulo: 'Línea de tendencia invisible', texto: 'Un trazo fino cian sobre fondo gris de igual valor desaparece en cuanto te alejas medio metro de la pantalla.', zona: zona(24, 206, 312, 54) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gráfico de barras donde el fondo gris medio, las barras de colores saturados y los textos tienen casi la misma claridad.">
+        <rect width={W} height={H} fill="#8c8c8c" />
+        <text x="24" y="34" font-family={SANS} font-size="13" font-weight="900" fill="#e05a2b">CONSUMO MENSUAL DE AGUA (L/S)</text>
+        <text x="24" y="52" font-family={SANS} font-size="10" font-weight="700" fill="#2b9fe0">Comparativa trimestral por sector urbano</text>
+        <line x1="24" y1="64" x2="336" y2="64" stroke="#30b070" stroke-width="1" />
+
+        <rect x="42" y="120" width="52" height="76" fill="#e0483e" />
+        <rect x="114" y="96" width="52" height="100" fill="#2ea84c" />
+        <rect x="186" y="132" width="52" height="64" fill="#3b8ee8" />
+        <rect x="258" y="86" width="52" height="110" fill="#c96be0" />
+
+        <polyline points="68,112 140,90 212,122 284,82" fill="none" stroke="#1dc4d8" stroke-width="1.5" />
+
+        <text x="68" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#e0b020">Norte</text>
+        <text x="140" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#e0b020">Centro</text>
+        <text x="212" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#e0b020">Sur</text>
+        <text x="284" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#e0b020">Ladera</text>
+        <text x="24" y="250" font-family={SERIF} font-size="11" fill="#2ec4b6">Meta anual: reducir 15 % las fugas en red primaria.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Cada tipo de contraste cumple su tarea"
+      notas={[
+        { ...pct(210, 38), titulo: 'Claridad alta para textos y ejes', texto: 'La tipografía y las líneas de referencia usan tinta oscura (#222222) sobre papel claro: superan 12:1 y sostienen detalles de 1 px.', zona: zona(18, 14, 324, 52) },
+        { ...pct(284, 134), titulo: 'Saturación reservada al dato clave', texto: 'Tres barras van en gris azulado desaturado y solo el sector crítico recibe color intenso y oscuro.', zona: zona(34, 78, 290, 122) },
+        { ...pct(180, 246), titulo: 'Proporción controlada', texto: 'El color más saturado ocupa menos del 15 % de la superficie total, por lo que atrae la mirada sin cansar.', zona: zona(20, 206, 320, 58) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo gráfico con fondo claro, textos en negro nítido, tres barras en gris azulado suave y la cuarta barra destacada en azul intenso oscuro.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="34" font-family={SANS} font-size="13" font-weight="900" fill="#222222">CONSUMO MENSUAL DE AGUA (L/S)</text>
+        <text x="24" y="52" font-family={SANS} font-size="10" font-weight="700" fill="#6f6f6f">Comparativa trimestral · foco en sector Ladera</text>
+        <line x1="24" y1="64" x2="336" y2="64" stroke="#e5e5e5" stroke-width="1" />
+        <line x1="24" y1="130" x2="336" y2="130" stroke="#e5e5e5" stroke-width="1" stroke-dasharray="3 3" />
+        <line x1="24" y1="196" x2="336" y2="196" stroke="#222222" stroke-width="1.5" />
+
+        <rect x="42" y="120" width="52" height="76" fill="#d5dce2" />
+        <rect x="114" y="96" width="52" height="100" fill="#d5dce2" />
+        <rect x="186" y="132" width="52" height="64" fill="#d5dce2" />
+        <rect x="258" y="84" width="52" height="112" fill="#173f7a" stroke="#222222" stroke-width="1.5" />
+
+        <polyline points="68,112 140,90 212,122 284,78" fill="none" stroke="#b3261e" stroke-width="2" />
+        <circle cx="284" cy="78" r="4" fill="#eeff41" stroke="#222222" stroke-width="1.5" />
+
+        <text x="68" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#6f6f6f">Norte</text>
+        <text x="140" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#6f6f6f">Centro</text>
+        <text x="212" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#6f6f6f">Sur</text>
+        <text x="284" y="216" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill="#222222">Ladera</text>
+        <text x="24" y="250" font-family={SERIF} font-size="11.5" fill="#222222">Meta anual: reducir 15 % las fugas en red primaria.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · Dimensiones del contraste cromático"
+    consigna="Separa o acerca dos colores en claridad, tono, saturación y proporción de área. Observa cómo responden las zonas grandes frente a los trazos finos y el texto de lectura."
+    nota="Fija una combinación con alta diferencia de tono pero 0 % de diferencia de claridad como A, y compárala con otra que invierta los valores."
+  >
+    <svg slot="escenario" viewBox="0 0 640 300" role="img" aria-label="Tarjeta editorial de prueba con bloque principal, acento lateral, titular, párrafo y líneas finas.">
+      <rect width="640" height="300" fill="#f5f3ee" />
+      <rect x="32" y="24" width="440" height="252" fill="#f4f1ea" stroke="#222222" stroke-width="1.5" />
+      <rect x="472" y="24" width="136" height="252" fill="#183a6c" stroke="#222222" stroke-width="1.5" />
+      <text x="56" y="72" font-family={SANS} font-size="22" font-weight="900" fill="#183a6c">Atlas de cartografía</text>
+      <text x="56" y="104" font-family={SERIF} font-size="14" fill="#183a6c">La diferencia de luminancia sostiene las letras finas y las cotas.</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Activa y desactiva el canal de luminancia para comprobar qué contrastes sobreviven sin color." />
+
+    <Deslizador
+      lab={lab}
+      variable="diffClaridad"
+      etiqueta="Diferencia de claridad"
+      min={0}
+      max={90}
+      paso={5}
+      valor={70}
+      unidad="%"
+      ayuda="Distancia entre claro y oscuro (valor de Munsell). Es la dimensión que sostiene el texto y los bordes finos."
+    />
+    <Deslizador
+      lab={lab}
+      variable="diffTono"
+      etiqueta="Diferencia de tono"
+      min={0}
+      max={180}
+      paso={15}
+      valor={150}
+      unidad="°"
+      ayuda="0°: mismo tono (monocromático). 180°: opuestos en el círculo cromático (complementarios)."
+    />
+    <Deslizador
+      lab={lab}
+      variable="diffSaturacion"
+      etiqueta="Diferencia de saturación"
+      min={0}
+      max={90}
+      paso={5}
+      valor={65}
+      unidad="%"
+      ayuda="Contraste cualitativo: enfrenta una superficie neutra o apagada contra un color vivo."
+    />
+    <Deslizador
+      lab={lab}
+      variable="proporcion"
+      etiqueta="Proporción de superficie del acento"
+      min={5}
+      max={50}
+      paso={5}
+      valor={20}
+      unidad="%"
+      ayuda="Contraste cuantitativo: qué porcentaje del área ocupa el segundo color frente al color dominante."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="tonoBase"
+        etiqueta="Tono base del fondo"
+        min={0}
+        max={345}
+        paso={15}
+        valor={215}
+        unidad="°"
+        ayuda="Desplaza toda la pareja alrededor del círculo cromático."
+      />
+      <Interruptor
+        lab={lab}
+        variable="soloLuminancia"
+        etiqueta="Comprobar solo canal de luminancia"
+        ayuda="Convierte ambos colores a su gris de igual luminancia relativa para verificar qué ve el canal espacial de alta resolución."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"diffClaridad":0,"diffTono":180,"diffSaturacion":85,"proporcion":35,"soloLuminancia":false}'>Vibración equiluminante (solo tono)</button>
+      <button type="button" class="dv-boton" data-preset='{"diffClaridad":75,"diffTono":0,"diffSaturacion":20,"proporcion":20,"soloLuminancia":false}'>Solo claridad (monocromático nítido)</button>
+      <button type="button" class="dv-boton" data-preset='{"diffClaridad":65,"diffTono":30,"diffSaturacion":80,"proporcion":15,"soloLuminancia":false}'>Acento saturado sobre neutro</button>
+      <button type="button" class="dv-boton" data-preset='{"diffClaridad":75,"diffTono":165,"diffSaturacion":70,"proporcion":15,"soloLuminancia":false}'>Complementarios con proporción 85/15</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1. Detén la vibración entre complementarios de igual claridad"
+      comparar={false}
+      consigna="El titular fucsia y el fondo verde tienen tonos opuestos, pero empatan en claridad (1,2:1) y el borde parece hervir. Abre la diferencia de claridad para estabilizar la lectura."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Cartel con texto sobre fondo complementario.">
+        <rect width="360" height="150" fill="#1fa65a" />
+        <text x="20" y="58" font-family={SANS} font-size="22" font-weight="900" fill="#d92b82">FESTIVAL SONORO</text>
+        <text x="20" y="88" font-family={SERIF} font-size="13" fill="#d92b82">14 y 15 de noviembre · Entrada libre</text>
+      </svg>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="sep"
+        etiqueta="Separación de claridad"
+        min={0}
+        max={85}
+        paso={5}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2. Apaga el fondo para que el acento destaque por saturación"
+      comparar={false}
+      consigna="Cuando la superficie grande y la pastilla de acento están al 100 % de saturación, ambas compiten y fatigan la vista. Reduce la saturación del fondo para crear contraste cualitativo."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Tarjeta con fondo muy saturado que compite con el botón de acento.">
+        <rect width="360" height="150" fill="#246bfd" />
+        <rect x="20" y="84" width="148" height="36" fill="#ff9f1c" stroke="#222222" stroke-width="1.5" />
+        <text x="94" y="107" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill="#222222">INSCRIBIRSE AHORA</text>
+      </svg>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="calma"
+        etiqueta="Desaturación y claridad del fondo"
+        min={0}
+        max={95}
+        paso={5}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3. Equilibra un color luminoso reduciendo su superficie"
+      comparar={false}
+      consigna="El amarillo señal tiene muchísima fuerza luminosa; al ocupar el 80 % de la tarjeta, deslumbra y deja sin espacio al bloque oscuro. Ajusta su proporción de área."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Composición dominada por un 80 % de amarillo brillante frente a un 20 % de carbón.">
+        <rect width="288" height="150" fill="#eeff41" />
+        <rect x="288" width="72" height="150" fill="#222222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="area"
+        etiqueta="Área del amarillo señal"
+        min={8}
+        max={85}
+        paso={1}
+        valor={80}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Mapa temático: claridad para el relieve, saturación para el foco"
+      notas={[
+        { ...pct(110, 88), titulo: 'Fondo desaturado de baja competencia', texto: 'La base territorial usa tonos tierra de saturación menor al 15 % para que la red de rutas y puntos se lea encima sin esfuerzo.', zona: zona(18, 22, 200, 180) },
+        { ...pct(248, 128), titulo: 'Contraste cualitativo en el hallazgo', texto: 'Las tres estaciones con alerta usan bermellón saturado: saltan a la vista porque todo su entorno es apagado.', zona: zona(196, 86, 120, 96) },
+        { ...pct(180, 238), titulo: 'Tinta oscura para topónimos y escala', texto: 'Los nombres y las cotas no confían en el color: usan contraste de luminancia (13:1) sobre el fondo cartográfico.', zona: zona(20, 212, 320, 50) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Mapa temático con base en tonos arena desaturados, etiquetas en negro nítido y tres puntos de alerta en bermellón vivo.">
+        <rect width={W} height={H} fill="#f2efe9" />
+        <path d="M 18 44 Q 120 26 210 68 T 342 54 L 342 204 L 18 204 Z" fill="#e5dfd3" stroke="#c8bfb0" stroke-width="1.2" />
+        <path d="M 18 110 Q 140 94 238 136 T 342 128" fill="none" stroke="#93a8b8" stroke-width="4" />
+        <path d="M 52 184 L 146 118 L 236 132 L 304 92" fill="none" stroke="#222222" stroke-width="2" stroke-dasharray="4 3" />
+
+        <circle cx="52" cy="184" r="5" fill="#ffffff" stroke="#222222" stroke-width="2" />
+        <circle cx="146" cy="118" r="5" fill="#ffffff" stroke="#222222" stroke-width="2" />
+        <circle cx="236" cy="132" r="8" fill="#d63626" stroke="#222222" stroke-width="2" />
+        <circle cx="304" cy="92" r="8" fill="#d63626" stroke="#222222" stroke-width="2" />
+
+        <text x="64" y="188" font-family={SANS} font-size="10" font-weight="700" fill="#222222">Est. Río</text>
+        <text x="118" y="106" font-family={SANS} font-size="10" font-weight="700" fill="#222222">Paso Alto</text>
+        <text x="220" y="154" font-family={SANS} font-size="10.5" font-weight="900" fill="#222222">Cumbre · Alerta</text>
+        <text x="252" y="78" font-family={SANS} font-size="10.5" font-weight="900" fill="#222222">Mirador · Alerta</text>
+
+        <rect x="18" y="216" width="324" height="46" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="30" y="236" font-family={SANS} font-size="10" font-weight="900" fill="#222222">RED HIDROMETEOROLÓGICA · CUENCA ORIENTAL</text>
+        <text x="30" y="252" font-family={SERIF} font-size="11" fill="#444444">Escala 1:50.000 · Cifras en milímetros por hora</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Interfaz editorial: superficie neutra con acento de proporción mínima"
+      notas={[
+        { ...pct(120, 74), titulo: '92 % de superficie acromática', texto: 'El papel blanco, la tinta carbón y las reglas grises resuelven toda la estructura informativa con alto contraste de claridad.', zona: zona(18, 18, 324, 150) },
+        { ...pct(282, 206), titulo: '8 % de contraste cuantitativo', texto: 'El botón y la etiqueta de estado concentran el único color saturado de la pantalla; por eso bastan pocos píxeles para dirigir la acción.', zona: zona(210, 178, 132, 62) },
+        { ...pct(96, 208), titulo: 'Jerarquía de grises verificada', texto: 'Incluso el texto secundario (#6f6f6f) conserva una razón de 5,0:1 sobre el fondo blanco.', zona: zona(24, 180, 176, 62) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Interfaz de lectura en blanco y negro con un único sello y botón en amarillo señal.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="20" y="20" width="320" height="240" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <text x="36" y="48" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill="#6f6f6f">CONVOCATORIA ANUAL · 2026</text>
+        <text x="36" y="76" font-family={SERIF} font-size="19.5" font-weight="700" fill="#222222">Becas de creación</text>
+        <text x="36" y="102" font-family={SERIF} font-size="19.5" font-weight="700" fill="#222222">en diseño documental</text>
+        <line x1="36" y1="120" x2="324" y2="120" stroke="#e5e5e5" stroke-width="1" />
+        <text x="36" y="144" font-family={SERIF} font-size="12.5" fill="#444444">Recepción de portafolios y proyectos</text>
+        <text x="36" y="162" font-family={SERIF} font-size="12.5" fill="#444444">editoriales hasta el 30 de noviembre.</text>
+
+        <text x="36" y="204" font-family={SANS} font-size="10" font-weight="700" fill="#6f6f6f">CIERRE EN</text>
+        <text x="36" y="224" font-family={SANS} font-size="16" font-weight="900" fill="#222222">12 días</text>
+
+        <rect x="216" y="188" width="108" height="42" fill="#eeff41" stroke="#222222" stroke-width="2" />
+        <text x="270" y="213" text-anchor="middle" font-family={SANS} font-size="11.5" font-weight="900" fill="#222222">POSTULAR →</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Cartel constructivista: triple contraste de valor, temperatura y área"
+      notas={[
+        { ...pct(90, 90), titulo: 'Choque claro-oscuro extremo', texto: 'El fondo crema cálido (#f5efe2) y los bloques negros (#1a1a1a) crean una estructura sólida que se distingue desde lejos.', zona: zona(18, 18, 200, 140) },
+        { ...pct(264, 118), titulo: 'Acento cálido concentrado', texto: 'La cuña bermellón introduce contraste de temperatura y saturación justo en el punto de entrada diagonal.', zona: zona(210, 62, 130, 110) },
+        { ...pct(180, 228), titulo: 'Tipografía siempre apoyada en valor', texto: 'Ninguna palabra importante se escribe en rojo sobre negro; el texto va siempre en negro sobre crema o crema sobre negro.', zona: zona(24, 184, 312, 74) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel constructivista en crema, negro y una cuña diagonal en rojo bermellón.">
+        <rect width={W} height={H} fill="#f5efe2" />
+        <rect x="24" y="24" width="184" height="126" fill="#1a1a1a" />
+        <polygon points="218,150 336,42 336,150" fill="#d13423" />
+        <text x="40" y="64" font-family={SANS} font-size="22" font-weight="900" fill="#f5efe2">TEATRO</text>
+        <text x="40" y="92" font-family={SANS} font-size="22" font-weight="900" fill="#f5efe2">OBRERO</text>
+        <text x="40" y="124" font-family={SANS} font-size="11" font-weight="700" letter-spacing="1.5" fill="#eeff41">TEMPORADA 1928</text>
+        <line x1="24" y1="172" x2="336" y2="172" stroke="#1a1a1a" stroke-width="3" />
+        <text x="24" y="206" font-family={SANS} font-size="16" font-weight="900" fill="#1a1a1a">ESCENOGRAFÍA CONSTRUCTIVISTA</text>
+        <text x="24" y="230" font-family={SERIF} font-size="13" fill="#222222">Sala Mayor · Funciones diarias a las 20:30</text>
+        <text x="24" y="252" font-family={SANS} font-size="10.5" font-weight="700" fill="#6f6f6f">ARCHIVO DE CARTELES · LÁMINA 07</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre contraste de luminancia, tono, saturación y proporción de superficie. Cambian cada vez que juegas."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { hslAHex, razonContraste, aGris } from '../../../lib/diseno-visual/contraste';
+
+  const lab = 'contraste';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    diffClaridad: number;
+    diffTono: number;
+    diffSaturacion: number;
+    proporcion: number;
+    tonoBase: number;
+    soloLuminancia: boolean;
+  };
+
+  function coloresDe(e: E) {
+    const h1 = e.tonoBase % 360;
+    const h2 = (e.tonoBase + e.diffTono) % 360;
+    const l1 = Math.min(95, 50 + e.diffClaridad / 2);
+    const l2 = Math.max(12, 50 - e.diffClaridad / 2);
+    const s1 = Math.max(8, 52 - e.diffSaturacion * 0.5);
+    const s2 = Math.min(95, 52 + e.diffSaturacion * 0.48);
+
+    const hexFondo = hslAHex(h1, s1, l1);
+    const hexAcento = hslAHex(h2, s2, l2);
+    const razon = razonContraste(hexFondo, hexAcento);
+
+    return {
+      fondo: e.soloLuminancia ? aGris(hexFondo) : hexFondo,
+      acento: e.soloLuminancia ? aGris(hexAcento) : hexAcento,
+      hexFondo,
+      hexAcento,
+      razon,
+    };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 300;
+    const { fondo, acento, razon } = coloresDe(e);
+
+    const raiz = svg('svg', {
+      viewBox: `0 0 ${W} ${H}`,
+      width: W,
+      height: H,
+      role: 'img',
+      'aria-label': `Composición con razón de contraste ${n(razon, 1)} a 1.`,
+    });
+
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const pad = 20;
+    const cajaW = W - pad * 2;
+    const cajaH = H - pad * 2;
+    const prop = e.proporcion / 100;
+    const anchoAcento = Math.round(cajaW * prop);
+    const anchoFondo = cajaW - anchoAcento;
+
+    raiz.append(
+      svg('rect', {
+        x: pad,
+        y: pad,
+        width: anchoFondo,
+        height: cajaH,
+        fill: fondo,
+        stroke: '#222222',
+        'stroke-width': 1.5,
+      }),
+    );
+
+    raiz.append(
+      svg('rect', {
+        x: pad + anchoFondo,
+        y: pad,
+        width: anchoAcento,
+        height: cajaH,
+        fill: acento,
+        stroke: '#222222',
+        'stroke-width': 1.5,
+      }),
+    );
+
+    const xTxt = pad + 20;
+    const maxTxtW = Math.max(120, anchoFondo - 36);
+
+    const etq = svg('text', {
+      x: xTxt,
+      y: pad + 34,
+      'font-family': SANS,
+      'font-size': 10.5,
+      'font-weight': 700,
+      'letter-spacing': 1.1,
+      fill: acento,
+    });
+    etq.textContent = e.soloLuminancia
+      ? `SOLO LUMINANCIA · RAZÓN ${n(razon, 1)}:1`
+      : `RAZÓN DE LUMINANCIA · ${n(razon, 1)}:1`;
+    raiz.append(etq);
+
+    const tit = svg('text', {
+      x: xTxt,
+      y: pad + 72,
+      'font-family': SANS,
+      'font-size': W < 440 ? 18 : 24,
+      'font-weight': 900,
+      fill: acento,
+    });
+    tit.textContent = 'Atlas de cartografía';
+    raiz.append(tit);
+
+    const p1 = svg('text', {
+      x: xTxt,
+      y: pad + 104,
+      'font-family': SERIF,
+      'font-size': 13.5,
+      fill: acento,
+    });
+    p1.textContent = 'El canal de claridad resuelve las letras';
+    raiz.append(p1);
+
+    const p2 = svg('text', {
+      x: xTxt,
+      y: pad + 124,
+      'font-family': SERIF,
+      'font-size': 13.5,
+      fill: acento,
+    });
+    p2.textContent = 'y las líneas de 1 px; el tono separa áreas.';
+    raiz.append(p2);
+
+    raiz.append(
+      svg('line', {
+        x1: xTxt,
+        y1: pad + 144,
+        x2: xTxt + Math.min(240, maxTxtW),
+        y2: pad + 144,
+        stroke: acento,
+        'stroke-width': 1,
+      }),
+    );
+
+    // Mini gráfico de líneas finas para probar resolución espacial
+    const gx = xTxt;
+    const gy = pad + 164;
+    const gw = Math.min(220, maxTxtW);
+    const gh = 54;
+    raiz.append(
+      svg('rect', {
+        x: gx,
+        y: gy,
+        width: gw,
+        height: gh,
+        fill: 'none',
+        stroke: acento,
+        'stroke-width': 1,
+        'stroke-dasharray': '3 3',
+      }),
+    );
+    raiz.append(
+      svg('polyline', {
+        points: `${gx + 8},${gy + 42} ${gx + gw * 0.3},${gy + 18} ${gx + gw * 0.6},${gy + 32} ${gx + gw - 10},${gy + 10}`,
+        fill: 'none',
+        stroke: acento,
+        'stroke-width': 1.6,
+      }),
+    );
+
+    const notaPie = svg('text', {
+      x: xTxt,
+      y: pad + cajaH - 14,
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 700,
+      fill: acento,
+    });
+    notaPie.textContent = `Superficie dominante: ${100 - e.proporcion} % · Acento: ${e.proporcion} %`;
+    raiz.append(notaPie);
+
+    if (anchoAcento >= 54) {
+      const numAcento = svg('text', {
+        x: pad + anchoFondo + anchoAcento / 2,
+        y: pad + cajaH / 2 + 6,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': anchoAcento > 90 ? 22 : 14,
+        'font-weight': 900,
+        fill: fondo,
+      });
+      numAcento.textContent = `${e.proporcion} %`;
+      raiz.append(numAcento);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { razon } = coloresDe(e);
+    const cifra = `<b class="dv-cifra">${n(razon, 1)}:1</b>`;
+    const modo = e.soloLuminancia ? ' (vista en escala de luminancia)' : '';
+
+    if (razon < 1.8 && e.diffTono >= 120) {
+      return `Razón de luminancia ${cifra}${modo} con ${e.diffTono}° de diferencia tonal: <b class="dv-cifra">vibración equiluminante</b>. Los colores son muy distintos en tono, pero las letras y líneas de 1 px pierden nitidez.`;
+    }
+    if (razon < 3.0) {
+      return `Razón de luminancia ${cifra}${modo}: insuficiente para texto o trazos finos. Sube «Diferencia de claridad» para separar el valor de ambas superficies.`;
+    }
+    if (razon < 4.5) {
+      return `Razón de luminancia ${cifra}${modo}: apta para titulares grandes y manchas gráficas (≥ 3:1), pero justa para cuerpo de lectura pequeño.`;
+    }
+    if (e.diffSaturacion >= 65 && e.proporcion <= 25) {
+      return `Razón ${cifra}${modo}: <b class="dv-cifra">lectura nítida y acento controlado</b>. La diferencia de claridad sostiene la tipografía y el acento saturado ocupa solo el ${e.proporcion} % del área.`;
+    }
+    return `Razón de luminancia ${cifra}${modo}: supera el umbral de 4,5:1 para lectura continua. La diferencia entre claro y oscuro sostiene todos los detalles finos.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.diffClaridad === 0 && e.diffTono >= 150,
+      (e) => e.soloLuminancia === true,
+      (e) => !e.soloLuminancia && e.diffClaridad >= 65,
+      (e) => e.diffTono <= 45 && e.diffSaturacion >= 75,
+      (e) => e.proporcion >= 10 && e.proporcion <= 20,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { sep: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const lFondo = Math.min(95, Math.round(42 + e.sep * 0.6));
+    const lTexto = Math.max(15, Math.round(48 - e.sep * 0.38));
+    const sFondo = Math.max(18, Math.round(72 - e.sep * 0.6));
+    const fondo = hslAHex(146, sFondo, lFondo);
+    const texto = hslAHex(330, 74, lTexto);
+    const r = razonContraste(fondo, texto);
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Cartel con contraste ${n(r, 1)} a 1.">
+      <rect width="360" height="150" fill="${fondo}" stroke="#222222" stroke-width="1.2" />
+      <text x="20" y="34" font-family="${SANS}" font-size="10" font-weight="700" fill="${texto}">RAZÓN DE LUMINANCIA: ${n(r, 1)}:1</text>
+      <text x="20" y="68" font-family="${SANS}" font-size="22" font-weight="900" fill="${texto}">FESTIVAL SONORO</text>
+      <text x="20" y="96" font-family="${SERIF}" font-size="13.5" fill="${texto}">14 y 15 de noviembre · Patio central</text>
+      <line x1="20" y1="112" x2="340" y2="112" stroke="${texto}" stroke-width="1" />
+      <text x="20" y="130" font-family="${SANS}" font-size="10.5" font-weight="700" fill="${texto}">Entrada libre hasta completar aforo</text>
+    </svg>`;
+  }
+  function describirE1(e: E1) {
+    if (e.sep < 25) return 'Ambos colores rondan la misma claridad (<b class="dv-cifra">~1,2:1</b>): el borde entre fucsia y verde vibra y cansa la vista.';
+    if (e.sep < 60) return 'La diferencia de valor empieza a separar figura y fondo, pero el texto pequeño aún pide más claridad.';
+    return '<b class="dv-cifra">Contraste estabilizado (≥ 7:1)</b>: la pareja conserva su identidad de tonos opuestos sin vibrar.';
+  }
+
+  type E2 = { calma: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const sFondo = Math.max(10, Math.round(92 - e.calma * 0.85));
+    const lFondo = Math.min(95, Math.round(52 + e.calma * 0.44));
+    const fondo = hslAHex(220, sFondo, lFondo);
+    const txtColor = lFondo > 68 ? '#222222' : '#ffffff';
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Tarjeta con fondo al ${sFondo} % de saturación y botón de acento.">
+      <rect width="360" height="150" fill="${fondo}" stroke="#222222" stroke-width="1.2" />
+      <text x="20" y="42" font-family="${SANS}" font-size="15" font-weight="900" fill="${txtColor}">Taller de edición impresa</text>
+      <text x="20" y="64" font-family="${SERIF}" font-size="12.5" fill="${txtColor}">Sábados de 10:00 a 13:00 · Cupo para 16 personas</text>
+      <rect x="20" y="86" width="154" height="38" fill="#ff9f1c" stroke="#222222" stroke-width="1.5" />
+      <text x="97" y="109" text-anchor="middle" font-family="${SANS}" font-size="11.5" font-weight="900" fill="#222222">INSCRIBIRSE AHORA</text>
+    </svg>`;
+  }
+  function describirE2(e: E2) {
+    if (e.calma < 30) return 'Fondo y botón están saturados al máximo: <b class="dv-cifra">compiten por igual</b> y el acento pierde fuerza.';
+    if (e.calma < 65) return 'Al apagar el fondo, la pastilla naranja empieza a cobrar relieve propio.';
+    return '<b class="dv-cifra">Contraste cualitativo limpio</b>: una superficie tranquila hace que el único elemento saturado concentre la atención.';
+  }
+
+  type E3 = { area: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const wAmarillo = Math.round((360 * e.area) / 100);
+    const wCarbon = 360 - wAmarillo;
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Reparto de superficie: ${e.area} % amarillo y ${100 - e.area} % carbón.">
+      <rect x="0" y="0" width="${wCarbon}" height="150" fill="#222222" />
+      <rect x="${wCarbon}" y="0" width="${wAmarillo}" height="150" fill="#eeff41" />
+      <rect width="360" height="150" fill="none" stroke="#222222" stroke-width="1.5" />
+      ${wCarbon >= 140 ? `<text x="20" y="56" font-family="${SANS}" font-size="17" font-weight="900" fill="#ffffff">Ciclo Nocturno</text><text x="20" y="82" font-family="${SERIF}" font-size="12.5" fill="#e5e5e5">Superficie tranquila (${100 - e.area} %)</text>` : ''}
+      <text x="${wCarbon + wAmarillo / 2}" y="80" text-anchor="middle" font-family="${SANS}" font-size="14" font-weight="900" fill="#222222">${e.area} %</text>
+    </svg>`;
+  }
+  function describirE3(e: E3) {
+    if (e.area > 45) return `Con <b class="dv-cifra">${e.area} % de amarillo</b>, el color más luminoso inunda la pieza y deja de actuar como acento.`;
+    if (e.area > 25) return `${e.area} % de amarillo: la proporción empieza a equilibrarse, aunque todavía pesa bastante.`;
+    return `<b class="dv-cifra">Equilibrio cuantitativo (${e.area} % / ${100 - e.area} %)</b>: una franja pequeña de alta luminosidad compensa toda la masa oscura.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego ─────────────────────────────────────────────
+  function rondaCanalLectura(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Azul oscuro (#16325b) sobre marfil claro (#f7f4ec) — razón de luminancia 11,8:1',
+        describir: 'Tarjeta marfil con texto azul marino nítido.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#f7f4ec" stroke="#222"/><text x="16" y="40" font-family="${SANS}" font-size="15" font-weight="900" fill="#16325b">Horario de trenes</text><text x="16" y="64" font-family="${SERIF}" font-size="12" fill="#16325b">Salidas cada 12 minutos</text></svg>`,
+      },
+      {
+        texto: 'Rojo puro (#e0352b) sobre cian puro (#15a8b8) — máxima distancia de tono, luminancia 1,1:1',
+        describir: 'Tarjeta cian con texto rojo de igual claridad.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#15a8b8" stroke="#222"/><text x="16" y="40" font-family="${SANS}" font-size="15" font-weight="900" fill="#e0352b">Horario de trenes</text><text x="16" y="64" font-family="${SERIF}" font-size="12" fill="#e0352b">Salidas cada 12 minutos</text></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas dos combinaciones sostiene con nitidez la lectura de cuerpos pequeños y trazos finos?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El sistema visual resuelve los detalles espaciales finos (letras y bordes) mediante el canal de luminancia (claro-oscuro). Dos tonos opuestos de igual claridad vibran y desenfocan el texto.',
+      repaso: 'Contraste de luminancia frente a contraste de tono',
+    };
+  }
+
+  function rondaContrasteCualitativo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Tres tarjetas en gris cálido desaturado y una sola tarjeta con etiqueta bermellón vivo',
+        describir: 'Cuatro tarjetas: tres neutras y una con acento saturado.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#f6f5f2"/><rect x="10" y="18" width="50" height="54" fill="#e4e2dc" stroke="#999"/><rect x="66" y="18" width="50" height="54" fill="#e4e2dc" stroke="#999"/><rect x="122" y="18" width="50" height="54" fill="#d93829" stroke="#222" stroke-width="1.5"/><rect x="178" y="18" width="50" height="54" fill="#e4e2dc" stroke="#999"/></svg>`,
+      },
+      {
+        texto: 'Cuatro tarjetas pintadas en verde puro, azul puro, fucsia puro y naranja puro',
+        describir: 'Cuatro tarjetas con colores saturados al 100 %.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#f6f5f2"/><rect x="10" y="18" width="50" height="54" fill="#18b848" stroke="#222"/><rect x="66" y="18" width="50" height="54" fill="#246bfd" stroke="#222"/><rect x="122" y="18" width="50" height="54" fill="#e0248a" stroke="#222"/><rect x="178" y="18" width="50" height="54" fill="#ff8c1a" stroke="#222"/></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué composición emplea el contraste de saturación (cualitativo) para crear un único foco claro?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El contraste cualitativo enfrenta colores apagados o neutros contra un acento vivo. Si todas las piezas tienen saturación máxima, ninguna destaca por pureza cromática.',
+      repaso: 'Contraste de saturación',
+    };
+  }
+
+  function rondaContrasteCuantitativo(): Ronda {
+    const ops = barajar([
+      {
+        texto: '88 % de superficie en carbón oscuro y 12 % en amarillo luminoso para el sello principal',
+        describir: 'Superficie amplia oscura con un acento pequeño amarillo.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="206" height="90" fill="#222222"/><rect x="206" width="34" height="90" fill="#eeff41"/><rect width="240" height="90" fill="none" stroke="#222"/></svg>`,
+      },
+      {
+        texto: '50 % en amarillo brillante y 50 % en fucsia saturado repartidos a partes iguales',
+        describir: 'Mitad amarillo brillante y mitad fucsia saturado.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="120" height="90" fill="#eeff41"/><rect x="120" width="120" height="90" fill="#e0248a"/><rect width="240" height="90" fill="none" stroke="#222"/></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según el contraste cuantitativo de Itten, ¿cómo se equilibra un color de alta luminosidad frente a uno oscuro?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un color muy luminoso y saturado tiene gran fuerza expansiva; una superficie pequeña basta para equilibrar una extensión amplia de un color oscuro o sereno.',
+      repaso: 'Contraste cuantitativo (proporción de área)',
+    };
+  }
+
+  function rondaGrisPrueba(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Comprobar que las jerarquías, bordes finos y textos siguen distinguiéndose por su diferencia de luminancia',
+        es: true,
+      },
+      {
+        texto: 'Verificar si los colores pertenecen a una tríada equidistante en el círculo cromático',
+        es: false,
+      },
+      {
+        texto: 'Medir la temperatura cálida o fría de la paleta',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Para qué sirve pasar temporalmente una composición a escala de luminancia (blanco y negro)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Al eliminar el tono y la saturación queda aislado el canal de luminancia: si un texto o una línea desaparece en grises, su contraste real es insuficiente aunque en color parezca llamativo.',
+      repaso: 'Prueba del canal de luminancia',
+    };
+  }
+
+  function rondaAjusteClaridad(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta etiqueta naranja sobre fondo azul tiene mucho contraste de tono, pero apenas 1,3:1 de luminancia. Aumenta la claridad del fondo hasta superar una razón de 4,5:1.',
+      control: {
+        etiqueta: 'Claridad del fondo',
+        min: 35,
+        max: 95,
+        paso: 5,
+        valor: 40,
+        unidad: '%',
+      },
+      pintar: (esc, v) => {
+        const fondo = hslAHex(215, Math.max(15, 70 - (v - 35) * 0.8), v);
+        const texto = '#8a250f';
+        const r = razonContraste(fondo, texto);
+        esc.innerHTML = `<svg viewBox="0 0 360 120" role="img" aria-label="Muestra con razón de contraste ${n(r, 1)} a 1.">
+          <rect width="360" height="120" fill="${fondo}" stroke="#222222" stroke-width="1.5" />
+          <text x="20" y="42" font-family="${SANS}" font-size="11" font-weight="700" fill="${texto}">RAZÓN ACTUAL: ${n(r, 1)}:1</text>
+          <text x="20" y="74" font-family="${SANS}" font-size="20" font-weight="900" fill="${texto}">Lectura sin vibración</text>
+          <text x="20" y="98" font-family="${SERIF}" font-size="13" fill="${texto}">El contraste de claridad sostiene los contornos de la letra.</text>
+        </svg>`;
+      },
+      cumple: (v) => {
+        const fondo = hslAHex(215, Math.max(15, 70 - (v - 35) * 0.8), v);
+        return razonContraste(fondo, '#8a250f') >= 4.5;
+      },
+      falta: (v) => {
+        const fondo = hslAHex(215, Math.max(15, 70 - (v - 35) * 0.8), v);
+        const r = razonContraste(fondo, '#8a250f');
+        return `Con ${v} % de claridad la razón es ${n(r, 1)}:1. Sube más la claridad del fondo para superar 4,5:1.`;
+      },
+      porque: 'Al aclarar y calmar el fondo azul, la distancia de luminancia frente al texto oscuro supera 4,5:1 y las letras dejan de vibrar.',
+      repaso: 'Umbral de contraste de claridad',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        rondaCanalLectura(),
+        rondaContrasteCualitativo(),
+        rondaContrasteCuantitativo(),
+        rondaGrisPrueba(),
+        rondaAjusteClaridad(),
+      ]),
+    );
+  }
+</script>

@@ -1,0 +1,169 @@
+---
+titulo: Tensión
+territorio: expresion
+pregunta: ¿Por qué dos formas que están a punto de tocarse o un bloque pegado al borde atraen la mirada con tanta inquietud?
+resumen: "La tensión visual aparece cuando las relaciones espaciales parecen inestables o a punto de cambiar: dos bordes que casi se rozan, un eje con poca inclinación o un peso desplazado hacia una esquina. Bien dirigida, concentra energía; por descuido, incomoda sin razón."
+modos: [laboratorio, provocacion]
+orden: 33
+relaciones:
+  - concepto: equilibrio
+    porQue: El equilibrio estabiliza las fuerzas del plano; la tensión hace visible el instante en que esas fuerzas tiran en sentidos opuestos.
+  - concepto: proximidad
+    porQue: Cuando la distancia entre dos elementos se reduce hasta quedar en una rendija mínima, la agrupación tranquila se transforma en pellizco visual.
+  - concepto: enfasis
+    porQue: Una aproximación tensa en medio de una composición serena actúa como un imán para la mirada en el primer segundo.
+  - concepto: asimetria
+    porQue: Al abandonar el eje central, las masas desplazadas generan vectores de tensión activa a través del espacio vacío.
+  - concepto: ruptura
+    porQue: Quebrar el ángulo de la retícula con una diagonal decidida introduce tensión dinámica frente al orden ortogonal de fondo.
+fuentes:
+  - autor: Rudolf Arnheim
+    obra: "Art and Visual Perception: A Psychology of the Creative Eye. University of California Press"
+    anio: 1974
+    nota: "Capítulos 1 («Balance») y 9 («Dynamics»): formulación de la tensión dirigida (directed tension), los vectores de atracción y repulsión entre formas cercanas y la diferencia entre inestabilidad accidental y dinamismo expresivo."
+  - autor: György Kepes
+    obra: "Language of Vision. Paul Theobald"
+    anio: 1944
+    nota: Análisis de las fuerzas de atracción espacial cuando dos contornos se aproximan al límite de contacto o al borde del plano.
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: Demostración del fenómeno de desviación mínima respecto a una configuración estable (Prägnanz), por el cual un ángulo de 88° se percibe como un ángulo recto torcido que pide enderezarse.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import TensionExp from '../../components/diseno-visual/experiencias/TensionExp.astro';
+
+<Paso id="idea" titular="El pellizco visual entre tocarse y separarse">
+
+<TensionExp paso="idea" />
+
+<p class="dv-frase">Una distancia grande separa y una superposición une; la rendija mínima entre las dos produce tensión.</p>
+
+<div class="dv-texto">
+
+Cuando miramos una página no vemos solo figuras quietas: nuestro sistema perceptivo evalúa si esas piezas parecen estables o si están a punto de chocar, caerse o separarse. Si dos bloques guardan un espacio amplio, descansan por separado; si uno pisa con holgura al otro, se leen como dos planos en profundidad.
+
+En cambio, cuando dos bordes quedan separados por apenas uno o dos píxeles —o se tocan en un único filo sin llegar a cruzarse—, la relación queda sin resolver. El ojo vuelve una y otra vez a esa frontera inquieta. Esa energía contenida puede ser el centro expresivo de un cartel o el descuido que arruina la lectura de una interfaz.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Tensión dirigida</dt>
+    <dd>La sensación de empuje, atracción o movimiento inminente que percibimos en una figura estática por su posición o su ángulo.</dd>
+    <dt>Tangencia (roce)</dt>
+    <dd>El contacto o casi contacto entre dos contornos que se besan sin separarse con holgura ni superponerse con decisión.</dd>
+    <dt>Zona de ambigüedad</dt>
+    <dd>La franja de distancias o inclinaciones tan pequeñas que el ojo no sabe si obedecen a una intención o a un error de ajuste.</dd>
+    <dt>Inclinación oblicua</dt>
+    <dd>Todo eje que se aparta de la horizontal y de la vertical, introduciendo dirección y dinamismo sobre el plano.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Roces involuntarios frente a una única chispa deliberada">
+
+<div class="dv-texto">
+
+En la primera versión de este cartel sobre fronteras urbanas, tres roces accidentales dispersan la mirada; en la segunda, todo el entorno guarda holgura para que el único punto de tensión exprese el tema del evento.
+
+</div>
+
+<TensionExp paso="miralo" />
+
+<div class="dv-texto">
+
+Una tangencia fortuita entre una letra y el borde de una fotografía aplana el espacio: ambos elementos parecen soldarse en el mismo plano y compiten por el mismo milímetro de papel. Cuando limpias los márgenes del resto de la composición, puedes reservar ese pellizco visual para el lugar exacto donde quieres concentrar la mirada.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="La curva de tensión entre dos formas">
+
+<TensionExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas para gobernar las fronteras y los ángulos">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Separa con holgura o superpón con franqueza</h3>
+      <p>Evita dejar contornos a 0, 1 o 2 px de distancia salvo que busques incomodar a propósito. Si dos elementos no deben tocarse, dales un espacio claro; si deben relacionarse en profundidad, haz que uno pise al otro de forma inequívoca.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Huye de los ángulos tibios entre 1° y 5°</h3>
+      <p>Un bloque girado dos grados no se ve dinámico: parece un cuadro mal colgado o un documento escaneado de medio lado. Si necesitas estabilidad, alinea a 0°; si buscas energía diagonal, supera los 10° o 12° para que la intención sea incuestionable.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Protege los bordes del formato o córtalos a sangre</h3>
+      <p>El marco exterior de una tarjeta, pantalla o cartel tiene una fuerza de atracción muy alta. Nunca dejes un texto o un icono rozando el borde interior: o le das un margen generoso o dejas que la figura rebase el límite con decisión.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<TensionExp paso="errores" />
+
+<div class="dv-texto">
+
+### La tensión en piezas reales
+
+</div>
+
+<TensionExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta roces involuntarios y tensiones con propósito">
+
+<TensionExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Nivelación, agudización y vectores del campo visual">
+
+<Seccion titulo="Por qué los ángulos casi rectos incomodan tanto">
+
+En su investigación fundacional sobre las leyes de la [Gestalt](/diseno-visual/gestalt), Max Wertheimer (1923) observó que nuestra percepción tiende hacia las configuraciones más simples y estables posibles —como la horizontal, la vertical, el ángulo de 90° o la simetría perfecta—, un principio conocido como *Prägnanz* o buena forma.
+
+Cuando una figura se desvía muy poco de uno de esos estados de referencia (por ejemplo, una línea a 88° o dos bordes separados por un milímetro), el sistema visual no la registra como una posición independiente, sino como una forma estable «defectuosa» que pide corregirse. El esfuerzo inconsciente por cerrar esa brecha o enderezar ese eje es lo que experimentamos como inquietud visual.
+
+</Seccion>
+
+<Seccion titulo="Nivelación y agudización según Rudolf Arnheim">
+
+En *Art and Visual Perception* (1974), Rudolf Arnheim describió dos fuerzas opuestas con las que nuestra percepción resuelve cualquier patrón visual:
+
+- **Nivelación (*leveling*):** la tendencia a eliminar pequeñas asimetrías, unificar distancias y reducir la tensión hacia el reposo.
+- **Agudización (*sharpening*):** la tendencia contraria a exagerar las diferencias francas, acentuar las diagonales y dramatizar los contrastes de dirección.
+
+El peor lugar para dejar un elemento es la tierra de nadie entre ambas fuerzas: cuando la diferencia es demasiado grande para pasar inadvertida por nivelación, pero demasiado tímida para afirmarse por agudización.
+
+</Seccion>
+
+<Seccion titulo="El problema de las tangencias en el dibujo y la maquetación">
+
+En fotografía, ilustración y diseño editorial se llama *tangencia robada* al accidente en que el contorno de un objeto en primer plano coincide con la línea de un objeto del fondo —por ejemplo, cuando el hombro de un retratado toca justo el marco de una ventana trasera o cuando el subrayado de un título roza la cabeza de la foto inferior—.
+
+Como ambos bordes comparten la misma coordenada en el plano bidimensional, se destruye la ilusión de profundidad: el fondo se viene hacia adelante y se suelda con la figura. Basta desplazar uno de los elementos unos pocos milímetros —separándolo para que aparezca el fondo entre ambos o cruzándolo para que un contorno interrumpa al otro— para restaurar la jerarquía espacial.
+
+</Seccion>
+
+</Paso>

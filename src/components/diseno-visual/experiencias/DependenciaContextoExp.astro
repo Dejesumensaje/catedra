@@ -1,0 +1,764 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'dependencia-contexto';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Experimenta el efecto Bezold (asimilación cromática).',
+    hacer: 'En «Color de la trama superpuesta» alterna entre «Líneas blancas» y «Líneas negras», y sube «Densidad de la trama» por encima de 60 %.',
+    pista: 'Cambia la opción del primer control y mueve el deslizador de densidad hacia la derecha.',
+    preparar: { tamanoArea: 65, entorno: 'claro', testigo: false },
+    logro: 'A diferencia del contraste simultáneo (donde un fondo claro oscurece al vecino), cuando una trama fina atraviesa un color ocurre lo contrario: el ojo promedia ambos valores. Las líneas blancas aclaran el fondo y las negras lo oscurecen.',
+  },
+  {
+    titulo: 'Activa el puente testigo para comprobar que es el mismo color.',
+    hacer: 'Abre «Más controles» y activa «Mostrar puente testigo del color base».',
+    pista: 'Despliega los controles avanzados y marca la casilla.',
+    abrir: true,
+    logro: 'La franja continua demuestra que el código hexadecimal de ambas mitades es idéntico: toda la diferencia aparente nace de las líneas que lo cruzan.',
+  },
+  {
+    titulo: 'Observa cómo el tamaño de la superficie altera la saturación.',
+    hacer: 'Desactiva el puente testigo, lleva «Densidad de la trama» a 0 % y mueve «Tamaño de la superficie» de 10 % a 95 %.',
+    pista: 'Recorre todo el deslizador «Tamaño de la superficie».',
+    preparar: { testigo: false, densidadTrama: 0 },
+    logro: 'En una muestra pequeña (10 %), el color se ve discreto e incluso apagado; al cubrir el 95 % del marco, ese mismo color parece mucho más saturado y luminoso.',
+  },
+  {
+    titulo: 'Cambia del entorno claro al modo oscuro.',
+    hacer: 'En «Entorno de iluminación», selecciona «Modo oscuro (#161616)».',
+    pista: 'Elige la segunda opción del control de entorno.',
+    logro: 'Sobre fondo negro o carbón, los colores muy saturados parecen encenderse y vibrar, mientras que los tonos oscuros pierden contraste. Adaptar a modo oscuro exige desaturar y aclarar ligeramente los acentos.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Demostración del efecto Bezold: un único rectángulo continuo de color rojo ladrillo (#b83b2a) atravesado en su mitad izquierda por líneas blancas finas y en su mitad derecha por líneas negras finas.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <rect x="36" y="20" width="528" height="128" fill="#b83b2a" stroke="#222222" stroke-width="1.5" />
+
+      {Array.from({ length: 16 }, (_, i) => {
+        const y = 26 + i * 8;
+        return <line x1="36" y1={y} x2="288" y2={y} stroke="#ffffff" stroke-width="2.2" />;
+      })}
+      {Array.from({ length: 30 }, (_, i) => {
+        const x = 44 + i * 8;
+        return <line x1={x} y1="20" x2={x} y2="148" stroke="#ffffff" stroke-width="1.8" />;
+      })}
+
+      {Array.from({ length: 16 }, (_, i) => {
+        const y = 26 + i * 8;
+        return <line x1="312" y1={y} x2="564" y2={y} stroke="#141414" stroke-width="2.2" />;
+      })}
+      {Array.from({ length: 30 }, (_, i) => {
+        const x = 320 + i * 8;
+        return <line x1={x} y1="20" x2={x} y2="148" stroke="#141414" stroke-width="1.8" />;
+      })}
+
+      <rect x="64" y="64" width="196" height="38" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="162" y="87" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#222222">TRAMA BLANCA · #B83B2A</text>
+
+      <rect x="340" y="64" width="196" height="38" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="438" y="87" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#222222">TRAMA NEGRA · #B83B2A</text>
+
+      <text x="300" y="168" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill="#444444">EL FONDO ROJO ES UN SOLO RECTÁNGULO CONTINUO (#B83B2A)</text>
+    </svg>
+    <p>El fondo rojo de ambas mitades es un único rectángulo continuo pintado con `#b83b2a`. ¿Por qué a la izquierda se ve como un salmón luminoso y a la derecha como un granate oscuro?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Por el <strong>efecto de asimilación cromática (efecto Bezold)</strong>, descubierto en 1874 por Wilhelm von Bezold mientras diseñaba alfombras. Cuando un color está atravesado por líneas finas, tramas o tipografía menuda, el ojo no separa figura y fondo para oponerlos (como hace en el contraste simultáneo de bloques grandes), sino que <strong>suma y promedia ópticamente</strong> ambos colores.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="La misma muestra copiada sin adaptar al área ni al entorno"
+      notas={[
+        { ...pct(180, 56), titulo: 'Color de pastilla llevado a pared entera', texto: 'Un amarillo limón que se veía alegre en una etiqueta de 24 px deslumbra cuando se usa como fondo del bloque principal.', zona: zona(16, 16, 328, 86) },
+        { ...pct(180, 148), titulo: 'Azul de modo claro pegado en modo oscuro', texto: 'El azul intenso (#1d4ed8) funcionaba sobre papel blanco, pero sobre fondo carbón (#141414) pierde contraste (2,6:1) y vibra en los bordes.', zona: zona(16, 108, 328, 84) },
+        { ...pct(180, 232), titulo: 'Contaminación entre vecinos saturados', texto: 'Dos bloques saturados se tocan sin un filete aislante y el borde común parece teñirse y temblar.', zona: zona(16, 198, 328, 66) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Interfaz donde un amarillo saturado cubre una gran superficie deslumbrante y un azul oscuro se vuelve ilegible al pasarlo sin cambios sobre fondo negro.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="18" width="324" height="82" fill="#eaff00" stroke="#222222" stroke-width="1.5" />
+        <text x="32" y="48" font-family={SANS} font-size="14" font-weight="900" fill="#222222">FONDO CON EL AMARILLO DE LA ETIQUETA</text>
+        <text x="32" y="70" font-family={SERIF} font-size="12" fill="#222222">En una superficie grande, el croma puro satura la retina.</text>
+
+        <rect x="18" y="110" width="324" height="80" fill="#141414" />
+        <text x="32" y="140" font-family={SANS} font-size="14" font-weight="900" fill="#1d4ed8">MISMO AZUL (#1D4ED8) EN MODO OSCURO</text>
+        <text x="32" y="164" font-family={SERIF} font-size="12" fill="#1d4ed8">Sobre negro cae a 2,6:1 de luminancia y cuesta leerlo.</text>
+
+        <rect x="18" y="200" width="162" height="60" fill="#d92b2b" />
+        <rect x="180" y="200" width="162" height="60" fill="#1b8af0" />
+        <text x="99" y="235" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">SIN BORDE</text>
+        <text x="261" y="235" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">AISLANTE</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Saturación y claridad calibradas según área y fondo"
+      notas={[
+        { ...pct(180, 56), titulo: 'Superficie grande desaturada, pastilla viva', texto: 'El fondo amplio usa crema suave (#faf7e6) y reserva el amarillo puro para la etiqueta pequeña.', zona: zona(16, 16, 328, 86) },
+        { ...pct(180, 148), titulo: 'Tono adaptado al modo oscuro', texto: 'Sobre fondo #141414, el azul pasa a una versión más clara y menos saturada (#8ab4f8), superando 8,5:1 de contraste.', zona: zona(16, 108, 328, 84) },
+        { ...pct(180, 232), titulo: 'Filete aislante entre manchas', texto: 'Un contorno neutro de 2 px separa los dos colores intensos y estabiliza el borde.', zona: zona(16, 198, 328, 66) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma interfaz con el fondo grande suavizado en crema, el azul aclarado y desaturado para el modo oscuro y un filete neutro aislante entre bloques.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="18" width="324" height="82" fill="#faf7e6" stroke="#222222" stroke-width="1.5" />
+        <rect x="32" y="30" width="76" height="20" fill="#eeff41" stroke="#222222" stroke-width="1.2" />
+        <text x="70" y="44" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#222222">NUEVO</text>
+        <text x="118" y="45" font-family={SANS} font-size="13" font-weight="900" fill="#222222">Superficie adaptada al tamaño</text>
+        <text x="32" y="74" font-family={SERIF} font-size="12" fill="#222222">El color puro en el sello; la versión apastelada en el fondo.</text>
+
+        <rect x="18" y="110" width="324" height="80" fill="#141414" stroke="#222222" stroke-width="1.5" />
+        <text x="32" y="140" font-family={SANS} font-size="14" font-weight="900" fill="#8ab4f8">AZUL ADAPTADO AL MODO OSCURO (#8AB4F8)</text>
+        <text x="32" y="164" font-family={SERIF} font-size="12" fill="#e2e8f0">Más luminosidad y menos saturación devuelven la nitidez.</text>
+
+        <rect x="18" y="200" width="158" height="60" fill="#c93b2b" stroke="#222222" stroke-width="2" />
+        <rect x="184" y="200" width="158" height="60" fill="#1d5fa6" stroke="#222222" stroke-width="2" />
+        <text x="97" y="235" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">ZONA A</text>
+        <text x="263" y="235" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">ZONA B (SEPARADA)</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · Asimilación de Bezold, efecto de área y entorno"
+    consigna="El color base de las dos muestras es siempre exactamente el mismo. Varía el color y la densidad de la trama que lo atraviesa, el tamaño de la superficie y el entorno claro u oscuro."
+    nota="Fija una muestra pequeña (15 %) sin trama como A, y compárala con el mismo color al 90 % de tamaño o atravesado por trama densa."
+  >
+    <svg slot="escenario" viewBox="0 0 640 300" role="img" aria-label="Dos muestras del mismo color atravesadas por tramas distintas para observar el efecto Bezold y el efecto de tamaño.">
+      <rect width="640" height="300" fill="#fbfbf9" />
+      <rect x="48" y="40" width="248" height="220" fill="#b83b2a" stroke="#222222" stroke-width="1.5" />
+      <rect x="344" y="40" width="248" height="220" fill="#b83b2a" stroke="#222222" stroke-width="1.5" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Cambia el tono base en «Más controles» para comprobar cómo actúa el efecto Bezold sobre azules, verdes y ocres." />
+
+    <Opciones
+      lab={lab}
+      variable="trama"
+      etiqueta="Color de la trama superpuesta"
+      valor="opuestas"
+      opciones={[
+        { valor: 'opuestas', texto: 'Blanca a la izq. / Negra a la der.' },
+        { valor: 'blanca', texto: 'Líneas blancas' },
+        { valor: 'negra', texto: 'Líneas negras' },
+      ]}
+      ayuda="En el modo «Blanca a la izq. / Negra a la der.» puedes comparar ambas mezclas ópticas a la vez."
+    />
+    <Deslizador
+      lab={lab}
+      variable="densidadTrama"
+      etiqueta="Densidad de la trama"
+      min={0}
+      max={90}
+      paso={10}
+      valor={60}
+      unidad="%"
+      ayuda="0 %: superficie lisa. 90 %: trama cerrada que intensifica la asimilación de Bezold."
+    />
+    <Deslizador
+      lab={lab}
+      variable="tamanoArea"
+      etiqueta="Tamaño de la superficie"
+      min={10}
+      max={95}
+      paso={5}
+      valor={70}
+      unidad="%"
+      ayuda="Comprueba cómo el mismo color parece más intenso y luminoso al crecer su área."
+    />
+    <Opciones
+      lab={lab}
+      variable="entorno"
+      etiqueta="Entorno de iluminación"
+      valor="claro"
+      opciones={[
+        { valor: 'claro', texto: 'Papel claro (#fbfbf9)' },
+        { valor: 'oscuro', texto: 'Modo oscuro (#161616)' },
+      ]}
+      ayuda="Cambia el campo exterior para observar la adaptación de claridad y saturación."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="tonoMuestra"
+        etiqueta="Tono de la muestra"
+        min={0}
+        max={330}
+        paso={30}
+        valor={10}
+        unidad="°"
+        ayuda="Explora el fenómeno con distintos tonos base."
+      />
+      <Interruptor
+        lab={lab}
+        variable="testigo"
+        etiqueta="Mostrar puente testigo del color base"
+        ayuda="Une ambas mitades con una banda sin trama para demostrar que tienen el mismo color."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"trama":"opuestas","densidadTrama":70,"tamanoArea":75,"entorno":"claro","testigo":false}'>Efecto Bezold clásico (blanca frente a negra)</button>
+      <button type="button" class="dv-boton" data-preset='{"trama":"opuestas","densidadTrama":70,"tamanoArea":75,"entorno":"claro","testigo":true}'>Con puente testigo activado</button>
+      <button type="button" class="dv-boton" data-preset='{"trama":"opuestas","densidadTrama":0,"tamanoArea":15,"entorno":"claro","testigo":false}'>Muestra mínima (15 % de superficie)</button>
+      <button type="button" class="dv-boton" data-preset='{"trama":"opuestas","densidadTrama":0,"tamanoArea":90,"entorno":"oscuro","testigo":false}'>Gran superficie sobre modo oscuro</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1. Desatura el color cuando pase de etiqueta pequeña a fondo grande"
+      comparar={false}
+      consigna="El verde vivo de la pastilla pequeña funciona muy bien en 90 × 24 px, pero al pintar todo el fondo de la tarjeta con ese mismo código resulta estridente. Reduce la saturación del fondo grande."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Comparación entre pastilla pequeña y fondo completo.">
+        <rect width="360" height="150" fill="#18b858" stroke="#222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="calmaArea"
+        etiqueta="Ajuste del color para gran superficie"
+        min={0}
+        max={90}
+        paso={5}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2. Aclara y desatura el acento al pasar a modo oscuro"
+      comparar={false}
+      consigna="Sobre fondo #161616, el azul oscuro y muy saturado del tema claro pierde contraste y vibra. Ajusta su luminosidad y saturación para el entorno oscuro."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Tarjeta en modo oscuro con acento azul.">
+        <rect width="360" height="150" fill="#161616" stroke="#222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="adaptacion"
+        etiqueta="Adaptación al modo oscuro"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3. Añade un borde aislante entre dos colores intensos"
+      comparar={false}
+      consigna="Cuando dos regiones saturadas comparten frontera directa en un diagrama, sus bordes se contaminan mutuamente. Añade un filete aislante neutro."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Dos sectores contiguos con o sin borde aislante.">
+        <rect width="360" height="150" fill="#fbfbf9" stroke="#222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="grosorBorde"
+        etiqueta="Grosor del filete aislante"
+        min={0}
+        max={6}
+        paso={1}
+        valor={0}
+        unidad="px"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Identidad multiescala: un color para el icono y otro para el cartel"
+      notas={[
+        { ...pct(78, 128), titulo: 'Alta saturación en 32 px', texto: 'En el icono móvil diminuto, el bermellón usa máxima pureza cromática para no verse lavado entre docenas de iconos.', zona: zona(22, 48, 112, 160) },
+        { ...pct(248, 128), titulo: 'Tono atemperado en gran formato', texto: 'En el cartel o fondo de página, el mismo color se suaviza hacia un terracota apastelado para que no deslumbre.', zona: zona(144, 28, 196, 198) },
+        { ...pct(180, 248), titulo: 'Misma identidad percibida', texto: 'Cambiar el valor numérico al cambiar la escala es precisamente lo que hace que ambas piezas parezcan del mismo color.', zona: zona(22, 228, 318, 38) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Comparación entre un icono pequeño de alta saturación y un cartel grande de saturación moderada.">
+        <rect width={W} height={H} fill="#f5f4f0" />
+        <rect x="26" y="54" width="102" height="154" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <rect x="53" y="92" width="48" height="48" fill="#e6301b" stroke="#222222" stroke-width="1.5" />
+        <text x="77" y="121" text-anchor="middle" font-family={SERIF} font-size="22" font-weight="700" fill="#ffffff">M</text>
+        <text x="77" y="166" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#222222">ICONO 48 PX</text>
+        <text x="77" y="182" text-anchor="middle" font-family={SANS} font-size="9" fill="#555555">Saturación 86 %</text>
+
+        <rect x="148" y="32" width="186" height="186" fill="#e8c8be" stroke="#222222" stroke-width="1.5" />
+        <text x="166" y="64" font-family={SANS} font-size="10" font-weight="900" fill="#5c1d14">LIENZO EDITORIAL GRANDE</text>
+        <text x="166" y="96" font-family={SERIF} font-size="20" font-weight="700" fill="#2b120e">Museo de</text>
+        <text x="166" y="124" font-family={SERIF} font-size="20" font-weight="700" fill="#2b120e">Grabado</text>
+        <rect x="166" y="148" width="96" height="28" fill="#a82819" />
+        <text x="214" y="166" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#ffffff">Saturación 35 %</text>
+
+        <text x="26" y="246" font-family={SANS} font-size="10" font-weight="700" fill="#222222">A mayor superficie, menor saturación necesita el pigmento.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Cartografía impresa: tramas de Bezold y filetes de contorno"
+      notas={[
+        { ...pct(96, 114), titulo: 'Multiplicar tonos con una sola tinta', texto: 'Cruzar el mismo ocre con un achurado blanco o negro produce dos zonas claramente distintas sin añadir otra plancha de impresión.', zona: zona(22, 34, 152, 162) },
+        { ...pct(254, 114), titulo: 'Filete negro que detiene la asimilación', texto: 'El contorno grueso alrededor del lago central impide que el azul se contamine con el ocre circundante.', zona: zona(182, 34, 156, 162) },
+        { ...pct(180, 232), titulo: 'Rótulos con halo claro', texto: 'Las letras negras llevan un fino resguardo claro para que la trama no rompa sus astas.', zona: zona(22, 204, 316, 56) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Mapa con dos regiones del mismo color base diferenciadas por tramas blancas y negras, y un lago central con contorno aislante.">
+        <rect width={W} height={H} fill="#f4efe6" />
+        <rect x="24" y="34" width="154" height="162" fill="#c98a3a" stroke="#222222" stroke-width="1.2" />
+        {Array.from({ length: 14 }, (_, i) => (
+          <line x1="24" y1={42 + i * 11} x2="178" y2={42 + i * 11} stroke="#ffffff" stroke-width="2" />
+        ))}
+        <rect x="178" y="34" width="158" height="162" fill="#c98a3a" stroke="#222222" stroke-width="1.2" />
+        {Array.from({ length: 14 }, (_, i) => (
+          <line x1="178" y1={42 + i * 11} x2="336" y2={42 + i * 11} stroke="#222222" stroke-width="1.6" />
+        ))}
+
+        <ellipse cx="254" cy="116" rx="46" ry="34" fill="#5b94b8" stroke="#222222" stroke-width="3" />
+        <rect x="44" y="102" width="112" height="24" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="100" y="118" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill="#222222">MESETA CLARA</text>
+
+        <rect x="22" y="210" width="316" height="46" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="34" y="230" font-family={SANS} font-size="10" font-weight="900" fill="#222222">UNA SOLA TINTA BASE (#C98A3A) + TRAMA DE ASIMILACIÓN</text>
+        <text x="34" y="246" font-family={SERIF} font-size="10" fill="#444444">El achurado blanco aclara la meseta; el negro la oscurece.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Sistema bitemático: equivalencia perceptual entre modo claro y oscuro"
+      notas={[
+        { ...pct(96, 124), titulo: 'Modo claro: acento profundo', texto: 'Sobre papel blanco (#ffffff), la etiqueta usa verde bosque oscuro (#13592c) sobre fondo menta muy claro.', zona: zona(20, 26, 154, 224) },
+        { ...pct(264, 124), titulo: 'Modo oscuro: inversión calibrada', texto: 'Sobre carbón (#161616), el texto pasa a un verde salvia luminoso (#8ce0a8) sobre superficie verde muy oscura (#132a1c).', zona: zona(186, 26, 154, 224) },
+        { ...pct(180, 232), titulo: 'Mismo contraste efectivo', texto: 'Los códigos hexadecimales cambian por completo para que la legibilidad y la calma sean equivalentes en ambos entornos.', zona: zona(20, 198, 320, 56) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Dos tarjetas equivalentes: una en tema claro y otra en tema oscuro con colores recalibrados.">
+        <rect width={W} height={H} fill="#eae9e4" />
+        <rect x="20" y="24" width="154" height="232" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <text x="34" y="52" font-family={SANS} font-size="10" font-weight="900" fill="#6f6f6f">TEMA CLARO</text>
+        <text x="34" y="80" font-family={SERIF} font-size="16" font-weight="700" fill="#222222">Servidor activo</text>
+        <rect x="34" y="98" width="118" height="28" fill="#e6f5ec" stroke="#13592c" stroke-width="1.2" />
+        <text x="93" y="116" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill="#13592c">✓ OPERATIVO</text>
+        <text x="34" y="158" font-family={SANS} font-size="9.5" fill="#444444">Texto: #13592c</text>
+        <text x="34" y="176" font-family={SANS} font-size="9.5" fill="#444444">Fondo: #e6f5ec</text>
+        <text x="34" y="226" font-family={SANS} font-size="10" font-weight="900" fill="#222222">Contraste: 7,4:1</text>
+
+        <rect x="186" y="24" width="154" height="232" fill="#161616" stroke="#222222" stroke-width="1.5" />
+        <text x="200" y="52" font-family={SANS} font-size="10" font-weight="900" fill="#a8a8a2">TEMA OSCURO</text>
+        <text x="200" y="80" font-family={SERIF} font-size="16" font-weight="700" fill="#f2f2ee">Servidor activo</text>
+        <rect x="200" y="98" width="118" height="28" fill="#132a1c" stroke="#8ce0a8" stroke-width="1.2" />
+        <text x="259" y="116" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill="#8ce0a8">✓ OPERATIVO</text>
+        <text x="200" y="158" font-family={SANS} font-size="9.5" fill="#cccccc">Texto: #8ce0a8</text>
+        <text x="200" y="176" font-family={SANS} font-size="9.5" fill="#cccccc">Fondo: #132a1c</text>
+        <text x="200" y="226" font-family={SANS} font-size="10" font-weight="900" fill="#eeff41">Contraste: 7,8:1</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre asimilación de Bezold, efecto de área, adaptación a modo oscuro y contornos aislantes."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { hslAHex, razonContraste } from '../../../lib/diseno-visual/contraste';
+
+  const lab = 'dependencia-contexto';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    trama: string;
+    densidadTrama: number;
+    tamanoArea: number;
+    entorno: string;
+    tonoMuestra: number;
+    testigo: boolean;
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 300;
+    const fondoExt = e.entorno === 'oscuro' ? '#161616' : '#fbfbf9';
+    const txtExt = e.entorno === 'oscuro' ? '#f2f2ee' : '#222222';
+    const colMuestra = hslAHex(e.tonoMuestra, 68, 46);
+
+    const raiz = svg('svg', {
+      viewBox: `0 0 ${W} ${H}`,
+      width: W,
+      height: H,
+      role: 'img',
+      'aria-label': `Dos muestras con el mismo color base (${colMuestra}) bajo contexto variable.`,
+    });
+
+    raiz.append(svg('rect', { width: W, height: H, fill: fondoExt }));
+
+    const maxW = Math.floor((W - 56) / 2);
+    const maxH = H - 68;
+    const escala = e.tamanoArea / 100;
+    const mw = Math.max(44, Math.round(maxW * escala));
+    const mh = Math.max(44, Math.round(maxH * escala));
+
+    const cxIzq = Math.floor(W * 0.27);
+    const cxDer = Math.floor(W * 0.73);
+    const cy = Math.floor(H * 0.48);
+
+    const x1 = cxIzq - Math.floor(mw / 2);
+    const x2 = cxDer - Math.floor(mw / 2);
+    const y = cy - Math.floor(mh / 2);
+
+    raiz.append(svg('rect', { x: x1, y, width: mw, height: mh, fill: colMuestra, stroke: txtExt, 'stroke-width': 1.5 }));
+    raiz.append(svg('rect', { x: x2, y, width: mw, height: mh, fill: colMuestra, stroke: txtExt, 'stroke-width': 1.5 }));
+
+    if (e.densidadTrama > 0) {
+      const pasoPx = Math.max(5, Math.round(20 - (e.densidadTrama / 100) * 14));
+      const grosor = e.densidadTrama >= 60 ? 2.1 : 1.5;
+      const colIzq = e.trama === 'negra' ? '#141414' : '#ffffff';
+      const colDer = e.trama === 'blanca' ? '#ffffff' : '#141414';
+
+      const gTrama = svg('g');
+      for (let py = y + pasoPx; py < y + mh; py += pasoPx) {
+        gTrama.append(svg('line', { x1, y1: py, x2: x1 + mw, y2: py, stroke: colIzq, 'stroke-width': grosor }));
+        gTrama.append(svg('line', { x1: x2, y1: py, x2: x2 + mw, y2: py, stroke: colDer, 'stroke-width': grosor }));
+      }
+      for (let px = pasoPx; px < mw; px += pasoPx) {
+        gTrama.append(svg('line', { x1: x1 + px, y1: y, x2: x1 + px, y2: y + mh, stroke: colIzq, 'stroke-width': grosor * 0.85 }));
+        gTrama.append(svg('line', { x1: x2 + px, y1: y, x2: x2 + px, y2: y + mh, stroke: colDer, 'stroke-width': grosor * 0.85 }));
+      }
+      raiz.append(gTrama);
+    }
+
+    if (e.testigo) {
+      const hTestigo = Math.max(24, Math.round(mh * 0.28));
+      raiz.append(
+        svg('rect', {
+          x: x1,
+          y: cy - Math.floor(hTestigo / 2),
+          width: x2 + mw - x1,
+          height: hTestigo,
+          fill: colMuestra,
+        }),
+      );
+      const tPuente = svg('text', {
+        x: W / 2,
+        y: cy + 4,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10.5,
+        'font-weight': 900,
+        fill: '#ffffff',
+      });
+      tPuente.textContent = `MISMO COLOR CONTINUO (${colMuestra.toUpperCase()})`;
+      raiz.append(tPuente);
+    }
+
+    const pie = svg('text', {
+      x: W / 2,
+      y: H - 16,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 10.5,
+      'font-weight': 700,
+      fill: txtExt,
+    });
+    pie.textContent = `COLOR BASE: ${colMuestra.toUpperCase()} · ÁREA: ${e.tamanoArea} % · TRAMA: ${e.densidadTrama} %`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    if (e.densidadTrama >= 50 && e.trama === 'opuestas') {
+      return `<b class="dv-cifra">Efecto Bezold activo (trama al ${e.densidadTrama} %)</b>: aunque ambas cajas usan el mismo color base, la mitad con líneas blancas se percibe mucho más clara y la mitad con líneas negras mucho más oscura.${e.testigo ? ' El puente central confirma que el pigmento es idéntico.' : ''}`;
+    }
+    if (e.tamanoArea <= 25) {
+      return `Con <b class="dv-cifra">${e.tamanoArea} % de tamaño</b>, la muestra ocupa un ángulo visual pequeño y parece más apagada y discreta que cuando cubre toda la ventana.`;
+    }
+    if (e.entorno === 'oscuro') {
+      return `Sobre <b class="dv-cifra">modo oscuro (#161616)</b>, el mismo color base parece más luminoso y saturado por contraste simultáneo con el campo negro.`;
+    }
+    return `Superficie al <b class="dv-cifra">${e.tamanoArea} %</b> sobre entorno claro con trama al ${e.densidadTrama} %. Cambia la densidad de la trama o el tamaño para observar cómo responde el color.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.densidadTrama >= 60,
+      (e) => e.testigo === true,
+      (e, ini) => !e.testigo && e.densidadTrama === 0 && Math.abs(e.tamanoArea - ini.tamanoArea) >= 35,
+      (e) => e.entorno === 'oscuro',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { calmaArea: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const satFondo = Math.max(14, Math.round(78 - e.calmaArea * 0.72));
+    const lumFondo = Math.min(94, Math.round(44 + e.calmaArea * 0.55));
+    const fondo = hslAHex(145, satFondo, lumFondo);
+    const txt = lumFondo > 65 ? '#142e1f' : '#ffffff';
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Tarjeta con fondo verde ajustado al ${e.calmaArea} %.">
+      <rect width="360" height="150" fill="${fondo}" stroke="#222" stroke-width="1.2" />
+      <rect x="20" y="20" width="96" height="24" fill="#18a852" stroke="#222" stroke-width="1.2" />
+      <text x="68" y="36" text-anchor="middle" font-family="${SANS}" font-size="9.5" font-weight="900" fill="#ffffff">PASTILLA 24 PX</text>
+      <text x="20" y="74" font-family="${SERIF}" font-size="18" font-weight="700" fill="${txt}">Informe de parques urbanos</text>
+      <text x="20" y="98" font-family="${SERIF}" font-size="12.5" fill="${txt}">Al crecer la superficie, el fondo baja su saturación al ${satFondo} %.</text>
+    </svg>`;
+  }
+  function describirE1(e: E1) {
+    if (e.calmaArea < 30) return 'El verde que funcionaba en la pastilla de 24 px <b class="dv-cifra">deslumbra al cubrir toda la tarjeta</b>.';
+    if (e.calmaArea < 65) return 'El fondo empieza a suavizarse y deja que la etiqueta pequeña destaque.';
+    return '<b class="dv-cifra">Escala cromática calibrada</b>: la pastilla pequeña conserva el croma vivo y el fondo grande usa una variante serena.';
+  }
+
+  type E2 = { adaptacion: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const lum = Math.round(45 + (e.adaptacion / 100) * 32);
+    const sat = Math.round(90 - (e.adaptacion / 100) * 28);
+    const azul = hslAHex(218, sat, lum);
+    const r = razonContraste(azul, '#161616');
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Tarjeta oscura con texto azul a razón ${n(r, 1)} a 1.">
+      <rect width="360" height="150" fill="#161616" stroke="#222" stroke-width="1.2" />
+      <text x="22" y="34" font-family="${SANS}" font-size="10" font-weight="900" fill="#b8b8b2">MODO OSCURO (#161616) · CONTRASTE: ${n(r, 1)}:1</text>
+      <text x="22" y="70" font-family="${SANS}" font-size="19" font-weight="900" fill="${azul}">Ver historial de versiones →</text>
+      <text x="22" y="98" font-family="${SERIF}" font-size="12.5" fill="#dcdcd6">Luminosidad del acento: ${lum} % · Saturación: ${sat} %</text>
+    </svg>`;
+  }
+  function describirE2(e: E2) {
+    if (e.adaptacion < 35) return 'El azul de modo claro sobre fondo #161616 queda en <b class="dv-cifra">~2,4:1</b> y cuesta leerlo.';
+    if (e.adaptacion < 70) return 'Al subir la luminosidad, el enlace recupera legibilidad sobre el fondo oscuro.';
+    return '<b class="dv-cifra">Acento adaptado al modo oscuro (≥ 7:1)</b>: más claro y ligeramente desaturado para no vibrar.';
+  }
+
+  type E3 = { grosorBorde: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Dos bloques saturados con filete de ${e.grosorBorde} px.">
+      <rect width="360" height="150" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <rect x="24" y="24" width="156" height="102" fill="#d93226" stroke="#ffffff" stroke-width="${e.grosorBorde}" />
+      <rect x="180" y="24" width="156" height="102" fill="#1878d8" stroke="#ffffff" stroke-width="${e.grosorBorde}" />
+      <rect x="24" y="24" width="312" height="102" fill="none" stroke="#222222" stroke-width="1.5" />
+      <text x="102" y="80" text-anchor="middle" font-family="${SANS}" font-size="12" font-weight="900" fill="#ffffff">SECTOR A</text>
+      <text x="258" y="80" text-anchor="middle" font-family="${SANS}" font-size="12" font-weight="900" fill="#ffffff">SECTOR B</text>
+    </svg>`;
+  }
+  function describirE3(e: E3) {
+    if (e.grosorBorde === 0) return 'Sin separación, la frontera directa entre rojo y azul saturados <b class="dv-cifra">produce vibración cromática</b>.';
+    return `<b class="dv-cifra">Filete aislante de ${e.grosorBorde} px</b>: detiene la contaminación en el borde y estabiliza ambos bloques.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego ─────────────────────────────────────────────
+  function rondaBezold(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Asimilación cromática (efecto Bezold): el ojo mezcla ópticamente el fondo con las líneas finas que lo atraviesan',
+        es: true,
+      },
+      {
+        texto: 'Fatiga de los bastones de la retina por exceso de luz ultravioleta',
+        es: false,
+      },
+      {
+        texto: 'Un error de calibración del archivo de imagen',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Cuando un mismo fondo rojo se ve más claro al cruzarlo con una trama fina blanca y más oscuro al cruzarlo con una trama fina negra, ¿qué fenómeno actúa?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En detalles pequeños, tramas o tipografía menuda, el sistema visual suma la luz de las líneas y del fondo en lugar de oponerlos: es el efecto de asimilación descrito por Wilhelm von Bezold en 1874.',
+      repaso: 'Efecto Bezold (asimilación)',
+    };
+  }
+
+  function rondaEfectoArea(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Bajar su saturación y suavizar su claridad cuando pasa a cubrir una superficie grande',
+        es: true,
+      },
+      {
+        texto: 'Duplicar su saturación cuanto más grande sea la pared o la pantalla',
+        es: false,
+      },
+      {
+        texto: 'Mantener exactamente el mismo valor hexadecimal para fondos de 1400 px y para iconos de 16 px',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Un color elegido en una muestra de 2 cm suele verse mucho más intenso cuando cubre toda la pantalla. ¿Cómo se compensa este efecto de área?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'A mayor superficie ocupada en el campo visual, mayor es la saturación percibida. Por eso los fondos amplios requieren variantes desaturadas mientras los iconos pequeños admiten croma alto.',
+      repaso: 'Efecto de área (extensión)',
+    };
+  }
+
+  function rondaModoOscuro(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Aclarar su luminosidad y reducir ligeramente su saturación para evitar vibración y asegurar contraste',
+        describir: 'Tarjeta oscura con acento azul claro legible.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#161616" stroke="#222"/><text x="16" y="42" font-family="${SANS}" font-size="14" font-weight="900" fill="#8ab4f8">Enlace en modo oscuro</text><text x="16" y="64" font-family="${SERIF}" font-size="11.5" fill="#dcdcd6">Contraste limpio (8,4:1)</text></svg>`,
+      },
+      {
+        texto: 'Dejar el mismo azul oscuro saturado (#14388c) que se usaba sobre papel blanco',
+        describir: 'Tarjeta oscura con texto azul oscuro casi ilegible.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#161616" stroke="#222"/><text x="16" y="42" font-family="${SANS}" font-size="14" font-weight="900" fill="#14388c">Enlace en modo oscuro</text><text x="16" y="64" font-family="${SERIF}" font-size="11.5" fill="#14388c">Contraste bajo (1,8:1)</text></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al trasladar un color de acción de un tema claro (#ffffff) a un tema oscuro (#161616), ¿qué ajuste exige el nuevo contexto?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un color oscuro que contrastaba bien contra blanco se hunde contra un fondo carbón; en modo oscuro los acentos necesitan más luminosidad y menos saturación.',
+      repaso: 'Adaptación al modo oscuro',
+    };
+  }
+
+  function rondaSimultaneoVsBezold(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'En bloques grandes contiguos predomina el contraste simultáneo (se repelen); en tramas finas predomina la asimilación (se mezclan)',
+        es: true,
+      },
+      {
+        texto: 'El contraste simultáneo solo ocurre en papel impreso y la asimilación solo en pantallas',
+        es: false,
+      },
+      {
+        texto: 'Ambos fenómenos ocurren únicamente con el color amarillo',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué determina que dos colores vecinos se repelan (contraste simultáneo) o se mezclen ópticamente (asimilación de Bezold)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La escala espacial decide el fenómeno: las manchas amplias activan la inhibición lateral (contraste simultáneo), mientras que los trazos muy finos caen dentro del mismo campo receptivo y se promedian (asimilación).',
+      repaso: 'Contraste simultáneo frente a asimilación',
+    };
+  }
+
+  function rondaAjusteEscala(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este color naranja se eligió para un icono pequeño, pero ahora cubre todo el fondo del cartel y satura la vista. Reduce su saturación hasta adaptarlo a una superficie grande.',
+      control: {
+        etiqueta: 'Saturación del fondo del cartel',
+        min: 10,
+        max: 95,
+        paso: 5,
+        valor: 95,
+        unidad: '%',
+      },
+      pintar: (esc, v) => {
+        const l = Math.round(92 - (v / 95) * 38);
+        const fondo = hslAHex(24, v, l);
+        esc.innerHTML = `<svg viewBox="0 0 360 120" role="img" aria-label="Cartel con fondo al ${v} % de saturación.">
+          <rect width="360" height="120" fill="${fondo}" stroke="#222" stroke-width="1.5" />
+          <rect x="20" y="18" width="28" height="28" fill="#e8590c" stroke="#222" stroke-width="1.2" />
+          <text x="58" y="36" font-family="${SANS}" font-size="10.5" font-weight="900" fill="#222">ICONO ORIGINAL (95 %) FRENTE A FONDO (${v} %)</text>
+          <text x="20" y="76" font-family="${SERIF}" font-size="19" font-weight="700" fill="#222">Encuentro de Crónica</text>
+          <text x="20" y="98" font-family="${SERIF}" font-size="12.5" fill="#222">Una superficie extensa pide calmar la saturación.</text>
+        </svg>`;
+      },
+      cumple: (v) => v <= 35,
+      falta: (v) => `Al ${v} % de saturación la superficie grande sigue resultando estridente. Bájala a 35 % o menos.`,
+      porque: 'Al desaturar y aclarar el fondo grande, el cartel conserva el carácter cálido del icono original sin abrumar la mirada.',
+      repaso: 'Calibración por tamaño de superficie',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        rondaBezold(),
+        rondaEfectoArea(),
+        rondaModoOscuro(),
+        rondaSimultaneoVsBezold(),
+        rondaAjusteEscala(),
+      ]),
+    );
+  }
+</script>

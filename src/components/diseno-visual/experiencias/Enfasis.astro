@@ -1,0 +1,426 @@
+---
+// Énfasis: nueve piezas en un cartel de exposición. Una pieza es la elegida
+// para atraer la mirada primero. El instrumento permite probar cuatro
+// recursos para construir ese punto focal (contraste, aislamiento, tamaño y
+// orientación), bajar el peso del resto o añadir competidores que diluyen
+// el foco.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+
+const lab = 'enfasis';
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Quita toda diferencia.',
+    hacer: 'Lleva «Intensidad del énfasis» a 0 %.',
+    pista: 'Mueve el deslizador hasta el extremo izquierdo.',
+    preparar: { competidores: 0 },
+    logro: 'Cuando todas las piezas comparten tamaño, contraste, distancia y orientación, ninguna actúa como puerta de entrada. La mirada recorre la superficie sin un punto de partida claro.',
+  },
+  {
+    titulo: 'Crea un punto focal por contraste.',
+    hacer: 'Sube «Intensidad del énfasis» por encima de 60 %.',
+    pista: 'Arrastra el control hacia la derecha.',
+    logro: 'La pieza central se distingue de inmediato porque concentra una diferencia clara de color y borde frente a un entorno tranquilo.',
+  },
+  {
+    titulo: 'Destaca usando solo el espacio.',
+    hacer: 'En «Cómo destaca la pieza», selecciona «Aislamiento».',
+    pista: 'Elige la segunda opción del primer control.',
+    preparar: { intensidad: 80, competidores: 0 },
+    logro: 'La pieza ya no tiene otro color ni es más grande que las demás. Sin embargo, el espacio vacío que la rodea la separa del grupo y dirige la mirada hacia ella. No siempre hace falta gritar más fuerte para destacar.',
+  },
+  {
+    titulo: 'Multiplica los reclamos de atención.',
+    hacer: 'En «Cómo destaca la pieza» vuelve a «Contraste» y sube «Elementos que compiten» a 4 o más.',
+    pista: 'Elige «Contraste» y mueve «Elementos que compiten» hacia la derecha.',
+    logro: 'Cuando cinco o seis piezas reclaman la atención con la misma fuerza, el énfasis se neutraliza. La vista salta de una a otra sin saber cuál es la principal.',
+  },
+  {
+    titulo: 'Calma el entorno en lugar de subir el volumen.',
+    hacer: 'Abre «Más controles», devuelve «Elementos que compiten» a 0 y sube «Calma del entorno» por encima de 60 %.',
+    preparar: { competidores: 0, intensidad: 40, recurso: 'contraste' },
+    abrir: true,
+    logro: 'Atenuar el peso visual de los elementos secundarios hace que la pieza elegida destaque incluso con una diferencia moderada. El énfasis depende de la relación entre el foco y su entorno, no solo de la fuerza del elemento aislado.',
+  },
+];
+---
+
+<Instrumento
+  id={lab}
+  titulo="Instrumento · un punto focal entre nueve piezas"
+  consigna="Nueve tarjetas anuncian las actividades de una semana del libro. La pieza central corresponde al invitado principal. Cambia el recurso con el que destaca, ajusta su intensidad o añade competidores para observar cuándo aparece un punto focal claro y cuándo se pierde."
+  nota="Fija una configuración como A y compárala con B. Prueba a conseguir el mismo protagonismo de dos maneras distintas: subiendo la fuerza de la pieza principal o aumentando la calma del entorno."
+>
+  <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Nueve tarjetas en una cuadrícula de tres por tres; la tarjeta central destaca sobre fondo amarillo.">
+    <rect width="640" height="320" fill="#fbfbf9" />
+    {[0, 1, 2].map((f) =>
+      [0, 1, 2].map((c) => {
+        const x = 68 + c * 176;
+        const y = 28 + f * 92;
+        const centro = f === 1 && c === 1;
+        return (
+          <g>
+            <rect x={x} y={y} width="152" height="76" fill={centro ? '#eeff41' : '#ffffff'} stroke="#222222" stroke-width={centro ? 2.5 : 1.2} />
+            <rect x={x + 12} y={y + 16} width="54" height="6" fill="#6f6f6f" />
+            <rect x={x + 12} y={y + 30} width="112" height="10" fill="#222222" />
+            <rect x={x + 12} y={y + 48} width="78" height="6" fill="#6f6f6f" />
+          </g>
+        );
+      }),
+    )}
+  </svg>
+
+  <Guia slot="guia" pasos={pasos} final="Guía completada. Combina libremente los cuatro recursos, cambia qué pieza recibe el foco y activa el mapa de atención en «Más controles»." />
+
+  <Opciones
+    lab={lab}
+    variable="recurso"
+    etiqueta="Cómo destaca la pieza"
+    valor="contraste"
+    opciones={[
+      { valor: 'contraste', texto: 'Contraste' },
+      { valor: 'aislamiento', texto: 'Aislamiento' },
+      { valor: 'tamano', texto: 'Tamaño' },
+      { valor: 'orientacion', texto: 'Inclinación' },
+    ]}
+    ayuda="Contraste: cambia el fondo y el borde. Aislamiento: abre espacio vacío alrededor. Tamaño: amplía la pieza frente a las demás. Inclinación: rompe el ángulo de la cuadrícula."
+  />
+  <Deslizador lab={lab} variable="intensidad" etiqueta="Intensidad del énfasis" min={0} max={100} paso={5} valor={75} unidad="%" ayuda="0 %: la pieza se ve igual que el resto. 100 %: la diferencia alcanza su punto máximo." />
+  <Deslizador lab={lab} variable="competidores" etiqueta="Elementos que compiten" min={0} max={8} valor={0} ayuda="Cuántas de las otras ocho piezas intentan destacar al mismo tiempo." />
+
+  <Fragment slot="avanzados">
+    <Opciones
+      lab={lab}
+      variable="foco"
+      etiqueta="Pieza que quieres destacar"
+      valor="4"
+      opciones={[
+        { valor: '0', texto: 'Arriba izq. (01)' },
+        { valor: '4', texto: 'Centro (05)' },
+        { valor: '8', texto: 'Abajo der. (09)' },
+      ]}
+      ayuda="Comprueba cómo influye la posición del elemento dentro de la composición."
+    />
+    <Deslizador lab={lab} variable="calma" etiqueta="Calma del entorno" min={0} max={80} paso={5} valor={20} unidad="%" ayuda="Atenúa el contraste de las piezas secundarias para que el foco necesite menos esfuerzo." />
+    <Interruptor lab={lab} variable="mapa" etiqueta="Mostrar el peso visual de cada pieza" ayuda="Indica cuánta atención relativa reclama cada tarjeta y cuál actúa como primer punto de entrada." />
+  </Fragment>
+
+  <Fragment slot="pruebas">
+    <button type="button" class="dv-boton" data-preset='{"recurso":"contraste","intensidad":80,"competidores":0,"calma":20}'>Un foco claro por contraste</button>
+    <button type="button" class="dv-boton" data-preset='{"recurso":"aislamiento","intensidad":90,"competidores":0,"calma":35}'>Destacar solo con espacio alrededor</button>
+    <button type="button" class="dv-boton" data-preset='{"recurso":"contraste","intensidad":85,"competidores":6,"calma":0}'>Seis piezas gritando a la vez</button>
+    <button type="button" class="dv-boton" data-preset='{"recurso":"tamano","intensidad":45,"competidores":0,"calma":70}'>Énfasis sutil en un entorno en calma</button>
+  </Fragment>
+</Instrumento>
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+
+  type E = {
+    recurso: string;
+    intensidad: number;
+    competidores: number;
+    foco: string;
+    calma: number;
+    mapa: boolean;
+  };
+
+  const TINTA = '#222222';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  const TITULOS = [
+    ['LUN 10 · 4 P. M.', 'Mesa de editores'],
+    ['LUN 10 · 6 P. M.', 'Lectura de poesía'],
+    ['MAR 11 · 5 P. M.', 'Taller de fanzines'],
+    ['MIÉ 12 · 4 P. M.', 'Crónica urbana'],
+    ['JUE 13 · 7 P. M.', 'Charla inaugural'],
+    ['VIE 14 · 5 P. M.', 'Libros ilustrados'],
+    ['SÁB 15 · 11 A. M.', 'Cuentos en el patio'],
+    ['SÁB 15 · 4 P. M.', 'Club de traducción'],
+    ['DOM 16 · 5 P. M.', 'Cierre musical'],
+  ];
+
+  // Orden fijo en que se suman competidores alrededor de la pieza elegida.
+  const ORDEN_COMP = [2, 6, 1, 7, 0, 8, 3, 5];
+
+  function indicesCompetidores(foco: number, cantidad: number): Set<number> {
+    const lista = ORDEN_COMP.filter((i) => i !== foco);
+    return new Set(lista.slice(0, cantidad));
+  }
+
+  function calcularRelacion(e: E) {
+    const k = e.intensidad / 100;
+    const calma = e.calma / 100;
+    const pesoResto = Math.max(0.2, 1 - calma * 0.65);
+    const bonoRecurso = e.recurso === 'tamano' ? 1.35 : e.recurso === 'contraste' ? 1.25 : e.recurso === 'aislamiento' ? 1.15 : 1.1;
+    const pesoFoco = pesoResto + k * 2.2 * bonoRecurso;
+    const dilucion = 1 + e.competidores * 0.42 * k;
+    const razonFocal = pesoFoco / (pesoResto * dilucion);
+    return { pesoFoco, pesoResto, razonFocal };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 260);
+    const H = W < 480 ? 310 : 340;
+    const foco = Number(e.foco);
+    const comp = indicesCompetidores(foco, e.competidores);
+    const k = e.intensidad / 100;
+    const calma = e.calma / 100;
+    const { razonFocal } = calcularRelacion(e);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Cuadrícula de nueve tarjetas. La tarjeta ${foco + 1} destaca por ${e.recurso} al ${e.intensidad} % con ${e.competidores} competidores.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 480 ? 18 : 38;
+    const padY = 22;
+    const gapX = W < 480 ? 10 : 18;
+    const gapY = 14;
+    const cw = (W - padX * 2 - gapX * 2) / 3;
+    const ch = (H - padY * 2 - gapY * 2 - (e.mapa ? 22 : 0)) / 3;
+
+    const fFoco = Math.floor(foco / 3);
+    const cFoco = foco % 3;
+
+    // Dibujar primero las piezas normales y al final la pieza con foco para que no quede tapada al crecer.
+    const orden = Array.from({ length: 9 }, (_, i) => i).sort((a, b) => (a === foco ? 1 : b === foco ? -1 : 0));
+
+    for (const i of orden) {
+      const f = Math.floor(i / 3);
+      const c = i % 3;
+      const esFoco = i === foco;
+      const esComp = comp.has(i);
+      const activo = esFoco || esComp;
+      const fuerza = esFoco ? k : esComp ? k * 0.92 : 0;
+
+      let x = padX + c * (cw + gapX);
+      let y = padY + f * (ch + gapY);
+      let w = cw;
+      let h = ch;
+
+      // Si el recurso es aislamiento, las piezas vecinas se apartan del foco y se encogen ligeramente.
+      if (e.recurso === 'aislamiento' && k > 0) {
+        if (!activo) {
+          const dx = c === cFoco ? 0 : c < cFoco ? -1 : 1;
+          const dy = f === fFoco ? 0 : f < fFoco ? -1 : 1;
+          const empujar = k * (W < 480 ? 10 : 18);
+          const encoger = 1 - k * 0.18;
+          x += dx * empujar + (cw * (1 - encoger)) / 2;
+          y += dy * empujar + (ch * (1 - encoger)) / 2;
+          w *= encoger;
+          h *= encoger;
+        } else if (esFoco && e.competidores === 0) {
+          const encoger = 1 - k * 0.06;
+          x += (cw * (1 - encoger)) / 2;
+          y += (ch * (1 - encoger)) / 2;
+          w *= encoger;
+          h *= encoger;
+        }
+      }
+
+      if (e.recurso === 'tamano' && activo && fuerza > 0) {
+        const esc = 1 + fuerza * 0.28;
+        const nw = cw * esc;
+        const nh = ch * esc;
+        x -= (nw - cw) / 2;
+        y -= (nh - ch) / 2;
+        w = nw;
+        h = nh;
+      }
+
+      const giro = e.recurso === 'orientacion' && activo ? -fuerza * 8 * (esComp && i % 2 === 0 ? -1 : 1) : 0;
+      const g = svg('g');
+      if (giro !== 0) {
+        g.setAttribute('transform', `rotate(${giro} ${x + w / 2} ${y + h / 2})`);
+      }
+
+      // Halo de aislamiento cuando se activa el mapa
+      if (e.mapa && esFoco && e.recurso === 'aislamiento' && k > 0.15) {
+        const m = 8 + k * 12;
+        g.append(
+          svg('rect', {
+            x: x - m,
+            y: y - m,
+            width: w + m * 2,
+            height: h + m * 2,
+            fill: 'none',
+            stroke: COTA,
+            'stroke-width': 1.5,
+            'stroke-dasharray': '4 3',
+          }),
+        );
+      }
+
+      // Colores según calma y contraste
+      const grisTexto = Math.round(0x22 + calma * (0x98 - 0x22));
+      const colorSec = activo ? TINTA : `rgb(${grisTexto},${grisTexto},${grisTexto})`;
+      const colorBorde = activo ? TINTA : `rgb(${Math.min(220, grisTexto + 40)},${Math.min(220, grisTexto + 40)},${Math.min(220, grisTexto + 40)})`;
+
+      const usaContraste = e.recurso === 'contraste' && activo && fuerza > 0.1;
+      const fondo = usaContraste ? (fuerza > 0.45 ? AMARILLO : '#f6f9c8') : '#ffffff';
+      const grosorBorde = activo && fuerza > 0.15 ? 1.5 + fuerza * 1.8 : Math.max(0.8, 1.3 - calma * 0.6);
+
+      g.append(
+        svg('rect', {
+          x,
+          y,
+          width: w,
+          height: h,
+          fill: fondo,
+          stroke: colorBorde,
+          'stroke-width': grosorBorde,
+        }),
+      );
+
+      if (usaContraste && fuerza > 0.55) {
+        g.append(
+          svg('rect', {
+            x: x + 4,
+            y: y + 4,
+            width: w,
+            height: h,
+            fill: 'none',
+            stroke: TINTA,
+            'stroke-width': 1.2,
+          }),
+        );
+      }
+
+      const [hora, titulo] = TITULOS[i];
+      const fsTit = Math.max(10, Math.min(15, (w / 11) * (e.recurso === 'tamano' && activo ? 1 + fuerza * 0.18 : 1)));
+      const fsSub = Math.max(8, Math.min(10, w / 16));
+
+      const numTxt = svg('text', {
+        x: x + w - 8,
+        y: y + 15,
+        'text-anchor': 'end',
+        'font-family': SANS,
+        'font-size': fsSub,
+        'font-weight': 700,
+        fill: activo ? TINTA : '#8f8f8f',
+      });
+      numTxt.textContent = String(i + 1).padStart(2, '0');
+      g.append(numTxt);
+
+      const tHora = svg('text', {
+        x: x + 10,
+        y: y + 18,
+        'font-family': SANS,
+        'font-size': fsSub,
+        'font-weight': 700,
+        'letter-spacing': 0.5,
+        fill: colorSec,
+      });
+      tHora.textContent = hora;
+      g.append(tHora);
+
+      const tTit = svg('text', {
+        x: x + 10,
+        y: y + h * 0.62,
+        'font-family': SANS,
+        'font-size': fsTit,
+        'font-weight': activo && fuerza > 0.2 ? 900 : 700,
+        fill: colorSec,
+      });
+      tTit.textContent = titulo;
+      g.append(tTit);
+
+      if (e.mapa) {
+        const etiquetaPeso = esFoco && fuerza > 0.15
+          ? e.competidores === 0
+            ? 'FOCO · 1.º'
+            : `COMPITE (${e.competidores + 1})`
+          : esComp && fuerza > 0.15
+            ? 'COMPITE'
+            : '';
+        if (etiquetaPeso) {
+          const anchoEtq = etiquetaPeso.length * 6.2 + 10;
+          g.append(svg('rect', { x: x + 8, y: y + h - 20, width: anchoEtq, height: 15, fill: COTA }));
+          const tPeso = svg('text', {
+            x: x + 13,
+            y: y + h - 9,
+            'font-family': SANS,
+            'font-size': 9.5,
+            'font-weight': 700,
+            fill: '#ffffff',
+          });
+          tPeso.textContent = etiquetaPeso;
+          g.append(tPeso);
+        }
+      }
+
+      raiz.append(g);
+    }
+
+    if (e.mapa) {
+      const pie = svg('text', {
+        x: padX,
+        y: H - 8,
+        'font-family': SANS,
+        'font-size': 11.5,
+        'font-weight': 700,
+        fill: COTA,
+      });
+      pie.textContent = `Dominancia del foco sobre el promedio: ${n(razonFocal, 1)} ×`;
+      raiz.append(pie);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  const nombreRecurso: Record<string, string> = {
+    contraste: 'el contraste de color y borde',
+    aislamiento: 'el espacio vacío a su alrededor',
+    tamano: 'la diferencia de tamaño',
+    orientacion: 'el cambio de inclinación',
+  };
+
+  function describir(e: E): string {
+    const { razonFocal } = calcularRelacion(e);
+    const numFoco = String(Number(e.foco) + 1).padStart(2, '0');
+    const cifra = `<b class="dv-cifra">${n(razonFocal, 1)} veces</b>`;
+
+    if (e.intensidad === 0) {
+      return 'Sin énfasis: las nueve piezas tienen el mismo peso visual. No hay puerta de entrada y el lector debe recorrer la cuadrícula desde la esquina superior.';
+    }
+
+    if (e.competidores >= 4) {
+      return `Hay <b class="dv-cifra">${e.competidores + 1} piezas</b> intentando destacar a la vez mediante ${nombreRecurso[e.recurso]}. La dominancia de la ficha ${numFoco} cae a ${cifra}: cuando casi todo reclama atención, el énfasis se convierte en ruido.`;
+    }
+
+    if (e.competidores >= 1) {
+      return `La ficha ${numFoco} destaca por ${nombreRecurso[e.recurso]}, pero comparte protagonismo con ${e.competidores === 1 ? 'otra pieza' : `otras ${e.competidores} piezas`}. Su dominancia es de ${cifra}: la mirada se divide entre varios focos.`;
+    }
+
+    const explicacionCalma = e.calma >= 50
+      ? ' Al atenuar el entorno, la pieza principal domina sin necesidad de exagerar su tamaño ni su color.'
+      : '';
+
+    if (razonFocal < 1.6) {
+      return `La ficha ${numFoco} tiene ${cifra} el peso del resto mediante ${nombreRecurso[e.recurso]}. La diferencia es sutil: se percibe al recorrer la página, pero no se impone a primera vista.${explicacionCalma}`;
+    }
+
+    return `Punto focal claro: la ficha ${numFoco} alcanza ${cifra} el peso visual de las demás gracias a ${nombreRecurso[e.recurso]}. La mirada entra por ahí antes de leer el resto.${explicacionCalma}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="enfasis"]')) {
+    guiar<E>(raiz, [
+      (e) => e.intensidad === 0,
+      (e) => e.intensidad >= 60 && e.competidores === 0,
+      (e) => e.recurso === 'aislamiento' && e.intensidad >= 50 && e.competidores === 0,
+      (e) => e.recurso === 'contraste' && e.competidores >= 4 && e.intensidad >= 40,
+      (e) => e.competidores === 0 && e.calma >= 60 && e.intensidad > 0,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+</script>

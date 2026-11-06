@@ -7,16 +7,20 @@ import Deslizador from '../controles/Deslizador.astro';
 
 <div class="dv-especimenes">
   <Instrumento id="esc-titulo" titulo="Arregla un título que no se distingue" comparar={false} consigna="El título tiene casi el mismo tamaño que el texto normal. Aumenta su tamaño hasta que se distinga sin necesidad de leerlo. ¿En qué momento se vuelve evidente la diferencia? ¿Cuánto crecimiento necesita esta composición, y cuánto sería excesivo?">
+    <div slot="escenario" style="padding:18px 20px;color:#333;">
+      <p style="margin:0 0 10px;font-family:Roboto,Helvetica,Arial,sans-serif;font-weight:700;font-size:17px;line-height:1.1;color:#1a1a1a;">Una biblioteca para cocinar</p>
+      <p style="margin:0;font-family:'PT Serif',Georgia,serif;font-size:15px;line-height:1.5;">La primera semana se prestaron más libros de cocina que novelas. Nadie lo había previsto.</p>
+    </div>
     <Deslizador lab="esc-titulo" variable="t" etiqueta="Tamaño del título" min={14} max={64} valor={17} unidad="px" ayuda="El texto mide 15 px." />
   </Instrumento>
 
   <Instrumento id="esc-interlineado" titulo="Arregla un párrafo apretado" comparar={false} consigna="Los renglones están demasiado juntos y cuesta seguir el texto sin perder la línea. Aumenta el interlineado y observa cómo cambia la lectura. ¿Más espacio siempre mejora la lectura? Prueba qué sucede cuando los renglones quedan tan separados que dejan de percibirse como parte del mismo párrafo.">
+    <p slot="escenario" style="margin:0;padding:18px 20px;font-family:'PT Serif',Georgia,serif;font-size:15px;line-height:1;color:#333;">La biblioteca abrió un martes, sin ceremonia. A las nueve ya había fila para los computadores, y a mediodía alguien preguntó si se podía cocinar en el patio. La primera semana se prestaron más libros de cocina que novelas.</p>
     <Deslizador lab="esc-interlineado" variable="lh" etiqueta="Interlineado" min={0.9} max={2.6} paso={0.05} valor={1} decimales={2} ayuda="Altura de cada renglón, en número de veces el tamaño de la letra." />
   </Instrumento>
-</div>
 
-<div class="dv-especimenes">
   <Instrumento id="esc-ancho" titulo="Arregla unas líneas demasiado largas" comparar={false} consigna="Los renglones ocupan tanto espacio que, al terminar uno, cuesta encontrar el comienzo del siguiente. Reduce el ancho del bloque y vuelve a leer el texto. ¿Qué cambia cuando el ojo necesita recorrer una distancia menor antes de pasar al siguiente renglón?">
+    <p slot="escenario" style="margin:0;padding:18px 20px;font-family:'PT Serif',Georgia,serif;font-size:15px;line-height:1.55;color:#333;">La biblioteca abrió un martes, sin ceremonia. A las nueve ya había fila para los computadores, y a mediodía alguien preguntó si se podía cocinar en el patio. La primera semana se prestaron más libros de cocina que novelas.</p>
     <Deslizador lab="esc-ancho" variable="c" etiqueta="Ancho de línea" min={20} max={120} valor={115} unidad="caracteres" ayuda="Caracteres por renglón, contando espacios." />
   </Instrumento>
 </div>

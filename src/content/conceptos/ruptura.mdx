@@ -1,0 +1,167 @@
+---
+titulo: Ruptura
+territorio: expresion
+pregunta: ¿Cómo se rompe una regla visual para que se lea como un gesto lleno de sentido y no como un descuido?
+resumen: "Una ruptura es la transgresión deliberada y localizada de un orden previamente establecido en la propia pieza. Su fuerza es directamente proporcional a la claridad de la norma que la rodea: sin orden previo no hay ruptura, solo confusión."
+modos: [provocacion, comparacion]
+orden: 35
+relaciones:
+  - concepto: reticulas-y-alineacion
+    porQue: La retícula proporciona la pauta ortogonal visible contra la cual se mide cualquier desborde, invasión de calle o cambio de ángulo.
+  - concepto: sistemas-y-excepciones
+    porQue: En un sistema de diseño, una ruptura es una excepción motivada por un significado único que no debe repetirse por rutina.
+  - concepto: enfasis
+    porQue: Quebrar la continuidad geométrica de una serie es uno de los recursos más directos para crear un punto focal inmediato.
+  - concepto: tension
+    porQue: Toda ruptura introduce vectores de tensión dirigida entre la pieza que se aparta de la norma y los ejes que permanecen fijos.
+  - concepto: extranamiento
+    porQue: Interrumpir un patrón previsible detiene el barrido automático del ojo y obliga a mirar de nuevo la estructura.
+fuentes:
+  - autor: Wolfgang Weingart
+    obra: "My Way to Typography / Wege zur Typographie. Lars Müller Publishers"
+    anio: 2000
+    nota: Documentación en primera persona de cómo la exploración y ruptura expresiva de la tipografía de Basilea en los años setenta partía de un dominio milimétrico de la retícula ortogonal suiza.
+  - autor: Josef Müller-Brockmann
+    obra: "Grid systems in graphic design / Rastersysteme für die visuelle Gestaltung. Arthur Niggli"
+    anio: 1981
+    nota: Criterios sobre cuándo interrumpir la retícula para señalar un acontecimiento extraordinario dentro de una publicación.
+  - autor: Ernst H. Gombrich
+    obra: "The Sense of Order: A Study in the Psychology of Decorative Art. Phaidon"
+    anio: 1979
+    nota: "Psicología perceptual de las regularidades y las interrupciones (breaks in continuity): el cerebro detecta al instante cualquier quiebre sobre una pauta repetitiva."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import RupturaExp from '../../components/diseno-visual/experiencias/RupturaExp.astro';
+
+<Paso id="idea" titular="Once barras derechas hacen elocuente a la duodécima">
+
+<RupturaExp paso="idea" />
+
+<p class="dv-frase">Solo puedes romper una retícula que antes te tomaste el trabajo de hacer visible.</p>
+
+<div class="dv-texto">
+
+A menudo se piensa que seguir una retícula es sinónimo de rigidez y que romper las reglas basta para que una página se vea libre o expresiva. En la práctica ocurre lo contrario: si en un cartel todas las piezas están torcidas, desalineadas y fuera de lugar, ninguna de ellas sorprende.
+
+Una *ruptura* necesita dos ingredientes inseparables: primero, una norma clara y consistente que el ojo reconozca al primer vistazo; segundo, una única pieza que contradiga esa norma con determinación y por una razón ligada al sentido del mensaje.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Norma previa</dt>
+    <dd>El orden regular —de columnas, márgenes, tamaños o ángulos— que la propia composición establece como regla de referencia.</dd>
+    <dt>Ruptura localizada</dt>
+    <dd>El quiebre puntual de esa norma en un único elemento o zona para señalar un acontecimiento extraordinario.</dd>
+    <dt>Contraste con el error</dt>
+    <dd>La distancia suficiente respecto a la regla para que quien mira entienda sin dudar que el quiebre fue intencional y no un fallo técnico.</dd>
+    <dt>Motivación semántica</dt>
+    <dd>La correspondencia entre el gesto visual de romper la estructura y el significado de la pieza que la rompe.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Caos generalizado frente a una interrupción precisa">
+
+<div class="dv-texto">
+
+En estas dos maquetas para un reportaje sobre una falla geológica, la primera intenta expresar el sismo girando todos los bloques de la página; la segunda construye una retícula estricta de tres columnas donde solo la ficha del sismo quiebra la calle.
+
+</div>
+
+<RupturaExp paso="miralo" />
+
+<div class="dv-texto">
+
+Cuando todo se mueve a la vez, desaparece el marco de referencia: no hay suelo quieto contra el cual medir el desplazamiento, y además se vuelve incómodo leer los párrafos. Cuando las columnas de texto guardan una disciplina firme, basta girar e invadir el medianil con una sola tarjeta para que el gesto tenga toda la fuerza del tema.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Pon a prueba la relación entre orden de fondo y excepción">
+
+<RupturaExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres condiciones para que una ruptura funcione">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Refuerza la regularidad de los vecinos antes de tocar al protagonista</h3>
+      <p>Si quieres que un elemento salga de la caja o cambie de ángulo, asegúrate primero de que los cuatro o cinco elementos que lo rodean compartan una alineación rigurosa. Cuanto más silenciosa y firme sea la pauta vecina, menos esfuerzo necesitará la ruptura.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Haz que el quiebre supere el umbral del descuido</h3>
+      <p>Una foto que sobresale 2 px de su columna o un título girado 1,5° parecen errores de imprenta o de CSS. Si decides cruzar una calle de la retícula, invade al menos un tercio de la columna vecina o sal por completo a sangre.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No gastes la ruptura en un elemento secundario</h3>
+      <p>Interrumpir la estructura captura toda la atención disponible. Reserva ese recurso para el dato, la cita o la imagen que introduce el giro conceptual de la pieza, nunca para un adorno o un metadato rutinario.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<RupturaExp paso="errores" />
+
+<div class="dv-texto">
+
+### La ruptura en piezas reales
+
+</div>
+
+<RupturaExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Distingue entre ruptura intencional, descuido y desorden">
+
+<RupturaExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Gombrich, Weingart y la paradoja de romper las reglas">
+
+<Seccion titulo="El detector de regularidades de Ernst H. Gombrich">
+
+En *The Sense of Order* (1979), el historiador del arte Ernst H. Gombrich estudió por qué todas las culturas humanas construyen cenefas, ritmos y retículas geométricas. Su conclusión conecta el diseño con la biología evolutiva: nuestro sistema perceptivo funciona como un buscador continuo de regularidades.
+
+En cuanto vemos tres o cuatro elementos alineados al mismo intervalo, el cerebro deja de inspeccionarlos uno por uno y formula una predicción («la pauta continúa igual»). Esa economía atencional tiene una consecuencia decisiva para el diseño: cuando un elemento rompe la serie prevista, se dispara una señal de alerta instantánea. Sin la predicción previa que crea el orden, no puede existir el chispazo de la interrupción.
+
+</Seccion>
+
+<Seccion titulo="La lección de Basilea: dominar la retícula antes de quebrarla">
+
+A comienzos de los años setenta, en la Schule für Gestaltung de Basilea, Wolfgang Weingart empezó a cuestionar la ortodoxia de la tipografía suiza abriendo el espaciado entre letras, escalonando filetes, curvando líneas de plomo y superponiendo películas fotográficas.
+
+Sin embargo, en su libro *My Way to Typography* (2000), Weingart insistió en un punto que sus imitadores solían pasar por alto: cada una de sus transgresiones nacía tras años de componer a mano retículas ortogonales estrictas con Emil Ruder y Armin Hofmann. Sus carteles no abandonaban la geometría; usaban la memoria visual de la retícula suiza como el tambor tenso sobre el cual resonaba cada golpe expresivo.
+
+</Seccion>
+
+<Seccion titulo="Formas de romper la retícula sin girar el texto">
+
+Cuando se habla de ruptura suele pensarse únicamente en inclinar un bloque en diagonal, pero en el trabajo editorial y de interfaces las rupturas más eficaces suelen ser ortogonales:
+
+- **Puenteo de columnas (*spanning*):** en una página de tres o cuatro columnas estrechas, hacer que una imagen o una cita ocupe dos columnas y media interrumpe el ritmo vertical sin comprometer la legibilidad.
+- **Desborde al margen (*outdent*):** sacar un sumario, una nota numerada o un icono hacia el margen blanco izquierdo donde ningún otro bloque entra.
+- **Cambio de escala radical:** insertar un único carácter o cifra a cuerpo monumental que actúe como arquitectura gráfica frente al resto del texto compuesto en cuerpos de lectura.
+
+</Seccion>
+
+</Paso>

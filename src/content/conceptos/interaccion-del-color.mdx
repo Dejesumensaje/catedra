@@ -2,8 +2,8 @@
 titulo: Interacción del color
 territorio: color
 pregunta: ¿Por qué el mismo color parece otro cuando cambia lo que tiene al lado?
-resumen: "Un color no se percibe de forma aislada: su entorno modifica cómo lo vemos. Compara combinaciones, comprueba la legibilidad del texto y descubre por qué un significado nunca debería depender únicamente del color."
-modos: [laboratorio, comparacion, diseccion, provocacion]
+resumen: "Un color no se percibe de forma aislada: su entorno modifica cómo lo vemos. Compara combinaciones, comprueba la legibilidad del texto y entiende por qué un significado nunca debería depender únicamente del color."
+modos: [laboratorio, provocacion]
 orden: 4
 relaciones:
   - concepto: semejanza
@@ -78,9 +78,7 @@ Esto tiene consecuencias prácticas. Un color que parece perfecto en una paleta 
 
 <div class="dv-texto">
 
-Observa dos versiones de un formulario de pago. Ambas utilizan los mismos colores de marca, pero cambian dos decisiones: cómo se combinan los colores y cómo se comunica un error.
-
-Toca los números para explorar cada caso.
+Ambas versiones de este formulario de pago utilizan los mismos colores de marca, pero cambian dos decisiones: cómo se combinan los colores y cómo se comunica un error.
 
 </div>
 
@@ -88,9 +86,9 @@ Toca los números para explorar cada caso.
 
 <div class="dv-texto">
 
-En la primera versión, el amarillo puede ser reconocible y coherente con la marca, pero eso no garantiza que el texto colocado encima se lea bien. Tampoco basta con que el error tenga un color convencionalmente asociado con las advertencias.
+En la primera versión, el amarillo puede ser reconocible y coherente con la marca, pero eso no garantiza que el texto colocado encima se lea bien. Tampoco basta con que el error tenga un color asociado por costumbre con las advertencias.
 
-En la segunda no se eliminó el color de marca. Se cambió la relación entre el texto y el fondo, y se hizo que el mensaje de error pudiera reconocerse de más de una manera.
+En la segunda no se eliminó el color de marca: se cambió la relación entre el texto y el fondo, y se hizo que el mensaje de error pudiera reconocerse de más de una manera.
 
 **La idea clave:** elegir un color y elegir cómo utilizarlo son dos decisiones diferentes.
 
@@ -110,7 +108,7 @@ En la segunda no se eliminó el color de marca. Se cambió la relación entre el
   <li>
     <div>
       <h3>Mide el contraste del texto, no lo adivines</h3>
-      <p>Un color llamativo puede parecer legible y, aun así, no tener suficiente diferencia de luminancia con el fondo. Utiliza una herramienta que calcule la razón de contraste. Como referencia, WCAG 2.2 establece un mínimo de 4,5:1 para texto normal y de 3:1 para texto grande en el nivel AA. Cumplir el mínimo no garantiza que cualquier persona vaya a leer cómodamente el texto, pero permite detectar combinaciones que no alcanzan el umbral recomendado.</p>
+      <p>Un color llamativo puede parecer legible y, aun así, no tener suficiente diferencia de luminancia con el fondo. Utiliza una herramienta que calcule la razón de contraste. Como referencia, WCAG 2.2 establece un mínimo de 4,5:1 para texto normal y de 3:1 para texto grande en el nivel AA. Cumplir el mínimo no garantiza que cualquier persona vaya a leer con soltura el texto, pero permite detectar combinaciones que no alcanzan el umbral recomendado.</p>
     </div>
   </li>
   <li>
@@ -131,23 +129,16 @@ En la segunda no se eliminó el color de marca. Se cambió la relación entre el
 
 ### Dos errores que se repiten
 
-Cada ejercicio comienza con un problema. Modifica los controles y observa cómo cambia la composición.
-
 </div>
 
-<div style="margin-top: 2.5rem">
+<div class="dv-especimenes">
   <ColorContraste />
-</div>
-
-<div style="margin-top: 1.5rem">
   <ColorRoles />
 </div>
 
 <div class="dv-texto">
 
 ### La interacción del color en piezas reales
-
-Tres ejemplos muestran cómo el color puede organizar la información, destacar un elemento o cambiar de apariencia según el fondo.
 
 </div>
 
@@ -167,7 +158,7 @@ El color no tiene una legibilidad fija. La relación entre los colores determina
 
 </Paso>
 
-<Paso id="a-fondo">
+<Paso id="a-fondo" titular="Contraste simultáneo, razón WCAG y significado del color">
 
 <Seccion titulo="Lo que produce el efecto">
 

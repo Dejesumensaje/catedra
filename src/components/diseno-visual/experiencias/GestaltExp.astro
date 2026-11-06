@@ -1,0 +1,966 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'gestalt';
+
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const anillo = Array.from({ length: 12 }, (_, i) => {
+  const ang = (i / 12) * Math.PI * 2 - Math.PI / 2;
+  return { x: Math.round(155 + Math.cos(ang) * 54), y: Math.round(92 + Math.sin(ang) * 54) };
+});
+
+const azarosos = [
+  { x: 365, y: 42 }, { x: 418, y: 68 }, { x: 472, y: 38 }, { x: 536, y: 58 },
+  { x: 382, y: 106 }, { x: 446, y: 96 }, { x: 502, y: 114 }, { x: 554, y: 102 },
+  { x: 356, y: 146 }, { x: 412, y: 152 }, { x: 484, y: 148 }, { x: 540, y: 144 },
+];
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Parte de un campo sin estructura.',
+    hacer: 'Lleva «Distancia entre grupos» a 0 px y desactiva las demás señales.',
+    pista: 'Pon el deslizador al mínimo, «Parecido por color» en «Ninguno», «Cajas contenedoras» en «Ninguna» y apaga «Línea conectora».',
+    preparar: { distancia: 0, color: 'ninguno', cajas: 'ninguna', conexion: false },
+    logro: 'Los dieciséis elementos forman una retícula uniforme de 4 × 4. Sin diferencias de espacio, color ni contorno, el sistema visual percibe un único bloque indiviso.',
+  },
+  {
+    titulo: 'Agrupa mediante el espacio.',
+    hacer: 'Sube «Distancia entre grupos» a 28 px o más.',
+    pista: 'Arrastra el primer deslizador hacia la derecha.',
+    logro: 'Con solo abrir un corredor central horizontal y vertical, el bloque único se divide en cuatro cuadrantes de cuatro piezas. La proximidad organiza antes de añadir una sola línea.',
+  },
+  {
+    titulo: 'Pon dos señales a competir.',
+    hacer: 'En «Parecido por color», elige «Por filas».',
+    pista: 'Selecciona la segunda opción de «Parecido por color» manteniendo la distancia alta.',
+    preparar: { distancia: 32, cajas: 'ninguna', conexion: false },
+    logro: 'Ahora el espacio pide leer cuatro cuadrantes, mientras el color pide leer filas horizontales. La mirada duda porque dos principios de organización apuntan en direcciones opuestas.',
+  },
+  {
+    titulo: 'Desempata con una región común.',
+    hacer: 'En «Cajas contenedoras», selecciona «Por columnas».',
+    pista: 'Activa el contorno por columnas verticales.',
+    logro: 'El marco cerrado alrededor de cada columna impone una frontera explícita que supera al parecido cromático. Las señales de cerramiento y conexión suelen pesar más que la distancia o el color.',
+  },
+  {
+    titulo: 'Haz que todas las señales cooperen.',
+    hacer: 'Abre «Más controles», activa «Mostrar qué ley domina» y alinea color y cajas «Por cuadrantes».',
+    pista: 'Elige «Por cuadrantes» tanto en «Parecido por color» como en «Cajas contenedoras».',
+    preparar: { distancia: 32, color: 'cuadrantes', cajas: 'cuadrantes', conexion: false, lectura: true },
+    abrir: true,
+    logro: 'Cuando proximidad, semejanza y región común apuntan al mismo agrupamiento, la estructura global alcanza su máxima pregnancia: se entiende en una fracción de segundo y sin ambigüedad.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="A la izquierda, doce puntos negros dispuestos en anillo forman un círculo claro; a la derecha, los mismos doce puntos dispersos al azar.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        <text x="155" y="24" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>A · 12 PUNTOS EN ANILLO</text>
+        <text x="455" y="24" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>B · LOS MISMOS 12 PUNTOS AL AZAR</text>
+        <line x1="300" y1="20" x2="300" y2="162" stroke={REGLA} stroke-width="1.5" stroke-dasharray="4 4" />
+        <circle cx="155" cy="92" r="54" fill="none" stroke={AMARILLO} stroke-width="10" />
+        {anillo.map((p) => (
+          <circle cx={p.x} cy={p.y} r="6.5" fill={T} />
+        ))}
+        {azarosos.map((p) => (
+          <circle cx={p.x} cy={p.y} r="6.5" fill={T} />
+        ))}
+      </svg>
+    </div>
+    <p>En ambos lados hay exactamente doce círculos negros idénticos. ¿Qué viste a la izquierda antes de poder contarlos?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Viste «un círculo grande» o una rueda, no doce puntos sueltos. Esa forma circular no está dibujada en ningún punto individual: emerge de la relación espacial entre todos ellos. A la derecha, con la misma cantidad de tinta, no emerge ninguna figura global y el ojo tiene que saltar de punto en punto.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Cuando las señales perceptivas se contradicen"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Colores que cruzan funciones',
+          texto: 'El botón de borrar pista comparte el acento amarillo con el de reproducir, mientras el avance rápido tiene el mismo gris que el ajuste de audio.',
+          zona: zona(18, 36, 324, 62),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Distancias iguales para todo',
+          texto: 'Los controles de transporte, el volumen y las acciones de archivo están separados por la misma brecha. El espacio no informa qué va con qué.',
+          zona: zona(18, 108, 324, 68),
+        },
+        {
+          ...pct(330, 224),
+          titulo: 'Cajas que agrupan extraños',
+          texto: 'Un marco encierra «Siguiente pista» junto con «Silenciar» y «Guardar lista», forzando un grupo que contradice la tarea real.',
+          zona: zona(18, 186, 324, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de audio desorganizado donde colores, espacios y marcos agrupan controles sin relación funcional.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="20" y="24" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>REPRODUCTOR · SEÑALES EN CONFLICTO</text>
+        <rect x="20" y="40" width="98" height="48" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="69" y="68" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill={T}>▶ PLAY</text>
+        <rect x="131" y="40" width="98" height="48" fill="#f4f4f2" stroke={T} stroke-width="1.5" />
+        <text x="180" y="68" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>VOLUMEN 70 %</text>
+        <rect x="242" y="40" width="98" height="48" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="291" y="68" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>BORRAR</text>
+
+        <rect x="20" y="112" width="98" height="48" fill="#f4f4f2" stroke={T} stroke-width="1.5" />
+        <text x="69" y="140" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>⏮ ANTERIOR</text>
+        <rect x="131" y="112" width="98" height="48" fill={T} />
+        <text x="180" y="140" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">LISTA (14)</text>
+        <rect x="242" y="112" width="98" height="48" fill="#f4f4f2" stroke={T} stroke-width="1.5" />
+        <text x="291" y="140" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>ECUALIZADOR</text>
+
+        <rect x="20" y="188" width="320" height="68" fill="#fbfbf9" stroke={ROJO} stroke-width="2" stroke-dasharray="5 3" />
+        <rect x="32" y="202" width="88" height="40" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="76" y="226" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>⏭ SIGUIENTE</text>
+        <rect x="136" y="202" width="88" height="40" fill={T} />
+        <text x="180" y="226" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill="#ffffff">SILENCIAR</text>
+        <rect x="240" y="202" width="88" height="40" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="284" y="226" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>GUARDAR</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Cuando proximidad, semejanza y región cooperan"
+      notas={[
+        {
+          ...pct(332, 68),
+          titulo: 'Transporte unido por forma y cercanía',
+          texto: 'Anterior, Reproducir y Siguiente están juntos en una sola franja superior y comparten el estilo de botón primario.',
+          zona: zona(20, 38, 320, 66),
+        },
+        {
+          ...pct(332, 148),
+          titulo: 'Sonido en su propia región',
+          texto: 'Volumen, Silenciar y Ecualizador comparten un contenedor suave que los agrupa como controles de salida de audio.',
+          zona: zona(20, 118, 320, 64),
+        },
+        {
+          ...pct(332, 228),
+          titulo: 'Gestión de lista separada y discreta',
+          texto: 'Las acciones sobre la lista van abajo, con tratamiento neutro y separadas del resto por espacio limpio.',
+          zona: zona(20, 198, 320, 60),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de audio organizado en tres bloques claros: transporte arriba, ajustes de sonido en una caja central y acciones de lista abajo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="20" y="24" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>REPRODUCTOR · TRES GRUPOS COOPERATIVOS</text>
+
+        <rect x="20" y="42" width="92" height="52" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <text x="66" y="72" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>⏮ ANTERIOR</text>
+        <rect x="120" y="42" width="120" height="52" fill={AMARILLO} stroke={T} stroke-width="2.2" />
+        <text x="180" y="72" text-anchor="middle" font-family={SANS} font-size="13" font-weight="900" fill={T}>▶ PLAY</text>
+        <rect x="248" y="42" width="92" height="52" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <text x="294" y="72" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>⏭ SIGUIENTE</text>
+
+        <rect x="20" y="120" width="320" height="58" fill="#f5f5f2" stroke="#d4d4d0" stroke-width="1.2" />
+        <text x="34" y="142" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>SALIDA DE AUDIO</text>
+        <rect x="34" y="150" width="118" height="16" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <rect x="34" y="150" width="82" height="16" fill={T} />
+        <text x="164" y="162" font-family={SANS} font-size="11" font-weight="700" fill={T}>70 %</text>
+        <text x="218" y="162" font-family={SANS} font-size="10.5" font-weight="700" fill={TXT}>Silenciar</text>
+        <text x="278" y="162" font-family={SANS} font-size="10.5" font-weight="700" fill={TXT}>Ecualizar</text>
+
+        <line x1="20" y1="198" x2="340" y2="198" stroke={REGLA} stroke-width="1" />
+        <text x="20" y="232" font-family={SANS} font-size="11" font-weight="700" fill={T}>Lista actual (14 pistas)</text>
+        <text x="222" y="232" font-family={SANS} font-size="11" fill={G}>Guardar</text>
+        <text x="288" y="232" font-family={SANS} font-size="11" fill={ROJO}>Vaciar</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · cuatro señales sobre dieciséis piezas"
+    consigna="Dieciséis fichas forman un tablero de 4 × 4. Combina espacio, color, cajas contenedoras y líneas de conexión para comprobar cuándo cooperan en una misma estructura y qué señal se impone cuando dos principios se contradicen."
+    nota="Fija como A un agrupamiento por cuadrantes y compáralo con B oponiendo filas de color contra columnas encerradas en cajas."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Tablero de dieciséis elementos agrupados en cuatro cuadrantes.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      {[0, 1, 2, 3].map((f) =>
+        [0, 1, 2, 3].map((c) => {
+          const x = 140 + c * 84 + (c >= 2 ? 28 : 0);
+          const y = 32 + f * 58 + (f >= 2 ? 24 : 0);
+          const cuad = (f >= 2 ? 2 : 0) + (c >= 2 ? 1 : 0);
+          const fill = cuad === 0 ? AMARILLO : cuad === 3 ? '#222222' : '#ffffff';
+          const txt = cuad === 3 ? '#ffffff' : '#222222';
+          return (
+            <g>
+              <rect x={x} y={y} width="68" height="44" fill={fill} stroke="#222222" stroke-width="1.6" />
+              <text x={x + 34} y={y + 27} text-anchor="middle" font-family={SANS} font-size="12" font-weight="700" fill={txt}>
+                {String(f * 4 + c + 1).padStart(2, '0')}
+              </text>
+            </g>
+          );
+        }),
+      )}
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba ahora a enfrentar líneas conectoras con cajas y activa la lectura de dominancia en «Más controles»." />
+
+    <Deslizador
+      lab={lab}
+      variable="distancia"
+      etiqueta="Distancia entre grupos"
+      min={0}
+      max={48}
+      paso={4}
+      valor={28}
+      unidad="px"
+      ayuda="Abre un corredor horizontal y vertical para separar los cuatro cuadrantes por proximidad."
+    />
+    <Opciones
+      lab={lab}
+      variable="color"
+      etiqueta="Parecido por color"
+      valor="cuadrantes"
+      opciones={[
+        { valor: 'ninguno', texto: 'Ninguno' },
+        { valor: 'filas', texto: 'Por filas' },
+        { valor: 'columnas', texto: 'Por columnas' },
+        { valor: 'cuadrantes', texto: 'Por cuadrantes' },
+      ]}
+      ayuda="Aplica semejanza cromática en la dirección elegida."
+    />
+    <Opciones
+      lab={lab}
+      variable="cajas"
+      etiqueta="Cajas contenedoras"
+      valor="ninguna"
+      opciones={[
+        { valor: 'ninguna', texto: 'Ninguna' },
+        { valor: 'filas', texto: 'Por filas' },
+        { valor: 'columnas', texto: 'Por columnas' },
+        { valor: 'cuadrantes', texto: 'Por cuadrantes' },
+      ]}
+      ayuda="Encierra grupos en una región común con fondo y contorno."
+    />
+    <Interruptor
+      lab={lab}
+      variable="conexion"
+      etiqueta="Línea conectora horizontal"
+      ayuda="Une los elementos de cada fila mediante un trazo continuo (conexión uniforme)."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="lectura"
+        etiqueta="Mostrar qué ley domina"
+        activo={true}
+        ayuda="Superpone el diagnóstico cuantitativo de las señales activas y señala si cooperan o compiten."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"distancia":0,"color":"ninguno","cajas":"ninguna","conexion":false}'>Retícula neutra sin grupos</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":36,"color":"cuadrantes","cajas":"cuadrantes","conexion":false}'>Tres señales cooperando</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":32,"color":"filas","cajas":"columnas","conexion":false}'>Conflicto entre espacio, color y cajas</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":32,"color":"columnas","cajas":"ninguna","conexion":true}'>Conexión venciendo a distancia y color</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Alinea el color con los grupos espaciales"
+      comparar={false}
+      consigna="En esta barra de edición, el espacio separa «Texto» y «Archivo», pero los colores alternados piden emparejar botones de grupos distintos. Haz que el color coopere con el espacio."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Barra de herramientas con señales opuestas</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="modo"
+        etiqueta="Asignación del color"
+        valor="conflicto"
+        opciones={[
+          { valor: 'conflicto', texto: 'Cruza los grupos' },
+          { valor: 'neutro', texto: 'Un solo tono neutro' },
+          { valor: 'coopera', texto: 'Refuerza cada grupo' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Limpia el ruido para recuperar la buena forma"
+      comparar={false}
+      consigna="Cada celda tiene doble borde, sombra dura y esquinas marcadas. Cuando todas las piezas gritan su propio contorno, desaparece la lectura del conjunto. Reduce el ruido ornamental."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Horario semanal sobrecargado de líneas</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="limpieza"
+        etiqueta="Reducción de bordes redundantes"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Suma señales para aislar una zona crítica"
+      comparar={false}
+      consigna="La acción «Eliminar cuenta» parece un ajuste rutinario más. Suma señales perceptivas (espacio, región común y contraste) hasta que nadie pueda confundirla con las preferencias normales."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Preferencias de perfil</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="senales"
+        etiqueta="Señales que separan la zona crítica"
+        min={0}
+        max={3}
+        paso={1}
+        valor={0}
+        ayuda="0: integrada en la lista. 1: espacio. 2: espacio + región. 3: espacio + región + tono de alerta."
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Billete de tren: lectura global en tres bloques antes de leer cada dato"
+      notas={[
+        {
+          ...pct(330, 62),
+          titulo: 'Ruta unificada por conexión',
+          texto: 'Origen, flecha y destino forman una sola figura horizontal en el encabezado gracias a la línea continua que los enlaza.',
+          zona: zona(18, 26, 324, 68),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Datos de embarque por proximidad y región',
+          texto: 'Fecha, coche y asiento comparten una banda amarilla que se lee como el bloque operativo al subir al vagón.',
+          zona: zona(18, 104, 324, 66),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Metadatos silenciados al pie',
+          texto: 'Localizador y tarifa quedan agrupados abajo en cuerpo menor y gris secundario, fuera del recorrido urgente.',
+          zona: zona(18, 182, 324, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Billete de tren organizado en tres franjas claras: ruta conectada arriba, banda amarilla con coche y asiento en el centro, y código de reserva abajo.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="18" width="324" height="244" fill="#ffffff" stroke={T} stroke-width="2" />
+        <text x="34" y="42" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1" fill={G}>ALTA VELOCIDAD · BILLETE CONFIRMADO</text>
+        <text x="34" y="76" font-family={SANS} font-size="24" font-weight="900" fill={T}>MAD</text>
+        <line x1="98" y1="68" x2="232" y2="68" stroke={T} stroke-width="2.5" />
+        <polygon points="232,63 244,68 232,73" fill={T} />
+        <text x="256" y="76" font-family={SANS} font-size="24" font-weight="900" fill={T}>BCN</text>
+        <text x="34" y="92" font-family={SANS} font-size="10.5" fill={TXT}>08:30 · Atocha</text>
+        <text x="256" y="92" font-family={SANS} font-size="10.5" fill={TXT}>11:05 · Sants</text>
+
+        <rect x="30" y="110" width="300" height="58" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="46" y="130" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>FECHA</text>
+        <text x="46" y="152" font-family={SANS} font-size="15" font-weight="900" fill={T}>14 NOV</text>
+        <text x="154" y="130" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>COCHE</text>
+        <text x="154" y="152" font-family={SANS} font-size="15" font-weight="900" fill={T}>04</text>
+        <text x="236" y="130" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>ASIENTO</text>
+        <text x="236" y="152" font-family={SANS} font-size="15" font-weight="900" fill={T}>12B · Ventana</text>
+
+        <line x1="30" y1="190" x2="330" y2="190" stroke={REGLA} stroke-width="1.5" stroke-dasharray="4 3" />
+        <text x="34" y="216" font-family={SANS} font-size="10.5" fill={G}>Localizador: HX-9042-M</text>
+        <text x="34" y="236" font-family={SANS} font-size="10.5" fill={G}>Tarifa flexible · Acceso control 15 min antes</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Ficha clínica: emergencia visual de valores fuera de rango"
+      notas={[
+        {
+          ...pct(330, 54),
+          titulo: 'Identificación en bloque compacto',
+          texto: 'Nombre, historia y grupo sanguíneo se perciben como una sola cabecera gracias a la cercanía y al borde inferior.',
+          zona: zona(18, 22, 324, 54),
+        },
+        {
+          ...pct(330, 142),
+          titulo: 'Constantes normales igualadas por semejanza',
+          texto: 'Tres métricas estables comparten fondo blanco, tipografía neutra y alineación para leerse como «todo en orden».',
+          zona: zona(18, 86, 210, 102),
+        },
+        {
+          ...pct(330, 214),
+          titulo: 'Alerta separada por región y contraste',
+          texto: 'La glucemia elevada rompe la semejanza del grupo con borde grueso y etiqueta explícita para exigir atención inmediata.',
+          zona: zona(232, 86, 110, 170),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tarjeta médica con cabecera de paciente, tres constantes vitales normales a la izquierda y un bloque destacado a la derecha para la alerta de glucosa.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="18" width="324" height="244" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <text x="32" y="42" font-family={SANS} font-size="14" font-weight="900" fill={T}>C. Mendoza · HC 40891</text>
+        <text x="32" y="60" font-family={SANS} font-size="10.5" fill={G}>64 años · Grupo O+ · Sin alergias registradas</text>
+        <line x1="32" y1="72" x2="328" y2="72" stroke={REGLA} stroke-width="1.5" />
+
+        <rect x="32" y="88" width="186" height="46" fill="#f7f7f5" stroke="#dcdcd6" stroke-width="1" />
+        <text x="44" y="106" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>PRESIÓN ARTERIAL</text>
+        <text x="44" y="124" font-family={SANS} font-size="14" font-weight="700" fill={T}>118 / 76 mmHg · Normal</text>
+
+        <rect x="32" y="142" width="186" height="46" fill="#f7f7f5" stroke="#dcdcd6" stroke-width="1" />
+        <text x="44" y="160" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>FRECUENCIA CARDÍACA</text>
+        <text x="44" y="178" font-family={SANS} font-size="14" font-weight="700" fill={T}>68 lpm · Estable</text>
+
+        <rect x="32" y="196" width="186" height="46" fill="#f7f7f5" stroke="#dcdcd6" stroke-width="1" />
+        <text x="44" y="214" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>SATURACIÓN O₂</text>
+        <text x="44" y="232" font-family={SANS} font-size="14" font-weight="700" fill={T}>98 % · Normal</text>
+
+        <rect x="230" y="88" width="98" height="154" fill={AMARILLO} stroke={T} stroke-width="2.2" />
+        <text x="242" y="110" font-family={SANS} font-size="9" font-weight="900" letter-spacing="0.8" fill={T}>FUERA DE RANGO</text>
+        <text x="242" y="132" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>GLUCOSA</text>
+        <text x="242" y="168" font-family={SANS} font-size="26" font-weight="900" fill={T}>214</text>
+        <text x="242" y="186" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>mg/dL</text>
+        <text x="242" y="224" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>Revisar pauta →</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Portada de álbum: una figura emergente construida solo con barras sueltas"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Prägnanz en el centro geométrico',
+          texto: 'Dieciséis trazos verticales de distinta altura hacen emerger un círculo central aunque ninguna línea curva esté dibujada.',
+          zona: zona(90, 34, 180, 156),
+        },
+        {
+          ...pct(330, 148),
+          titulo: 'Repetición rítmica de las partes',
+          texto: 'La separación constante entre barras permite que el ojo compare sus extremos como un contorno continuo.',
+          zona: zona(98, 52, 164, 120),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Créditos agrupados como bloque único',
+          texto: 'Autor y título se sitúan al pie con el mismo ancho que la figura superior, cerrando un rectángulo general estable.',
+          zona: zona(70, 206, 220, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portada minimalista donde dieciséis barras verticales de distinta longitud hacen emerger la silueta de una esfera en el centro.">
+        <rect width={W} height={H} fill="#1b1b1b" />
+        <rect x="64" y="16" width="232" height="248" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        {Array.from({ length: 15 }, (_, i) => {
+          const dx = (i - 7) / 7;
+          const hSemi = Math.sqrt(Math.max(0, 1 - dx * dx)) * 58;
+          const x = 103 + i * 11;
+          return (
+            <g>
+              <line x1={x} y1={110 - hSemi} x2={x} y2={110 + hSemi} stroke={T} stroke-width="5" />
+            </g>
+          );
+        })}
+        <text x="180" y="218" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" letter-spacing="2" fill={T}>ENSAMBLE NORTE</text>
+        <text x="180" y="236" text-anchor="middle" font-family={SERIF} font-size="12" font-style="italic" fill={TXT}>Variaciones sobre cámara acústica</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre emergencia, buena forma (Prägnanz) y competencia entre señales perceptivas."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const TXT = '#444444';
+  const SEC = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  type E = {
+    distancia: number;
+    color: string;
+    cajas: string;
+    conexion: boolean;
+    lectura: boolean;
+  };
+
+  function diagnosticar(e: E) {
+    const dirs: { ley: string; dir: string; peso: number }[] = [];
+    if (e.distancia >= 12) dirs.push({ ley: 'proximidad', dir: 'cuadrantes', peso: Math.round((e.distancia / 48) * 55) });
+    if (e.color !== 'ninguno') dirs.push({ ley: 'semejanza cromática', dir: e.color, peso: 42 });
+    if (e.cajas !== 'ninguna') dirs.push({ ley: 'región común', dir: e.cajas, peso: 78 });
+    if (e.conexion) dirs.push({ ley: 'conexión uniforme', dir: 'filas', peso: 86 });
+
+    if (dirs.length === 0) {
+      return { estado: 'neutro', dominante: 'ninguna', dirGanadora: 'bloque único', conflicto: false, dirs };
+    }
+    const porDir = new Map<string, number>();
+    for (const d of dirs) porDir.set(d.dir, (porDir.get(d.dir) ?? 0) + d.peso);
+    const ordenadas = [... dirs].sort((a, b) => b.peso - a.peso);
+    const unicas = new Set(dirs.map((d) => d.dir));
+    return {
+      estado: unicas.size === 1 ? 'cooperan' : 'compiten',
+      dominante: ordenadas[0].ley,
+      dirGanadora: ordenadas[0].dir,
+      conflicto: unicas.size > 1,
+      dirs,
+    };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 330;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    const diag = diagnosticar(e);
+    raiz.setAttribute(
+      'aria-label',
+      `Tablero de 16 piezas. Estado: ${diag.estado}; dirección dominante: ${diag.dirGanadora} por ${diag.dominante}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const cw = W < 460 ? 52 : 66;
+    const ch = 40;
+    const baseGap = 12;
+    const extra = e.distancia;
+    const totalW = cw * 4 + baseGap * 3 + extra;
+    const totalH = ch * 4 + baseGap * 3 + extra * 0.75;
+    const startX = (W - totalW) / 2;
+    const startY = (H - (e.lectura ? 34 : 10) - totalH) / 2;
+
+    const posX = (c: number) => startX + c * (cw + baseGap) + (c >= 2 ? extra : 0);
+    const posY = (f: number) => startY + f * (ch + baseGap) + (f >= 2 ? extra * 0.75 : 0);
+
+    // 1. Cajas de región común
+    if (e.cajas === 'filas') {
+      for (let f = 0; f < 4; f++) {
+        raiz.append(
+          svg('rect', {
+            x: posX(0) - 7,
+            y: posY(f) - 5,
+            width: posX(3) + cw - posX(0) + 14,
+            height: ch + 10,
+            fill: '#f1f1ec',
+            stroke: TINTA,
+            'stroke-width': 1.8,
+          }),
+        );
+      }
+    } else if (e.cajas === 'columnas') {
+      for (let c = 0; c < 4; c++) {
+        raiz.append(
+          svg('rect', {
+            x: posX(c) - 6,
+            y: posY(0) - 6,
+            width: cw + 12,
+            height: posY(3) + ch - posY(0) + 12,
+            fill: '#f1f1ec',
+            stroke: TINTA,
+            'stroke-width': 1.8,
+          }),
+        );
+      }
+    } else if (e.cajas === 'cuadrantes') {
+      for (const [f0, c0] of [[0, 0], [0, 2], [2, 0], [2, 2]]) {
+        raiz.append(
+          svg('rect', {
+            x: posX(c0) - 7,
+            y: posY(f0) - 6,
+            width: posX(c0 + 1) + cw - posX(c0) + 14,
+            height: posY(f0 + 1) + ch - posY(f0) + 12,
+            fill: '#f1f1ec',
+            stroke: TINTA,
+            'stroke-width': 1.8,
+          }),
+        );
+      }
+    }
+
+    // 2. Líneas de conexión uniforme
+    if (e.conexion) {
+      for (let f = 0; f < 4; f++) {
+        const yMid = posY(f) + ch / 2;
+        raiz.append(
+          svg('line', {
+            x1: posX(0) + cw / 2,
+            y1: yMid,
+            x2: posX(3) + cw / 2,
+            y2: yMid,
+            stroke: TINTA,
+            'stroke-width': 5,
+          }),
+        );
+      }
+    }
+
+    // 3. Los 16 elementos
+    for (let f = 0; f < 4; f++) {
+      for (let c = 0; c < 4; c++) {
+        const x = posX(c);
+        const y = posY(f);
+        const cuad = (f >= 2 ? 2 : 0) + (c >= 2 ? 1 : 0);
+        let indiceColor = -1;
+        if (e.color === 'filas') indiceColor = f % 2;
+        else if (e.color === 'columnas') indiceColor = c % 2;
+        else if (e.color === 'cuadrantes') indiceColor = cuad % 2;
+
+        const relleno = indiceColor === -1 ? '#ffffff' : indiceColor === 0 ? AMARILLO : TINTA;
+        const colorTxt = relleno === TINTA ? '#ffffff' : TINTA;
+
+        raiz.append(
+          svg('rect', {
+            x,
+            y,
+            width: cw,
+            height: ch,
+            fill: relleno,
+            stroke: TINTA,
+            'stroke-width': 1.6,
+          }),
+        );
+
+        const t = svg('text', {
+          x: x + cw / 2,
+          y: y + ch / 2 + 4,
+          'text-anchor': 'middle',
+          'font-family': SANS,
+          'font-size': 12,
+          'font-weight': 700,
+          fill: colorTxt,
+        });
+        t.textContent = String(f * 4 + c + 1).padStart(2, '0');
+        raiz.append(t);
+      }
+    }
+
+    // 4. Diagnóstico en vivo
+    if (e.lectura) {
+      const etq = diag.estado === 'neutro'
+        ? 'SIN SEÑALES DIFERENCIALES · 1 BLOQUE DE 16'
+        : diag.conflicto
+          ? `CONFLICTO DE SEÑALES · SE IMPONE ${diag.dominante.toUpperCase()} (${diag.dirGanadora.toUpperCase()})`
+          : `SEÑALES ALINEADAS · AGRUPACIÓN POR ${diag.dirGanadora.toUpperCase()}`;
+      const pie = svg('text', {
+        x: W / 2,
+        y: H - 12,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11,
+        'font-weight': 700,
+        fill: diag.conflicto ? COTA : TINTA,
+      });
+      pie.textContent = etq;
+      raiz.append(pie);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const diag = diagnosticar(e);
+    if (diag.estado === 'neutro') {
+      return 'Sin señales diferenciales: las dieciséis fichas están a igual distancia y comparten el mismo aspecto. El ojo percibe <b class="dv-cifra">un único bloque de 16 piezas</b>.';
+    }
+    if (!diag.conflicto) {
+      const lista = diag.dirs.map((d) => d.ley).join(' + ');
+      return `Cooperación perceptual (${lista}): todas las señales activas agrupan <b class="dv-cifra">por ${diag.dirGanadora}</b>. La estructura se reconoce al instante sin esfuerzo.`;
+    }
+    const perdedoras = diag.dirs.slice(1).map((d) => `${d.ley} (${d.dir})`).join(' y ');
+    return `Competencia perceptual: la <b class="dv-cifra">${diag.dominante}</b> agrupa por <b class="dv-cifra">${diag.dirGanadora}</b> y se impone sobre ${perdedoras}, pero el conflicto ralentiza la lectura.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="gestalt"]')) {
+    guiar<E>(raiz, [
+      (e) => e.distancia === 0 && e.color === 'ninguno' && e.cajas === 'ninguna' && !e.conexion,
+      (e) => e.distancia >= 28 && e.color === 'ninguno' && e.cajas === 'ninguna',
+      (e) => e.distancia >= 24 && e.color === 'filas' && e.cajas === 'ninguna',
+      (e) => e.cajas === 'columnas' && e.color === 'filas',
+      (e) => e.distancia >= 24 && e.color === 'cuadrantes' && e.cajas === 'cuadrantes' && e.lectura,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { modo: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const bgA = e.modo === 'conflicto' ? AMARILLO : e.modo === 'coopera' ? AMARILLO : '#ffffff';
+    const bgB = e.modo === 'conflicto' ? '#ffffff' : e.modo === 'coopera' ? AMARILLO : '#ffffff';
+    const bgC = e.modo === 'conflicto' ? AMARILLO : e.modo === 'coopera' ? '#222222' : '#ffffff';
+    const bgD = e.modo === 'conflicto' ? '#ffffff' : e.modo === 'coopera' ? '#222222' : '#ffffff';
+    const fgCD = e.modo === 'coopera' ? '#ffffff' : '#222222';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;">
+          <div style="display:flex;gap:6px;">
+            <span style="padding:7px 11px;border:1.8px solid #222;background:${bgA};font-size:12px;font-weight:700;">Negrita</span>
+            <span style="padding:7px 11px;border:1.8px solid #222;background:${bgB};font-size:12px;font-weight:700;">Cursiva</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <span style="padding:7px 11px;border:1.8px solid #222;background:${bgC};color:${fgCD};font-size:12px;font-weight:700;">Exportar</span>
+            <span style="padding:7px 11px;border:1.8px solid #222;background:${bgD};color:${fgCD};font-size:12px;font-weight:700;">Imprimir</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.modo === 'conflicto') return 'El espacio separa «Formato» y «Salida», pero el color amarillo salta de un grupo a otro y <b class="dv-cifra">contradice la distancia</b>.';
+    if (e.modo === 'neutro') return 'Al unificar el color, desaparece el conflicto y <b class="dv-cifra">la proximidad organiza sola</b> los dos pares.';
+    return '<b class="dv-cifra">Proximidad y semejanza cooperan</b>: espacio y color separan sin duda las acciones de texto de las de archivo.';
+  }
+
+  type E2 = { limpieza: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const k = e.limpieza / 100;
+    const bw = Math.max(0, 2.5 - k * 2.5);
+    const shadow = k < 0.4 ? '4px 4px 0 #222' : 'none';
+    const items = [
+      ['09:00', 'Laboratorio perceptual'],
+      ['11:00', 'Revisión de retículas'],
+      ['14:00', 'Seminario de lectura'],
+    ];
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <div style="display:grid;gap:${k > 0.6 ? '8px' : '10px'};">
+          ${items.map(([h, t]) => `
+            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:#fff;border:${bw > 0.3 ? `${bw.toFixed(1)}px solid #222` : 'none'};border-bottom:1px solid #e5e5e5;box-shadow:${shadow};">
+              <strong style="font-size:12px;">${h}</strong>
+              <span style="font-size:12.5px;color:#444;">${t}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.limpieza < 40) return 'Tres cajas pesadas con sombra dura: cada fila se cierra sobre sí misma y <b class="dv-cifra">rompe la unidad de la tabla</b>.';
+    if (e.limpieza < 80) return 'Sin sombras dobles, la columna de horas y la de temas empiezan a leerse como un conjunto.';
+    return '<b class="dv-cifra">Máxima pregnancia</b>: la alineación y una sutil línea divisoria bastan para organizar el horario con la mitad de tinta.';
+  }
+
+  type E3 = { senales: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const gap = e.senales >= 1 ? 18 : 4;
+    const caja = e.senales >= 2 ? 'padding:8px 10px;border:1.8px solid #222;background:#fbfbf9;' : 'padding:4px 0;';
+    const alerta = e.senales >= 3 ? 'background:#eeff41;border:2px solid #222;padding:8px 10px;' : caja;
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;font-size:12.5px;">
+        <div style="padding:5px 0;border-bottom:1px solid #e5e5e5;">Idioma de la interfaz · Español</div>
+        <div style="padding:5px 0;border-bottom:1px solid #e5e5e5;">Resumen semanal por correo · Activo</div>
+        <div style="margin-top:${gap}px;${alerta}font-weight:${e.senales >= 2 ? 700 : 400};">
+          ${e.senales >= 3 ? 'ZONA CRÍTICA · ' : ''}Eliminar cuenta y borrar archivos
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.senales === 0) return '<b class="dv-cifra">0 señales</b>: la acción destructiva parece una preferencia más de la lista.';
+    if (e.senales === 1) return '<b class="dv-cifra">1 señal (proximidad)</b>: el espacio separa la opción, aunque mantiene el mismo aspecto.';
+    if (e.senales === 2) return '<b class="dv-cifra">2 señales (espacio + región)</b>: el marco cerrado ya advierte que pertenece a otra categoría.';
+    return '<b class="dv-cifra">3 señales sumadas</b>: distancia, región común y contraste cooperan para evitar un clic accidental.';
+  }
+
+  for (const [id, p, desc] of [
+    ['gestalt-e1', pintarE1, describirE1],
+    ['gestalt-e2', pintarE2, describirE2],
+    ['gestalt-e3', pintarE3, describirE3],
+  ] as const) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p as never, describir: desc as never });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────────
+  function rEmergencia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Emergencia: percibimos la configuración global antes que las piezas individuales',
+        es: true,
+      },
+      {
+        texto: 'Suma lineal: primero contamos cada punto y después calculamos la figura',
+        es: false,
+      },
+      {
+        texto: 'Fatiga retiniana: los puntos se funden porque el ojo pierde nitidez',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Cuando doce puntos dispuestos en anillo se ven de inmediato como «un círculo» antes de contar los puntos, ¿qué fenómeno ocurre?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La emergencia perceptual hace que las relaciones espaciales entre las partes generen una forma global que se percibe antes que los elementos aislados.',
+      repaso: 'Emergencia perceptual',
+    };
+  }
+
+  function rPragnanz(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un cuadrado y un círculo superpuestos (dos figuras simples y simétricas)',
+        es: true,
+      },
+      {
+        texto: 'Tres polígonos irregulares con muescas que casualmente se tocan por los bordes',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según el principio de Prägnanz (buena forma), ¿cómo tiende a organizar el sistema visual dos contornos que se cruzan?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La ley de la buena forma establece que el sistema visual prefiere la interpretación más regular, simétrica y estable posible antes que fragmentar la escena en piezas arbitrarias.',
+      repaso: 'Principio de Prägnanz',
+    };
+  }
+
+  function rCompetencia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'La región común (el marco cerrado) suele imponerse sobre el parecido de color',
+        es: true,
+      },
+      {
+        texto: 'Ambas señales se anulan por completo y dejan de verse los elementos',
+        es: false,
+      },
+      {
+        texto: 'El color siempre vence a cualquier línea o marco contenedor',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Dos fichas de distinto color están encerradas dentro de una misma caja con borde, mientras otra ficha del mismo color queda fuera. ¿Qué señal suele ganar?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Los experimentos de Stephen Palmer (1992) demostraron que el cerramiento explícito de una región común o una línea conectora suele dominar sobre la proximidad y la semejanza.',
+      repaso: 'Competencia entre leyes',
+    };
+  }
+
+  function rKoffka(): Ronda {
+    const ops = barajar([
+      {
+        texto: '«El todo es algo distinto de la suma de sus partes»',
+        es: true,
+      },
+      {
+        texto: '«Cuantos más elementos tenga una página, mayor será su impacto»',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Kurt Koffka corrigió la traducción popular de la Gestalt. ¿Cuál es su formulación exacta?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Koffka (1935) aclaró que no se trata de que el todo sea «más» que la suma, sino de que el conjunto posee propiedades estructurales propias que no existen en las partes sueltas.',
+      repaso: 'Tesis de Koffka',
+    };
+  }
+
+  function rAjusteCooperacion(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Los colores agrupan estos seis botones en dos pares, pero todos están a la misma distancia. Abre el espacio entre los dos grupos para que la proximidad coopere con el color.',
+      control: {
+        etiqueta: 'Espacio entre el grupo A y el grupo B',
+        min: 4,
+        max: 48,
+        paso: 4,
+        valor: 4,
+        unidad: 'px',
+      },
+      pintar: (esc, v) => {
+        esc.innerHTML = `
+          <div style="display:flex;justify-content:center;align-items:center;padding:18px;font-family:${SANS};">
+            <div style="display:flex;gap:6px;">
+              <span style="padding:7px 11px;border:1.8px solid #222;background:${AMARILLO};font-size:12px;font-weight:700;color:#222;">Cortar</span>
+              <span style="padding:7px 11px;border:1.8px solid #222;background:${AMARILLO};font-size:12px;font-weight:700;color:#222;">Copiar</span>
+              <span style="padding:7px 11px;border:1.8px solid #222;background:${AMARILLO};font-size:12px;font-weight:700;color:#222;">Pegar</span>
+            </div>
+            <div style="width:${v}px;"></div>
+            <div style="display:flex;gap:6px;">
+              <span style="padding:7px 11px;border:1.8px solid #222;background:#fff;font-size:12px;font-weight:700;color:#222;">Compartir</span>
+              <span style="padding:7px 11px;border:1.8px solid #222;background:#fff;font-size:12px;font-weight:700;color:#222;">Exportar</span>
+              <span style="padding:7px 11px;border:1.8px solid #222;background:#fff;font-size:12px;font-weight:700;color:#222;">Archivar</span>
+            </div>
+          </div>`;
+      },
+      cumple: (v) => v >= 24,
+      falta: (v) => `Con ${v} px la brecha entre grupos aún se parece demasiado al espacio interno (6 px). Ábrela al menos a 24 px.`,
+      porque: 'Cuando la distancia entre grupos al menos triplica el espacio interno y además coincide con el cambio de color, proximidad y semejanza se refuerzan mutuamente.',
+      repaso: 'Cooperación entre proximidad y semejanza',
+    };
+  }
+
+  const juegoEl = document.querySelector<HTMLElement>('[data-juego="gestalt"]');
+  if (juegoEl) {
+    jugar(juegoEl, () =>
+      barajar([rEmergencia(), rPragnanz(), rCompetencia(), rKoffka(), rAjusteCooperacion()]),
+    );
+  }
+</script>

@@ -1,0 +1,896 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'jerarquia';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Apaga todas las señales.',
+    hacer: 'Pon «Diferencia de tamaño» en «Ninguna (16 px)» y desactiva «Diferencia de peso», «Diferencia de tono» y «Espacio entre bloques».',
+    pista: 'Selecciona la primera opción de tamaño y apaga los interruptores.',
+    preparar: { tamano: 'igual', peso: false, tono: false, sangria: '0', espacio: false },
+    logro: 'Los seis datos tienen exactamente el mismo cuerpo, grosor, color y margen. Para saber cuándo es la charla o quién la dicta hay que leer de principio a fin.',
+  },
+  {
+    titulo: 'Separa niveles usando solo espacio.',
+    hacer: 'Con el tamaño fijo en «Ninguna (16 px)», activa «Espacio entre bloques».',
+    pista: 'Marca la casilla de espacio vertical.',
+    preparar: { tamano: 'igual', peso: false, tono: false, sangria: '0' },
+    logro: 'Sin cambiar ni un píxel del tamaño de letra ni añadir negritas, la ficha se divide en tres grupos reconocibles: encabezado, contenido principal y pie logístico.',
+  },
+  {
+    titulo: 'Suma peso y tono sin tocar el tamaño.',
+    hacer: 'Mantén «Ninguna (16 px)» y activa «Diferencia de peso» y «Diferencia de tono».',
+    pista: 'Activa ambos interruptores.',
+    preparar: { tamano: 'igual', espacio: true },
+    logro: 'Reto superado: tienes tres niveles de lectura nítidos con un único tamaño de 16 px. El título destaca por negrita, el cuerpo se lee en tinta normal y los metadatos retroceden en gris.',
+  },
+  {
+    titulo: 'Introduce sangría estructural.',
+    hacer: 'Abre «Más controles» y cambia «Sangría y posición» a «Escalonada».',
+    pista: 'Despliega «Más controles» y elige «Escalonada».',
+    abrir: true,
+    logro: 'El desplazamiento horizontal crea un margen izquierdo reservado para las etiquetas de primer nivel y agrupa los detalles a la derecha.',
+  },
+  {
+    titulo: 'Compara con una escala de tamaños moderada.',
+    hacer: 'Cambia «Diferencia de tamaño» a «Tres niveles».',
+    pista: 'Elige la segunda opción del control de tamaño.',
+    logro: 'Cuando el espacio, el peso y el tono ya hacen su trabajo, basta un cambio moderado de cuerpo para consolidar la jerarquía sin que la página grite.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos fichas con los mismos seis datos de una conferencia: a la izquierda en bloque plano de texto corrido; a la derecha ordenada en tres niveles claros.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        {/* Tarjeta izquierda: bloque plano */}
+        <rect x="20" y="16" width="264" height="148" fill="#ffffff" stroke="#d8d8d4" stroke-width="1.2" />
+        <text x="34" y="38" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>A · SIN JERARQUÍA (1 NIVEL)</text>
+        <text font-family={SANS} font-size="12" fill={T}>
+          <tspan x="34" y="64">Ciclo de Diseño Editorial</tspan>
+          <tspan x="34" y="82">La retícula como partitura</tspan>
+          <tspan x="34" y="100">Conferencia de Sofía Méndez</tspan>
+          <tspan x="34" y="118">Jueves 18 de octubre · 18:30 h</tspan>
+          <tspan x="34" y="136">Aula Magna, Bloque 16 · Entrada libre</tspan>
+        </text>
+
+        {/* Tarjeta derecha: 3 niveles */}
+        <rect x="316" y="16" width="264" height="148" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="330" y="36" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>CICLO DE DISEÑO EDITORIAL</text>
+        <text x="330" y="62" font-family={SERIF} font-size="20" font-weight="700" fill={T}>La retícula como partitura</text>
+        <text x="330" y="82" font-family={SANS} font-size="12.5" font-weight="400" fill="#444444">Conferencia de Sofía Méndez</text>
+        <line x1="330" y1="98" x2="564" y2="98" stroke="#e5e5e5" stroke-width="1" />
+        <rect x="330" y="110" width="142" height="20" fill={AMARILLO} />
+        <text x="336" y="124" font-family={SANS} font-size="11" font-weight="700" fill={T}>JUE 18 OCT · 18:30 H</text>
+        <text x="330" y="146" font-family={SANS} font-size="11" fill={G}>Aula Magna, Bloque 16 · Entrada libre</text>
+      </svg>
+    </div>
+    <p>Ambas tarjetas contienen exactamente las mismas 21 palabras. ¿Por qué en la segunda sabes de qué trata y a qué hora es antes de terminar de leerla?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En la tarjeta izquierda los seis datos compiten en el mismo tamaño, peso, color e interlineado: el ojo no puede escanear y está obligado a leer línea por línea. En la derecha, los datos se agrupan en <strong>tres niveles</strong> mediante tamaño, peso, tono y espacio vertical: primero entra el título y la fecha, luego la autora y por último la ubicación y el ciclo.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Seis estilos distintos que compiten entre sí"
+      notas={[
+        {
+          ...pct(330, 48),
+          titulo: 'Sobremarcado en cada línea',
+          texto: 'Subrayados, mayúsculas, cursivas, cajas grises y signos de exclamación se acumulan sin un orden claro.',
+          zona: zona(16, 16, 328, 86),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'El dato crítico se esconde',
+          texto: 'La dosis y el intervalo («1 comprimido cada 8 horas») pesan menos que el código de lote y el nombre del laboratorio.',
+          zona: zona(16, 108, 328, 78),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Demasiados niveles aparentes',
+          texto: 'Cuando cada renglón inventa una señal nueva, el lector pierde la referencia de qué es principal y qué es secundario.',
+          zona: zona(16, 192, 328, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Prospecto de medicamento mal jerarquizado con seis estilos distintos compitiendo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="20" y="18" width="320" height="32" fill="#222222" />
+        <text x="180" y="39" text-anchor="middle" font-family={SANS} font-size="13" font-weight="900" fill={AMARILLO}>LABORATORIOS DEL SUR S. A. — LOTE #8841</text>
+        <text x="20" y="72" font-family={SANS} font-size="14" font-weight="700" text-decoration="underline" fill={ROJO}>¡VÍA ORAL · VENTA BAJO FÓRMULA!</text>
+        <rect x="20" y="84" width="320" height="28" fill="#f0f0ec" stroke="#222222" stroke-width="1.5" />
+        <text x="28" y="102" font-family={SERIF} font-style="italic" font-size="14" font-weight="700" fill={T}>Amoxicilina 500 mg (cápsulas duras)</text>
+        <text x="20" y="134" font-family={SANS} font-size="12" fill="#444444">Dosis habitual adultos: tomar 1 cápsula cada 8 horas</text>
+        <text x="20" y="154" font-family={SANS} font-size="12" font-weight="700" fill={T}>DURACIÓN DEL TRATAMIENTO: COMPLETAR 7 DÍAS</text>
+        <rect x="20" y="168" width="320" height="36" fill="#fbe9e7" stroke={ROJO} stroke-width="2" />
+        <text x="180" y="191" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill={ROJO}>¡CONSERVAR A MENOS DE 25 °C EN SU CAJA!</text>
+        <text x="20" y="226" font-family={SANS} font-size="13" font-weight="900" text-decoration="underline" fill={T}>ADVERTENCIA: NO SUSPENDER ANTES DE TIEMPO</text>
+        <text x="20" y="252" font-family={SERIF} font-size="12" font-style="italic" fill={T}>Registro sanitario INVIMA 2024M-0019 · Caja por 21 uds.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Tres niveles claros según la urgencia de lectura"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: '1.º Qué medicamento y qué concentración',
+          texto: 'El principio activo y los miligramos encabezan la etiqueta con el mayor cuerpo y peso.',
+          zona: zona(20, 22, 320, 62),
+        },
+        {
+          ...pct(330, 136),
+          titulo: '2.º Cómo y cuándo tomarlo',
+          texto: 'La pauta posológica ocupa una franja destacada y limpia, separada del resto por espacio vertical.',
+          zona: zona(20, 92, 320, 76),
+        },
+        {
+          ...pct(330, 226),
+          titulo: '3.º Conservación y datos legales en calma',
+          texto: 'El lote, el laboratorio y la temperatura quedan legibles en un cuerpo menor y tono gris para consulta.',
+          zona: zona(20, 178, 320, 84),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Etiqueta de medicamento organizada en tres niveles claros: nombre y dosis, instrucciones de toma, y advertencias secundarias.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>VÍA ORAL · 21 CÁPSULAS DURAS</text>
+        <text x="24" y="68" font-family={SANS} font-size="24" font-weight="900" fill={T}>Amoxicilina 500 mg</text>
+        <rect x="24" y="92" width="312" height="68" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <rect x="24" y="92" width="6" height="68" fill={AMARILLO} />
+        <text x="42" y="118" font-family={SANS} font-size="15" font-weight="700" fill={T}>1 cápsula cada 8 horas</text>
+        <text x="42" y="142" font-family={SERIF} font-size="11.5" fill="#444444">Durante 7 días completos, aunque cedan los síntomas.</text>
+        <text x="24" y="194" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>No suspender el tratamiento antes de tiempo.</text>
+        <text x="24" y="214" font-family={SERIF} font-size="12" fill="#444444">Conservar a menos de 25 °C en su envase original.</text>
+        <line x1="24" y1="234" x2="336" y2="234" stroke="#e5e5e5" />
+        <text x="24" y="254" font-family={SANS} font-size="10.5" fill={G}>Laboratorios del Sur · Lote 8841 · Reg. 2024M-0019</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · cinco señales para construir jerarquía"
+    consigna="Inspirado en el ejercicio clásico de Ellen Lupton: la misma ficha informativa se organiza activando o apagando tamaño, peso, tono, posición y espacio. Comprueba cuántas señales necesitas realmente y supera el reto de jerarquizar sin cambiar el tamaño de la letra."
+    nota="Fija una versión con tamaño bloqueado en 16 px como A y compárala con otra que use tres tamaños."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Ficha de evento cultural organizada en tres niveles jerárquicos.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <rect x="60" y="24" width="520" height="272" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="92" y="64" font-family={SANS} font-size="11" font-weight="700" letter-spacing="1.2" fill={G}>SEMINARIO DE TIPOGRAFÍA · SESIÓN 04</text>
+      <text x="92" y="106" font-family={SERIF} font-size="26" font-weight="700" fill={T}>Ordenar sin gritar en la página</text>
+      <text x="92" y="134" font-family={SANS} font-size="15" font-weight="700" fill="#444444">Ponente: Clara Salgado · Diseñadora editorial</text>
+      <text x="92" y="176" font-family={SERIF} font-size="14" fill="#444444">Un recorrido práctico por retículas, índices, prospectos y pantallas donde la claridad depende de la posición y las pausas.</text>
+      <text x="92" y="232" font-family={SANS} font-size="13" font-weight="700" fill={T}>Jueves 24 de octubre · 17:00 a 19:00 h</text>
+      <text x="92" y="254" font-family={SANS} font-size="12" fill={G}>Sala de Lectura, Piso 2 · Entrada libre con inscripción</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba el modo de exceso de tamaños o combina sangría escalonada con tamaño único." />
+
+    <Opciones
+      lab={lab}
+      variable="tamano"
+      etiqueta="Diferencia de tamaño"
+      valor="tres"
+      opciones={[
+        { valor: 'igual', texto: 'Ninguna (16 px)' },
+        { valor: 'tres', texto: 'Tres niveles' },
+        { valor: 'exceso', texto: 'Seis tamaños' },
+      ]}
+      ayuda="En «Ninguna (16 px)» todas las líneas miden lo mismo para poner a prueba las demás variables."
+    />
+    <Interruptor lab={lab} variable="peso" etiqueta="Diferencia de peso" valor={true} ayuda="Reserva la negrita para el primer y segundo nivel de lectura." />
+    <Interruptor lab={lab} variable="tono" etiqueta="Diferencia de tono (gris/tinta)" valor={true} ayuda="Usa tinta #222222 en lo principal y gris #6f6f6f en los metadatos." />
+    <Interruptor lab={lab} variable="espacio" etiqueta="Espacio entre bloques" valor={true} ayuda="Agrupa los renglones en tres bloques mediante pausas verticales." />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="sangria"
+        etiqueta="Sangría y posición"
+        valor="0"
+        opciones={[
+          { valor: '0', texto: 'Sin sangría' },
+          { valor: '1', texto: 'Escalonada' },
+          { valor: '2', texto: 'Columna lateral' },
+        ]}
+        ayuda="Desplaza horizontalmente los niveles secundarios para separar funciones por eje vertical."
+      />
+      <Interruptor lab={lab} variable="cotas" etiqueta="Mostrar niveles de lectura (1.º, 2.º, 3.º)" ayuda="Marca a la izquierda a qué nivel jerárquico pertenece cada renglón." />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"tamano":"igual","peso":false,"tono":false,"espacio":false,"sangria":"0"}'>Texto plano sin jerarquía</button>
+      <button type="button" class="dv-boton" data-preset='{"tamano":"igual","peso":true,"tono":true,"espacio":true,"sangria":"1"}'>Reto: 3 niveles a 16 px</button>
+      <button type="button" class="dv-boton" data-preset='{"tamano":"tres","peso":true,"tono":true,"espacio":true,"sangria":"0"}'>Jerarquía clásica en 3 niveles</button>
+      <button type="button" class="dv-boton" data-preset='{"tamano":"exceso","peso":true,"tono":false,"espacio":false,"sangria":"0"}'>Seis tamaños sin pausas</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Quita las señales redundantes de un intertítulo"
+      comparar={false}
+      consigna="Este subtítulo acumula cinco señales a la vez: tamaño mayor, negrita, mayúsculas, subrayado y fondo de color. Reduce el número de señales hasta que se distinga del párrafo con limpieza."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222222;">
+        <p style="margin:0 0 8px;font-size:16px;font-weight:900;text-decoration:underline;background:#eeff41;padding:4px 6px;">2. REQUISITOS DE ENTREGA</p>
+        <p style="margin:0;font-size:13px;color:#444444;">Los archivos deben enviarse en formato PDF antes del viernes a las 18:00 h.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="senales"
+        etiqueta="Señales acumuladas en el intertítulo"
+        min={1}
+        max={5}
+        paso={1}
+        valor={5}
+        ayuda="5: tamaño + negrita + mayúsculas + subrayado + caja. 1 o 2: cambio de registro limpio."
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Reduce seis tamaños casi iguales a tres niveles francos"
+      comparar={false}
+      consigna="Esta tarjeta usa seis tamaños entre 12 px y 19 px (19, 17, 16, 15, 13 y 12 px). Como todos se parecen, ninguno manda. Agrupa los datos en tres niveles claros."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222222;">
+        <p style="margin:0;font-size:17px;">Festival de Cine Documental</p>
+        <p style="margin:2px 0;font-size:19px;">La memoria del río</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="esquema"
+        etiqueta="Cantidad de niveles de tamaño"
+        valor="6"
+        opciones={[
+          { valor: '6', texto: '6 tamaños tímidos' },
+          { valor: '4', texto: '4 tamaños' },
+          { valor: '3', texto: '3 niveles francos' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Corrige una jerarquía invertida"
+      comparar={false}
+      consigna="En esta ficha de biblioteca, la etiqueta «TÍTULO DEL LIBRO» y el código de estantería pesan más que el nombre de la obra. Invierte los pesos para que el contenido mande sobre el rótulo."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222222;">
+        <p style="margin:0;font-size:16px;font-weight:900;">TÍTULO DEL LIBRO: El arte del color</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="orden"
+        etiqueta="Qué recibe el primer nivel"
+        valor="rotulo"
+        opciones={[
+          { valor: 'rotulo', texto: 'Los rótulos del formulario' },
+          { valor: 'igual', texto: 'Rótulos y datos iguales' },
+          { valor: 'dato', texto: 'El título de la obra y el autor' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Tarjeta de embarque: jerarquía por urgencia temporal"
+      notas={[
+        {
+          ...pct(320, 72),
+          titulo: '1.º Lo que miras caminando por la terminal',
+          texto: 'La puerta de embarque («B14»), la hora límite («14:25») y el asiento («18A») usan el cuerpo mayor y cifras tabulares en negrita.',
+          zona: zona(16, 48, 328, 72),
+        },
+        {
+          ...pct(320, 156),
+          titulo: '2.º Ruta y pasajero',
+          texto: 'El origen, el destino y el nombre del pasajero van en un nivel intermedio: confirman el viaje sin competir con la puerta.',
+          zona: zona(16, 128, 328, 66),
+        },
+        {
+          ...pct(320, 236),
+          titulo: '3.º Código de reserva y número de billete',
+          texto: 'Los datos administrativos se reservan para el pie en cuerpo pequeño y gris #6f6f6f.',
+          zona: zona(16, 204, 328, 56),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tarjeta de embarque donde la puerta B14, la hora 14:25 y el asiento 18A dominan el primer nivel.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="20" y="18" width="320" height="244" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <text x="34" y="38" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>TARJETA DE EMBARQUE · VUELO AV 412</text>
+        <rect x="34" y="50" width="90" height="62" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="44" y="66" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>PUERTA</text>
+        <text x="44" y="100" font-family={SANS} font-size="30" font-weight="900" fill={T}>B14</text>
+        <rect x="134" y="50" width="98" height="62" fill="#ffffff" stroke="#d8d8d4" stroke-width="1" />
+        <text x="144" y="66" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>EMBARQUE</text>
+        <text x="144" y="100" font-family={SANS} font-size="26" font-weight="900" fill={T}>14:25</text>
+        <rect x="242" y="50" width="84" height="62" fill="#ffffff" stroke="#d8d8d4" stroke-width="1" />
+        <text x="252" y="66" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>ASIENTO</text>
+        <text x="252" y="100" font-family={SANS} font-size="26" font-weight="900" fill={T}>18A</text>
+        <text x="34" y="148" font-family={SANS} font-size="15" font-weight="700" fill={T}>Medellín (MDE) → Bogotá (BOG)</text>
+        <text x="34" y="172" font-family={SANS} font-size="12.5" fill="#444444">Pasajera: Elena Gómez Restrepo · Grupo 2</text>
+        <line x1="34" y1="196" x2="326" y2="196" stroke="#e5e5e5" stroke-dasharray="4 3" />
+        <text x="34" y="220" font-family={SANS} font-size="10.5" fill={G}>Reserva: K9M4PL · Billete: 134-892041182</text>
+        <text x="34" y="240" font-family={SANS} font-size="10.5" fill={G}>Cierre de puerta 15 minutos antes de la salida</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Artículo de prensa: antetítulo, titular, sumario y cuerpo"
+      notas={[
+        {
+          ...pct(320, 44),
+          titulo: 'Antetítulo de contexto',
+          texto: 'Pequeño, en mayúsculas con espaciado y color gris: sitúa la sección sin robarle fuerza al titular.',
+          zona: zona(20, 20, 320, 34),
+        },
+        {
+          ...pct(320, 96),
+          titulo: 'Titular y sumario escalonados',
+          texto: 'El titular captura la idea en 22 px y el sumario en cursiva resume la tesis para quien escanea la página.',
+          zona: zona(20, 56, 320, 92),
+        },
+        {
+          ...pct(320, 210),
+          titulo: 'Ladillo como puerta intermedia',
+          texto: 'Un intertítulo breve en negrita permite reentrar al texto corrido sin romper la columna.',
+          zona: zona(20, 156, 320, 108),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página editorial con antetítulo, titular, sumario, firma y ladillo en el cuerpo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="26" y="38" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.4" fill={G}>URBANISMO · CRÓNICA</text>
+        <text font-family={SERIF} font-size="22" font-weight="700" fill={T}>
+          <tspan x="26" y="68">Las aceras que aprendieron</tspan>
+          <tspan x="26" y="92">a dar sombra</tspan>
+        </text>
+        <text font-family={SERIF} font-size="13" font-style="italic" fill="#444444">
+          <tspan x="26" y="118">Tres corredores verdes redujeron 4 °C la temperatura</tspan>
+          <tspan x="26" y="136">del asfalto en los barrios del centro.</tspan>
+        </text>
+        <line x1="26" y1="152" x2="334" y2="152" stroke="#e5e5e5" />
+        <text x="26" y="174" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>El árbol como infraestructura</text>
+        <text font-family={SERIF} font-size="12.5" fill="#444444">
+          <tspan x="26" y="196">Durante décadas el diseño vial trató la vegetación</tspan>
+          <tspan x="26" y="214">como ornamento residual. Los nuevos cortes de calle</tspan>
+          <tspan x="26" y="232">invierten esa prioridad al reservar suelo continuo</tspan>
+          <tspan x="26" y="250">para las raíces antes de trazar los carriles.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Resultados de búsqueda: escanear diez ítems en segundos"
+      notas={[
+        {
+          ...pct(320, 62),
+          titulo: 'Título como ancla de escaneo',
+          texto: 'Cada resultado abre con un título en peso 700 que responde de inmediato si el enlace coincide con lo buscado.',
+          zona: zona(20, 24, 320, 56),
+        },
+        {
+          ...pct(320, 118),
+          titulo: 'Extracto en tono medio',
+          texto: 'Dos líneas en cuerpo 12,5 px y color #444444 aportan contexto solo cuando el título despierta interés.',
+          zona: zona(20, 82, 320, 58),
+        },
+        {
+          ...pct(320, 206),
+          titulo: 'Repetición de la misma estructura',
+          texto: 'Al mantener idéntica la jerarquía interna en cada bloque, el ojo salta de título en título en vertical.',
+          zona: zona(20, 148, 320, 112),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Dos resultados de búsqueda de un catálogo bibliográfico con ruta, título y resumen.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="10" fill={G}>catálogo.biblio.edu › tipografia › manuales</text>
+        <text x="24" y="58" font-family={SANS} font-size="16" font-weight="700" fill={T}>Detalle en la tipografía — Jost Hochuli</text>
+        <text font-family={SERIF} font-size="12.5" fill="#444444">
+          <tspan x="24" y="80">Estudio conciso sobre los procesos de lectura, la forma</tspan>
+          <tspan x="24" y="98">de la letra, el espacio entre palabras y el interlineado.</tspan>
+        </text>
+        <rect x="24" y="108" width="96" height="18" fill="#f2f2ee" />
+        <text x="30" y="120" font-family={SANS} font-size="10" font-weight="700" fill="#444444">Disponible · Sala 3</text>
+
+        <line x1="24" y1="142" x2="336" y2="142" stroke="#e5e5e5" />
+
+        <text x="24" y="166" font-family={SANS} font-size="10" fill={G}>catálogo.biblio.edu › diseno › reticulas</text>
+        <text x="24" y="186" font-family={SANS} font-size="16" font-weight="700" fill={T}>Sistemas de retículas — J. Müller-Brockmann</text>
+        <text font-family={SERIF} font-size="12.5" fill="#444444">
+          <tspan x="24" y="208">Manual sobre la división constructiva de la superficie</tspan>
+          <tspan x="24" y="226">para libros, publicaciones periódicas y exposiciones.</tspan>
+        </text>
+        <rect x="24" y="236" width="114" height="18" fill="#f2f2ee" />
+        <text x="30" y="248" font-family={SANS} font-size="10" font-weight="700" fill={G}>En préstamo · 19 oct</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre economía de señales, orden de lectura, sobremarcado y jerarquía sin cambiar el tamaño de la fuente."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const COTA = '#b3261e';
+
+  type E = {
+    tamano: string;
+    peso: boolean;
+    tono: boolean;
+    espacio: boolean;
+    sangria: string;
+    cotas: boolean;
+  };
+
+  function contarSenales(e: E): number {
+    let s = 0;
+    if (e.tamano !== 'igual') s++;
+    if (e.peso) s++;
+    if (e.tono) s++;
+    if (e.espacio) s++;
+    if (e.sangria !== '0') s++;
+    return s;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 320;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute('aria-label', 'Ficha de conferencia donde se aplican las señales jerárquicas seleccionadas.');
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 460 ? 22 : 52;
+    const cardW = W - padX * 2;
+    raiz.append(svg('rect', { x: padX, y: 18, width: cardW, height: H - 36, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.5 }));
+
+    const xBase = padX + (e.cotas ? 48 : 26);
+    const xSangria2 = e.sangria === '1' ? xBase + 22 : e.sangria === '2' ? xBase + (W < 460 ? 74 : 112) : xBase;
+    const xSangria3 = e.sangria === '1' ? xBase + 44 : e.sangria === '2' ? xSangria2 : xBase;
+
+    const fs =
+      e.tamano === 'igual'
+        ? [15.5, 15.5, 15.5, 15.5, 15.5, 15.5]
+        : e.tamano === 'tres'
+          ? [11, 24, 15, 13.5, 13.5, 11]
+          : [13, 21, 18, 16, 14.5, 12.5];
+
+    const fw = e.peso ? [700, 900, 700, 400, 700, 400] : [400, 400, 400, 400, 400, 400];
+    const col = e.tono
+      ? [GRIS, TINTA, TEXTO, TEXTO, TINTA, GRIS]
+      : [TINTA, TINTA, TINTA, TINTA, TINTA, TINTA];
+
+    const gaps = e.espacio ? [0, 42, 30, 36, 40, 24] : [0, 28, 28, 28, 28, 28];
+
+    const filas = [
+      { texto: 'Seminario de Tipografía · Sesión 04', nivel: '3.º', x: xBase, fam: SANS },
+      { texto: 'Ordenar sin gritar en la página', nivel: '1.º', x: xBase, fam: SERIF },
+      { texto: 'Clara Salgado · Diseñadora editorial', nivel: '2.º', x: xSangria2, fam: SANS },
+      { texto: 'Recorrido por índices, prospectos y pantallas donde las pausas guían al ojo.', nivel: '2.º', x: xSangria2, fam: SERIF },
+      { texto: 'Jueves 24 de octubre · 17:00 a 19:00 h', nivel: '1.º', x: xSangria2, fam: SANS },
+      { texto: 'Sala de Lectura, Piso 2 · Entrada libre', nivel: '3.º', x: xSangria3, fam: SANS },
+    ];
+
+    if (e.sangria === '2') {
+      const etqIzq = [
+        { y: 62, t: 'CICLO' },
+        { y: 120, t: 'PONENTE' },
+        { y: 224, t: 'CUÁNDO' },
+      ];
+      for (const et of etqIzq) {
+        const l = svg('text', {
+          x: xBase,
+          y: et.y,
+          'font-family': SANS,
+          'font-size': 10,
+          'font-weight': 700,
+          'letter-spacing': 0.8,
+          fill: GRIS,
+        });
+        l.textContent = et.t;
+        raiz.append(l);
+      }
+    }
+
+    let y = 58;
+    filas.forEach((f, i) => {
+      y += gaps[i];
+      if (e.espacio && i === 4) {
+        raiz.append(svg('line', { x1: xBase, y1: y - 22, x2: padX + cardW - 26, y2: y - 22, stroke: '#e5e5e5' }));
+      }
+      if (e.cotas) {
+        const badgeColor = f.nivel === '1.º' ? '#eeff41' : f.nivel === '2.º' ? '#e8e8e2' : '#ffffff';
+        raiz.append(svg('rect', { x: padX + 10, y: y - 12, width: 28, height: 16, fill: badgeColor, stroke: COTA, 'stroke-width': 1 }));
+        const cTxt = svg('text', {
+          x: padX + 24,
+          y: y - 1,
+          'text-anchor': 'middle',
+          'font-family': SANS,
+          'font-size': 9.5,
+          'font-weight': 700,
+          fill: TINTA,
+        });
+        cTxt.textContent = f.nivel;
+        raiz.append(cTxt);
+      }
+
+      const t = svg('text', {
+        x: i <= 1 ? (e.sangria === '2' ? xSangria2 : f.x) : f.x,
+        y,
+        'font-family': f.fam,
+        'font-size': fs[i],
+        'font-weight': fw[i],
+        fill: col[i],
+      });
+      t.textContent = f.texto;
+      raiz.append(t);
+    });
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const activas = contarSenales(e);
+    if (activas === 0) {
+      return '<b class="dv-cifra">0 señales activas</b>: todos los renglones pesan lo mismo (16 px, peso normal, negro continuo). No hay puerta de entrada ni escaneo posible.';
+    }
+    if (e.tamano === 'exceso') {
+      return 'Hay <b class="dv-cifra">6 tamaños distintos</b> en seis líneas (de 12,5 px a 21 px). Cuando los escalones son tan pequeños y numerosos, la vista percibe desorden en vez de jerarquía.';
+    }
+    if (e.tamano === 'igual') {
+      const lista = [e.peso && 'peso', e.tono && 'tono', e.espacio && 'espacio', e.sangria !== '0' && 'posición'].filter(Boolean).join(' + ');
+      return `Tamaño fijo en <b class="dv-cifra">16 px</b> articulado mediante <b>${lista}</b>. Demuestra que la jerarquía no depende de agrandar títulos, sino de contrastar niveles.`;
+    }
+    return `Jerarquía en <b class="dv-cifra">3 niveles</b> combinando ${activas} señales. Quien mira identifica en el primer vistazo el tema y la fecha, luego la ponente y por último el lugar.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="jerarquia"]')) {
+    guiar<E>(raiz, [
+      (e) => e.tamano === 'igual' && !e.peso && !e.tono && !e.espacio,
+      (e) => e.tamano === 'igual' && e.espacio && !e.peso && !e.tono,
+      (e) => e.tamano === 'igual' && e.espacio && e.peso && e.tono,
+      (e) => e.sangria === '1',
+      (e) => e.tamano === 'tres' && e.peso && e.tono && e.espacio,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────
+  type E1 = { senales: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const s = e.senales;
+    const bg = s >= 5 ? 'background:#eeff41;padding:4px 8px;border:1.5px solid #222222;' : '';
+    const deco = s >= 4 ? 'text-decoration:underline;' : '';
+    const mayus = s >= 3;
+    const tam = s >= 2 ? 15 : 14;
+    const tit = mayus ? '2. REQUISITOS DE ENTREGA' : '2. Requisitos de entrega';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222222;">
+        <p style="margin:0 0 8px;font-size:13px;line-height:1.45;color:#444444;">El proyecto final consta de una memoria escrita y los prototipos verificados en aula.</p>
+        <p style="margin:12px 0 6px;font-size:${tam}px;font-weight:700;${deco}${bg}color:#222222;">${tit}</p>
+        <p style="margin:0;font-size:13px;line-height:1.45;color:#444444;">Los archivos deben enviarse en formato PDF antes del viernes a las 18:00 h junto con la ficha de consentimiento.</p>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.senales >= 4) return `<b class="dv-cifra">${e.senales} señales sumadas</b>: el intertítulo grita con caja, subrayado, mayúsculas y negrita a la vez.`;
+    if (e.senales === 3) return '3 señales (tamaño, negrita y mayúsculas): ya es legible, aunque las mayúsculas aún endurecen el renglón.';
+    return `<b class="dv-cifra">${e.senales} ${e.senales === 1 ? 'señal' : 'señales'}</b>: basta la negrita y el espacio superior para separar la sección con limpieza, como recomienda Bringhurst.`;
+  }
+
+  type E2 = { esquema: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const s =
+      e.esquema === '6'
+        ? { c: 13, t: 19, a: 17, r: 16, f: 15, l: 12, wTit: 600, colMeta: '#222222' }
+        : e.esquema === '4'
+          ? { c: 11.5, t: 20, a: 15, r: 14, f: 14, l: 11.5, wTit: 700, colMeta: '#444444' }
+          : { c: 11, t: 22, a: 14, r: 14, f: 14, l: 11, wTit: 900, colMeta: '#6f6f6f' };
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222222;">
+        <p style="margin:0 0 4px;font-size:${s.c}px;font-weight:700;letter-spacing:0.06em;color:${s.colMeta};">MUESTRA DE CINE DOCUMENTAL</p>
+        <p style="margin:0 0 6px;font-family:${SERIF};font-size:${s.t}px;font-weight:${s.wTit};line-height:1.15;">La memoria del río</p>
+        <p style="margin:0 0 4px;font-size:${s.a}px;color:#444444;">Dirección: Mateo Cárdenas · 78 min</p>
+        <p style="margin:0 0 10px;font-size:${s.r}px;color:#444444;">Coloquio posterior con las comunidades ribereñas.</p>
+        <p style="margin:0;font-size:${s.f}px;font-weight:700;">Viernes 12 · 19:00 h · <span style="font-size:${s.l}px;font-weight:400;color:${s.colMeta};">Sala Principal</span></p>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.esquema === '6') return '<b class="dv-cifra">6 tamaños distintos</b> (19, 17, 16, 15, 13 y 12 px): las diferencias de 1 o 2 px parecen un descuido y no organizan la ficha.';
+    if (e.esquema === '4') return '4 tamaños: la estructura mejora, pero aún sobra un escalón intermedio.';
+    return '<b class="dv-cifra">3 niveles francos</b> (22 px, 14 px y 11 px): cada bloque sabe exactamente qué papel cumple.';
+  }
+
+  type E3 = { orden: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const inv = e.orden === 'rotulo';
+    const ig = e.orden === 'igual';
+    const stRot = inv ? 'font-size:13px;font-weight:900;color:#222222;' : ig ? 'font-size:13px;font-weight:700;color:#222222;' : 'font-size:10px;font-weight:700;letter-spacing:0.08em;color:#6f6f6f;';
+    const stVal = inv ? 'font-size:12px;font-weight:400;color:#6f6f6f;' : ig ? 'font-size:13px;font-weight:400;color:#222222;' : 'font-size:16px;font-weight:700;color:#222222;';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};display:grid;gap:10px;">
+        <div>
+          <div style="${stRot}">OBRA EN CATÁLOGO</div>
+          <div style="${stVal}">El arte del color · Johannes Itten</div>
+        </div>
+        <div style="display:flex;gap:20px;">
+          <div>
+            <div style="${stRot}">SIGNATURA</div>
+            <div style="${ ig || inv ? stVal : 'font-size:13px;font-weight:700;color:#444444;'}">752.I88a · Sala 2</div>
+          </div>
+          <div>
+            <div style="${stRot}">ESTADO</div>
+            <div style="${ ig || inv ? stVal : 'font-size:13px;font-weight:700;color:#222222;'}">Disponible en estante</div>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.orden === 'rotulo') return 'Jerarquía invertida: los rótulos («OBRA EN CATÁLOGO», «SIGNATURA») <b class="dv-cifra">pesan más que el libro</b> que la persona busca.';
+    if (e.orden === 'igual') return 'Rótulos y valores tienen el mismo tamaño: hay que leer ambos cada vez para distinguirlos.';
+    return '<b class="dv-cifra">Los datos mandan</b>: el título del libro domina y las etiquetas fijas pasan a un cuerpo de 10 px en gris.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['jerarquia-e1', pintarE1 as never, describirE1 as never],
+    ['jerarquia-e2', pintarE2 as never, describirE2 as never],
+    ['jerarquia-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────
+  function rSobremarcado(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Intertítulo diferenciado por negrita y espacio superior limpio',
+        describir: 'Un intertítulo en negrita con margen superior claro sobre el párrafo.',
+        es: true,
+        html: `<div style="padding:10px 12px;font-family:${SANS};text-align:left;background:#fff;border:1px solid #dcdcdc;">
+          <p style="margin:0 0 10px;font-size:11.5px;color:#444;">La inscripción permanece abierta durante todo el semestre.</p>
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#222;">Documentos requeridos</p>
+          <p style="margin:0;font-size:11.5px;color:#444;">Copia del carné vigente y carta de intención en una página.</p>
+        </div>`,
+      },
+      {
+        texto: 'Intertítulo con mayúsculas, negrita, subrayado, cursiva y fondo amarillo',
+        describir: 'Un intertítulo que suma mayúsculas, subrayado, cursiva, negrita y caja amarilla.',
+        es: false,
+        html: `<div style="padding:10px 12px;font-family:${SANS};text-align:left;background:#fff;border:1px solid #dcdcdc;">
+          <p style="margin:0 0 8px;font-size:11.5px;color:#444;">La inscripción permanece abierta durante todo el semestre.</p>
+          <p style="margin:0 0 6px;font-size:13.5px;font-weight:900;font-style:italic;text-decoration:underline;background:#eeff41;padding:3px 6px;color:#222;">¡¡DOCUMENTOS REQUERIDOS!!</p>
+          <p style="margin:0;font-size:11.5px;color:#444;">Copia del carné vigente y carta de intención en una página.</p>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según el principio de economía de señales de Bringhurst, ¿cuál de los dos intertítulos resuelve mejor el cambio de nivel?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Basta cambiar una o dos variables (peso y espacio antes del bloque) para indicar un nuevo apartado. Acumular cinco señales simultáneas ensucia la lectura.',
+      repaso: 'Economía de señales',
+    };
+  }
+
+  function rSeisTamanos(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Tres niveles claros: título (20 px), cuerpo (13 px) y metadato (10,5 px)',
+        describir: 'Ficha con tres niveles bien diferenciados de tamaño y tono.',
+        es: true,
+        html: `<div style="padding:10px 12px;font-family:${SANS};text-align:left;background:#fff;border:1px solid #dcdcdc;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:#6f6f6f;">TALLER DE IMPRESIÓN</div>
+          <div style="font-size:19px;font-weight:900;color:#222;margin:2px 0 6px;">Tipos móviles en madera</div>
+          <div style="font-size:12.5px;color:#444;margin-bottom:6px;">Sábado 10:00 h · Taller Central</div>
+          <div style="font-size:10.5px;color:#6f6f6f;">Cupo: 15 personas · Materiales incluidos</div>
+        </div>`,
+      },
+      {
+        texto: 'Cuatro tamaños casi iguales: 16 px, 15 px, 14 px y 13 px con el mismo peso',
+        describir: 'Ficha donde las cuatro líneas tienen tamaños muy parecidos entre 13 y 16 px.',
+        es: false,
+        html: `<div style="padding:10px 12px;font-family:${SANS};text-align:left;background:#fff;border:1px solid #dcdcdc;">
+          <div style="font-size:15px;color:#222;">Taller de impresión</div>
+          <div style="font-size:16px;color:#222;margin:2px 0;">Tipos móviles en madera</div>
+          <div style="font-size:14px;color:#222;margin-bottom:2px;">Sábado 10:00 h · Taller Central</div>
+          <div style="font-size:13px;color:#222;">Cupo: 15 personas · Materiales incluidos</div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de las dos tarjetas evita la ambigüedad entre niveles jerárquicos?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las diferencias de 1 px entre renglones vecinos no alcanzan para crear jerarquía: solo producen la sensación de un error de maquetación.',
+      repaso: 'Contraste franco entre niveles',
+    };
+  }
+
+  function rJerarquiaInvertida(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El nombre del paciente y su grupo sanguíneo destacan; los rótulos fijos van en 10 px gris',
+        describir: 'Credencial donde Ana María Ríos y O+ destacan con claridad sobre las etiquetas.',
+        es: true,
+        html: `<div style="padding:10px 12px;font-family:${SANS};text-align:left;background:#fff;border:1px solid #dcdcdc;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:9.5px;font-weight:700;color:#6f6f6f;">PACIENTE</div>
+            <div style="font-size:15px;font-weight:900;color:#222;">Ana María Ríos</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:9.5px;font-weight:700;color:#6f6f6f;">GRUPO</div>
+            <div style="font-size:16px;font-weight:900;color:#222;background:#eeff41;padding:1px 6px;">O+</div>
+          </div>
+        </div>`,
+      },
+      {
+        texto: 'Las etiquetas «NOMBRE DEL PACIENTE» y «FACTOR RH» van en 15 px negrita y los datos en 11 px gris',
+        describir: 'Credencial donde las palabras NOMBRE DEL PACIENTE y FACTOR RH son mucho más grandes que Ana María Ríos.',
+        es: false,
+        html: `<div style="padding:10px 12px;font-family:${SANS};text-align:left;background:#fff;border:1px solid #dcdcdc;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:14px;font-weight:900;color:#222;">NOMBRE DEL PACIENTE:</div>
+            <div style="font-size:11px;color:#6f6f6f;">Ana María Ríos</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:14px;font-weight:900;color:#222;">FACTOR RH:</div>
+            <div style="font-size:11px;color:#6f6f6f;">O+</div>
+          </div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En una tarjeta clínica o credencial, ¿cuál de las dos opciones asigna el primer nivel a lo que realmente varía e importa?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Los rótulos del formulario («Paciente», «Grupo») se repiten en todas las tarjetas; el dato variable («Ana María Ríos», «O+») es lo que debe leerse en el primer vistazo.',
+      repaso: 'Dato frente a rótulo',
+    };
+  }
+
+  function rSoloEspacio(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Los bloques se separan con espacio vertical y sangría, aunque toda la letra mida 13 px',
+        describir: 'Ficha con un solo tamaño de fuente pero separada en tres bloques claros.',
+        es: true,
+        html: `<div style="padding:10px 12px;font-family:${SANS};font-size:12.5px;text-align:left;background:#fff;border:1px solid #dcdcdc;color:#222;">
+          <div style="margin-bottom:10px;font-weight:700;">Concierto de cámara · Cuarteto Sur</div>
+          <div style="padding-left:14px;margin-bottom:10px;color:#444;">Obras de Ravel y Debussy · Duración: 65 min</div>
+          <div style="padding-left:14px;color:#6f6f6f;">Auditorio Fundadores · Viernes 20:00 h</div>
+        </div>`,
+      },
+      {
+        texto: 'Las tres frases van seguidas en un solo párrafo continuo sin pausas ni cambios de peso',
+        describir: 'Un bloque continuo donde todo el texto va corrido sin separación.',
+        es: false,
+        html: `<div style="padding:10px 12px;font-family:${SANS};font-size:12.5px;text-align:left;background:#fff;border:1px solid #dcdcdc;color:#222;line-height:1.45;">
+          Concierto de cámara Cuarteto Sur Obras de Ravel y Debussy Duración 65 min Auditorio Fundadores Viernes 20:00 h.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Si una restricción técnica te impide cambiar el tamaño de letra, ¿cuál de las dos fichas logra ordenar la lectura?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El espacio vertical, la sangría y el peso tipográfico bastan para crear tres niveles jerárquicos sin alterar el cuerpo de la fuente.',
+      repaso: 'Jerarquía sin cambio de cuerpo',
+    };
+  }
+
+  function rAjusteNiveles(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Todas las líneas de esta cartelera miden 14 px. Aumenta la diferenciación de espacio, peso y tono hasta que los tres niveles (título, sinopsis y horario) se distingan al instante.',
+      control: {
+        etiqueta: 'Articulación de peso, tono y espacio',
+        min: 0,
+        max: 100,
+        paso: 10,
+        valor: 0,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const k = v / 100;
+        const gap = Math.round(2 + k * 12);
+        const fwTit = k >= 0.5 ? 900 : 400;
+        const grisMeta = Math.round(0x22 + k * (0x6f - 0x22));
+        const padLeft = Math.round(k * 16);
+        c.innerHTML = `<div style="padding:14px 16px;font-family:${SANS};font-size:14px;background:#fff;border:1px solid #dcdcdc;text-align:left;color:#222;">
+          <div style="font-weight:${fwTit};margin-bottom:${gap}px;">Ciclo de Arquitectura Latinoamericana</div>
+          <div style="padding-left:${padLeft}px;margin-bottom:${gap}px;color:#444;">Proyección y conversación sobre vivienda colectiva en ladera.</div>
+          <div style="padding-left:${padLeft}px;color:rgb(${grisMeta},${grisMeta},${grisMeta});font-size:${14 - Math.round(k * 2)}px;">Miércoles 18:00 h · Aula 302 · Entrada libre</div>
+        </div>`;
+      },
+      cumple: (v) => v >= 60,
+      falta: (v) => `Al ${v} %, los tres renglones siguen demasiado pegados y uniformes. Sube la articulación por encima de 60 %.`,
+      porque: 'Al combinar peso 900 en el título, sangría en el bloque descriptivo y tono gris con pausa vertical en el horario, la ficha adquiere tres niveles de lectura claros.',
+      repaso: 'Combinación de señales',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="jerarquia"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rSobremarcado(),
+        rSeisTamanos(),
+        rJerarquiaInvertida(),
+        rSoloEspacio(),
+        rAjusteNiveles(),
+      ]),
+    );
+  }
+</script>

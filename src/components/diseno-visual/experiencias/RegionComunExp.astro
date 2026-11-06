@@ -1,0 +1,969 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'region-comun';
+
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+// Posiciones X de 4 pares de puntos cercanos: (1-2), (3-4), (5-6), (7-8)
+const paresX = [76, 114, 198, 236, 320, 358, 442, 480];
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Empieza solo con espacio.',
+    hacer: 'Pon «Tipo de región» en «Ninguna» y «Niveles de cajas anidadas» en 1.',
+    pista: 'Selecciona la primera opción de «Tipo de región».',
+    preparar: { espacio: 24, tipo: 'ninguna', niveles: 1, cotas: false },
+    logro: 'Sin bordes ni fondos de grupo, las ocho tarjetas dependen exclusivamente de la distancia para organizarse.',
+  },
+  {
+    titulo: 'Agrupa con un fondo sutil.',
+    hacer: 'En «Tipo de región», elige «Fondo sutil».',
+    pista: 'Selecciona la segunda opción.',
+    preparar: { espacio: 20, niveles: 1 },
+    logro: 'Una superficie gris clara detrás de cada grupo de cuatro tarjetas crea dos bandejas nítidas sin añadir ni una sola línea negra a la pantalla.',
+  },
+  {
+    titulo: 'Comprueba la fuerza de la región frente a la distancia.',
+    hacer: 'Elige «Borde fino» y reduce «Separación por espacio» a 4 px.',
+    pista: 'Mueve el primer deslizador hacia la izquierda.',
+    preparar: { tipo: 'borde-fino', niveles: 1 },
+    logro: 'Aunque las dos bandejas casi se tocan, el contorno cerrado impide que las tarjetas de un grupo se mezclen con las del vecino. La región común vence a la escasa distancia.',
+  },
+  {
+    titulo: 'Provoca el síndrome de las muñecas rusas.',
+    hacer: 'Elige «Borde grueso» y sube «Niveles de cajas anidadas» a 4.',
+    pista: 'Arrastra «Niveles de cajas anidadas» hasta el extremo derecho.',
+    preparar: { tipo: 'borde-grueso', espacio: 16 },
+    logro: 'Cajas dentro de cajas dentro de cajas: los marcos concéntricos roban espacio útil y compiten con los datos que deberían organizar.',
+  },
+  {
+    titulo: 'Quédate con un solo nivel limpio.',
+    hacer: 'Abre «Más controles», activa «Contar marcos en pantalla», vuelve a 1 nivel y selecciona «Fondo sutil».',
+    pista: 'Baja «Niveles de cajas anidadas» a 1 y elige «Fondo sutil».',
+    preparar: { niveles: 1, tipo: 'fondo', espacio: 24, cotas: true },
+    abrir: true,
+    logro: 'Un único nivel de región común agrupa piezas dispares con el mínimo coste visual.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Experimento de Palmer: arriba, ocho puntos forman cuatro parejas por cercanía; abajo, tres óvalos encierran los puntos de parejas distintas.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        <text x="44" y="28" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>FILA 1 · SOLO PROXIMIDAD</text>
+        {paresX.map((cx, i) => (
+          <g>
+            <circle cx={cx + 22} cy="56" r="8.5" fill={T} />
+            <text x={cx + 22} y="80" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={G}>{i + 1}</text>
+          </g>
+        ))}
+
+        <line x1="44" y1="96" x2="556" y2="96" stroke={REGLA} stroke-width="1" />
+        <text x="44" y="116" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>FILA 2 · MISMA DISTANCIA + REGIÓN COMÚN (PALMER, 1992)</text>
+
+        {[
+          [paresX[1] + 22, paresX[2] + 22],
+          [paresX[3] + 22, paresX[4] + 22],
+          [paresX[5] + 22, paresX[6] + 22],
+        ].map(([x1, x2]) => (
+          <rect
+            x={x1 - 22}
+            y="126"
+            width={x2 - x1 + 44}
+            height="34"
+            rx="17"
+            fill={AMARILLO}
+            stroke={T}
+            stroke-width="1.8"
+          />
+        ))}
+        {paresX.map((cx, i) => (
+          <g>
+            <circle cx={cx + 22} cy="143" r="8.5" fill={T} />
+            <text x={cx + 22} y="173" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={G}>{i + 1}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+    <p>En ambas filas los puntos 2 y 3 están lejos entre sí, y los puntos 1 y 2 están muy cerca. En la segunda fila, ¿con quién forma pareja el punto 2?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En la segunda fila el punto 2 se agrupa de inmediato con el 3, aunque el punto 1 siga estando mucho más cerca. Al encerrar el 2 y el 3 dentro de un mismo contorno ovalado, la región común vence a la proximidad espacial. Así demostró Stephen Palmer en 1992 que compartir un recinto es un principio perceptivo autónomo.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Síndrome de las muñecas rusas (cajas dentro de cajas)"
+      notas={[
+        {
+          ...pct(332, 48),
+          titulo: 'Cuatro marcos concéntricos',
+          texto: 'El panel general, la sección, la subsección y cada dato tienen su propio borde oscuro. El ojo cuenta líneas antes de leer palabras.',
+          zona: zona(14, 14, 332, 96),
+        },
+        {
+          ...pct(332, 146),
+          titulo: 'Regiones para grupos que ya eran obvios',
+          texto: 'Encerrar dos líneas de texto simples dentro de tres recuadros anidados gasta espacio horizontal y aplasta el contenido.',
+          zona: zona(22, 114, 316, 84),
+        },
+        {
+          ...pct(332, 232),
+          titulo: 'Todo parece un botón o un campo editable',
+          texto: 'Cuando cada etiqueta informativa lleva caja con borde, deja de distinguirse qué es un contenedor y qué es un control interactivo.',
+          zona: zona(22, 202, 316, 62),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de ajustes saturado con cuatro niveles de cajas anidadas con bordes negros.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="14" y="14" width="332" height="252" fill="#f7f7f5" stroke={T} stroke-width="2.2" />
+        <rect x="24" y="24" width="312" height="92" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <rect x="34" y="34" width="292" height="72" fill="#f1f1ec" stroke={T} stroke-width="1.5" />
+        <rect x="44" y="44" width="130" height="52" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="54" y="64" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>PLAN ACTUAL</text>
+        <text x="54" y="84" font-family={SANS} font-size="12" font-weight="900" fill={T}>Estudio · 24 €</text>
+        <rect x="184" y="44" width="132" height="52" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="194" y="64" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>RENOVACIÓN</text>
+        <text x="194" y="84" font-family={SANS} font-size="12" font-weight="900" fill={T}>12 dic 2026</text>
+
+        <rect x="24" y="126" width="312" height="128" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <rect x="34" y="136" width="292" height="48" fill="#f1f1ec" stroke={T} stroke-width="1.5" />
+        <rect x="42" y="144" width="276" height="32" fill="#ffffff" stroke={T} stroke-width="1.4" />
+        <text x="52" y="164" font-family={SANS} font-size="11" font-weight="700" fill={T}>Notificaciones por correo · Activas</text>
+
+        <rect x="34" y="194" width="292" height="48" fill="#f1f1ec" stroke={T} stroke-width="1.5" />
+        <rect x="42" y="202" width="276" height="32" fill="#ffffff" stroke={T} stroke-width="1.4" />
+        <text x="52" y="222" font-family={SANS} font-size="11" font-weight="700" fill={T}>Copia de seguridad automática · Diaria</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Una sola región para el bloque heterogéneo; espacio para el resto"
+      notas={[
+        {
+          ...pct(332, 62),
+          titulo: 'Región reservada al bloque mixto',
+          texto: 'El resumen de facturación combina cifra, fecha y botón de acción: un único fondo suave une esas piezas dispares.',
+          zona: zona(22, 22, 316, 88),
+        },
+        {
+          ...pct(332, 158),
+          titulo: 'Preferencias organizadas por espacio',
+          texto: 'Las filas homogéneas de configuración no necesitan cajas individuales: la proximidad y una línea fina bastan.',
+          zona: zona(22, 128, 316, 86),
+        },
+        {
+          ...pct(332, 240),
+          titulo: 'El único borde fuerte es el botón real',
+          texto: 'Al quitar los marcos decorativos, el botón «Cambiar plan» se reconoce al instante como elemento clicable.',
+          zona: zona(222, 46, 102, 38),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo panel resuelto con una sola bandeja gris clara arriba para el plan y filas limpias sin cajas abajo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="22" y="24" width="316" height="84" fill="#f4f4f0" stroke="#dcdcd4" stroke-width="1.2" />
+        <text x="38" y="48" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>SUSCRIPCIÓN ACTIVA</text>
+        <text x="38" y="72" font-family={SANS} font-size="18" font-weight="900" fill={T}>Plan Estudio · 24 €</text>
+        <text x="38" y="92" font-family={SANS} font-size="11" fill={TXT}>Próximo cargo: 12 de diciembre de 2026</text>
+        <rect x="226" y="50" width="96" height="32" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="274" y="70" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>Cambiar plan</text>
+
+        <text x="22" y="142" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={G}>PREFERENCIAS DEL EQUIPO</text>
+        <text x="22" y="172" font-family={SANS} font-size="12.5" font-weight="700" fill={T}>Notificaciones por correo</text>
+        <text x="338" y="172" text-anchor="end" font-family={SANS} font-size="12" fill={TXT}>Activas</text>
+        <line x1="22" y1="188" x2="338" y2="188" stroke={REGLA} stroke-width="1" />
+
+        <text x="22" y="216" font-family={SANS} font-size="12.5" font-weight="700" fill={T}>Copia de seguridad automática</text>
+        <text x="338" y="216" text-anchor="end" font-family={SANS} font-size="12" fill={TXT}>Diaria (03:00)</text>
+        <line x1="22" y1="232" x2="338" y2="232" stroke={REGLA} stroke-width="1" />
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · regiones comunes y niveles de anidación"
+    consigna="Ocho tarjetas informativas se reparten en dos módulos («Envío» y «Pago»). Prueba cómo cambia la claridad al encerrar cada módulo en un fondo o un borde, y observa qué ocurre cuando apilas varios niveles de cajas anidadas."
+    nota="Fija como A un único nivel con «Fondo sutil» y compáralo con B subiendo «Niveles de cajas anidadas» a 3 o 4 con «Borde grueso»."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Dos módulos de cuatro tarjetas encerrados cada uno en una región de fondo suave.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <rect x="36" y="34" width="268" height="252" fill="#f1f1ec" stroke="#d4d4cc" stroke-width="1.2" />
+      <rect x="336" y="34" width="268" height="252" fill="#f1f1ec" stroke="#d4d4cc" stroke-width="1.2" />
+      {[0, 1].map((g) =>
+        [0, 1, 2, 3].map((i) => {
+          const x = (g === 0 ? 52 : 352) + (i % 2) * 124;
+          const y = 64 + Math.floor(i / 2) * 102;
+          return (
+            <rect x={x} y={y} width="112" height="84" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+          );
+        }),
+      )}
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Compara cuándo basta el espacio por sí solo y cuándo una bandeja de fondo sutil ayuda a sostener piezas heterogéneas." />
+
+    <Deslizador
+      lab={lab}
+      variable="espacio"
+      etiqueta="Separación por espacio"
+      min={4}
+      max={44}
+      paso={4}
+      valor={24}
+      unidad="px"
+      ayuda="Distancia horizontal entre el módulo izquierdo y el módulo derecho."
+    />
+    <Opciones
+      lab={lab}
+      variable="tipo"
+      etiqueta="Tipo de región"
+      valor="fondo"
+      opciones={[
+        { valor: 'ninguna', texto: 'Ninguna' },
+        { valor: 'fondo', texto: 'Fondo sutil' },
+        { valor: 'borde-fino', texto: 'Borde fino' },
+        { valor: 'borde-grueso', texto: 'Borde grueso' },
+      ]}
+      ayuda="Cómo se delimita la región común de cada módulo."
+    />
+    <Deslizador
+      lab={lab}
+      variable="niveles"
+      etiqueta="Niveles de cajas anidadas"
+      min={1}
+      max={4}
+      paso={1}
+      valor={1}
+      ayuda="1: solo la bandeja del módulo. 2 a 4: añade subcajas y marcos internos redundantes."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="cotas"
+        etiqueta="Contar marcos en pantalla"
+        activo={true}
+        ayuda="Muestra cuántos rectángulos contenedores se están dibujando además de los datos."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"espacio":28,"tipo":"fondo","niveles":1}'>Un nivel de fondo sutil (óptimo)</button>
+      <button type="button" class="dv-boton" data-preset='{"espacio":4,"tipo":"borde-fino","niveles":1}'>Región común suplanta a la distancia</button>
+      <button type="button" class="dv-boton" data-preset='{"espacio":16,"tipo":"borde-grueso","niveles":4}'>Muñecas rusas (4 niveles de bordes)</button>
+      <button type="button" class="dv-boton" data-preset='{"espacio":40,"tipo":"ninguna","niveles":1}'>Solo proximidad sin cajas</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Desarma las cajas anidadas"
+      comparar={false}
+      consigna="Esta tarjeta de perfil tiene cuatro marcos concéntricos. Quita niveles de bordes redundantes hasta dejar un único contenedor limpio."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Ficha de autora con exceso de marcos</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="marcos"
+        etiqueta="Marcos contenedores activos"
+        min={1}
+        max={4}
+        paso={1}
+        valor={4}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Suaviza el fondo de la región para que no compita"
+      comparar={false}
+      consigna="El fondo de la región común es tan oscuro y saturado que roba protagonismo a las cifras que encierra. Baja el peso del contenedor."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Bandeja de métricas con fondo pesado</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="ContrasteFondo"
+        etiqueta="Peso visual del contenedor"
+        min={10}
+        max={100}
+        paso={10}
+        valor={90}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Usa una región común cuando el grupo mezcla piezas dispares"
+      comparar={false}
+      consigna="Dos productos en comparación mezclan foto, título, precio y botón. Como las piezas son muy distintas entre sí, el espacio solo no basta. Añade una región común a cada producto."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Comparativa de dos artículos heterogéneos</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="recinto"
+        etiqueta="Agrupación de cada producto"
+        valor="suelto"
+        opciones={[
+          { valor: 'suelto', texto: 'Sin recinto' },
+          { valor: 'bandeja', texto: 'Región común por producto' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Resumen de compra: una bandeja unifica artículos, envío y botón de pago"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Columna izquierda sin cajas innecesarias',
+          texto: 'Los campos de dirección son homogéneos y se leen en vertical sin encerrar cada línea en un recuadro aparte.',
+          zona: zona(18, 24, 176, 232),
+        },
+        {
+          ...pct(330, 134),
+          titulo: 'Región común para el bloque de cierre',
+          texto: 'Un fondo cálido y un borde fino reúnen subtotal, impuestos, total y acción de compra como un único objeto lateral.',
+          zona: zona(204, 24, 140, 232),
+        },
+        {
+          ...pct(330, 224),
+          titulo: 'Jerarquía intacta dentro del recinto',
+          texto: 'El contenedor es silencioso (#f5f5f0) para que el total y el botón amarillo conserven el máximo contraste.',
+          zona: zona(212, 168, 124, 78),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Pantalla de pago con datos de envío limpios a la izquierda y una bandeja gris a la derecha que agrupa el resumen del pedido y el botón Pagar.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="42" font-family={SANS} font-size="11" font-weight="900" fill={T}>1. DATOS DE ENVÍO</text>
+        <text x="24" y="68" font-family={SANS} font-size="10" font-weight="700" fill={G}>DESTINATARIO</text>
+        <text x="24" y="86" font-family={SANS} font-size="12" fill={T}>Laura Restrepo</text>
+        <line x1="24" y1="96" x2="184" y2="96" stroke={REGLA} />
+
+        <text x="24" y="122" font-family={SANS} font-size="10" font-weight="700" fill={G}>DIRECCIÓN</text>
+        <text x="24" y="140" font-family={SANS} font-size="12" fill={T}>Calle 53 # 45-12, Apto 301</text>
+        <line x1="24" y1="150" x2="184" y2="150" stroke={REGLA} />
+
+        <text x="24" y="176" font-family={SANS} font-size="10" font-weight="700" fill={G}>ENTREGA ESTIMADA</text>
+        <text x="24" y="194" font-family={SANS} font-size="12" fill={T}>Martes 18 · Envío estándar</text>
+
+        <rect x="204" y="24" width="138" height="232" fill="#f5f5f0" stroke={T} stroke-width="1.5" />
+        <text x="218" y="48" font-family={SANS} font-size="10" font-weight="900" letter-spacing="0.6" fill={T}>RESUMEN (2 LIBROS)</text>
+        <text x="218" y="76" font-family={SANS} font-size="11" fill={TXT}>Subtotal</text>
+        <text x="328" y="76" text-anchor="end" font-family={SANS} font-size="11" fill={T}>38,00 €</text>
+        <text x="218" y="98" font-family={SANS} font-size="11" fill={TXT}>Envío</text>
+        <text x="328" y="98" text-anchor="end" font-family={SANS} font-size="11" fill={T}>4,50 €</text>
+        <line x1="218" y1="118" x2="328" y2="118" stroke="#d4d4cc" />
+        <text x="218" y="142" font-family={SANS} font-size="10" font-weight="700" fill={G}>TOTAL A PAGAR</text>
+        <text x="218" y="168" font-family={SANS} font-size="20" font-weight="900" fill={T}>42,50 €</text>
+        <rect x="218" y="192" width="110" height="38" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="273" y="216" text-anchor="middle" font-family={SANS} font-size="11.5" font-weight="900" fill={T}>Confirmar pago</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Tabla nutricional: marco exterior contundente y subregiones por grosor de filete"
+      notas={[
+        {
+          ...pct(330, 48),
+          titulo: 'Frontera exterior inconfundible',
+          texto: 'Un único borde perimetral separa toda la ficha nutricional de los ingredientes y reclamos comerciales del envase.',
+          zona: zona(56, 16, 248, 248),
+        },
+        {
+          ...pct(330, 122),
+          titulo: 'Barra gruesa para cerrar el bloque energético',
+          texto: 'En lugar de abrir otra caja anidada, una regla negra de 8 px crea una subregión para las calorías.',
+          zona: zona(68, 52, 224, 62),
+        },
+        {
+          ...pct(330, 212),
+          titulo: 'Desglose interno sin marcos laterales',
+          texto: 'Los nutrientes se agrupan por sangría y filetes horizontales finos, evitando una cuadrícula cerrada que ahogaría las cifras.',
+          zona: zona(68, 122, 224, 130),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Etiqueta de información nutricional con un solo marco exterior, barra gruesa bajo las calorías y filas limpias sin líneas verticales.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="60" y="16" width="240" height="248" fill="#ffffff" stroke={T} stroke-width="2.5" />
+        <text x="74" y="42" font-family={SANS} font-size="16" font-weight="900" fill={T}>Información nutricional</text>
+        <text x="74" y="58" font-family={SANS} font-size="10" fill={TXT}>Por ración de 100 g</text>
+        <rect x="74" y="66" width="212" height="7" fill={T} />
+        <text x="74" y="96" font-family={SANS} font-size="12" font-weight="900" fill={T}>Energía</text>
+        <text x="286" y="96" text-anchor="end" font-family={SANS} font-size="20" font-weight="900" fill={T}>245 kcal</text>
+        <rect x="74" y="108" width="212" height="4" fill={T} />
+
+        <text x="74" y="132" font-family={SANS} font-size="11" font-weight="700" fill={T}>Grasas totales</text>
+        <text x="286" y="132" text-anchor="end" font-family={SANS} font-size="11" font-weight="700" fill={T}>8,2 g</text>
+        <line x1="74" y1="142" x2="286" y2="142" stroke={REGLA} />
+        <text x="88" y="160" font-family={SANS} font-size="10.5" fill={TXT}>de las cuales saturadas</text>
+        <text x="286" y="160" text-anchor="end" font-family={SANS} font-size="10.5" fill={TXT}>1,4 g</text>
+        <line x1="74" y1="170" x2="286" y2="170" stroke={REGLA} />
+
+        <text x="74" y="190" font-family={SANS} font-size="11" font-weight="700" fill={T}>Hidratos de carbono</text>
+        <text x="286" y="190" text-anchor="end" font-family={SANS} font-size="11" font-weight="700" fill={T}>31,0 g</text>
+        <line x1="74" y1="200" x2="286" y2="200" stroke={REGLA} />
+
+        <text x="74" y="220" font-family={SANS} font-size="11" font-weight="700" fill={T}>Proteínas</text>
+        <text x="286" y="220" text-anchor="end" font-family={SANS} font-size="11" font-weight="700" fill={T}>11,8 g</text>
+        <line x1="74" y1="230" x2="286" y2="230" stroke={REGLA} />
+        <text x="74" y="248" font-family={SANS} font-size="9.5" fill={G}>Sal: 0,42 g · Fibra alimentaria: 6,1 g</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Barra de herramientas por bandejas: agrupar controles de distinta naturaleza"
+      notas={[
+        {
+          ...pct(330, 74),
+          titulo: 'Tres recintos sobre un mismo riel',
+          texto: 'Cada familia de controles vive dentro de una cápsula suave que evita que el selector numérico se confunda con los botones de alineación.',
+          zona: zona(18, 56, 324, 76),
+        },
+        {
+          ...pct(330, 148),
+          titulo: 'Contraste reservado al estado activo',
+          texto: 'Las bandejas usan un gris silencioso; el amarillo y el borde negro solo aparecen en la herramienta seleccionada.',
+          zona: zona(26, 70, 108, 48),
+        },
+        {
+          ...pct(330, 218),
+          titulo: 'Etiqueta de grupo fuera de la bandeja',
+          texto: 'Los rótulos «TRAZO», «ESCALA» y «SALIDA» acompañan cada región sin encerrarse en otra subcaja.',
+          zona: zona(18, 140, 324, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Barra de herramientas dividida en tres bandejas de fondo gris claro: Trazo, Escala y Salida.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="64" width="106" height="58" fill="#eeeee8" stroke="#cfcfc6" stroke-width="1.2" />
+        <rect x="26" y="74" width="42" height="38" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="47" y="98" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>Pluma</text>
+        <rect x="74" y="74" width="42" height="38" fill="#ffffff" stroke="#cfcfc6" stroke-width="1.2" />
+        <text x="95" y="98" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={TXT}>Línea</text>
+
+        <rect x="134" y="64" width="104" height="58" fill="#eeeee8" stroke="#cfcfc6" stroke-width="1.2" />
+        <rect x="144" y="74" width="84" height="38" fill="#ffffff" stroke={T} stroke-width="1.4" />
+        <text x="186" y="98" text-anchor="middle" font-family={SANS} font-size="12" font-weight="700" fill={T}>100 % ▾</text>
+
+        <rect x="248" y="64" width="94" height="58" fill="#eeeee8" stroke="#cfcfc6" stroke-width="1.2" />
+        <rect x="258" y="74" width="74" height="38" fill={T} />
+        <text x="295" y="98" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">Exportar</text>
+
+        <text x="71" y="144" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>TRAZO</text>
+        <text x="186" y="144" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>ESCALA</text>
+        <text x="295" y="144" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>SALIDA</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre el experimento de Palmer, el exceso de cajas anidadas y cuándo elegir espacio o contenedor."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const TXT = '#444444';
+  const SEC = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  type E = {
+    espacio: number;
+    tipo: string;
+    niveles: number;
+    cotas: boolean;
+  };
+
+  const DATOS = [
+    [
+      ['DIRECCIÓN', 'Calle 53 # 45'],
+      ['CIUDAD', 'Medellín'],
+      ['ENTREGA', 'Martes 18'],
+      ['MENSAJERÍA', 'Estándar'],
+    ],
+    [
+      ['MÉTODO', 'Tarjeta · 4091'],
+      ['SUBTOTAL', '38,00 €'],
+      ['ENVÍO', '4,50 €'],
+      ['TOTAL', '42,50 €'],
+    ],
+  ];
+
+  function contarMarcos(e: E) {
+    if (e.tipo === 'ninguna') return 8;
+    const porModulo = e.niveles === 1 ? 1 : e.niveles === 2 ? 3 : e.niveles === 3 ? 7 : 11;
+    return 8 + porModulo * 2;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 330;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    const marcos = contarMarcos(e);
+    raiz.setAttribute(
+      'aria-label',
+      `Dos módulos de cuatro tarjetas con separación de ${e.espacio} px, región ${e.tipo} y ${e.niveles} niveles de anidación.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 480 ? 18 : 34;
+    const gapMod = e.espacio;
+    const modW = (W - padX * 2 - gapMod) / 2;
+    const modH = H - (e.cotas ? 64 : 44);
+    const topY = 20;
+
+    for (let m = 0; m < 2; m++) {
+      const mx = padX + m * (modW + gapMod);
+      const my = topY;
+
+      const trazoReg = e.tipo === 'borde-grueso' ? 2.4 : e.tipo === 'borde-fino' ? 1.4 : e.tipo === 'fondo' ? 1 : 0;
+      const colorTrazo = e.tipo === 'fondo' ? '#d6d6ce' : TINTA;
+      const rellenoReg = e.tipo === 'fondo' ? '#f0f0ea' : e.tipo === 'ninguna' ? 'none' : '#f7f7f4';
+
+      // Nivel 1: contenedor del módulo
+      if (e.tipo !== 'ninguna') {
+        raiz.append(
+          svg('rect', {
+            x: mx,
+            y: my,
+            width: modW,
+            height: modH,
+            fill: rellenoReg,
+            stroke: colorTrazo,
+            'stroke-width': trazoReg,
+          }),
+        );
+      }
+
+      // Nivel 2: subcontenedor interno
+      if (e.tipo !== 'ninguna' && e.niveles >= 2) {
+        raiz.append(
+          svg('rect', {
+            x: mx + 6,
+            y: my + 26,
+            width: modW - 12,
+            height: modH - 32,
+            fill: '#ffffff',
+            stroke: colorTrazo,
+            'stroke-width': Math.max(1.2, trazoReg),
+          }),
+        );
+      }
+
+      // Nivel 3: cajas por fila dentro del módulo
+      if (e.tipo !== 'ninguna' && e.niveles >= 3) {
+        for (let f = 0; f < 2; f++) {
+          const fy = my + 32 + f * ((modH - 42) / 2);
+          raiz.append(
+            svg('rect', {
+              x: mx + 11,
+              y: fy,
+              width: modW - 22,
+              height: (modH - 50) / 2,
+              fill: '#f4f4ef',
+              stroke: colorTrazo,
+              'stroke-width': Math.max(1.2, trazoReg),
+            }),
+          );
+        }
+      }
+
+      const tit = svg('text', {
+        x: mx + 12,
+        y: my + 18,
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 900,
+        'letter-spacing': 0.8,
+        fill: SEC,
+      });
+      tit.textContent = m === 0 ? 'MÓDULO A · ENVÍO' : 'MÓDULO B · PAGO';
+      raiz.append(tit);
+
+      const inPad = e.niveles >= 3 ? 16 : 12;
+      const cellGap = 8;
+      const cw = (modW - inPad * 2 - cellGap) / 2;
+      const ch = (modH - 42 - inPad - cellGap) / 2;
+
+      for (let i = 0; i < 4; i++) {
+        const c = i % 2;
+        const f = Math.floor(i / 2);
+        const cx = mx + inPad + c * (cw + cellGap);
+        const cy = my + 34 + f * (ch + cellGap);
+
+        raiz.append(
+          svg('rect', {
+            x: cx,
+            y: cy,
+            width: cw,
+            height: ch,
+            fill: m === 1 && i === 3 ? AMARILLO : '#ffffff',
+            stroke: TINTA,
+            'stroke-width': e.tipo === 'borde-grueso' && e.niveles >= 2 ? 2 : 1.2,
+          }),
+        );
+
+        // Nivel 4: doble marco dentro de cada tarjeta
+        if (e.tipo !== 'ninguna' && e.niveles >= 4) {
+          raiz.append(
+            svg('rect', {
+              x: cx + 4,
+              y: cy + 4,
+              width: cw - 8,
+              height: ch - 8,
+              fill: 'none',
+              stroke: TINTA,
+              'stroke-width': 1.2,
+            }),
+          );
+        }
+
+        const [etq, val] = DATOS[m][i];
+        const t1 = svg('text', {
+          x: cx + 8,
+          y: cy + 20,
+          'font-family': SANS,
+          'font-size': 8.5,
+          'font-weight': 700,
+          fill: SEC,
+        });
+        t1.textContent = etq;
+        raiz.append(t1);
+
+        const t2 = svg('text', {
+          x: cx + 8,
+          y: cy + 40,
+          'font-family': SANS,
+          'font-size': W < 480 ? 10 : 11.5,
+          'font-weight': 900,
+          fill: TINTA,
+        });
+        t2.textContent = val;
+        raiz.append(t2);
+      }
+    }
+
+    if (e.cotas) {
+      const pie = svg('text', {
+        x: W / 2,
+        y: H - 14,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11,
+        'font-weight': 700,
+        fill: e.niveles >= 3 ? COTA : TINTA,
+      });
+      pie.textContent = `RECTÁNGULOS EN PANTALLA: ${marcos} (${e.niveles} ${e.niveles === 1 ? 'nivel' : 'niveles'} de región)`;
+      raiz.append(pie);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const marcos = contarMarcos(e);
+    if (e.tipo === 'ninguna') {
+      if (e.espacio < 16) {
+        return `Sin región común y con solo <b class="dv-cifra">${e.espacio} px</b> de separación: las ocho fichas parecen una sola cuadrícula continua y cuesta separar «Envío» de «Pago».`;
+      }
+      return `Sin cajas contenedoras (<b class="dv-cifra">${marcos} rectángulos</b>): la separación de <b class="dv-cifra">${e.espacio} px</b> organiza por sí sola los dos módulos.`;
+    }
+    if (e.niveles >= 3) {
+      return `Anidación excesiva: estás dibujando <b class="dv-cifra">${marcos} rectángulos</b> para mostrar solo 8 datos (${e.niveles} niveles de cajas). Los bordes compiten con el texto y comprimen el espacio interior.`;
+    }
+    if (e.espacio <= 8) {
+      return `Aunque entre ambos módulos apenas hay <b class="dv-cifra">${e.espacio} px</b>, la región común mantiene los dos grupos claramente separados.`;
+    }
+    return `Un nivel limpio (<b class="dv-cifra">${marcos} rectángulos</b> en total): la región común mediante ${e.tipo === 'fondo' ? 'fondo sutil' : 'contorno'} agrupa cada módulo sin recargar la composición.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="region-comun"]')) {
+    guiar<E>(raiz, [
+      (e) => e.tipo === 'ninguna' && e.niveles === 1,
+      (e) => e.tipo === 'fondo' && e.niveles === 1,
+      (e) => e.tipo === 'borde-fino' && e.espacio <= 4 && e.niveles === 1,
+      (e) => e.tipo === 'borde-grueso' && e.niveles === 4,
+      (e) => e.tipo === 'fondo' && e.niveles === 1 && e.cotas,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { marcos: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    let html = `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <strong style="font-size:13px;display:block;">Elena Poniatowska</strong>
+          <span style="font-size:11.5px;color:#444;">Crónica y periodismo literario · Sala 3</span>
+        </div>
+        <span style="font-size:11px;font-weight:700;padding:4px 8px;background:${AMARILLO};border:1.5px solid #222;">18:00</span>
+      </div>`;
+    for (let i = 0; i < e.marcos; i++) {
+      const bg = i % 2 === 0 ? '#ffffff' : '#f3f3ee';
+      html = `<div style="padding:7px;border:${i === 0 ? 1.5 : 2}px solid #222;background:${bg};">${html}</div>`;
+    }
+    d.innerHTML = `<div style="padding:14px 16px;font-family:${SANS};color:#222;">${html}</div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.marcos >= 3) return `<b class="dv-cifra">${e.marcos} cajas concéntricas</b>: tres de esos marcos no agrupan nada nuevo, solo añaden ruido.`;
+    if (e.marcos === 2) return '<b class="dv-cifra">2 cajas</b>: todavía sobra un marco intermedio.';
+    return '<b class="dv-cifra">1 solo marco</b>: la ficha respira y toda la información queda agrupada con limpieza.';
+  }
+
+  type E2 = { ContrasteFondo: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const k = e.ContrasteFondo / 100;
+    const lum = Math.round(246 - k * 145);
+    const borde = k > 0.5 ? '#222222' : '#d8d8d0';
+    // En los grises medios ni blanco ni #222 llegan a 4,5:1: el cruce exacto entre
+    // blanco y negro puro está en 118/119 y mantiene AA en todo el recorrido.
+    const txt = lum <= 118 ? '#ffffff' : lum < 170 ? '#000000' : '#222222';
+    const sec = lum <= 118 ? '#ffffff' : lum < 170 ? '#000000' : '#555555';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};">
+        <div style="padding:12px 14px;background:rgb(${lum},${lum},${lum});border:${k > 0.5 ? 2.5 : 1}px solid ${borde};display:flex;justify-content:space-between;color:${txt};">
+          <div><span style="font-size:10px;font-weight:700;color:${sec};display:block;">TIEMPO MEDIO</span><strong style="font-size:16px;">14 min</strong></div>
+          <div><span style="font-size:10px;font-weight:700;color:${sec};display:block;">RESUELTOS</span><strong style="font-size:16px;">94 %</strong></div>
+          <div><span style="font-size:10px;font-weight:700;color:${sec};display:block;">PENDIENTES</span><strong style="font-size:16px;">3</strong></div>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.ContrasteFondo > 50) return `Al <b class="dv-cifra">${e.ContrasteFondo} %</b>, la caja pesa más que los números que contiene.`;
+    if (e.ContrasteFondo > 25) return 'El contenedor empieza a retroceder, aunque todavía compite un poco con el texto.';
+    return `<b class="dv-cifra">Fondo silencioso (${e.ContrasteFondo} %)</b>: la región común agrupa las tres métricas sin robarles atención.`;
+  }
+
+  type E3 = { recinto: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const caja = e.recinto === 'bandeja'
+      ? 'padding:10px 12px;background:#f5f5f0;border:1.5px solid #222;'
+      : 'padding:4px 0;';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="${caja}">
+          <span style="font-size:9.5px;font-weight:700;color:#6f6f6f;display:block;">CUADERNO LISO</span>
+          <strong style="font-size:15px;display:block;margin:3px 0;">14,00 €</strong>
+          <span style="font-size:11px;color:#444;display:block;margin-bottom:6px;">80 hojas · Papel 100 g</span>
+          <span style="font-size:10.5px;font-weight:700;padding:3px 7px;background:#fff;border:1.2px solid #222;display:inline-block;">Añadir</span>
+        </div>
+        <div style="${caja}">
+          <span style="font-size:9.5px;font-weight:700;color:#6f6f6f;display:block;">CUADERNO RETÍCULA</span>
+          <strong style="font-size:15px;display:block;margin:3px 0;">16,50 €</strong>
+          <span style="font-size:11px;color:#444;display:block;margin-bottom:6px;">120 hojas · Papel 120 g</span>
+          <span style="font-size:10.5px;font-weight:700;padding:3px 7px;background:#fff;border:1.2px solid #222;display:inline-block;">Añadir</span>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.recinto === 'suelto') return 'Sin recinto: como cada artículo mezcla cuatro tipos de datos distintos, <b class="dv-cifra">las piezas de ambos productos se confunden</b>.';
+    return '<b class="dv-cifra">Región común bien empleada</b>: cada bandeja ata título, precio, ficha y botón en una sola tarjeta.';
+  }
+
+  for (const [id, p, desc] of [
+    ['region-comun-e1', pintarE1, describirE1],
+    ['region-comun-e2', pintarE2, describirE2],
+    ['region-comun-e3', pintarE3, describirE3],
+  ] as const) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p as never, describir: desc as never });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────────
+  function rPalmer(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Se perciben agrupados con el compañero que comparte su mismo contorno, venciendo a la distancia',
+        es: true,
+      },
+      {
+        texto: 'El ojo ignora los contornos y sigue agrupando exclusivamente por cercanía física',
+        es: false,
+      },
+      {
+        texto: 'Los puntos encerrados parecen más pequeños y desaparecen del primer plano',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En el experimento clásico de Stephen Palmer (1992), ¿qué ocurre cuando se encierra en un óvalo a dos puntos distantes que pertenecían a pares cercanos distintos?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Palmer demostró que compartir una región delimitada por un borde o un fondo es un principio de organización capaz de imponerse sobre la proximidad espacial.',
+      repaso: 'Experimento de Palmer (1992)',
+    };
+  }
+
+  function rMunecasRusas(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Multiplica líneas paralelas que compiten con el texto y reduce el espacio disponible',
+        es: true,
+      },
+      {
+        texto: 'Acelera la lectura porque cada borde guía la vista como un carril',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué problema produce anidar tres o cuatro niveles de cajas con borde unas dentro de otras («síndrome de las muñecas rusas»)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cada borde adicional es un contorno más que el ojo debe procesar. Anidar cajas innecesarias eleva la densidad visual y deja sin fuerza a los verdaderos contenedores.',
+      repaso: 'Exceso de cajas anidadas',
+    };
+  }
+
+  function rHeterogeneos(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Cuando el grupo reúne piezas muy dispares (icono, título, cifra, texto y botón) o el espacio disponible es mínimo',
+        es: true,
+      },
+      {
+        texto: 'Siempre: todo párrafo o etiqueta suelta debería llevar su propio recuadro',
+        es: false,
+      },
+      {
+        texto: 'Solo cuando la pantalla se imprime en papel negro',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En qué caso resulta imprescindible recurrir a una región común en lugar de confiar únicamente en la proximidad?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando un módulo combina elementos heterogéneos y tiene vecinos muy cerca, un fondo suave o un borde fino actúa como cemento visual que evita que las piezas se dispersen.',
+      repaso: 'Agrupación de elementos heterogéneos',
+    };
+  }
+
+  function rFondoSutil(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un fondo ligeramente distinto del papel crea una región común sin sumar cuatro líneas duras por caja',
+        es: true,
+      },
+      {
+        texto: 'Un fondo no cuenta como región común; solo los bordes negros de más de 2 px agrupan',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Por qué muchas interfaces prefieren una bandeja de fondo sutil (#f5f5f0) antes que un borde negro cerrado para agrupar secciones?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La región común funciona tanto por contorno explícito como por luminancia de fondo compartida. Un fondo suave delimita el territorio con menor fatiga visual.',
+      repaso: 'Fondo compartido frente a borde duro',
+    };
+  }
+
+  function rAjusteNiveles(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este bloque informativo está ahogado por 4 niveles de bordes anidados. Reduce el número de marcos hasta dejar una sola región común limpia.',
+      control: {
+        etiqueta: 'Niveles de cajas anidadas',
+        min: 1,
+        max: 4,
+        paso: 1,
+        valor: 4,
+      },
+      pintar: (esc, v) => {
+        let h = `<div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong>Envío exprés · 24 h</strong>
+          <span style="font-size:12px;color:#444;">Incluido en el pedido</span>
+        </div>`;
+        for (let i = 0; i < v; i++) {
+          h = `<div style="padding:8px;border:2px solid #222;background:${i % 2 ? '#f1f1ec' : '#fff'};">${h}</div>`;
+        }
+        esc.innerHTML = `<div style="padding:14px;font-family:${SANS};color:#222;">${h}</div>`;
+      },
+      cumple: (v) => v === 1,
+      falta: (v) => `Con ${v} niveles todavía hay ${v - 1} ${v - 1 === 1 ? 'marco redundante' : 'marcos redundantes'}. Baja hasta 1.`,
+      porque: 'Un solo nivel de contenedor basta para encerrar el grupo. Los niveles intermedios repetían la misma frontera sin añadir jerarquía.',
+      repaso: 'Economía de contenedores',
+    };
+  }
+
+  const juegoEl = document.querySelector<HTMLElement>('[data-juego="region-comun"]');
+  if (juegoEl) {
+    jugar(juegoEl, () =>
+      barajar([rPalmer(), rMunecasRusas(), rHeterogeneos(), rFondoSutil(), rAjusteNiveles()]),
+    );
+  }
+</script>

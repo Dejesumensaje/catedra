@@ -1,0 +1,172 @@
+---
+titulo: Accesibilidad
+territorio: color
+pregunta: ¿Cómo diseñar con color para que nadie quede fuera por su visión, su pantalla o la luz del lugar donde lee?
+resumen: "Aproximadamente el 8 % de los hombres y el 0,5 % de las mujeres perciben los tonos de otra manera (deuteranomalía, protanomalía, tritanomalía), y todas las personas leen a veces bajo el sol o en pantallas de bajo contraste. La accesibilidad cromática se apoya en dos reglas: contraste suficiente de luminancia y señales redundantes más allá del tono."
+modos: [laboratorio, diseccion]
+orden: 23
+relaciones:
+  - concepto: interaccion-del-color
+    porQue: La apariencia y la legibilidad de un color cambian según el fondo que lo sostiene y las condiciones de observación.
+  - concepto: contraste
+    porQue: El canal de luminancia (claro frente a oscuro) es la base sobre la que se calculan todos los umbrales de accesibilidad visual.
+  - concepto: roles-semanticos
+    porQue: Los estados de error, advertencia o confirmación exigen un refuerzo icónico y textual para no excluir a quienes no distinguen ciertos tonos.
+  - concepto: semejanza
+    porQue: Cuando dos categorías distintas tienen la misma luminancia, al perderse el matiz cromático pasan a percibirse erróneamente como iguales.
+  - concepto: legibilidad
+    porQue: El contraste suficiente con el fondo trabaja junto al tamaño del cuerpo y las aberturas de la letra para sostener la lectura sin fatiga.
+fuentes:
+  - autor: W3C
+    obra: "Web Content Accessibility Guidelines (WCAG) 2.2"
+    anio: 2023
+    url: https://www.w3.org/TR/WCAG22/
+    nota: "Criterios normativos 1.4.1 (Use of Color), 1.4.3 (Contrast Minimum: 4,5:1 y 3:1), 1.4.6 (Contrast Enhanced: 7:1) y 1.4.11 (Non-text Contrast: 3:1)."
+  - autor: Hans Brettel, Françoise Viénot y John D. Mollon
+    obra: "Computerized simulation of color appearance for dichromats. Journal of the Optical Society of America A, 14(10), 2647–2655"
+    anio: 1997
+    url: https://doi.org/10.1364/JOSAA.14.002647
+    nota: Modelo matemático de referencia para simular protanopía, deuteranopía y tritanopía en pantallas digitales.
+  - autor: Masataka Okabe y Kei Ito
+    obra: "Color Universal Design (CUD): How to make figures and presentations that are friendly to colorblind people"
+    anio: 2008
+    url: https://jfly.uni-koeln.de/color/
+    nota: Guía científica y paleta universal diseñada para ser distinguible bajo todas las variantes de visión del color y en escala de grises.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import AccesibilidadColorExp from '../../components/diseno-visual/experiencias/AccesibilidadColorExp.astro';
+
+<Paso id="idea" titular="El color suma velocidad, pero nunca debe ser el único puente hacia el significado">
+
+<AccesibilidadColorExp paso="idea" />
+
+<p class="dv-frase">Si tu diseño sigue entendiéndose en blanco y negro, el color está bien apoyado.</p>
+
+<div class="dv-texto">
+
+En un salón de treinta personas es muy probable que al menos una o dos perciban el espectro cromático de manera distinta a la mayoría. Si además cuentas a quienes tienen baja sensibilidad al contraste por la edad, a quienes ven la presentación proyectada en una pared iluminada y a quienes consultan el teléfono en la calle a mediodía, la accesibilidad del color deja de ser un requisito para una minoría: es una condición básica de lectura para todo el público.
+
+Diseñar de forma accesible no significa renunciar al color ni hacer páginas grises. Significa cumplir dos principios: asegurar **suficiente diferencia de luminancia** y acompañar cada decisión cromática con **una segunda señal visual** (forma, icono, trama, subrayado o etiqueta).
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro conceptos clave</h3>
+  <dl>
+    <dt>Dicromía y tricromía anómala (daltonismo)</dt>
+    <dd>Variaciones en los fotopigmentos de los conos de la retina que reducen la distinción entre rojo y verde (deuteranomalía/deuteranopía y protanomalía/protanopía) o, con menor frecuencia, entre azul y amarillo (tritanomalía/tritanopía).</dd>
+    <dt>Contraste mínimo de texto (WCAG 1.4.3 · 4,5:1)</dt>
+    <dd>Umbral de luminancia relativa entre el texto y su fondo en el nivel AA: al menos 4,5:1 para cuerpos normales y 3:1 para texto grande (desde 24 px o 18,66 px en negrita).</dd>
+    <dt>Contraste no textual (WCAG 1.4.11 · 3:1)</dt>
+    <dd>Razón mínima de 3:1 exigida a los bordes de campos de formulario, botones, estados de foco, iconos funcionales y partes clave de un gráfico.</dd>
+    <dt>Redundancia perceptual (WCAG 1.4.1)</dt>
+    <dd>Principio según el cual el color no debe ser el único medio visual para transmitir información, indicar una acción o distinguir un elemento.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Exclusión por color frente a diseño universal">
+
+<div class="dv-texto">
+
+En esta pantalla de reserva de asientos de teatro, la primera versión confía la disponibilidad de las butacas, el campo de descuento y los enlaces a matices sutiles de color. La segunda acompaña cada decisión cromática con contraste de claridad y forma.
+
+</div>
+
+<AccesibilidadColorExp paso="miralo" />
+
+<div class="dv-texto">
+
+La versión con señales redundantes no es menos expresiva ni más confusa: resulta más rápida de usar para cualquier persona porque las butacas ocupadas llevan un aspa (`✕`), la butaca elegida muestra su código con `✓` sobre fondo oscuro y el campo de texto delimita con nitidez dónde escribir.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Simula distintas visiones y condiciones de lectura">
+
+<AccesibilidadColorExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres hábitos para garantizar accesibilidad cromática">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Evita emparejar rojo y verde con la misma claridad</h3>
+      <p>Si necesitas diferenciar dos series o estados opuestos, prefiere parejas que funcionen en todas las variantes de visión —como azul marino y naranja/bermellón de la paleta de Okabe e Ito (2008)— y asegúrate de que una sea netamente más oscura que la otra.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Mide los bordes de los controles y los gráficos con la regla del 3:1</h3>
+      <p>No revises solo el texto. Las cajas de los campos de entrada, los interruptores, las barras de un gráfico y los anillos de foco de teclado deben alcanzar al menos 3:1 de contraste respecto al fondo sobre el que descansan.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Etiqueta en el lugar o añade forma, trama o subrayado</h3>
+      <p>En los gráficos, rotula las líneas al final de su recorrido o combina trazos continuos y discontinuos. En los párrafos, mantén subrayados los enlaces para que nadie dependa de distinguir el azul respecto al negro del texto.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<AccesibilidadColorExp paso="errores" />
+
+<div class="dv-texto">
+
+### La accesibilidad cromática en piezas reales
+
+</div>
+
+<AccesibilidadColorExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta barreras cromáticas y corrígelas">
+
+<AccesibilidadColorExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Fisiología de la visión del color, criterios WCAG y accesibilidad situacional">
+
+<Seccion titulo="Qué ocurre en la deuteranopía, la protanopía y la tritanopía">
+
+La visión tricromática estándar se apoya en tres tipos de conos en la retina, sensibles a longitudes de onda cortas ($S$, azuladas), medias ($M$, verdosas) y largas ($L$, rojizas). Como explicaron Hans Brettel, Françoise Viénot y John D. Mollon (1997) al formular su modelo matemático de simulación:
+
+- **Deuteranomalía y deuteranopía (afecta a ~6 % de los hombres):** los conos $M$ están desplazados o ausentes. Se confunden los verdes medios con los rojos, naranjas y marrones de similar luminancia.
+- **Protanomalía y protanopía (afecta a ~2 % de los hombres):** los conos $L$ están alterados o ausentes. Además de confundir rojo y verde, **el extremo rojo del espectro pierde mucha luminancia**: un rojo vivo se ve como un pardo muy oscuro, casi negro. Por eso un texto rojo sobre fondo oscuro resulta ilegible en protanopía.
+- **Tritanomalía y tritanopía (muy poco frecuente, < 0,01 %, igual en hombres y mujeres):** afecta a los conos $S$ y reduce la distinción entre azul y amarillo o entre violeta y verde.
+
+</Seccion>
+
+<Seccion titulo="Los tres criterios WCAG que trabajan juntos">
+
+En las *Web Content Accessibility Guidelines* (WCAG 2.2) del W3C, la accesibilidad del color no descansa en una sola regla, sino en tres criterios complementarios:
+
+1. **Criterio 1.4.1 · Uso del color (Nivel A):** prohíbe usar el color como único canal para comunicar significado. Si un enlace dentro de un párrafo no está subrayado, debe tener al menos **3:1 de contraste respecto al texto circundante** además de 4,5:1 respecto al fondo, y ofrecer una señal visual adicional (como subrayado) al recibir el cursor o el foco.
+2. **Criterio 1.4.3 · Contraste mínimo de texto (Nivel AA):** exige **4,5:1** para texto normal y **3:1** para texto grande. En el Nivel AAA (Criterio 1.4.6), las cifras suben a **7:1** y **4,5:1** respectivamente, recomendables para textos de lectura extensa.
+3. **Criterio 1.4.11 · Contraste no textual (Nivel AA):** exige **3:1** para los indicadores visuales de componentes de interfaz (bordes de inputs, casillas, cursores de deslizadores, anillos de foco) y para los objetos gráficos que transmiten datos (barras, líneas, sectores de un diagrama).
+
+</Seccion>
+
+<Seccion titulo="La paleta de Okabe e Ito y la discapacidad situacional">
+
+En 2008, los neurobiólogos Masataka Okabe y Kei Ito propusieron una paleta de ocho colores (*Color Universal Design*) cuidadosamente calibrados en tono y luminancia para que nunca se confundan ni en tricromía ni en ninguna forma de dicromía: negro (`#000000`), naranja (`#E69F00`), azul cielo (`#56B4E9`), verde azulado (`#009E73`), amarillo (`#F0E442`), azul marino (`#0072B2`), bermellón (`#D55E00`) y púrpura rojizo (`#CC79A7`).
+
+Adoptar estas prácticas mejora además la **accesibilidad situacional**: la pantalla de un teléfono bajo el sol del mediodía pierde más de la mitad de su contraste efectivo; un proyector de aula suele lavar los grises claros y descalibrar los tonos; y una impresión en blanco y negro elimina por completo el matiz cromático. Un diseño que combina luminancia firme y señales redundantes resiste todos esos escenarios sin romperse.
+
+</Seccion>
+
+</Paso>

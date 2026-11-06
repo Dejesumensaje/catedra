@@ -283,7 +283,9 @@ export function conectar<E extends Estado>(op: Opciones<E>): Instrumento<E> {
   const revisarVisor = () => {
     if (!visor) return;
     visor.classList.remove('dv-visor-suelto');
-    visor.classList.toggle('dv-visor-suelto', visor.offsetHeight > window.innerHeight - 32);
+    const esMovil = window.innerWidth <= 832;
+    const limite = esMovil ? window.innerHeight * 0.52 : window.innerHeight - 32;
+    visor.classList.toggle('dv-visor-suelto', visor.offsetHeight > limite || (esMovil && raiz.classList.contains('comparando')));
   };
   revisarVisor();
   window.addEventListener('resize', revisarVisor);

@@ -1,0 +1,913 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'peso-y-contraste';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Comprueba un salto de peso tímido.',
+    hacer: 'Pon «Peso del texto base» en 400 y «Peso del énfasis» en 500.',
+    pista: 'Deja solo 100 puntos de diferencia entre ambos deslizadores.',
+    preparar: { pesoBase: 400, pesoEnfasis: 500, tamano: 18, invertir: false, contrasteTrazo: 'bajo' },
+    logro: 'Un salto de un solo escalón (400 a 500) dentro del mismo renglón apenas se percibe: parece un defecto de renderizado más que un destaque deliberado.',
+  },
+  {
+    titulo: 'Crea un contraste franco de peso.',
+    hacer: 'Mantén «Peso del texto base» en 400 y sube «Peso del énfasis» a 700.',
+    pista: 'Mueve el segundo deslizador hasta 700.',
+    preparar: { pesoBase: 400, tamano: 18, invertir: false },
+    logro: 'Con dos o tres escalones de diferencia (400 frente a 700), la palabra destacada se distingue en un vistazo sin romper el ritmo de la frase.',
+  },
+  {
+    titulo: 'Observa cómo se cierra el contrapunzón en pequeño.',
+    hacer: 'Sube «Peso del énfasis» a 900 y baja «Tamaño de prueba» a 11 px.',
+    pista: 'Arrastra el peso al máximo y el tamaño casi al mínimo.',
+    logro: 'En cuerpos menores de 12 px, el grosor del trazo invade el hueco blanco interno (contrapunzón) de letras como la «e», la «a» y la «o», empastando la palabra.',
+  },
+  {
+    titulo: 'Activa la inversión sobre fondo oscuro.',
+    hacer: 'Devuelve «Tamaño de prueba» a 16 px y activa «Invertir fondo (negro sobre blanco / blanco sobre negro)».',
+    pista: 'Marca el interruptor de inversión.',
+    preparar: { pesoBase: 400, pesoEnfasis: 700, tamano: 16 },
+    logro: 'Por el fenómeno óptico de irradiación, las letras blancas sobre fondo oscuro parecen hincharse y ganar peso respecto a las mismas letras en negro sobre papel.',
+  },
+  {
+    titulo: 'Pon a prueba el contraste alto entre astas.',
+    hacer: 'En «Contraste entre astas gruesas y finas» elige «Alto (Didona)» y baja «Tamaño de prueba» a 12 px.',
+    pista: 'Selecciona la tercera opción de contraste del trazo y reduce el cuerpo.',
+    logro: 'Las fuentes con travesaños finísimos brillan en titulares grandes, pero al reducirse pierden los trazos horizontales y deslumbran la vista.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos fenómenos ópticos del peso tipográfico: a la izquierda una letra de alto contraste a 60 px y a 11 px; a la derecha la misma palabra en negro sobre blanco y en blanco sobre negro.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+
+        {/* Fenómeno 1: Contraste del trazo y tamaño */}
+        <rect x="20" y="16" width="272" height="148" fill="#ffffff" stroke="#d8d8d4" stroke-width="1.2" />
+        <text x="34" y="36" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>1 · CONTRASTE DEL TRAZO Y TAMAÑO</text>
+        {/* Gran letra A estilizada con asta gruesa y filete fino */}
+        <path d="M52 134 L76 56 L88 56 L112 134 L98 134 L81 74 L60 134 Z" fill={T} />
+        <line x1="62" y1="108" x2="96" y2="108" stroke={T} stroke-width="1.2" />
+        <line x1="44" y1="134" x2="68" y2="134" stroke={T} stroke-width="1.2" />
+        <line x1="90" y1="134" x2="118" y2="134" stroke={T} stroke-width="1.2" />
+        <circle cx="79" cy="108" r="10" fill="none" stroke={ROJO} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="132" y="76" font-family={SERIF} font-size="13" font-weight="700" fill={T}>A 64 px: filete nítido</text>
+        <text x="132" y="94" font-family={SANS} font-size="11" fill="#444444">El trazo fino mide 1,5 px.</text>
+        <text x="132" y="122" font-family={SERIF} font-size="11" fill={T}>A 11 px: ÓPTICA EDITORIAL</text>
+        <text x="132" y="140" font-family={SANS} font-size="9.5" fill={ROJO}>El trazo fino cae bajo 0,3 px</text>
+
+        {/* Fenómeno 2: Irradiación en fondo claro vs oscuro */}
+        <rect x="308" y="16" width="272" height="148" fill="#ffffff" stroke="#d8d8d4" stroke-width="1.2" />
+        <text x="322" y="36" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>2 · IRRADIACIÓN (POSITIVO VS. NEGATIVO)</text>
+        <rect x="322" y="48" width="244" height="46" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="444" y="79" text-anchor="middle" font-family={SANS} font-size="24" font-weight="700" fill={T}>Contrapunzón</text>
+        <rect x="322" y="102" width="244" height="46" fill="#181818" />
+        <text x="444" y="133" text-anchor="middle" font-family={SANS} font-size="24" font-weight="700" fill="#ffffff" stroke="#ffffff" stroke-width="0.6">Contrapunzón</text>
+      </svg>
+    </div>
+    <p>En el recuadro derecho las dos palabras usan exactamente el mismo archivo de fuente y tamaño. ¿Por qué la palabra blanca sobre fondo negro parece más gruesa y con los huecos internos más cerrados?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Es el fenómeno de <strong>irradiación</strong> estudiado por Helmholtz: la luz de las letras blancas se expande sobre la retina e invade el fondo oscuro, haciendo que las astas parezcan más anchas y que el espacio interno de la <em>o</em>, la <em>a</em> o la <em>p</em> (el <strong>contrapunzón</strong>) se reduzca. Por eso un texto en negativo suele necesitar un poco menos de peso o una pizca más de espaciado.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Salto tímido en positivo y empaste en negativo"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Salto de un solo escalón (400 a 500)',
+          texto: 'La palabra «cuarenta minutos» intenta destacar en peso 500 dentro de un párrafo en 400: la diferencia apenas se distingue.',
+          zona: zona(18, 22, 324, 72),
+        },
+        {
+          ...pct(330, 132),
+          titulo: 'Trazo extrafino en cuerpo pequeño',
+          texto: 'La acotación secundaria usa un peso demasiado ligero que pierde contraste con el papel.',
+          zona: zona(18, 98, 324, 52),
+        },
+        {
+          ...pct(330, 218),
+          titulo: 'Negrita pequeña sobre fondo negro',
+          texto: 'En el pie oscuro, usar 11 px en peso 900 sin abrir el espaciado cierra los huecos de las letras «a», «e» y «o».',
+          zona: zona(18, 160, 324, 102),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ficha con salto tímido de peso en el párrafo y texto pequeño empastado sobre fondo negro.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="10.5" font-weight="700" letter-spacing="1" fill={G}>INSTRUCCIONES DE REVELADO</text>
+        <text font-family={SANS} font-size="13.5" font-weight="400" fill={T}>
+          <tspan x="24" y="64">Mantenga el tanque a veinte grados y agite</tspan>
+          <tspan x="24" y="84">durante </tspan>
+          <tspan font-weight="500">cuarenta segundos</tspan>
+          <tspan> al inicio de cada ciclo.</tspan>
+        </text>
+        <text font-family={SANS} font-size="11.5" font-weight="300" fill="#6f6f6f">
+          <tspan x="24" y="118">Dilución recomendada 1 + 9 en agua destilada</tspan>
+          <tspan x="24" y="136">recién hervida y enfriada.</tspan>
+        </text>
+        <rect x="20" y="164" width="320" height="96" fill="#181818" />
+        <text x="34" y="190" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff" stroke="#ffffff" stroke-width="0.5">PRECAUCIÓN EN CUARTO OSCURO</text>
+        <text font-family={SANS} font-size="11" font-weight="900" fill="#ffffff" stroke="#ffffff" stroke-width="0.45">
+          <tspan x="34" y="212">No encender la lámpara roja hasta completar</tspan>
+          <tspan x="34" y="228">el baño de paro y los primeros tres minutos</tspan>
+          <tspan x="34" y="244">del fijador rápido.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Salto franco de peso y compensación en negativo"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Salto franco (400 frente a 700)',
+          texto: 'Al saltar de Regular (400) a Bold (700), «cuarenta segundos» destaca al instante sin necesidad de cambiar de tamaño.',
+          zona: zona(18, 22, 324, 72),
+        },
+        {
+          ...pct(330, 128),
+          titulo: 'Peso firme en cuerpo secundario',
+          texto: 'La nota técnica mantiene peso 400 y contraste suficiente sobre el papel (#444444).',
+          zona: zona(18, 98, 324, 52),
+        },
+        {
+          ...pct(330, 218),
+          titulo: 'Peso moderado y espacio en fondo oscuro',
+          texto: 'Sobre negro, el párrafo baja a peso 400 con 12,5 px y ligero espaciado para que la irradiación no cierre los contrapunzones.',
+          zona: zona(18, 160, 324, 102),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ficha corregida con salto claro de 400 a 700 y texto en negativo limpio y abierto.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="10.5" font-weight="700" letter-spacing="1" fill={G}>INSTRUCCIONES DE REVELADO</text>
+        <text font-family={SANS} font-size="13.5" font-weight="400" fill={T}>
+          <tspan x="24" y="64">Mantenga el tanque a veinte grados y agite</tspan>
+          <tspan x="24" y="84">durante </tspan>
+          <tspan font-weight="700">cuarenta segundos</tspan>
+          <tspan> al inicio de cada ciclo.</tspan>
+        </text>
+        <text font-family={SANS} font-size="12" font-weight="400" fill="#444444">
+          <tspan x="24" y="118">Dilución recomendada: 1 + 9 en agua destilada</tspan>
+          <tspan x="24" y="136">a temperatura controlada.</tspan>
+        </text>
+        <rect x="20" y="164" width="320" height="96" fill="#181818" />
+        <text x="34" y="188" font-family={SANS} font-size="10.5" font-weight="700" letter-spacing="1.2" fill={AMARILLO}>PRECAUCIÓN EN CUARTO OSCURO</text>
+        <text font-family={SANS} font-size="12.5" font-weight="400" letter-spacing="0.25" fill="#f4f4f0">
+          <tspan x="34" y="212">No encender la lámpara de seguridad hasta</tspan>
+          <tspan x="34" y="230">completar el baño de paro y el fijador.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · peso, contrapunzón e irradiación"
+    consigna="Ajusta el peso del texto base y el peso del énfasis, cambia el tamaño de prueba e invierte el fondo. En la parte superior una lupa muestra qué ocurre con el contrapunzón (el hueco blanco interno de la «e» y la «o») y con los trazos finos."
+    nota="Fija el fondo blanco como A e invierte el fondo en B para comparar cómo cambia el grosor percibido de la misma letra."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Laboratorio de peso y contraste con lupa sobre el contrapunzón y párrafo de prueba.">
+      <rect width="640" height="320" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="44" y="88" font-family={SANS} font-size="56" font-weight="700" fill={T}>peso 700</text>
+      <text x="44" y="164" font-family={SANS} font-size="18" font-weight="400" fill={T}>
+        El salto entre el peso base y el <tspan font-weight="700">énfasis en negrita</tspan> debe ser franco.
+      </text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba cómo interactúan el tamaño pequeño, el fondo oscuro y los pesos extremos." />
+
+    <Deslizador
+      lab={lab}
+      variable="pesoBase"
+      etiqueta="Peso del texto base"
+      min={300}
+      max={900}
+      paso={100}
+      valor={400}
+      ayuda="Grosor del párrafo general (de 300 Light a 900 Black)."
+    />
+    <Deslizador
+      lab={lab}
+      variable="pesoEnfasis"
+      etiqueta="Peso del énfasis"
+      min={300}
+      max={900}
+      paso={100}
+      valor={700}
+      ayuda="Para que destaque sin dudar, sepáralo al menos 200 o 300 puntos del texto base."
+    />
+    <Deslizador
+      lab={lab}
+      variable="tamano"
+      etiqueta="Tamaño de prueba"
+      min={10}
+      max={60}
+      paso={1}
+      valor={18}
+      unidad="px"
+      ayuda="Reduce a 10–12 px para observar cuándo se empastan los contrapunzones."
+    />
+    <Interruptor
+      lab={lab}
+      variable="invertir"
+      etiqueta="Invertir fondo (negro sobre blanco / blanco sobre negro)"
+      valor={false}
+      ayuda="Simula el efecto de irradiación de la luz sobre fondo oscuro."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="contrasteTrazo"
+        etiqueta="Contraste entre astas gruesas y finas"
+        valor="bajo"
+        opciones={[
+          { valor: 'bajo', texto: 'Bajo (Sans uniforme)' },
+          { valor: 'medio', texto: 'Medio (Serif de lectura)' },
+          { valor: 'alto', texto: 'Alto (Didona de exhibición)' },
+        ]}
+        ayuda="Comprueba cómo resisten los trazos horizontales finos al bajar el tamaño."
+      />
+      <Deslizador
+        lab={lab}
+        variable="espaciado"
+        etiqueta="Compensación de espaciado (tracking)"
+        min={-2}
+        max={8}
+        paso={1}
+        valor={0}
+        ayuda="Abrir légèrement el espaciado ayuda a respirar al texto pequeño o en negativo."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"pesoBase":400,"pesoEnfasis":700,"tamano":18,"invertir":false,"contrasteTrazo":"bajo","espaciado":0}'>Equilibrio clásico (400 + 700)</button>
+      <button type="button" class="dv-boton" data-preset='{"pesoBase":400,"pesoEnfasis":500,"tamano":18,"invertir":false,"contrasteTrazo":"bajo","espaciado":0}'>Salto tímido (400 + 500)</button>
+      <button type="button" class="dv-boton" data-preset='{"pesoBase":700,"pesoEnfasis":900,"tamano":11,"invertir":true,"contrasteTrazo":"bajo","espaciado":0}'>Empaste en pequeño sobre negro</button>
+      <button type="button" class="dv-boton" data-preset='{"pesoBase":400,"pesoEnfasis":700,"tamano":11,"invertir":false,"contrasteTrazo":"alto","espaciado":0}'>Alto contraste roto a 11 px</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Evita saltos de un solo escalón dentro del mismo párrafo"
+      comparar={false}
+      consigna="En este aviso las palabras clave están en Medium (500) dentro de un párrafo en Regular (400). Sube el peso del destaque hasta que la diferencia sea inequívoca."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#222222;">
+        <p style="margin:0;">La entrega cierra el <span style="font-weight:500;">viernes a las 14:00 h</span> sin prórroga.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="pesoDestaque"
+        etiqueta="Peso de las palabras destacadas"
+        valor="500"
+        opciones={[
+          { valor: '500', texto: 'Medium 500 (salto tímido)' },
+          { valor: '700', texto: 'Bold 700 (salto franco)' },
+          { valor: '900', texto: 'Black 900 (excesivo en prosa)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Compensa la irradiación en texto blanco sobre fondo oscuro"
+      comparar={false}
+      consigna="Sobre fondo negro, este bloque en negrita apretada deslumbraría y cerraría los huecos de las letras. Ajusta la compensación óptica para limpiar la lectura nocturna."
+    >
+      <div slot="escenario" style="padding:16px 18px;background:#181818;color:#ffffff;font-family:Roboto,Helvetica,Arial,sans-serif;font-size:13px;">
+        <p style="margin:0;font-weight:700;">Salidas nocturnas cada veinte minutos desde la estación central.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="compensacion"
+        etiqueta="Compensación óptica en negativo"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+        ayuda="Reduce el exceso de grosor y abre ligeramente el espaciado entre letras."
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="No uses pesos extremos en cuerpos menores de 12 px"
+      comparar={false}
+      consigna="A 10,5 px, tanto un peso 100 (que se desvanece) como un peso 900 (que se empasta) arruinan las etiquetas pequeñas. Lleva la etiqueta a un peso intermedio firme."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222222;">
+        <p style="margin:0;font-size:11px;font-weight:900;">NOTA AL PIE: DATOS VERIFICADOS CON CENSO 2024</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="pesoPequeno"
+        etiqueta="Peso de la nota de 11 px"
+        valor="900"
+        opciones={[
+          { valor: '100', texto: 'Thin 100 (se rompe)' },
+          { valor: '900', texto: 'Black 900 (se empasta)' },
+          { valor: '500', texto: 'Medium/Bold moderado (firme)' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cabecera de diario frente a columna de lectura"
+      notas={[
+        {
+          ...pct(320, 62),
+          titulo: 'Alto contraste en cuerpo de exhibición (42 px)',
+          texto: 'En la cabecera y el titular grande, la diferencia dramática entre astas gruesas y filetes finos aporta carácter sin perder definición.',
+          zona: zona(18, 18, 324, 78),
+        },
+        {
+          ...pct(320, 152),
+          titulo: 'Contraste moderado en cuerpo de texto (13 px)',
+          texto: 'Al bajar al párrafo de lectura, la fuente engrosa los trazos horizontales y abre los contrapunzones para resistir el tamaño pequeño.',
+          zona: zona(18, 104, 324, 96),
+        },
+        {
+          ...pct(320, 238),
+          titulo: 'Mancha gris uniforme («color tipográfico»)',
+          texto: 'El bloque de texto mantiene una densidad regular sin huecos blancos ni grumos oscuros.',
+          zona: zona(18, 206, 324, 56),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Comparación entre la cabecera de alto contraste de un periódico y su columna de texto de contraste robusto.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="180" y="54" text-anchor="middle" font-family={SERIF} font-size="34" font-weight="700" letter-spacing="1" fill={T}>EL OBSERVADOR</text>
+        <line x1="24" y1="68" x2="336" y2="68" stroke={T} stroke-width="2" />
+        <line x1="24" y1="72" x2="336" y2="72" stroke={T} stroke-width="0.8" />
+        <text x="180" y="90" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1.2" fill={G}>EDICIÓN MATUTINA · AÑO XCII · N.º 14.208</text>
+        <text x="24" y="124" font-family={SERIF} font-size="15" font-weight="700" fill={T}>La biblioteca municipal abre su archivo sonoro</text>
+        <text font-family={SERIF} font-size="12.5" fill="#444444">
+          <tspan x="24" y="148">Más de cuatro mil cintas grabadas entre 1954 y 1998</tspan>
+          <tspan x="24" y="166">fueron digitalizadas por el taller de restauración.</tspan>
+          <tspan x="24" y="184">El catálogo incluye conciertos, entrevistas a</tspan>
+          <tspan x="24" y="202">artesanos y paisajes acústicos de las plazas.</tspan>
+        </text>
+        <rect x="24" y="220" width="312" height="36" fill="#fbfbf9" stroke="#d8d8d4" />
+        <text x="34" y="242" font-family={SANS} font-size="11" font-weight="700" fill={T}>Consulta pública: lunes a sábado de 09:00 a 18:00 h</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Señalética nocturna en negativo: compensar la luz"
+      notas={[
+        {
+          ...pct(320, 62),
+          titulo: 'Aberturas amplias sobre fondo carbón',
+          texto: 'Las letras blancas sobre fondo oscuro evitan los pesos ultragruesos para que el halo luminoso no una las astas.',
+          zona: zona(18, 20, 324, 72),
+        },
+        {
+          ...pct(320, 148),
+          titulo: 'Espaciado entre letras ligeramente abierto',
+          texto: 'Un tracking positivo (+2 % a +4 %) impide que las letras vecinas se fundan cuando se miran de lejos en la oscuridad.',
+          zona: zona(18, 100, 324, 76),
+        },
+        {
+          ...pct(320, 232),
+          titulo: 'Acento en amarillo señal de alta luminancia',
+          texto: 'El número de andén invierte la polaridad (tinta negra sobre rectángulo amarillo) para lograr la máxima nitidez.',
+          zona: zona(18, 186, 324, 74),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de señalética de estación nocturna con fondo oscuro, texto blanco espaciado y número de andén en negro sobre amarillo.">
+        <rect width={W} height={H} fill="#181818" />
+        <rect x="20" y="20" width="320" height="240" fill="#222222" stroke="#444444" stroke-width="1.5" />
+        <text x="38" y="48" font-family={SANS} font-size="10.5" font-weight="700" letter-spacing="1.6" fill="#d4d4d0">LÍNEA NORTE · DIRECCIÓN NÍQUIA</text>
+        <text x="38" y="84" font-family={SANS} font-size="26" font-weight="700" letter-spacing="0.8" fill="#ffffff">Hospital Universitario</text>
+        <line x1="38" y1="104" x2="322" y2="104" stroke="#444444" />
+        <text font-family={SANS} font-size="13" font-weight="400" letter-spacing="0.5" fill="#e5e5e0">
+          <tspan x="38" y="132">Conexión con rutas integradas de ladera</tspan>
+          <tspan x="38" y="152">y salida peatonal hacia el Jardín Botánico.</tspan>
+        </text>
+        <rect x="38" y="186" width="118" height="52" fill={AMARILLO} />
+        <text x="50" y="204" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>ANDÉN</text>
+        <text x="50" y="228" font-family={SANS} font-size="24" font-weight="900" fill={T}>02 B</text>
+        <text x="172" y="210" font-family={SANS} font-size="12" font-weight="700" letter-spacing="0.4" fill="#ffffff">Próximo tren: 3 min</text>
+        <text x="172" y="228" font-family={SANS} font-size="11" letter-spacing="0.3" fill="#d4d4d0">6 vagones · servicio continuo</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Tabla financiera: jerarquía de pesos sin cambiar el cuerpo"
+      notas={[
+        {
+          ...pct(320, 52),
+          titulo: 'Encabezados en 10 px peso 700',
+          texto: 'Las cabeceras de columna compensan su tamaño pequeño con peso firme y espaciado entre letras.',
+          zona: zona(20, 22, 320, 44),
+        },
+        {
+          ...pct(320, 128),
+          titulo: 'Filas de detalle en peso 400',
+          texto: 'Los rubros individuales van en peso regular para no saturar la vista al recorrer diez o veinte renglones.',
+          zona: zona(20, 72, 320, 96),
+        },
+        {
+          ...pct(320, 224),
+          titulo: 'Fila de total en peso 700 al mismo tamaño',
+          texto: 'El salto de 400 a 700 junto con el filete superior basta para destacar el balance final sin romper las columnas.',
+          zona: zona(20, 178, 320, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tabla de presupuesto donde todas las filas tienen el mismo tamaño de fuente y el total destaca por su peso 700.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="26" y="42" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>PARTIDA PRESUPUESTAL</text>
+        <text x="334" y="42" text-anchor="end" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>IMPORTE (USD)</text>
+        <line x1="26" y1="52" x2="334" y2="52" stroke={T} stroke-width="1.5" />
+
+        <text x="26" y="80" font-family={SANS} font-size="13" font-weight="400" fill="#444444">Edición y corrección de estilo</text>
+        <text x="334" y="80" text-anchor="end" font-family={SANS} font-size="13" font-weight="400" fill={T}>2.400,00</text>
+
+        <text x="26" y="108" font-family={SANS} font-size="13" font-weight="400" fill="#444444">Diseño de cubierta y maquetación</text>
+        <text x="334" y="108" text-anchor="end" font-family={SANS} font-size="13" font-weight="400" fill={T}>3.150,00</text>
+
+        <text x="26" y="136" font-family={SANS} font-size="13" font-weight="400" fill="#444444">Pruebas de color y preprensa</text>
+        <text x="334" y="136" text-anchor="end" font-family={SANS} font-size="13" font-weight="400" fill={T}>680,00</text>
+
+        <text x="26" y="164" font-family={SANS} font-size="13" font-weight="400" fill="#444444">Impresión offset (1.500 ejemplares)</text>
+        <text x="334" y="164" text-anchor="end" font-family={SANS} font-size="13" font-weight="400" fill={T}>6.220,00</text>
+
+        <line x1="26" y1="184" x2="334" y2="184" stroke={T} stroke-width="1.5" />
+        <rect x="26" y="194" width="308" height="34" fill="#fbfbf9" />
+        <text x="34" y="216" font-family={SANS} font-size="13.5" font-weight="700" fill={T}>Total ejecución editorial</text>
+        <text x="326" y="216" text-anchor="end" font-family={SANS} font-size="13.5" font-weight="900" fill={T}>12.450,00</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre saltos de peso, irradiación en fondo oscuro, cierre de contrapunzones y trazos finos."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const TINTA = '#222222';
+  const GRIS = '#6f6f6f';
+  const ROJO = '#b3261e';
+  const AMARILLO = '#eeff41';
+
+  type E = {
+    pesoBase: number;
+    pesoEnfasis: number;
+    tamano: number;
+    invertir: boolean;
+    contrasteTrazo: string;
+    espaciado: number;
+  };
+
+  function calcularMetricas(e: E) {
+    const salto = Math.abs(e.pesoEnfasis - e.pesoBase);
+    const penalizacionNegativo = e.invertir ? 12 : 0;
+    const penalizacionTamano = e.tamano < 13 ? (13 - e.tamano) * 6 : 0;
+    const bonoTracking = e.espaciado * 2.5;
+    const apertura = Math.max(
+      12,
+      Math.min(88, Math.round(78 - (e.pesoEnfasis - 300) * 0.065 - penalizacionNegativo - penalizacionTamano + bonoTracking)),
+    );
+    return { salto, apertura };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 300);
+    const H = 320;
+    const { salto, apertura } = calcularMetricas(e);
+
+    const bg = e.invertir ? '#181818' : '#ffffff';
+    const fg = e.invertir ? '#f5f5f0' : TINTA;
+    const sec = e.invertir ? '#c8c8c2' : GRIS;
+    const borde = e.invertir ? '#444444' : TINTA;
+    const familia = e.contrasteTrazo === 'bajo' ? SANS : SERIF;
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute('aria-label', `Simulador de peso y contraste con base ${e.pesoBase} y énfasis ${e.pesoEnfasis} a ${e.tamano} px.`);
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 460 ? 18 : 32;
+    const cardW = W - padX * 2;
+    raiz.append(svg('rect', { x: padX, y: 16, width: cardW, height: H - 32, fill: bg, stroke: borde, 'stroke-width': 1.5 }));
+
+    // Lupa superior de contrapunzón y contraste de astas
+    const yLupa = 96;
+    const extraIrradiacion = e.invertir ? (e.pesoEnfasis >= 700 ? 1.4 : 0.7) : 0;
+    const muestraLupa = svg('text', {
+      x: padX + 24,
+      y: yLupa,
+      'font-family': familia,
+      'font-size': W < 460 ? 44 : 56,
+      'font-weight': e.pesoEnfasis,
+      'letter-spacing': e.espaciado * 0.6,
+      fill: fg,
+      stroke: extraIrradiacion > 0 ? fg : 'none',
+      'stroke-width': extraIrradiacion,
+    });
+    muestraLupa.textContent = 'geao';
+    raiz.append(muestraLupa);
+
+    // Indicador del contrapunzón
+    const xMeter = padX + (W < 460 ? 165 : 220);
+    const wMeter = Math.max(90, cardW - (W < 460 ? 185 : 248));
+    const lblCont = svg('text', {
+      x: xMeter,
+      y: 52,
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 700,
+      'letter-spacing': 0.8,
+      fill: sec,
+    });
+    lblCont.textContent = `CONTRAPUNZÓN LIBRE: ${apertura} %`;
+    raiz.append(lblCont);
+
+    raiz.append(svg('rect', { x: xMeter, y: 60, width: wMeter, height: 10, fill: e.invertir ? '#333333' : '#ecece6', stroke: sec, 'stroke-width': 0.8 }));
+    const colBarra = apertura < 35 ? ROJO : e.invertir ? AMARILLO : TINTA;
+    raiz.append(svg('rect', { x: xMeter, y: 60, width: (wMeter * apertura) / 100, height: 10, fill: colBarra }));
+
+    const lblSalto = svg('text', {
+      x: xMeter,
+      y: 92,
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 700,
+      fill: fg,
+    });
+    lblSalto.textContent = `Salto de peso: ${e.pesoBase} → ${e.pesoEnfasis} (Δ ${salto})`;
+    raiz.append(lblSalto);
+
+    raiz.append(svg('line', { x1: padX + 20, y1: 122, x2: padX + cardW - 20, y2: 122, stroke: e.invertir ? '#333333' : '#e5e5e5' }));
+
+    // Párrafo a tamaño real de prueba
+    const fs = Math.min(34, e.tamano);
+    const opacidadTrazoFino = e.contrasteTrazo === 'alto' && e.tamano <= 13 ? 0.55 : 1;
+
+    const p1 = svg('text', {
+      x: padX + 24,
+      y: 162,
+      'font-family': familia,
+      'font-size': fs,
+      'font-weight': e.pesoBase,
+      'letter-spacing': e.espaciado * 0.35,
+      opacity: opacidadTrazoFino,
+      fill: fg,
+    });
+    p1.textContent = 'La resistencia de una letra cambia';
+    raiz.append(p1);
+
+    const p2 = svg('text', {
+      x: padX + 24,
+      y: 162 + fs * 1.45,
+      'font-family': familia,
+      'font-size': fs,
+      'font-weight': e.pesoBase,
+      'letter-spacing': e.espaciado * 0.35,
+      fill: fg,
+    });
+    const tA = svg('tspan', {});
+    tA.textContent = 'con ';
+    const tB = svg('tspan', {
+      'font-weight': e.pesoEnfasis,
+      stroke: extraIrradiacion > 0 ? fg : 'none',
+      'stroke-width': extraIrradiacion * 0.55,
+    });
+    tB.textContent = 'el peso del trazo';
+    const tC = svg('tspan', {});
+    tC.textContent = ' y la luz.';
+    p2.append(tA, tB, tC);
+    raiz.append(p2);
+
+    // Nota al pie de prueba en cuerpo pequeño
+    const yPie = H - 36;
+    const pie = svg('text', {
+      x: padX + 24,
+      y: yPie,
+      'font-family': familia,
+      'font-size': Math.max(10, Math.min(13, e.tamano * 0.72)),
+      'font-weight': e.pesoEnfasis,
+      'letter-spacing': e.espaciado * 0.35,
+      fill: sec,
+    });
+    pie.textContent = `Cuerpo de prueba: ${n(e.tamano, 0)} px · Contraste de astas: ${e.contrasteTrazo} · ${e.invertir ? 'Blanco sobre negro' : 'Negro sobre blanco'}`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { salto, apertura } = calcularMetricas(e);
+
+    if (e.contrasteTrazo === 'alto' && e.tamano <= 13) {
+      return `A <b class="dv-cifra">${e.tamano} px</b> una fuente de alto contraste (Didona) pierde sus travesaños horizontales finos. Reserva esos diseños para titulares grandes.`;
+    }
+    if (apertura < 35) {
+      return `El espacio blanco interno cae al <b class="dv-cifra">${apertura} %</b>: con peso ${e.pesoEnfasis} a ${e.tamano} px${e.invertir ? ' sobre fondo negro' : ''}, los contrapunzones de la «e» y la «a» se empastan.`;
+    }
+    if (salto > 0 && salto < 200) {
+      return `Diferencia de solo <b class="dv-cifra">${salto} puntos</b> (${e.pesoBase} vs. ${e.pesoEnfasis}): el salto es demasiado tímido para leerse como énfasis deliberado.`;
+    }
+    if (e.invertir) {
+      return `Fondo oscuro activo: la irradiación engrosa visualmente las letras blancas. Con apertura del <b class="dv-cifra">${apertura} %</b> y salto de <b class="dv-cifra">${salto} puntos</b>, el texto mantiene espacio interno.`;
+    }
+    return `Salto franco de <b class="dv-cifra">${salto} puntos</b> (${e.pesoBase} → ${e.pesoEnfasis}) con un <b class="dv-cifra">${apertura} %</b> de apertura en el contrapunzón.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="peso-y-contraste"]')) {
+    guiar<E>(raiz, [
+      (e) => Math.abs(e.pesoEnfasis - e.pesoBase) === 100,
+      (e) => e.pesoBase === 400 && e.pesoEnfasis >= 700 && !e.invertir && e.tamano >= 15,
+      (e) => e.pesoEnfasis >= 800 && e.tamano <= 12,
+      (e) => e.invertir,
+      (e) => e.contrasteTrazo === 'alto' && e.tamano <= 13,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────
+  type E1 = { pesoDestaque: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const fw = Number(e.pesoDestaque);
+    const stroke = fw === 900 ? 'text-shadow:0.4px 0 0 #222222;' : '';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};font-size:14px;line-height:1.5;color:#222222;">
+        <p style="margin:0;">La recepción de prototipos cierra el <span style="font-weight:${fw};${stroke}">viernes 18 a las 14:00 h</span> sin prórroga administrativa.</p>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.pesoDestaque === '500') return 'Regular 400 + Medium 500: <b class="dv-cifra">salto tímido</b>. Quien lee duda si la diferencia es intencional.';
+    if (e.pesoDestaque === '900') return 'Regular 400 + Black 900: la mancha negra resulta tan densa que interrumpe la lectura de la frase.';
+    return '<b class="dv-cifra">Regular 400 + Bold 700</b>: dos escalones de distancia crean un énfasis nítido y equilibrado.';
+  }
+
+  type E2 = { compensacion: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const k = e.compensacion / 100;
+    const fw = k >= 0.5 ? 400 : 700;
+    const ls = (k * 0.6).toFixed(2);
+    const extra = k < 0.4 ? '-webkit-text-stroke:0.4px #ffffff;' : '';
+    d.innerHTML = `
+      <div style="padding:16px 18px;background:#181818;color:#f5f5f0;font-family:${SANS};font-size:13px;line-height:1.5;">
+        <p style="margin:0 0 4px;font-size:10px;font-weight:700;letter-spacing:0.1em;color:#eeff41;">SERVICIO NOCTURNO</p>
+        <p style="margin:0;font-weight:${fw};letter-spacing:${ls}px;${extra}">Salidas cada veinte minutos desde la estación central hacia el campus norte.</p>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.compensacion < 40) return 'En negativo sin compensar, la luz blanca <b class="dv-cifra">engrosa las astas</b> y junta las letras.';
+    return `<b class="dv-cifra">Compensación al ${e.compensacion} %</b>: al bajar un escalón el peso y abrir el espaciado, el texto recupera su nitidez sobre el fondo oscuro.`;
+  }
+
+  type E3 = { pesoPequeno: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const es100 = e.pesoPequeno === '100';
+    const es900 = e.pesoPequeno === '900';
+    const st = es100
+      ? 'font-weight:300;color:#888888;opacity:0.65;'
+      : es900
+        ? 'font-weight:900;color:#222222;-webkit-text-stroke:0.5px #222222;letter-spacing:-0.2px;'
+        : 'font-weight:700;color:#444444;letter-spacing:0.5px;';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#222222;">Tasa de ocupación hospitalaria: 84,2 %</p>
+        <p style="margin:0;font-size:10.5px;${st}">NOTA METODOLÓGICA: DATOS VERIFICADOS CON EL CENSO SANITARIO DE OCTUBRE</p>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.pesoPequeno === '100') return 'A 10,5 px un peso ultraligero <b class="dv-cifra">se desvanece</b> y pierde contraste con el fondo.';
+    if (e.pesoPequeno === '900') return 'A 10,5 px un peso Black 900 <b class="dv-cifra">cierra los huecos</b> de la «A», la «O» y la «R».';
+    return '<b class="dv-cifra">Peso medio/firme con ligero espaciado</b>: las letras pequeñas conservan tanto el trazo como el espacio interno.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['peso-y-contraste-e1', pintarE1 as never, describirE1 as never],
+    ['peso-y-contraste-e2', pintarE2 as never, describirE2 as never],
+    ['peso-y-contraste-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────
+  function rSaltoFranco(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Párrafo en Regular (400) con palabras clave en Bold (700)',
+        describir: 'Párrafo donde las palabras importantes destacan con claridad en negrita.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:12.5px;color:#222;text-align:left;line-height:1.45;">
+          El laboratorio permanecerá abierto de <strong>lunes a viernes</strong> únicamente con reserva previa.
+        </div>`,
+      },
+      {
+        texto: 'Párrafo en Regular (400) con palabras clave en Medium (500)',
+        describir: 'Párrafo donde el cambio de grosor en lunes a viernes es casi imperceptible.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:12.5px;color:#222;text-align:left;line-height:1.45;">
+          El laboratorio permanecerá abierto de <span style="font-weight:500;">lunes a viernes</span> únicamente con reserva previa.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Cuando destacas palabras dentro de un párrafo del mismo tamaño y color, ¿cuál de las dos combinaciones ofrece un contraste de peso eficaz?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Dentro de una misma línea sin cambio de cuerpo, saltar un solo escalón (400 a 500) pasa desapercibido. Hace falta saltar al menos a 700.',
+      repaso: 'Salto franco de peso',
+    };
+  }
+
+  function rIrradiacion(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Peso regular con espaciado ligeramente abierto para compensar el halo de luz',
+        describir: 'Texto blanco sobre fondo oscuro con contrapunzones limpios y abiertos.',
+        es: true,
+        html: `<div style="padding:12px;background:#181818;color:#f5f5f0;font-family:${SANS};font-size:12.5px;letter-spacing:0.4px;text-align:left;">
+          Salida de emergencia · Pasillo B
+        </div>`,
+      },
+      {
+        texto: 'Peso ultragrueso apretado que se hincha y cierra las letras sobre el fondo negro',
+        describir: 'Texto blanco muy grueso y apretado donde las letras parecen pegarse.',
+        es: false,
+        html: `<div style="padding:12px;background:#181818;color:#ffffff;font-family:${SANS};font-size:12.5px;font-weight:900;-webkit-text-stroke:0.6px #fff;letter-spacing:-0.4px;text-align:left;">
+          Salida de emergencia · Pasillo B
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Debido al fenómeno de irradiación (texto blanco sobre fondo oscuro), ¿cuál de los dos tratamientos conserva mejor la forma interna de las letras?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El texto blanco sobre fondo negro irradia luz hacia los bordes y parece más grueso que en positivo. Moderar el peso y abrir ligeramente el espaciado evita el empaste.',
+      repaso: 'Irradiación en fondo oscuro',
+    };
+  }
+
+  function rContrasteTrazo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Fuente de bajo o medio contraste entre trazos, donde todas las astas conservan grosor visible a 11 px',
+        describir: 'Nota pequeña en fuente robusta y clara.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:11px;color:#222;text-align:left;">
+          Fotografía: Archivo Histórico de Antioquia (1948)
+        </div>`,
+      },
+      {
+        texto: 'Fuente de contraste extremo cuyos trazos horizontales finos casi desaparecen a 11 px',
+        describir: 'Nota pequeña con trazos tan finos que se entrecortan.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:Didot,Bodoni MT,Georgia,serif;font-size:10.5px;font-weight:300;color:#6f6f6f;letter-spacing:0.5px;text-align:left;">
+          Fotografía: Archivo Histórico de Antioquia (1948)
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Para componer un pie de foto de 11 px, ¿qué estructura de trazo resiste mejor la reducción?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las fuentes de alto contraste (con filetes muy finos) lucen en cuerpos grandes, pero por debajo de 12 px sus trazos delgados se quiebran (Tracy, 1986).',
+      repaso: 'Contraste del trazo según el cuerpo',
+    };
+  }
+
+  function rContrapunzon(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Peso 600–700 con huecos internos («e», «a», «o») abiertos y definidos',
+        describir: 'Etiqueta pequeña en negrita limpia.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:11.5px;font-weight:700;color:#222;letter-spacing:0.04em;">
+          ENTRADA GENERAL · AFORO COMPLETO
+        </div>`,
+      },
+      {
+        texto: 'Peso 900 extremo donde la tinta invade el contrapunzón y convierte las letras en manchas cerradas',
+        describir: 'Etiqueta pequeña donde las letras A, O y R tienen el centro casi tapado de negro.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:11.5px;font-weight:900;-webkit-text-stroke:0.8px #222;color:#222;letter-spacing:-0.03em;">
+          ENTRADA GENERAL · AFORO COMPLETO
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Reconocemos las letras tanto por el trazo negro como por su hueco blanco interno (contrapunzón). ¿En cuál de las dos etiquetas se conserva ese espacio interno?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como explica Noordzij (2005), cuando el trazo crece hacia adentro en cuerpos pequeños cierra el contrapunzón y hace que la «e», la «o» y la «a» se confundan entre sí.',
+      repaso: 'Apertura del contrapunzón',
+    };
+  }
+
+  function rAjustePeso(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El párrafo base está en peso 400. Ajusta el peso del dato clave («martes 14 a las 16:00 h») para que se distinga con claridad sin llegar a empastarse.',
+      control: {
+        etiqueta: 'Peso del dato destacado',
+        min: 400,
+        max: 900,
+        paso: 50,
+        valor: 450,
+        unidad: '',
+      },
+      pintar: (c, v) => {
+        const empaste = v >= 850 ? '-webkit-text-stroke:0.6px #222;letter-spacing:-0.3px;' : '';
+        c.innerHTML = `<div style="padding:14px 16px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:14px;line-height:1.5;color:#222;text-align:left;">
+          La defensa pública de los proyectos se realizará el <span style="font-weight:${v};${empaste}">martes 14 a las 16:00 h</span> en el taller del tercer piso.
+        </div>`;
+      },
+      cumple: (v) => v >= 650 && v <= 750,
+      falta: (v) => v < 650 ? `Con peso ${v}, la diferencia frente al párrafo en 400 sigue siendo tímida. Sube hacia 700.` : `Con peso ${v}, el trazo empieza a empastarse. Baja hacia 700.`,
+      porque: 'En un párrafo en peso 400, el rango de 650 a 750 (Bold) ofrece el salto necesario para el escaneo rápido sin cerrar los contrapunzones.',
+      repaso: 'Rango óptimo de énfasis por peso',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="peso-y-contraste"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rSaltoFranco(),
+        rIrradiacion(),
+        rContrasteTrazo(),
+        rContrapunzon(),
+        rAjustePeso(),
+      ]),
+    );
+  }
+</script>

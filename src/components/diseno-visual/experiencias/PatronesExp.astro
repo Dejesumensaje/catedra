@@ -1,0 +1,1012 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'patrones';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const PAPEL = '#ffffff';
+const FONDO = '#fbfbf9';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Satura la pantalla sin revelación progresiva.',
+    hacer: 'Con «Patrón bajo disección» en «Revelación progresiva», sube «Complejidad de la tarea (opciones / ítems)» a 18 o más y en «Aplicación del patrón» elige «Sin patrón (todo plano de golpe)».',
+    pista: 'Mueve el deslizador a 18+ y cambia el segundo control a «Sin patrón (todo plano de golpe)».',
+    logro: 'Cuando dieciocho controles primarios y secundarios aparecen al mismo nivel, quien llega por primera vez no sabe qué tocar primero. La sobrecarga bloquea la entrada.',
+  },
+  {
+    titulo: 'Aplica la revelación progresiva.',
+    hacer: 'Mantén la complejidad alta y cambia «Aplicación del patrón» a «Con patrón aplicado».',
+    pista: 'Selecciona la primera opción en «Aplicación del patrón».',
+    logro: 'Los tres controles esenciales quedan a la vista para empezar al instante y los quince ajustes finos se pliegan bajo «Más controles». La potencia sigue ahí, pero ya no intimida.',
+  },
+  {
+    titulo: 'Explora el patrón Maestro-detalle.',
+    hacer: 'En «Patrón bajo disección», selecciona «Maestro-detalle (índice y vista)».',
+    pista: 'Elige la segunda opción del primer control.',
+    preparar: { aplicacion: 'con-patron', complejidad: 15 },
+    logro: 'En lugar de obligar a entrar y salir de quince páginas con el botón «Atrás», la lista maestra queda fija a la izquierda mientras el panel derecho muestra el detalle seleccionado en vivo.',
+  },
+  {
+    titulo: 'Comprueba el patrón de Búsqueda con facetas.',
+    hacer: 'En «Patrón bajo disección», selecciona «Búsqueda con facetas y estado vacío».',
+    pista: 'Elige la tercera opción del primer control.',
+    logro: 'El patrón articula cuatro piezas que cooperan: buscador por texto, filtros por categoría, contador de resultados en vivo y salida clara cuando no hay coincidencias.',
+  },
+  {
+    titulo: 'Provoca el caso de cero resultados (estado vacío).',
+    hacer: 'Abre «Más controles» y activa «Simular consulta con 0 resultados (estado vacío)».',
+    pista: 'Despliega «Más controles» y marca la primera casilla.',
+    preparar: { patron: 'busqueda', aplicacion: 'con-patron' },
+    abrir: true,
+    logro: 'Un patrón de filtrado no termina cuando hay coincidencias: cuando el recuento cae a cero, explica por qué ocurrió y ofrece un botón inmediato («Limpiar filtros») para salir del callejón sin salida.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres interfaces distintas (un catálogo de biblioteca, una boletería de trenes y el índice de diseño visual) que usan componentes distintos pero comparten el mismo patrón de búsqueda, filtro por faceta y contador en vivo.">
+      <rect width="600" height="180" fill={FONDO} />
+      {[
+        { x: 16, tit: '1. BIBLIOTECA PÚBLICA', busq: 'Buscar autor…', chip: '[Novela] [Ensayo]', cont: 'Hay 7 libros', item1: 'El sentido del orden', item2: 'Arte e ilusión' },
+        { x: 212, tit: '2. HORARIOS DE TREN', busq: 'Estación destino…', chip: '[Directo] [Nocturno]', cont: '7 salidas hoy', item1: '08:15 · Medellín → Cali', item2: '14:40 · Medellín → Bogotá' },
+        { x: 408, tit: '3. ÍNDICE /DISENO-VISUAL', busq: 'Filtrar concepto…', chip: '[Sistemas] [Color]', cont: 'Mostrando 7 de 37', item1: '29 · Tokens', item2: '30 · Componentes' },
+      ].map((p) => (
+        <g transform={`translate(${p.x}, 14)`}>
+          <rect width="176" height="152" fill={PAPEL} stroke={T} stroke-width="1.5" />
+          <text x="10" y="18" font-family={SANS} font-size="9" font-weight="900" letter-spacing="0.06em" fill={T}>{p.tit}</text>
+          {/* 1. Buscador */}
+          <rect x="10" y="26" width="156" height="20" fill={FONDO} stroke={T} stroke-width="1" />
+          <text x="16" y="39" font-family={SANS} font-size="9" fill={G}>{p.busq}</text>
+          {/* 2. Facetas */}
+          <text x="10" y="60" font-family={SANS} font-size="9" font-weight="700" fill={TXT}>{p.chip}</text>
+          {/* 3. Recuento vivo */}
+          <rect x="10" y="68" width="156" height="16" fill={AMARILLO} stroke={T} stroke-width="1" />
+          <text x="16" y="79" font-family={SANS} font-size="8.5" font-weight="900" fill={T}>ESTADO VIVO: {p.cont}</text>
+          {/* 4. Lista que responde */}
+          <rect x="10" y="92" width="156" height="22" fill={PAPEL} stroke={REGLA} stroke-width="1" />
+          <text x="16" y="106" font-family={SERIF} font-size="9.5" font-weight="700" fill={T}>{p.item1}</text>
+          <rect x="10" y="118" width="156" height="22" fill={PAPEL} stroke={REGLA} stroke-width="1" />
+          <text x="16" y="132" font-family={SERIF} font-size="9.5" font-weight="700" fill={T}>{p.item2}</text>
+        </g>
+      ))}
+    </svg>
+    <p>Una biblioteca, una boletería de trenes y el índice de esta enciclopedia tienen tipografías y componentes distintos. ¿Por qué sabes usar las tres en el primer segundo?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque las tres resuelven el mismo problema recurrente aplicando el mismo <strong>patrón estructural</strong>: un campo de búsqueda arriba, facetas para acotar categorías, una línea de estado que anuncia cuántos resultados quedan («Hay 7 resultados») y una lista que se filtra al instante sin recargar la página. Los componentes concretos cambian, pero la coreografía que resuelve la tarea es la misma.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Mecánicas improvisadas y sobrecarga sin patrones"
+      notas={[
+        {
+          ...pct(330, 52),
+          titulo: 'Sin orientación de recorrido',
+          texto: 'El usuario no sabe en qué sección está ni cuántos pasos faltan para terminar la configuración.',
+          zona: zona(16, 16, 328, 44),
+        },
+        {
+          ...pct(330, 134),
+          titulo: '14 controles avanzados lanzados de golpe',
+          texto: 'Mezclar el título básico con parámetros técnicos de caché, puerto y codificación abruma a quien solo quería publicar.',
+          zona: zona(16, 66, 328, 122),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Acción destructiva sin confirmación',
+          texto: 'El botón «Borrar archivo» está pegado a «Guardar» con el mismo estilo y ejecuta el borrado sin pedir confirmación.',
+          zona: zona(16, 196, 328, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Formulario confuso sin miga de pan, con doce ajustes técnicos mezclados con el título y un botón de borrado inmediato junto al de guardar.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="16" y="16" width="328" height="44" fill="#fbe9e7" stroke={ROJO} stroke-width="1.5" />
+        <text x="28" y="36" font-family={SANS} font-size="11" font-weight="900" fill={ROJO}>PANTALLA DE AJUSTES (¿DÓNDE ESTOY?)</text>
+        <text x="28" y="51" font-family={SANS} font-size="9.5" fill={T}>Sin ruta de navegación ni jerarquía de pasos</text>
+
+        <rect x="16" y="66" width="328" height="122" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="26" y="84" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>14 PARÁMETROS MEZCLADOS SIN FILTRO:</text>
+        <text x="26" y="102" font-family={SANS} font-size="9.5" fill={TXT}>[Puerto TCP: 8080] [Codificación: UTF-8] [Título: ___]</text>
+        <text x="26" y="120" font-family={SANS} font-size="9.5" fill={TXT}>[Timeout: 300 ms] [Reintentos: 4] [Autor: ___]</text>
+        <text x="26" y="138" font-family={SANS} font-size="9.5" fill={TXT}>[Buffer: 64 KB] [Compresión: GZIP] [Fecha: ___]</text>
+        <text x="26" y="156" font-family={SANS} font-size="9.5" fill={TXT}>[Hash SHA: activo] [Logs: nivel 3] [Caché: 0 s]</text>
+        <text x="26" y="176" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>El usuario abandona antes de encontrar «Título» y «Autor».</text>
+
+        <rect x="16" y="196" width="328" height="68" fill={PAPEL} stroke={ROJO} stroke-width="1.5" />
+        <rect x="28" y="210" width="142" height="28" fill={T} />
+        <text x="99" y="228" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={PAPEL}>Borrar todo al clic</text>
+        <rect x="182" y="210" width="142" height="28" fill={T} />
+        <text x="253" y="228" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={PAPEL}>Guardar cambios</text>
+        <text x="28" y="254" font-family={SANS} font-size="9.5" fill={ROJO}>Mismo peso visual y cero aviso antes de destruir datos.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Tres patrones probados que cooperan con claridad"
+      notas={[
+        {
+          ...pct(330, 42),
+          titulo: 'Patrón 1: Miga de pan (breadcrumbs)',
+          texto: 'Ubica la pantalla dentro de la jerarquía («Cursos › Pensamiento Sensorial › Sesión 07») y permite subir a cualquier nivel.',
+          zona: zona(16, 16, 328, 42),
+        },
+        {
+          ...pct(330, 128),
+          titulo: 'Patrón 2: Revelación progresiva',
+          texto: 'Muestra de entrada solo «Título» y «Fecha»; los parámetros técnicos van plegados bajo «Más controles (12)».',
+          zona: zona(16, 64, 328, 120),
+        },
+        {
+          ...pct(330, 230),
+          titulo: 'Patrón 3: Confirmación explícita de borrado',
+          texto: 'Separa la acción destructiva y exige confirmar el impacto («Se eliminarán 14 entregas») antes de ejecutar.',
+          zona: zona(16, 192, 328, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Interfaz estructurada mediante tres patrones: miga de pan superior, revelación progresiva para opciones avanzadas y diálogo de confirmación para borrado.">
+        <rect width={W} height={H} fill={PAPEL} />
+        {/* 1. Miga de pan */}
+        <rect x="16" y="16" width="328" height="40" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="28" y="40" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>Cursos  ›  Pensamiento Sensorial  ›  <tspan fill={T}>Sesión 07</tspan></text>
+
+        {/* 2. Revelación progresiva */}
+        <rect x="16" y="64" width="328" height="120" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="28" y="86" font-family={SANS} font-size="10" font-weight="700" fill={T}>CAMPOS ESENCIALES (VISIBLES DE ENTRADA)</text>
+        <rect x="28" y="94" width="190" height="22" fill={FONDO} stroke={T} stroke-width="1" />
+        <text x="36" y="109" font-family={SERIF} font-size="11" fill={T}>Título: La distancia entre…</text>
+        <rect x="228" y="94" width="102" height="22" fill={FONDO} stroke={T} stroke-width="1" />
+        <text x="236" y="109" font-family={SANS} font-size="10" fill={T}>Fecha: 17 sep</text>
+
+        <rect x="28" y="128" width="302" height="42" fill={FONDO} stroke={T} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="40" y="148" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>▸ Más controles avanzados (12 parámetros técnicos)</text>
+        <text x="40" y="162" font-family={SANS} font-size="9.5" fill={G}>Plegados por defecto para no saturar la tarea principal</text>
+
+        {/* 3. Confirmación explícita */}
+        <rect x="16" y="192" width="328" height="72" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="28" y="212" font-family={SANS} font-size="10" font-weight="900" fill={T}>PATRÓN DE CONFIRMACIÓN ANTES DE BORRAR:</text>
+        <text x="28" y="228" font-family={SERIF} font-size="11" fill={T}>«¿Eliminar S07? Se perderán 3 referentes asociados.»</text>
+        <rect x="28" y="236" width="82" height="20" fill={PAPEL} stroke={T} stroke-width="1.2" />
+        <text x="69" y="250" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>Cancelar</text>
+        <rect x="120" y="236" width="118" height="20" fill={ROJO} />
+        <text x="179" y="250" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={PAPEL}>Sí, eliminar sesión</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Diseccionador de patrones · contexto, fuerzas en tensión y solución"
+    consigna="Elige uno de los tres patrones clásicos de diseño de información, aumenta la complejidad de la tarea (de 3 a 24 elementos) y alterna entre la pantalla sin patrón y con el patrón aplicado."
+    nota="Fija la versión «Sin patrón» con 18 elementos como A y compárala con «Con patrón aplicado» en B para ver cómo baja la carga cognitiva."
+  >
+    <svg slot="escenario" viewBox="0 0 640 310" role="img" aria-label="Diseccionador de patrones mostrando el patrón de revelación progresiva con controles esenciales visibles y controles secundarios plegados.">
+      <rect width="640" height="310" fill={FONDO} />
+      <rect x="24" y="24" width="592" height="262" fill={PAPEL} stroke={T} stroke-width="1.5" />
+      <text x="44" y="54" font-family={SANS} font-size="12" font-weight="900" fill={T}>PATRÓN: REVELACIÓN PROGRESIVA</text>
+      <rect x="44" y="72" width="552" height="90" fill={FONDO} stroke={T} stroke-width="1.5" />
+      <text x="60" y="102" font-family={SANS} font-size="11" font-weight="700" fill={T}>1. Primer nivel: 3 controles esenciales siempre visibles</text>
+      <rect x="44" y="178" width="552" height="84" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      <text x="60" y="212" font-family={SANS} font-size="11" font-weight="900" fill={T}>2. Segundo nivel bajo demanda: ▸ Más controles</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Recorre los tres patrones activando las cotas de la estructura de Christopher Alexander (Contexto → Problema → Solución) en «Más controles»." />
+
+    <Opciones
+      lab={lab}
+      variable="patron"
+      etiqueta="Patrón bajo disección"
+      valor="revelacion"
+      opciones={[
+        { valor: 'revelacion', texto: 'Revelación progresiva' },
+        { valor: 'maestro', texto: 'Maestro-detalle (índice y vista)' },
+        { valor: 'busqueda', texto: 'Búsqueda con facetas y estado vacío' },
+      ]}
+      ayuda="Cada patrón resuelve un problema recurrente distinto cuando crece el volumen de información."
+    />
+
+    <Deslizador
+      lab={lab}
+      variable="complejidad"
+      etiqueta="Complejidad de la tarea (opciones / ítems)"
+      min={3}
+      max={24}
+      paso={3}
+      valor={15}
+      unidad="ítems"
+      ayuda="Con 3 ítems casi cualquier disposición funciona; por encima de 9 ítems el patrón se vuelve decisivo."
+    />
+
+    <Opciones
+      lab={lab}
+      variable="aplicacion"
+      etiqueta="Aplicación del patrón"
+      valor="con-patron"
+      opciones={[
+        { valor: 'con-patron', texto: 'Con patrón aplicado' },
+        { valor: 'sin-patron', texto: 'Sin patrón (todo plano de golpe)' },
+      ]}
+      ayuda="Compara la solución estructurada frente a volcar todos los elementos en un único nivel."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="vacio"
+        etiqueta="Simular consulta con 0 resultados (estado vacío)"
+        ayuda="En el patrón de búsqueda, comprueba cómo se guía al usuario cuando ningún ítem coincide."
+      />
+      <Interruptor
+        lab={lab}
+        variable="alexander"
+        etiqueta="Mostrar estructura Contexto → Problema → Solución"
+        activo={true}
+        ayuda="Muestra la síntesis tripartita de Christopher Alexander (1977) para el patrón activo."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"patron":"revelacion","complejidad":18,"aplicacion":"sin-patron","vacio":false}'>Sobrecarga: 18 controles de golpe</button>
+      <button type="button" class="dv-boton" data-preset='{"patron":"revelacion","complejidad":18,"aplicacion":"con-patron","vacio":false}'>Revelación progresiva: 3 + 15 plegados</button>
+      <button type="button" class="dv-boton" data-preset='{"patron":"maestro","complejidad":15,"aplicacion":"con-patron","vacio":false}'>Maestro-detalle en vivo</button>
+      <button type="button" class="dv-boton" data-preset='{"patron":"busqueda","complejidad":21,"aplicacion":"con-patron","vacio":true}'>Búsqueda con estado vacío útil</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Mantén consistente el orden de las acciones en todo el flujo"
+      comparar={false}
+      consigna="En la ventana 1 el botón «Aceptar» está a la derecha, pero en la ventana 2 alguien lo puso a la izquierda y «Cancelar» a la derecha. Quien viene haciendo clic por memoria muscular cancela su trabajo sin querer. Corrige el antipatrón."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Dos diálogos con el orden de botones invertido.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="orden"
+        etiqueta="Disposición de botones entre diálogos del sistema"
+        valor="invertido"
+        opciones={[
+          { valor: 'invertido', texto: 'Cambia de lado según la ventana (antipatrón)' },
+          { valor: 'consistente', texto: 'Cancelar siempre a la izq. · Acción principal a la der.' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Aplica revelación progresiva cuando los controles pasen de 5"
+      comparar={false}
+      consigna="Un panel de exportación muestra 12 controles técnicos al mismo tiempo. El 90 % de las personas solo necesita elegir el formato. Ajusta cuántos controles quedan en el primer nivel."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">12 controles desplegados en primer plano.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="visibles"
+        etiqueta="Controles en el primer nivel (el resto va a «Más opciones»)"
+        min={2}
+        max={12}
+        paso={2}
+        valor={12}
+        unidad="controles"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Completa el patrón de filtrado diseñando su estado vacío"
+      comparar={false}
+      consigna="Cuando alguien filtra por «Sábado» y no hay talleres ese día, la pantalla queda en blanco y parece que la página se rompió. Añade el estado vacío del patrón."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Lista en blanco sin explicación cuando hay 0 resultados.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="respuesta"
+        etiqueta="Qué muestra el patrón cuando hay 0 coincidencias"
+        valor="mudo"
+        opciones={[
+          { valor: 'mudo', texto: 'Espacio en blanco mudo' },
+          { valor: 'util', texto: 'Explicación + botón «Restablecer filtros»' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Este mismo sitio (/diseno-visual): Revelación progresiva y Guía paso a paso"
+      notas={[
+        {
+          ...pct(180, 58),
+          titulo: '3 controles principales de entrada',
+          texto: 'Cada instrumento de la enciclopedia muestra de inmediato solo los 2 o 3 controles que explican el fenómeno central.',
+          zona: zona(18, 22, 324, 76),
+        },
+        {
+          ...pct(180, 146),
+          titulo: '«Más controles» plegado en <details>',
+          texto: 'Los parámetros secundarios o de diagnóstico se guardan en un bloque desplegable nativo: siempre accesibles, nunca estorbando.',
+          zona: zona(18, 106, 324, 72),
+        },
+        {
+          ...pct(180, 228),
+          titulo: 'Patrón de andamiaje (Guía con «Omitir»)',
+          texto: 'La guía ofrece un recorrido estructurado paso a paso, pero incluye siempre la salida «Omitir la guía» para quien ya conoce la herramienta.',
+          zona: zona(18, 186, 324, 76),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Diagrama de los patrones de interacción empleados en todos los instrumentos de la enciclopedia: tres controles iniciales, desplegable Más controles y guía con botón de omitir.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="18" y="22" width="324" height="76" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="30" y="42" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>CAPA 1 · SIEMPRE VISIBLE (BAJO UMBRAL DE ENTRADA)</text>
+        <text x="30" y="62" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>Control 1 · Control 2 · Control 3</text>
+        <text x="30" y="80" font-family={SERIF} font-size="11" fill={TXT}>Permiten comprobar la tesis en los primeros 10 segundos.</text>
+
+        <rect x="18" y="106" width="324" height="72" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="126" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>CAPA 2 · REVELACIÓN PROGRESIVA (&lt;details&gt;)</text>
+        <text x="30" y="146" font-family={SANS} font-size="11.5" font-weight="900" fill={T}>▸ Más controles (rayos X, semillas, ejes secundarios)</text>
+        <text x="30" y="164" font-family={SERIF} font-size="11" fill={TXT}>Se despliega solo cuando la persona busca profundizar.</text>
+
+        <rect x="18" y="186" width="324" height="76" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="206" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>PATRÓN DE RECORRIDO GUIADO + SALIDA LIBRE</text>
+        <text x="30" y="226" font-family={SANS} font-size="11" font-weight="700" fill={T}>Paso 1 de 5 · [Necesito una pista] · [Omitir la guía]</text>
+        <text x="30" y="244" font-family={SERIF} font-size="11" fill={T}>Acompaña al principiante sin encerrar al experto.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Navegación transversal por tensiones (↔): dos puertas de entrada al mismo curso"
+      notas={[
+        {
+          ...pct(100, 90),
+          titulo: 'Entrada cronológica (Secuencia)',
+          texto: 'Quien sigue el semestre semana a semana entra por el número de sesión (S01, S02… S16).',
+          zona: zona(18, 42, 154, 134),
+        },
+        {
+          ...pct(260, 90),
+          titulo: 'Entrada conceptual (Tensiones ↔)',
+          texto: 'Quien investiga un problema («Control ↔ Agencia») cruza transversalmente todas las sesiones que trabajan esa tensión.',
+          zona: zona(188, 42, 154, 134),
+        },
+        {
+          ...pct(180, 224),
+          titulo: 'Un mismo destino, dos caminos mentales',
+          texto: 'El patrón de doble índice evita duplicar el contenido: cada sesión vive en una sola URL pero se alcanza por fecha o por concepto.',
+          zona: zona(18, 186, 324, 74),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Esquema del patrón de doble navegación del sitio: acceso secuencial por semana y acceso transversal por tensión conceptual hacia la misma sesión.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="18" y="28" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.06em" fill={T}>PATRÓN DE DOBLE ACCESO · CRONOLÓGICO Y TRANSVERSAL</text>
+
+        <rect x="18" y="42" width="154" height="134" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="28" y="62" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>VÍA 1 · POR SEMANA</text>
+        <text x="28" y="84" font-family={SANS} font-size="11" font-weight="700" fill={T}>S05 · 3 sep</text>
+        <text x="28" y="104" font-family={SANS} font-size="11" font-weight="700" fill={T}>S06 · 10 sep</text>
+        <rect x="24" y="114" width="142" height="22" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="30" y="129" font-family={SANS} font-size="11" font-weight="900" fill={T}>S07 · 17 sep →</text>
+        <text x="28" y="154" font-family={SANS} font-size="11" font-weight="700" fill={T}>S08 · 24 sep</text>
+
+        <rect x="188" y="42" width="154" height="134" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="198" y="62" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>VÍA 2 · POR TENSIÓN ↔</text>
+        <text x="198" y="86" font-family={SERIF} font-size="11.5" font-weight="700" fill={T}>Usabilidad ↔ Experiencia</text>
+        <rect x="194" y="102" width="142" height="34" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="200" y="118" font-family={SERIF} font-size="11" font-weight="700" fill={T}>Control ↔ Agencia</text>
+        <text x="200" y="131" font-family={SANS} font-size="9" font-weight="700" fill={T}>Lleva a S03, S07, S12 →</text>
+        <text x="198" y="156" font-family={SERIF} font-size="11.5" font-weight="700" fill={T}>Cuerpo ↔ Máquina</text>
+
+        <rect x="18" y="186" width="324" height="74" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="30" y="208" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>DESTINO ÚNICO: /pensamiento-sensorial/s07</text>
+        <text x="30" y="228" font-family={SERIF} font-size="11.5" fill={TXT}>Resuelve dos intenciones de búsqueda distintas sin</text>
+        <text x="30" y="244" font-family={SERIF} font-size="11.5" fill={TXT}>duplicar jamás la fuente de verdad (.mdx).</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Diálogo de acción irreversible: fricción consciente y resumen de consecuencias"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Pregunta específica con nombre propio',
+          texto: 'En vez de un «¿Estás seguro?» genérico que se acepta sin leer, el título nombra qué objeto exacto va a desaparecer.',
+          zona: zona(24, 24, 312, 58),
+        },
+        {
+          ...pct(330, 134),
+          titulo: 'Cuantificación del impacto',
+          texto: 'Enumera qué piezas dependientes se verán afectadas (18 entregas y 4 enlaces rotos) antes de que ocurra el daño.',
+          zona: zona(24, 88, 312, 82),
+        },
+        {
+          ...pct(330, 224),
+          titulo: 'Verbo inequívoco en el botón final',
+          texto: 'El botón repite la acción exacta («Eliminar repositorio») en lugar de decir «Sí» o «Aceptar».',
+          zona: zona(24, 178, 312, 76),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Diálogo modal de confirmación bien diseñado que especifica el objeto a eliminar, detalla el impacto y usa verbos explícitos en los botones.">
+        <rect width={W} height={H} fill={FONDO} />
+        <rect x="24" y="24" width="312" height="230" fill={PAPEL} stroke={T} stroke-width="2" />
+        <text x="40" y="50" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.08em" fill={ROJO}>ACCIÓN IRREVERSIBLE</text>
+        <text x="40" y="72" font-family={SERIF} font-size="15" font-weight="700" fill={T}>¿Eliminar el curso «Archivo 2024»?</text>
+
+        <rect x="40" y="90" width="280" height="74" fill="#fbe9e7" stroke={ROJO} stroke-width="1.2" />
+        <text x="52" y="110" font-family={SANS} font-size="10" font-weight="700" fill={T}>Qué ocurrirá si continúas:</text>
+        <text x="52" y="128" font-family={SERIF} font-size="11" fill={T}>• Se borrarán las 16 sesiones y sus memorias.</text>
+        <text x="52" y="146" font-family={SERIF} font-size="11" fill={T}>• Quedarán sin destino 12 enlaces públicos.</text>
+
+        <rect x="40" y="190" width="116" height="34" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="98" y="211" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Conservar curso</text>
+
+        <rect x="168" y="190" width="152" height="34" fill={ROJO} stroke={T} stroke-width="1.5" />
+        <text x="244" y="211" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={PAPEL}>Eliminar «Archivo 2024»</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre la diferencia entre componente y patrón, la estructura de Alexander, antipatrones y umbrales de complejidad."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    patron: string;
+    complejidad: number;
+    aplicacion: string;
+    vacio: boolean;
+    alexander: boolean;
+  };
+
+  const FICHA_ALEXANDER: Record<string, { ctx: string; prob: string; sol: string }> = {
+    revelacion: {
+      ctx: 'CONTEXTO: Herramienta con ajustes frecuentes y ajustes expertos.',
+      prob: 'PROBLEMA: Mostrar los 18 controles juntos abruma al 85 % de los usuarios.',
+      sol: 'SOLUCIÓN: Dejar 3 controles esenciales a la vista y plegar el resto bajo demanda.',
+    },
+    maestro: {
+      ctx: 'CONTEXTO: Exploración y comparación rápida entre decenas de fichas.',
+      prob: 'PROBLEMA: Entrar a una página nueva y pulsar «Atrás» cada vez rompe la memoria visual.',
+      sol: 'SOLUCIÓN: Mantener la lista maestra fija a un lado y actualizar el detalle en vivo.',
+    },
+    busqueda: {
+      ctx: 'CONTEXTO: Catálogo extenso donde cada persona busca con criterios distintos.',
+      prob: 'PROBLEMA: Recorrer una lista plana o quedarse ante una pantalla vacía sin explicación.',
+      sol: 'SOLUCIÓN: Combinar buscador, facetas, contador vivo y estado vacío con salida clara.',
+    },
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = e.alexander ? 340 : 280;
+    const conPatron = e.aplicacion === 'con-patron';
+    const items = e.complejidad;
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Patrón ${e.patron} con ${items} elementos en modo ${conPatron ? 'con patrón aplicado' : 'sin patrón'}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const marcoH = e.alexander ? H - 82 : H - 28;
+    const x0 = 16;
+    const y0 = 14;
+    const w0 = W - 32;
+
+    raiz.append(
+      svg('rect', {
+        x: x0,
+        y: y0,
+        width: w0,
+        height: marcoH,
+        fill: '#ffffff',
+        stroke: conPatron ? '#222222' : '#b3261e',
+        'stroke-width': 1.6,
+      }),
+    );
+
+    if (e.patron === 'revelacion') {
+      if (conPatron) {
+        const esenciales = Math.min(3, items);
+        const avanzados = Math.max(0, items - 3);
+        const tit = svg('text', {
+          x: x0 + 16,
+          y: y0 + 24,
+          'font-family': SANS,
+          'font-size': 10.5,
+          'font-weight': 900,
+          fill: '#222222',
+        });
+        tit.textContent = `PRIMER NIVEL · ${esenciales} CONTROLES ESENCIALES (FOCO CLARO)`;
+        raiz.append(tit);
+
+        const cw = Math.floor((w0 - 32 - 20) / 3);
+        for (let i = 0; i < esenciales; i++) {
+          const cx = x0 + 16 + i * (cw + 10);
+          raiz.append(svg('rect', { x: cx, y: y0 + 36, width: cw, height: 54, fill: '#fbfbf9', stroke: '#222222', 'stroke-width': 1.4 }));
+          const tLbl = svg('text', { x: cx + 10, y: y0 + 56, 'font-family': SANS, 'font-size': 10, 'font-weight': 700, fill: '#222222' });
+          tLbl.textContent = ['1. Tamaño', '2. Contraste', '3. Espacio'][i];
+          raiz.append(tLbl);
+          raiz.append(svg('line', { x1: cx + 10, y1: y0 + 74, x2: cx + cw - 10, y2: y0 + 74, stroke: '#222222', 'stroke-width': 2.5 }));
+          raiz.append(svg('circle', { cx: cx + cw * 0.6, cy: y0 + 74, r: 5, fill: '#eeff41', stroke: '#222222', 'stroke-width': 1.5 }));
+        }
+
+        // Cajón plegado de revelación progresiva
+        const cajY = y0 + 112;
+        raiz.append(
+          svg('rect', {
+            x: x0 + 16,
+            y: cajY,
+            width: w0 - 32,
+            height: 76,
+            fill: avanzados > 0 ? '#eeff41' : '#fbfbf9',
+            stroke: '#222222',
+            'stroke-width': 1.5,
+          }),
+        );
+        const tMas = svg('text', { x: x0 + 28, y: cajY + 28, 'font-family': SANS, 'font-size': 11.5, 'font-weight': 900, fill: '#222222' });
+        tMas.textContent = avanzados > 0
+          ? `▸ Más controles (${avanzados} parámetros avanzados plegados a pedido)`
+          : 'Sin parámetros secundarios adicionales (3 de 3 visibles)';
+        raiz.append(tMas);
+
+        const tSub = svg('text', { x: x0 + 28, y: cajY + 50, 'font-family': SERIF, 'font-size': 11.5, fill: '#222222' });
+        tSub.textContent = 'La interfaz conserva toda su potencia sin exigir leer 18 deslizadores antes de empezar.';
+        raiz.append(tSub);
+      } else {
+        // Sin patrón: rejilla abrumadora con todos los controles juntos
+        const tit = svg('text', {
+          x: x0 + 16,
+          y: y0 + 22,
+          'font-family': SANS,
+          'font-size': 10,
+          'font-weight': 900,
+          fill: '#b3261e',
+        });
+        tit.textContent = `SIN REVELACIÓN PROGRESIVA · ${items} CONTROLES COMPITIENDO EN UN SOLO NIVEL`;
+        raiz.append(tit);
+
+        const cols = items > 12 ? 6 : 4;
+        const filas = Math.ceil(items / cols);
+        const gap = 6;
+        const cw = Math.floor((w0 - 32 - gap * (cols - 1)) / cols);
+        const ch = Math.min(44, Math.floor((marcoH - 44 - gap * (filas - 1)) / filas));
+
+        for (let i = 0; i < items; i++) {
+          const f = Math.floor(i / cols);
+          const c = i % cols;
+          const cx = x0 + 16 + c * (cw + gap);
+          const cy = y0 + 32 + f * (ch + gap);
+          raiz.append(svg('rect', { x: cx, y: cy, width: cw, height: ch, fill: '#fbe9e7', stroke: '#b3261e', 'stroke-width': 1 }));
+          const tP = svg('text', { x: cx + 6, y: cy + 15, 'font-family': SANS, 'font-size': 8.5, 'font-weight': 700, fill: '#222222' });
+          tP.textContent = `P-${String(i + 1).padStart(2, '0')}`;
+          raiz.append(tP);
+        }
+      }
+    } else if (e.patron === 'maestro') {
+      if (conPatron) {
+        const listaW = Math.round(w0 * 0.36);
+        raiz.append(svg('rect', { x: x0 + 12, y: y0 + 12, width: listaW, height: marcoH - 24, fill: '#fbfbf9', stroke: '#222222', 'stroke-width': 1.2 }));
+        const tM = svg('text', { x: x0 + 22, y: y0 + 30, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 900, fill: '#6f6f6f' });
+        tM.textContent = `MAESTRO (${items} FICHAS)`;
+        raiz.append(tM);
+
+        for (let i = 0; i < 5; i++) {
+          const fy = y0 + 40 + i * 32;
+          const activo = i === 1;
+          raiz.append(svg('rect', { x: x0 + 20, y: fy, width: listaW - 16, height: 26, fill: activo ? '#eeff41' : '#ffffff', stroke: '#222222', 'stroke-width': activo ? 1.6 : 1 }));
+          const tIt = svg('text', { x: x0 + 28, y: fy + 16, 'font-family': SANS, 'font-size': 9.5, 'font-weight': activo ? 900 : 700, fill: '#222222' });
+          tIt.textContent = `S0${i + 1} · Sesión ${i + 1}`;
+          raiz.append(tIt);
+        }
+
+        const detX = x0 + 20 + listaW;
+        const detW = w0 - listaW - 32;
+        raiz.append(svg('rect', { x: detX, y: y0 + 12, width: detW, height: marcoH - 24, fill: '#ffffff', stroke: '#222222', 'stroke-width': 1.5 }));
+        const tDet = svg('text', { x: detX + 16, y: y0 + 36, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 900, fill: '#6f6f6f' });
+        tDet.textContent = 'DETALLE EN VIVO · SIN PERDER EL ÍNDICE';
+        raiz.append(tDet);
+        const hDet = svg('text', { x: detX + 16, y: y0 + 62, 'font-family': SERIF, 'font-size': 15, 'font-weight': 700, fill: '#222222' });
+        hDet.textContent = 'S02 · Umbrales de percepción';
+        raiz.append(hDet);
+        const pDet = svg('text', { x: detX + 16, y: y0 + 86, 'font-family': SERIF, 'font-size': 11.5, fill: '#444444' });
+        pDet.textContent = 'Cambiar de fila a la izquierda actualiza esta vista al instante.';
+        raiz.append(pDet);
+      } else {
+        const tit = svg('text', { x: x0 + 16, y: y0 + 26, 'font-family': SANS, 'font-size': 10, 'font-weight': 900, fill: '#b3261e' });
+        tit.textContent = `SIN MAESTRO-DETALLE · ${items} VIAJES DE IDA Y VUELTA CON EL BOTÓN «ATRÁS»`;
+        raiz.append(tit);
+        for (let i = 0; i < 3; i++) {
+          const bx = x0 + 20 + i * Math.floor((w0 - 40) / 3);
+          const bw = Math.floor((w0 - 60) / 3);
+          raiz.append(svg('rect', { x: bx, y: y0 + 48, width: bw, height: 130, fill: '#fbe9e7', stroke: '#b3261e', 'stroke-width': 1.2 }));
+          const tP = svg('text', { x: bx + 12, y: y0 + 74, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: '#222222' });
+          tP.textContent = i === 1 ? '2. Abre otra URL' : i === 0 ? '1. Clic en lista' : '3. Pulsar «← Atrás»';
+          raiz.append(tP);
+          const tS = svg('text', { x: bx + 12, y: y0 + 98, 'font-family': SERIF, 'font-size': 10.5, fill: '#444444' });
+          tS.textContent = 'Pierdes de vista el resto.';
+          raiz.append(tS);
+        }
+      }
+    } else {
+      // Patrón: Búsqueda con facetas y estado vacío
+      if (conPatron) {
+        raiz.append(svg('rect', { x: x0 + 16, y: y0 + 16, width: Math.round(w0 * 0.45), height: 26, fill: '#fbfbf9', stroke: '#222222', 'stroke-width': 1.2 }));
+        const tB = svg('text', { x: x0 + 26, y: y0 + 33, 'font-family': SANS, 'font-size': 10, fill: '#444444' });
+        tB.textContent = e.vacio ? 'Buscar: «xqz-inexistente»' : 'Buscar por título o territorio…';
+        raiz.append(tB);
+
+        const tCont = svg('text', { x: x0 + w0 - 16, y: y0 + 33, 'text-anchor': 'end', 'font-family': SANS, 'font-size': 10, 'font-weight': 900, fill: '#222222' });
+        tCont.textContent = e.vacio ? '0 RESULTADOS' : `MOSTRANDO ${Math.min(6, items)} DE ${items}`;
+        raiz.append(tCont);
+
+        if (e.vacio) {
+          raiz.append(svg('rect', { x: x0 + 16, y: y0 + 56, width: w0 - 32, height: marcoH - 72, fill: '#fbfbf9', stroke: '#222222', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }));
+          const tV1 = svg('text', { x: x0 + w0 / 2, y: y0 + 100, 'text-anchor': 'middle', 'font-family': SERIF, 'font-size': 14, 'font-weight': 700, fill: '#222222' });
+          tV1.textContent = 'Ningún concepto coincide con «xqz-inexistente».';
+          raiz.append(tV1);
+          raiz.append(svg('rect', { x: x0 + w0 / 2 - 84, y: y0 + 118, width: 168, height: 28, fill: '#eeff41', stroke: '#222222', 'stroke-width': 1.5 }));
+          const tBtn = svg('text', { x: x0 + w0 / 2, y: y0 + 136, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 10.5, 'font-weight': 900, fill: '#222222' });
+          tBtn.textContent = 'Restablecer búsqueda';
+          raiz.append(tBtn);
+        } else {
+          const cols = 3;
+          const cw = Math.floor((w0 - 32 - 16) / cols);
+          for (let i = 0; i < 6; i++) {
+            const f = Math.floor(i / cols);
+            const c = i % cols;
+            const cx = x0 + 16 + c * (cw + 8);
+            const cy = y0 + 58 + f * 64;
+            raiz.append(svg('rect', { x: cx, y: cy, width: cw, height: 54, fill: '#ffffff', stroke: '#222222', 'stroke-width': 1.2 }));
+            const tC = svg('text', { x: cx + 10, y: cy + 22, 'font-family': SANS, 'font-size': 9, 'font-weight': 700, fill: '#6f6f6f' });
+            tC.textContent = 'TERRITORIO 05';
+            raiz.append(tC);
+            const tN = svg('text', { x: cx + 10, y: cy + 40, 'font-family': SERIF, 'font-size': 12, 'font-weight': 700, fill: '#222222' });
+            tN.textContent = ['Tokens', 'Componentes', 'Patrones', 'Variantes', 'Sistemas', 'Retículas'][i];
+            raiz.append(tN);
+          }
+        }
+      } else {
+        const tit = svg('text', { x: x0 + 16, y: y0 + 26, 'font-family': SANS, 'font-size': 10, 'font-weight': 900, fill: '#b3261e' });
+        tit.textContent = e.vacio
+          ? 'ESTADO VACÍO ROTO · LA PANTALLA QUEDA EN BLANCO SIN EXPLICAR QUÉ PASÓ'
+          : `LISTA PLANA SIN FILTROS NI RECUENTO · HAY QUE LEER LOS ${items} ÍTEMS UNO POR UNO`;
+        raiz.append(tit);
+      }
+    }
+
+    // Ficha tripartita de Christopher Alexander (1977)
+    if (e.alexander) {
+      const al = FICHA_ALEXANDER[e.patron] ?? FICHA_ALEXANDER.revelacion;
+      const ay = y0 + marcoH + 10;
+      raiz.append(svg('rect', { x: x0, y: ay, width: w0, height: 60, fill: '#222222' }));
+      const l1 = svg('text', { x: x0 + 12, y: ay + 18, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: '#dcdcd6' });
+      l1.textContent = al.ctx;
+      const l2 = svg('text', { x: x0 + 12, y: ay + 34, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: '#ffffff' });
+      l2.textContent = al.prob;
+      const l3 = svg('text', { x: x0 + 12, y: ay + 50, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 900, fill: '#eeff41' });
+      l3.textContent = al.sol;
+      raiz.append(l1, l2, l3);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const nombres: Record<string, string> = {
+      revelacion: 'Revelación progresiva',
+      maestro: 'Maestro-detalle',
+      busqueda: 'Búsqueda con facetas y estado vacío',
+    };
+    const nom = nombres[e.patron] ?? e.patron;
+    if (e.aplicacion === 'sin-patron') {
+      return `Sin el patrón <b class="dv-cifra">${nom}</b>, los <b class="dv-cifra">${n(e.complejidad, 0)} elementos</b> compiten al mismo tiempo o dejan callejones sin salida.`;
+    }
+    if (e.patron === 'busqueda' && e.vacio) {
+      return `<b class="dv-cifra">${nom}</b> ante 0 resultados: en lugar de dejar un lienzo en blanco, informa qué ocurrió y ofrece restablecer la consulta con un clic.`;
+    }
+    return `Patrón <b class="dv-cifra">${nom}</b> activo para <b class="dv-cifra">${n(e.complejidad, 0)} ítems</b>: organiza la tarea en capas predecibles sin cambiar los componentes individuales.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="patrones"]')) {
+    guiar<E>(raiz, [
+      (e) => e.patron === 'revelacion' && e.complejidad >= 18 && e.aplicacion === 'sin-patron',
+      (e) => e.patron === 'revelacion' && e.complejidad >= 15 && e.aplicacion === 'con-patron',
+      (e) => e.patron === 'maestro' && e.aplicacion === 'con-patron',
+      (e) => e.patron === 'busqueda' && e.aplicacion === 'con-patron',
+      (e) => e.patron === 'busqueda' && e.vacio && e.aplicacion === 'con-patron',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { orden: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const inv = e.orden === 'invertido';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;display:grid;grid-template-columns:1fr 1fr;gap:10px;color:#222222;">
+        <div style="padding:10px;border:1px solid #222222;background:#fbfbf9;">
+          <p style="margin:0 0 8px;font-size:10px;font-weight:700;color:#6f6f6f;">PASO 1 · GUARDAR BORRADOR</p>
+          <div style="display:flex;gap:6px;justify-content:flex-end;">
+            <span style="padding:4px 8px;border:1px solid #222222;background:#ffffff;font-size:10.5px;">Cancelar</span>
+            <span style="padding:4px 8px;border:1px solid #222222;background:#eeff41;font-size:10.5px;font-weight:900;">Guardar</span>
+          </div>
+        </div>
+        <div style="padding:10px;border:1.5px solid ${inv ? '#b3261e' : '#222222'};background:${inv ? '#fbe9e7' : '#fbfbf9'};">
+          <p style="margin:0 0 8px;font-size:10px;font-weight:700;color:${inv ? '#b3261e' : '#6f6f6f'};">PASO 2 · PUBLICAR ENTREGA</p>
+          <div style="display:flex;gap:6px;justify-content:flex-end;">
+            ${
+              inv
+                ? `<span style="padding:4px 8px;border:1px solid #222222;background:#eeff41;font-size:10.5px;font-weight:900;">Publicar</span>
+                   <span style="padding:4px 8px;border:1px solid #b3261e;background:#ffffff;font-size:10.5px;font-weight:700;">Cancelar</span>`
+                : `<span style="padding:4px 8px;border:1px solid #222222;background:#ffffff;font-size:10.5px;">Cancelar</span>
+                   <span style="padding:4px 8px;border:1px solid #222222;background:#eeff41;font-size:10.5px;font-weight:900;">Publicar</span>`
+            }
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.orden === 'invertido') return 'Invertir la posición de «Cancelar» y «Publicar» entre dos ventanas del mismo flujo provoca <b class="dv-cifra">errores por hábito motor</b>.';
+    return '<b class="dv-cifra">Patrón espacial consistente</b>: la acción de avance ocupa siempre el mismo lugar predecible.';
+  }
+
+  type E2 = { visibles: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const ocultos = 12 - e.visibles;
+    const etiquetas = [
+      'Formato', 'Calidad', 'Tamaño', 'Perfil ICC', 'Sangrado', 'Marcas corte',
+      'Submuestreo', 'Compresión', 'Metadatos', 'Capas', 'Incrustar fuentes', 'Versión PDF',
+    ];
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;color:#222222;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;">
+          ${etiquetas
+            .slice(0, e.visibles)
+            .map(
+              (et) => `<div style="padding:5px 7px;border:1px solid #222222;background:#fbfbf9;font-size:10px;font-weight:700;">${et}</div>`,
+            )
+            .join('')}
+        </div>
+        ${
+          ocultos > 0
+            ? `<div style="padding:6px 10px;background:#eeff41;border:1.5px solid #222222;font-size:10.5px;font-weight:900;">▸ Más opciones avanzadas de imprenta (${ocultos} plegadas)</div>`
+            : `<div style="padding:6px 10px;background:#fbe9e7;border:1px solid #b3261e;font-size:10.5px;font-weight:700;color:#b3261e;">Los 12 controles están abiertos de golpe sin jerarquía.</div>`
+        }
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.visibles > 4) return `Con <b class="dv-cifra">${e.visibles} controles</b> abiertos de entrada, el diálogo de exportación intimida antes de empezar.`;
+    return `<b class="dv-cifra">${e.visibles} esenciales + ${12 - e.visibles} bajo demanda</b>: quien exporta rápido termina en un segundo y quien imprime en offset abre el desplegable.`;
+  }
+
+  type E3 = { respuesta: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const mudo = e.respuesta === 'mudo';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;color:#222222;">
+        <div style="display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid #e5e5e5;font-size:10.5px;font-weight:700;">
+          <span>Filtro activo: Día = Sábado</span>
+          <span>0 resultados</span>
+        </div>
+        ${
+          mudo
+            ? `<div style="height:64px;display:flex;align-items:center;justify-content:center;color:#6f6f6f;font-size:11px;">(Vacío total: ¿falló la red o no hay talleres?)</div>`
+            : `<div style="padding:10px 0 2px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <span style="font-family:${SERIF};font-size:12.5px;color:#222222;">No hay talleres programados los sábados.</span>
+                <span style="padding:5px 10px;background:#eeff41;border:1.5px solid #222222;font-size:10.5px;font-weight:900;">Ver todos los días (14)</span>
+              </div>`
+        }
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.respuesta === 'mudo') return 'Un contenedor vacío sin explicación parece un <b class="dv-cifra">fallo de carga</b>.';
+    return '<b class="dv-cifra">Estado vacío constructivo</b>: explica la causa y ofrece la acción directa para recuperar todos los ítems.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['patrones-e1', pintarE1 as never, describirE1 as never],
+    ['patrones-e2', pintarE2 as never, describirE2 as never],
+    ['patrones-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function r1ComponenteVsPatron(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El botón y el cuadro de texto son componentes; «pedir confirmación escribiendo el nombre antes de borrar» es un patrón',
+        es: true,
+      },
+      {
+        texto: 'Patrón y componente son sinónimos exactos para referirse a cualquier archivo .astro',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál es la diferencia fundamental entre un componente y un patrón de diseño?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un componente es una pieza encapsulada concreta (un ladrillo); un patrón es una disposición o secuencia repetible que resuelve una situación humana recurrente.',
+      repaso: 'Componente frente a patrón',
+    };
+  }
+
+  function r2AlexanderContexto(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Fracasa, porque el desplazamiento infinito impide alcanzar la información fija del pie de página',
+        es: true,
+      },
+      {
+        texto: 'Funciona siempre, porque un patrón famoso es válido en cualquier contexto sin excepción',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Un equipo copia el patrón de «desplazamiento infinito» (infinite scroll) en una tienda que además tiene enlaces legales y de contacto importantes en el pie de página. ¿Qué ocurre cuando el usuario intenta llegar al pie?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como enseñó Christopher Alexander (1977), todo patrón solo es válido dentro de su contexto: cuando el usuario intenta tocar el pie, se cargan más productos y el pie huye hacia abajo.',
+      repaso: 'El contexto del patrón',
+    };
+  }
+
+  function r3MaestroDetalle(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Maestro-detalle: lista filtrable a la izquierda y vista previa en vivo a la derecha',
+        es: true,
+      },
+      {
+        texto: 'Obligar a abrir cada una de las 40 fichas en una pestaña nueva sin vista previa',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Quien usa tu archivo necesita revisar y comparar rápidamente 40 cartas históricas una tras otra sin perder su posición en el índice. ¿Qué patrón resuelve mejor esa tarea?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El patrón Maestro-detalle mantiene visible el contexto de la colección completa en un panel mientras el otro actualiza el documento elegido al instante.',
+      repaso: 'Patrón Maestro-detalle',
+    };
+  }
+
+  function r4EstadoVacio(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Mostrar un mensaje claro («0 resultados para este filtro») junto a un botón para limpiar los filtros activos',
+        es: true,
+      },
+      {
+        texto: 'Dejar el área de resultados completamente blanca sin texto ni botones',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al combinar dos filtros en el catálogo, ninguna entrada cumple ambos criterios a la vez. ¿Qué exige el patrón de búsqueda facetada en ese momento?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El estado vacío es parte inseparable del patrón de búsqueda: confirma que el sistema respondió y ofrece una salida inmediata.',
+      repaso: 'Estado vacío en búsquedas',
+    };
+  }
+
+  function r5AjusteRevelacion(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este instrumento muestra 14 controles abiertos de golpe y paraliza a quien entra por primera vez. Ajusta el umbral de revelación progresiva para dejar entre 2 y 4 controles esenciales en primer plano y plegar el resto en «Más controles».',
+      control: {
+        etiqueta: 'Controles visibles en el primer nivel',
+        min: 1,
+        max: 14,
+        paso: 1,
+        valor: 14,
+        unidad: 'controles',
+      },
+      pintar: (c, v) => {
+        const plegados = 14 - v;
+        c.innerHTML = `
+          <div style="padding:12px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;color:#222222;">
+            <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#6f6f6f;">PRIMER NIVEL: ${v} VISIBLE(S)</p>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+              ${Array.from({ length: v }, (_, i) => `<span style="padding:4px 8px;border:1px solid #222222;background:${i < 3 ? '#eeff41' : '#fbfbf9'};font-size:10px;font-weight:700;">Control ${i + 1}</span>`).join('')}
+            </div>
+            ${plegados > 0 ? `<div style="padding:5px 8px;border:1px dashed #222222;background:#fbfbf9;font-size:10px;font-weight:700;">▸ Más controles (${plegados} plegados)</div>` : ''}
+          </div>`;
+      },
+      cumple: (v) => v >= 2 && v <= 4,
+      falta: (v) => v > 4 ? `Con ${v} controles abiertos a la vez la entrada sigue sobrecargada. Deja entre 2 y 4.` : 'Con un solo control no alcanzas a mostrar la relación entre las dos variables principales.',
+      porque: 'Mostrar de 2 a 4 controles esenciales invita a actuar de inmediato, mientras el cajón «Más controles» conserva las opciones avanzadas para quien quiera profundizar.',
+      repaso: 'Umbral de revelación progresiva',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>('[data-juego="patrones"]');
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        r1ComponenteVsPatron(),
+        r2AlexanderContexto(),
+        r3MaestroDetalle(),
+        r4EstadoVacio(),
+        r5AjusteRevelacion(),
+      ]),
+    );
+  }
+</script>

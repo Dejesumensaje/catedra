@@ -315,10 +315,10 @@ const bloques = [
         if (plano) {
           lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, 11, 5 * k, GRIS);
         } else {
-          const fs = Math.min(cj.h * 0.42, (cj.w / 11) * 1.25);
-          const t1 = svg('text', { x: tx, y: cj.y + fs * 0.92, 'font-family': SANS, 'font-weight': 900, 'font-size': fs, fill: TINTA, 'text-anchor': ancla, 'letter-spacing': -fs * 0.03 });
+          const fs = Math.min(cj.h * 0.38, (cj.w / 11) * 1.2);
+          const t1 = svg('text', { x: tx, y: cj.y + fs * 0.9, 'font-family': SANS, 'font-weight': 900, 'font-size': fs, fill: TINTA, 'text-anchor': ancla, 'letter-spacing': -fs * 0.03 });
           t1.textContent = 'La ciudad';
-          const t2 = svg('text', { x: tx, y: cj.y + fs * 1.88, 'font-family': SANS, 'font-weight': 900, 'font-size': fs, fill: TINTA, 'text-anchor': ancla, 'letter-spacing': -fs * 0.03 });
+          const t2 = svg('text', { x: tx, y: cj.y + fs * 2.02, 'font-family': SANS, 'font-weight': 900, 'font-size': fs, fill: TINTA, 'text-anchor': ancla, 'letter-spacing': -fs * 0.03 });
           t2.textContent = 'que camina';
           raiz.append(t1, t2);
         }
@@ -326,10 +326,10 @@ const bloques = [
         if (plano) {
           lineas(raiz, cj.x, cj.y, cj.w, cj.h, a, 13, 5 * k, GRIS);
         } else {
-          const fs = Math.min(cj.h * 0.62, cj.w * 0.5);
-          const t = svg('text', { x: tx, y: cj.y + fs * 0.85, 'font-family': SANS, 'font-weight': 300, 'font-size': fs, fill: TINTA, 'text-anchor': ancla });
+          const fs = Math.min(cj.h * 0.54, cj.w * 0.46);
+          const t = svg('text', { x: tx, y: cj.y + fs * 0.82, 'font-family': SANS, 'font-weight': 300, 'font-size': fs, fill: TINTA, 'text-anchor': ancla });
           t.textContent = '07';
-          const l = svg('text', { x: tx, y: cj.y + fs * 0.85 + 13 * k + 4, 'font-family': SANS, 'font-weight': 500, 'font-size': Math.max(8, 11 * k), fill: TINTA, 'text-anchor': ancla, 'letter-spacing': 1 });
+          const l = svg('text', { x: tx, y: cj.y + fs * 0.82 + 16 * k + 6, 'font-family': SANS, 'font-weight': 500, 'font-size': Math.max(8, 11 * k), fill: TINTA, 'text-anchor': ancla, 'letter-spacing': 1 });
           l.textContent = 'OCTUBRE';
           raiz.append(t, l);
         }

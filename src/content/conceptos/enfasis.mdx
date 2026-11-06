@@ -1,0 +1,184 @@
+---
+titulo: Énfasis
+territorio: expresion
+pregunta: ¿Cómo hacer que un elemento se vea primero sin que toda la página termine gritando?
+resumen: "Un elemento domina la composición cuando se diferencia de una norma compartida por el resto. Explora cómo crear un punto focal por contraste, aislamiento, tamaño o inclinación, y por qué silenciar el entorno suele funcionar mejor que amplificar la señal."
+modos: [laboratorio, provocacion]
+orden: 7
+relaciones:
+  - concepto: sistemas-y-excepciones
+    porQue: El énfasis depende de una norma previa; sin un sistema estable de fondo, la anomalía se lee como desorden.
+  - concepto: semejanza
+    porQue: Cuando la mayoría de las piezas comparten rasgos visuales, la única que rompe esa semejanza concentra la atención al instante.
+  - concepto: jerarquia
+    porQue: El énfasis fija el primer punto de entrada; la jerarquía organiza el segundo, el tercero y el cuarto nivel de lectura.
+  - concepto: equilibrio
+    porQue: Un punto focal fuerte desplaza el peso visual de la composición y exige compensar el resto de la superficie.
+  - concepto: proporcion
+    porQue: Un salto claro de tamaño respecto al entorno es una de las formas más directas de producir dominancia.
+  - concepto: espacio-negativo
+    porQue: Aislar un elemento en medio del vacío le otorga énfasis sin necesidad de agrandarlo ni cambiar su color.
+  - concepto: ruptura
+    porQue: Apartar un único bloque del ángulo o del eje de la retícula detiene el barrido automático del ojo.
+fuentes:
+  - autor: Rudolf Arnheim
+    obra: "Art and Visual Perception: A Psychology of the Creative Eye. University of California Press"
+    anio: 1974
+    nota: Capítulos sobre equilibrio, peso perceptual y centros de atracción en el campo visual.
+  - autor: Anne M. Treisman y Garry Gelade
+    obra: "A Feature-Integration Theory of Attention. Cognitive Psychology, 12(1), 97–136"
+    anio: 1980
+    url: https://doi.org/10.1016/0010-0285(80)90005-5
+    nota: Demostración experimental de la búsqueda preatentiva cuando el estímulo difiere en una dimensión única.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import EnfasisIdea from '../../components/diseno-visual/experiencias/EnfasisIdea.astro';
+import EnfasisMiralo from '../../components/diseno-visual/experiencias/EnfasisMiralo.astro';
+import Enfasis from '../../components/diseno-visual/experiencias/Enfasis.astro';
+import EnfasisErrores from '../../components/diseno-visual/experiencias/EnfasisErrores.astro';
+import EnfasisEjemplos from '../../components/diseno-visual/experiencias/EnfasisEjemplos.astro';
+import EnfasisJuego from '../../components/diseno-visual/experiencias/EnfasisJuego.astro';
+
+<Paso id="idea" titular="Para subir el volumen de una pieza, baja el del resto">
+
+<EnfasisIdea />
+
+<p class="dv-frase">Si todo reclama urgencia a la vez, nada destaca: el énfasis vive en la diferencia con el entorno.</p>
+
+<div class="dv-texto">
+
+Cuando un elemento importante no se ve lo suficiente, el impulso habitual es sumarle cosas: subir el cuerpo de letra, ponerlo en negrita, pintarlo de rojo o encerrarlo en una caja. Si después otro elemento también reclama atención y recibe el mismo trato, la composición termina llena de señales que se anulan entre sí.
+
+El *énfasis* es la creación deliberada de un punto focal: el lugar exacto por donde entra la mirada antes de leer. No depende de qué tan grande o saturado sea un objeto en términos absolutos, sino de qué tan distinto sea respecto a lo que lo rodea.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Tres palabras para explorarlo</h3>
+  <dl>
+    <dt>Punto focal</dt>
+    <dd>El elemento que concentra la mirada en el primer vistazo y actúa como puerta de entrada a la composición.</dd>
+    <dt>Entorno</dt>
+    <dd>El conjunto de piezas vecinas cuya regularidad o calma hace visible la diferencia del elemento destacado.</dd>
+    <dt>Competencia visual</dt>
+    <dd>Lo que ocurre cuando varios elementos reclaman atención con la misma fuerza y obligan al ojo a saltar de uno a otro sin un orden claro.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Competencia total frente a un único centro de atención">
+
+<div class="dv-texto">
+
+En ambos avisos sobre un corte de agua figura la misma franja horaria, pero solo el segundo deja claro por dónde empezar a mirar.
+
+</div>
+
+<EnfasisMiralo />
+
+<div class="dv-texto">
+
+En el aviso de la izquierda todos los bloques llevan fondos oscuros, bordes gruesos, mayúsculas y signos de admiración; como todo reclama urgencia, cuesta encontrar a qué hora se corta el agua. En el de la derecha, el encabezado y la recomendación bajan de intensidad para que la franja horaria («2:00 a 5:00 p. m.») concentre la atención.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Un punto focal entre nueve piezas">
+
+<Enfasis />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para construir un punto focal limpio">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Elige un único protagonista para el primer segundo</h3>
+      <p>Pregúntate qué dato o acción debe ver primero quien llega a la página. Si eliges tres o cuatro cosas a la vez, ninguna actuará como verdadera puerta de entrada. Todo lo demás puede leerse en un segundo o tercer momento.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Prueba a restar en el entorno antes de sumar en el foco</h3>
+      <p>Antes de duplicar el tamaño del título o pintar un botón de un color estridente, observa los elementos vecinos. Atenuar bordes secundarios, unificar colores o abrir espacio alrededor suele dar más protagonismo que seguir recargando la pieza principal.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Alinea el peso visual con la importancia real</h3>
+      <p>El elemento más visible debe coincidir con la información o la decisión más relevante para quien lee. Si el máximo contraste recae sobre un código administrativo, un adorno o una acción secundaria, la mirada irá al lugar equivocado.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<EnfasisErrores />
+
+<div class="dv-texto">
+
+### El énfasis en piezas reales
+
+</div>
+
+<EnfasisEjemplos />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta dónde hay foco real y dónde hay ruido">
+
+<EnfasisJuego />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Búsqueda preatentiva, aislamiento y límites del énfasis">
+
+<Seccion titulo="Por qué vemos ciertas diferencias antes de pensar">
+
+En 1980, la psicóloga cognitiva Anne Treisman y Garry Gelade formularon la *teoría de integración de características* (*Feature-Integration Theory*). Sus experimentos demostraron que el sistema visual humano detecta ciertas propiedades básicas —color, tamaño, orientación, contraste— en paralelo y antes de que intervenga la atención consciente.
+
+Cuando un elemento difiere de un entorno homogéneo en **una sola característica clara** (por ejemplo, un punto rojo entre puntos grises), ocurre una búsqueda *preatentiva*: el objetivo salta a la vista en menos de 200 milisegundos, sin importar si hay cuatro elementos alrededor o cuarenta.
+
+En cambio, cuando el fondo mezcla colores, formas y orientaciones distintas, el sistema visual debe realizar una búsqueda *serial*, recorriendo la página pieza por pieza. Es lo que sucede cuando activas varios «Elementos que compiten» en el instrumento.
+
+</Seccion>
+
+<Seccion titulo="Destacar por contraste de calma: el poder del aislamiento">
+
+Desde la psicología de la percepción artística, Rudolf Arnheim explicó en *Art and Visual Perception* (1974) que el peso visual no depende solo de la masa o del color de una figura, sino también de su ubicación y de la distancia que la separa de las demás.
+
+Cuando un elemento queda rodeado de [espacio negativo](/diseno-visual/espacio-negativo) mientras el resto se agrupa en un bloque compacto, las fuerzas de atención convergen sobre la pieza aislada. Por eso una portada o una pantalla pueden construir un énfasis rotundo con una tipografía pequeña y silenciosa si el campo que la rodea está despejado.
+
+</Seccion>
+
+<Seccion titulo="Énfasis no es lo mismo que jerarquía">
+
+Es fácil confundir ambos conceptos porque suelen trabajar juntos, pero cumplen tareas distintas:
+
+- **El énfasis** decide el *primer impacto*: qué elemento captura la vista al abrir la página.
+- **La [jerarquía](/diseno-visual/jerarquia)** organiza la *secuencia completa*: qué se lee en primer lugar, qué sigue después y qué queda como detalle de consulta.
+
+Una composición puede tener un gran énfasis y mala jerarquía (por ejemplo, un cartel donde el título domina pero el resto de la información es un bloque indescifrable), o una jerarquía ordenada sin un énfasis dramático (como una página de diccionario o un índice telefónico).
+
+</Seccion>
+
+<Seccion titulo="Lo que el énfasis visual no resuelve">
+
+**No todas las composiciones necesitan un único foco dominante.** Un mapa de consulta, una tabla comparativa o una galería fotográfica buscan que quien mira explore con libertad varias zonas equivalentes en lugar de imponer un único centro.
+
+**El color por sí solo no basta como señal de énfasis.** Si la única diferencia entre un estado crítico y cinco estados normales es el matiz entre rojo y verde, las personas con daltonismo o baja visión no percibirán el foco. Conviene acompañar el cambio cromático con una segunda señal: posición, grosor de borde, icono o etiqueta textual.
+
+**El énfasis repetido se desgasta.** Si cada mensaje de una aplicación aparece marcado como «urgente» con el máximo contraste posible, quien la usa aprende a ignorar la señal. Reservar el énfasis para cuando realmente importa protege su eficacia.
+
+</Seccion>
+
+</Paso>

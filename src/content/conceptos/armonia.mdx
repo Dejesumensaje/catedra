@@ -1,0 +1,174 @@
+---
+titulo: Armonía
+territorio: color
+pregunta: ¿Cómo elegir cuatro o cinco colores que parezcan pertenecer a la misma familia sin que la página resulte monótona?
+resumen: "Una paleta armónica no sale de elegir tonos al azar ni de aplicar una figura geométrica rígida sobre el círculo cromático: surge de limitar el número de tonos, repartir sus áreas de forma desigual y variar con amplitud su claridad y saturación."
+modos: [laboratorio, comparacion]
+orden: 21
+relaciones:
+  - concepto: contraste
+    porQue: La armonía une las partes de una composición, pero necesita saltos claros de valor y saturación para no volverse plana.
+  - concepto: interaccion-del-color
+    porQue: "Los colores de una paleta nunca se ven aislados: el fondo dominante tiñe y altera la apariencia de cada acento."
+  - concepto: roles-semanticos
+    porQue: Una paleta bien repartida asigna los neutros a las superficies, el tono principal a la estructura y el acento a las decisiones clave.
+  - concepto: sistemas-y-excepciones
+    porQue: Definir una gama limitada establece la norma visual sobre la cual un único tono complementario puede operar como excepción deliberada.
+  - concepto: equilibrio
+    porQue: Un área extensa y apagada se equilibra perceptualmente con una mancha pequeña de alta saturación.
+fuentes:
+  - autor: Johannes Itten
+    obra: "Kunst der Farbe. Otto Maier Verlag"
+    anio: 1961
+    nota: Relaciones de acordes cromáticos (díadas complementarias, tríadas, análogos) y equilibrio de áreas.
+  - autor: Cynthia A. Brewer
+    obra: "Color Use Guidelines for Mapping and Visualization. En A. M. MacEachren y D. R. F. Taylor (Eds.), Visualization in Modern Cartography (pp. 123–147). Pergamon / Elsevier"
+    anio: 1994
+    nota: Clasificación de esquemas cromáticos funcionales (secuenciales, divergentes y cualitativos) y control perceptual de claridad y saturación.
+  - autor: Maureen Stone
+    obra: "A Field Guide to Digital Color. A K Peters / CRC Press"
+    anio: 2003
+    nota: "Principios para construir paletas digitales cohesivas: dominancia de neutros y superficies desaturadas con acentos controlados."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ArmoniaExp from '../../components/diseno-visual/experiencias/ArmoniaExp.astro';
+
+<Paso id="idea" titular="El secreto de una paleta no está solo en qué tonos eliges, sino en cuánto espacio les das">
+
+<ArmoniaExp paso="idea" />
+
+<p class="dv-frase">Pocos tonos con muchas variaciones de luz y saturación funcionan mejor que muchos tonos compitiendo en partes iguales.</p>
+
+<div class="dv-texto">
+
+Quien empieza a diseñar suele buscar la armonía girando un triángulo o un par de agujas sobre el círculo cromático y tomando los tres colores puros resultantes. Al llevarlos a una página real en partes iguales, el resultado casi siempre desconcierta: los colores parecen pelear entre sí aunque la geometría diga que son «armónicos».
+
+Como demostró Maureen Stone en *A Field Guide to Digital Color* (2003), las paletas que percibimos como cohesivas rara vez multiplican los tonos puros. Al contrario: eligen **uno o dos tonos principales**, los despliegan en un abanico amplio de **claridad y baja saturación** para construir las superficies grandes, y reservan la **saturación alta** para un acento que ocupa una fracción mínima del espacio.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco términos para construir una paleta</h3>
+  <dl>
+    <dt>Esquema monocromático</dt>
+    <dd>Paleta construida a partir de un único ángulo tonal que varía ampliamente en claridad y saturación, desde casi blanco hasta casi negro.</dd>
+    <dt>Esquema análogo</dt>
+    <dd>Conjunto de tonos vecinos en el círculo cromático (separados por entre 20° y 45°). Produce transiciones serenas y orgánicas.</dd>
+    <dt>Esquema complementario</dt>
+    <dd>Pareja de tonos situados en extremos opuestos del círculo cromático (180°). Funciona cuando uno domina en calma y el otro actúa como acento focal.</dd>
+    <dt>Reparto de superficie (70 / 20 / 10)</dt>
+    <dd>Proporción clásica donde el 70 % corresponde a la superficie tranquila de fondo, el 20 % a los bloques estructurales y el 10 % al acento intenso.</dd>
+    <dt>Neutro teñido</dt>
+    <dd>Un blanco, gris o carbón al que se le añade un rastro sutil (entre 5 % y 15 %) del tono dominante para que pertenezca a la misma atmósfera.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Seis tonos peleando frente a una familia coherente">
+
+<div class="dv-texto">
+
+En la primera versión de esta memoria anual, cada bloque y cada trimestre reciben un color saturado distinto; en la segunda, toda la página se organiza con variaciones de un solo azul pizarra sobre papel cálido y un único acento terracota.
+
+</div>
+
+<ArmoniaExp paso="miralo" />
+
+<div class="dv-texto">
+
+Cuando seis tonos intensos reclaman protagonismo a la vez, la vista salta sin orden y las barras del gráfico parecen categorías inconexas en vez de trimestres sucesivos. Al emplear variaciones de claridad de un mismo tono, el recorrido se ordena y el único elemento cálido («Hito 2026») destaca por contraste de croma.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Relación de tonos, saturación de fondos y reparto de áreas">
+
+<ArmoniaExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres pasos para armar una paleta que funcione a la primera">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Empieza por un tono dominante y crea al menos cuatro niveles de claridad</h3>
+      <p>Antes de añadir un segundo o tercer color a la paleta, extrae de tu tono principal una versión muy clara para fondos (claridad 92 %–96 %), una intermedia para bordes, una intensa y una muy oscura (claridad 12 %–18 %) para titulares y textos. La mayor parte de la interfaz o del impreso se resuelve con esa columna vertebral.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Reparte el espacio de forma desigual (70 / 20 / 10)</h3>
+      <p>Nunca dividas la página en tercios iguales de colores saturados. Deja que las superficies neutras o muy suaves ocupen cerca del 70 %, los bloques de apoyo alrededor del 20 % y el acento cromático menos del 10 %.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Tiñe tus grises con una gota del color principal</h3>
+      <p>Los grises puros de fábrica (`#cccccc`, `#808080`) suelen verse metálicos y ajenos cuando conviven con una paleta cálida o vegetal. Añade entre un 5 % y un 12 % de saturación de tu tono base a los fondos y bordes secundarios para integrar toda la pieza.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<ArmoniaExp paso="errores" />
+
+<div class="dv-texto">
+
+### La armonía en piezas reales
+
+</div>
+
+<ArmoniaExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu ojo para equilibrar paletas">
+
+<ArmoniaExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Geometría cromática, escalas de Brewer y control de las superficies">
+
+<Seccion titulo="Por qué no basta un triángulo sobre el círculo cromático">
+
+En *Kunst der Farbe* (1961), Johannes Itten propuso construir acordes armónicos trazando figuras geométricas regulares —líneas opuestas, triángulos equiláteros o isósceles, rectángulos y hexágonos— dentro del círculo cromático de doce partes. Aquella idea sigue presente en casi todos los selectores de color digitales.
+
+Sin embargo, tanto Albert Munsell (1905) como Maureen Stone (2003) advirtieron que una rueda plana esconde dos trampas:
+
+1. **Los tonos puros no tienen la misma claridad.** El amarillo puro refleja muchísima luz, mientras que el azul o el violeta puro son oscuros. Si tomas tres vértices de una tríada al 100 % de saturación, obtienes saltos bruscos e involuntarios de luminancia.
+2. **El tamaño de la superficie altera la saturación percibida.** Un color que parece agradable en una pastilla de 20 px se vuelve abrumador cuando cubre el fondo de una pantalla de 1400 px.
+
+Por eso la relación geométrica entre tonos solo funciona cuando va acompañada de un control deliberado del valor (claridad), del croma (saturación) y de la proporción de superficie.
+
+</Seccion>
+
+<Seccion titulo="Las tres familias funcionales de Cynthia Brewer">
+
+En 1994, la cartógrafa Cynthia A. Brewer transformó el diseño de paletas de información al demostrar que la armonía cromática en mapas y gráficos debe responder a la estructura de los datos. Clasificó las paletas en tres familias que hoy sirven tanto para visualización como para diseño de sistemas:
+
+- **Escalas secuenciales:** para datos que van de menor a mayor (como ingresos, densidad o lluvia). Se construyen variando de forma continua la **claridad** de un solo tono o de dos tonos análogos vecinos (por ejemplo, de marfil claro a verde bosque oscuro). Nunca usan tonos desconectados del arcoíris.
+- **Escalas divergentes:** para datos que tienen un punto medio significativo (como el cero, el promedio o un empate electoral) y se alejan hacia dos extremos opuestos. Unen dos escalas secuenciales de tonos distintos mediante un color neutro claro en el centro.
+- **Escalas cualitativas:** para categorías sin orden jerárquico (como líneas de metro o departamentos). Usan tonos distintos pero cuidan que todos compartan una **claridad y saturación similares** para que ninguna categoría parezca más importante por accidente.
+
+</Seccion>
+
+<Seccion titulo="El papel de los neutros teñidos">
+
+En la naturaleza rara vez vemos un gris matemáticamente neutro: la sombra de una piedra al atardecer tiene un subtono azulado o violeta, y el papel de un libro tiene el matiz cálido de las fibras vegetales.
+
+Cuando en una interfaz digital combinamos un color principal cálido (como terracota u ocre) con un gris acromático puro (`hsl(0, 0%, 90%)`), por [interacción del color](/diseno-visual/interaccion-del-color) el gris parece teñirse del complementario frío y se despega del resto de la composición. Conservar el mismo ángulo de tono del color dominante en los fondos blancos (`saturación 15 %, luminosidad 97 %`) y en los textos oscuros (`saturación 25 %, luminosidad 14 %`) une todas las piezas sin que nadie note conscientemente el artificio.
+
+</Seccion>
+
+</Paso>

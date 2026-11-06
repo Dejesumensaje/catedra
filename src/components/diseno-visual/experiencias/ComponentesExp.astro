@@ -1,0 +1,1042 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'componentes';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const PAPEL = '#ffffff';
+const FONDO = '#fbfbf9';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Somete el título a una longitud real.',
+    hacer: 'Sube «Longitud del título (palabras)» a 18 o más.',
+    pista: 'Arrastra el primer deslizador hacia la derecha.',
+    logro: 'El título pasa de caber en un renglón ideal a ocupar tres líneas completas. Como el componente tiene altura elástica, empuja hacia abajo el resumen y la botonera sin pisar ningún elemento.',
+  },
+  {
+    titulo: 'Quita las piezas opcionales.',
+    hacer: 'En «Datos opcionales presentes», selecciona «Sin imagen ni etiqueta».',
+    pista: 'Elige la tercera opción del selector de datos opcionales.',
+    logro: 'Cuando faltan la miniatura y la categoría, el componente no deja un rectángulo gris vacío ni un hueco huérfano: el bloque de texto ocupa el ancho completo con limpieza.',
+  },
+  {
+    titulo: 'Estrecha el contenedor donde vive.',
+    hacer: 'Baja «Ancho del contenedor donde vive» a 280 px o menos.',
+    pista: 'Mueve el deslizador de ancho hacia la izquierda.',
+    preparar: { opcionales: 'todo', palabras: 10 },
+    logro: 'En una columna estrecha, mantener la imagen al lado del texto aplastaría los renglones. El componente apila sus zonas verticalmente para proteger el ancho de lectura.',
+  },
+  {
+    titulo: 'Observa qué ocurre cuando el contenedor es rígido.',
+    hacer: 'Abre «Más controles» y en «Comportamiento ante contenido largo» elige «Altura fija (rígido)».',
+    pista: 'Despliega «Más controles» y selecciona la segunda opción.',
+    preparar: { palabras: 20, ancho: 460, opcionales: 'todo' },
+    abrir: true,
+    logro: 'Al fijar la altura en píxeles como en una maqueta estática, un título real de veinte palabras desborda la caja y pisa el botón de acción.',
+  },
+  {
+    titulo: 'Inspecciona la anatomía interna en rayos X.',
+    hacer: 'Con «Más controles» abierto, vuelve a «Elástico (se adapta)» y activa «Vista de rayos X (anatomía de huecos y reglas)».',
+    pista: 'Elige «Elástico (se adapta)» y marca la casilla de rayos X.',
+    abrir: true,
+    logro: 'Las cotas muestran qué partes del componente son estructura fija (el marco, el pie de acción) y qué partes son ranuras elásticas u opcionales.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres tarjetas: la maqueta ideal con 'Cine al aire', la tarjeta rígida rota cuando recibe un título de catorce palabras, y el componente elástico que se adapta sin romperse.">
+      <rect width="600" height="180" fill={FONDO} />
+      {/* 1. Maqueta ideal */}
+      <g transform="translate(16, 18)">
+        <rect width="176" height="144" fill={PAPEL} stroke={REGLA} stroke-width="1.5" />
+        <text x="12" y="20" font-family={SANS} font-size="9" font-weight="700" fill={G}>1. MAQUETA IDEAL (FICTICIA)</text>
+        <rect x="12" y="28" width="152" height="36" fill="#eaeae4" stroke={T} stroke-width="1" />
+        <text x="88" y="50" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={TXT}>FOTO PERFECTA</text>
+        <text x="12" y="84" font-family={SERIF} font-size="14" font-weight="700" fill={T}>Cine al aire</text>
+        <text x="12" y="102" font-family={SANS} font-size="10" fill={G}>Jueves · 19:00</text>
+        <rect x="12" y="112" width="84" height="22" fill={T} />
+        <text x="54" y="127" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={PAPEL}>Inscribirse</text>
+      </g>
+
+      {/* 2. Caja rígida con texto real */}
+      <g transform="translate(212, 18)">
+        <rect width="176" height="144" fill={PAPEL} stroke={ROJO} stroke-width="2" />
+        <text x="12" y="20" font-family={SANS} font-size="9" font-weight="700" fill={ROJO}>2. CAJA RÍGIDA + DATO REAL</text>
+        <rect x="12" y="28" width="152" height="32" fill="#fbe9e7" stroke={ROJO} stroke-width="1" stroke-dasharray="3 2" />
+        <text x="88" y="48" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" fill={ROJO}>SIN FOTO (HUECO ROTO)</text>
+        <text x="12" y="74" font-family={SERIF} font-size="11" font-weight="700" fill={T}>Coloquio internacional sobre</text>
+        <text x="12" y="88" font-family={SERIF} font-size="11" font-weight="700" fill={T}>restauración de archivos de</text>
+        <text x="12" y="102" font-family={SERIF} font-size="11" font-weight="700" fill={T}>nitrato en América Latina</text>
+        <text x="12" y="116" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>Dra. M. Vega y Dr. J. Ortiz</text>
+        <rect x="12" y="122" width="96" height="20" fill={T} />
+        <text x="60" y="135" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" fill={AMARILLO}>Desborda la caja</text>
+      </g>
+
+      {/* 3. Componente elástico */}
+      <g transform="translate(408, 18)">
+        <rect width="176" height="144" fill={PAPEL} stroke={T} stroke-width="1.8" />
+        <text x="12" y="20" font-family={SANS} font-size="9" font-weight="700" fill={T}>3. COMPONENTE ELÁSTICO</text>
+        <text x="12" y="40" font-family={SERIF} font-size="11.5" font-weight="700" fill={T}>Coloquio internacional sobre</text>
+        <text x="12" y="55" font-family={SERIF} font-size="11.5" font-weight="700" fill={T}>restauración de archivos de</text>
+        <text x="12" y="70" font-family={SERIF} font-size="11.5" font-weight="700" fill={T}>nitrato en América Latina</text>
+        <text x="12" y="88" font-family={SANS} font-size="9.5" fill={TXT}>M. Vega · J. Ortiz · Jue 19:00</text>
+        <line x1="12" y1="98" x2="164" y2="98" stroke={REGLA} stroke-width="1" />
+        <rect x="12" y="108" width="96" height="24" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="60" y="124" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>Inscribirse →</text>
+      </g>
+    </svg>
+    <p>En la maqueta inicial el título tenía tres palabras («Cine al aire») y todo cabía perfecto. ¿Por qué se rompió la tarjeta el primer día que se conectó a los datos reales?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque no se había diseñado un componente, sino un dibujo estático para un único caso feliz. Cuando llegó un evento real con catorce palabras de título, dos ponentes y sin fotografía adjunta, la caja de altura fija desbordó y dejó un hueco roto arriba. Un verdadero componente define qué partes son obligatorias, qué partes son opcionales y cómo se estira su estructura ante textos extremos.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Tarjetas maquetadas a mano o con huecos rígidos"
+      notas={[
+        {
+          ...pct(170, 56),
+          titulo: 'Orden interno arbitrario',
+          texto: 'En la primera tarjeta la fecha va arriba y el botón a la derecha; en la segunda el botón va arriba y la fecha al final.',
+          zona: zona(16, 18, 328, 86),
+        },
+        {
+          ...pct(170, 146),
+          titulo: 'Hueco muerto cuando falta un dato opcional',
+          texto: 'Cuando una actividad no tiene imagen, queda un recuadro vacío con un icono roto que desperdicia la mitad del espacio.',
+          zona: zona(16, 110, 328, 76),
+        },
+        {
+          ...pct(170, 232),
+          titulo: 'Texto real truncado sin sentido',
+          texto: 'Cortar el título con puntos suspensivos en la tercera palabra («Taller de introducción a la…») oculta de qué trata el curso.',
+          zona: zona(16, 194, 328, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tres fichas de curso inconsistentes: cambian el orden de sus elementos, dejan un hueco vacío cuando falta la imagen y truncan el título.">
+        <rect width={W} height={H} fill={PAPEL} />
+        {/* Ficha 1 */}
+        <rect x="16" y="18" width="328" height="84" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="28" y="38" font-family={SANS} font-size="10" font-weight="700" fill={ROJO}>14 DE AGOSTO · SALA 3</text>
+        <text x="28" y="58" font-family={SERIF} font-size="13" font-weight="700" fill={T}>Seminario de edición</text>
+        <rect x="244" y="36" width="86" height="24" fill={T} />
+        <text x="287" y="52" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={PAPEL}>Ver programa</text>
+        <text x="28" y="86" font-family={SANS} font-size="9.5" fill={G}>Categoría: Posgrado (orden cambiado)</text>
+
+        {/* Ficha 2: hueco roto */}
+        <rect x="16" y="110" width="328" height="76" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <rect x="26" y="120" width="96" height="56" fill="#fbe9e7" stroke={ROJO} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="74" y="152" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={ROJO}>SIN IMAGEN</text>
+        <rect x="134" y="120" width="76" height="20" fill={T} />
+        <text x="172" y="134" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" fill={PAPEL}>Inscribirse</text>
+        <text x="134" y="156" font-family={SERIF} font-size="12.5" font-weight="700" fill={T}>Laboratorio de sonido</text>
+        <text x="134" y="174" font-family={SANS} font-size="9.5" fill={G}>21 de agosto (fecha abajo)</text>
+
+        {/* Ficha 3: truncado */}
+        <rect x="16" y="194" width="328" height="68" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="28" y="218" font-family={SERIF} font-size="13" font-weight="700" fill={T}>Taller de introducción a la…</text>
+        <text x="28" y="238" font-family={SANS} font-size="10" fill={ROJO}>¿A la botánica, a la cerámica o a la programación?</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Un mismo componente elástico en tres instancias distintas"
+      notas={[
+        {
+          ...pct(330, 52),
+          titulo: 'Estructura fija reconocible',
+          texto: 'En las tres fichas la categoría abre arriba a la izquierda, sigue el título completo y cierra abajo la fila de metadatos y acción.',
+          zona: zona(16, 18, 328, 76),
+        },
+        {
+          ...pct(330, 142),
+          titulo: 'Colapso limpio de ranuras opcionales',
+          texto: 'La segunda instancia no lleva imagen: la ranura colapsa sin dejar rastro y el título aprovecha todo el ancho.',
+          zona: zona(16, 102, 328, 74),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Crecimiento vertical ante títulos largos',
+          texto: 'La tercera instancia recibe un título de dos líneas completas y empuja el pie hacia abajo manteniendo el margen interior constante.',
+          zona: zona(16, 184, 328, 82),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tres instancias limpias del mismo componente: una con imagen, otra sin imagen que colapsa su hueco y una tercera con título de dos líneas.">
+        <rect width={W} height={H} fill={PAPEL} />
+        {/* Instancia 1: con miniatura */}
+        <rect x="16" y="18" width="328" height="76" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <rect x="26" y="28" width="56" height="56" fill="#eaeae4" stroke={T} stroke-width="1" />
+        <text x="54" y="60" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={TXT}>FOTO</text>
+        <text x="94" y="38" font-family={SANS} font-size="9" font-weight="700" letter-spacing="0.06em" fill={G}>POSGRADO · 14 AGO</text>
+        <text x="94" y="56" font-family={SERIF} font-size="13" font-weight="700" fill={T}>Seminario de edición</text>
+        <text x="94" y="78" font-family={SANS} font-size="10" font-weight="700" fill={T}>Ver programa →</text>
+
+        {/* Instancia 2: sin miniatura (colapso limpio) */}
+        <rect x="16" y="102" width="328" height="74" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="28" y="122" font-family={SANS} font-size="9" font-weight="700" letter-spacing="0.06em" fill={G}>LABORATORIO · 21 AGO</text>
+        <text x="28" y="142" font-family={SERIF} font-size="13" font-weight="700" fill={T}>Acústica y grabación de campo</text>
+        <text x="28" y="162" font-family={SANS} font-size="10" font-weight="700" fill={T}>Ver programa →</text>
+
+        {/* Instancia 3: título largo de dos líneas */}
+        <rect x="16" y="184" width="328" height="82" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="28" y="202" font-family={SANS} font-size="9" font-weight="700" letter-spacing="0.06em" fill={G}>TALLER ABIERTO · 28 AGO</text>
+        <text x="28" y="220" font-family={SERIF} font-size="12.5" font-weight="700" fill={T}>Introducción a la encuadernación</text>
+        <text x="28" y="236" font-family={SERIF} font-size="12.5" font-weight="700" fill={T}>japonesa y restauración de papel</text>
+        <text x="28" y="254" font-family={SANS} font-size="10" font-weight="700" fill={T}>Ver programa →</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Banco de pruebas de resistencia · anatomía de un componente"
+    consigna="Pon a prueba una tarjeta de catálogo sometiéndola a títulos de longitud extrema, ausencia de datos opcionales y cambios en el ancho de la columna donde se inserta."
+    nota="Fija la versión corta con todos los datos como A y luego estira el título a 20 palabras y quita la imagen en B para comprobar qué reglas mantienen íntegra la pieza."
+  >
+    <svg slot="escenario" viewBox="0 0 640 310" role="img" aria-label="Tarjeta de componente en banco de pruebas mostrando su contenedor, ranura de imagen opcional, título variable y pie de acciones.">
+      <rect width="640" height="310" fill={FONDO} />
+      <rect x="90" y="36" width="460" height="236" fill={PAPEL} stroke={T} stroke-width="2" />
+      <rect x="110" y="56" width="120" height="120" fill="#eaeae4" stroke={T} stroke-width="1.2" />
+      <text x="250" y="72" font-family={SANS} font-size="10" font-weight="700" fill={G}>CICLO DOCUMENTAL · SALA 2</text>
+      <text x="250" y="100" font-family={SERIF} font-size="18" font-weight="700" fill={T}>Memoria del ferrocarril</text>
+      <rect x="250" y="216" width="130" height="32" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      <text x="315" y="236" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>Reservar entrada</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Activa la vista de rayos X y prueba la combinación más exigente: contenedor estrecho de 250 px con un título de 22 palabras." />
+
+    <Deslizador
+      lab={lab}
+      variable="palabras"
+      etiqueta="Longitud del título (palabras)"
+      min={2}
+      max={22}
+      paso={2}
+      valor={4}
+      unidad="palabras"
+      ayuda="Comprueba cómo pasa de 1 línea ideal a 3 o 4 líneas reales sin romper el pie de la tarjeta."
+    />
+
+    <Opciones
+      lab={lab}
+      variable="opcionales"
+      etiqueta="Datos opcionales presentes"
+      valor="todo"
+      opciones={[
+        { valor: 'todo', texto: 'Con imagen y etiqueta' },
+        { valor: 'sin-imagen', texto: 'Sin imagen' },
+        { valor: 'minimo', texto: 'Sin imagen ni etiqueta' },
+      ]}
+      ayuda="Las ranuras opcionales deben desaparecer sin dejar huecos vacíos."
+    />
+
+    <Deslizador
+      lab={lab}
+      variable="ancho"
+      etiqueta="Ancho del contenedor donde vive"
+      min={240}
+      max={580}
+      paso={20}
+      valor={480}
+      unidad="px"
+      ayuda="Debajo de 340 px el componente apila sus bloques para no estrangular el texto."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="comportamiento"
+        etiqueta="Comportamiento ante contenido largo"
+        valor="elastico"
+        opciones={[
+          { valor: 'elastico', texto: 'Elástico (se adapta)' },
+          { valor: 'rigido', texto: 'Altura fija (rígido)' },
+        ]}
+        ayuda="Compara un contenedor que crece con su contenido frente a una caja rígida que se desborda."
+      />
+      <Interruptor
+        lab={lab}
+        variable="rayosx"
+        etiqueta="Vista de rayos X (anatomía de huecos y reglas)"
+        ayuda="Dibuja con línea punteada las ranuras variables y las zonas fijas del componente."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"palabras":4,"opcionales":"todo","ancho":480,"comportamiento":"elastico","rayosx":false}'>Caso feliz de maqueta (4 palabras)</button>
+      <button type="button" class="dv-boton" data-preset='{"palabras":20,"opcionales":"sin-imagen","ancho":460,"comportamiento":"elastico","rayosx":true}'>Prueba extrema (20 palabras sin foto)</button>
+      <button type="button" class="dv-boton" data-preset='{"palabras":12,"opcionales":"todo","ancho":260,"comportamiento":"elastico","rayosx":false}'>Columna lateral estrecha (260 px)</button>
+      <button type="button" class="dv-boton" data-preset='{"palabras":20,"opcionales":"todo","ancho":460,"comportamiento":"rigido","rayosx":false}'>Fallo por caja de altura rígida</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Permite que el botón respire cuando el texto crece o se traduce"
+      comparar={false}
+      consigna="Un botón diseñado con un ancho fijo de 90 px para la palabra «Enviar» se desborda cuando cambia a «Guardar y continuar» o se traduce al alemán. Cambia la regla de ancho."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Botón de 90 px fijos desbordado por texto largo.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="regla"
+        etiqueta="Regla de ancho del componente botón"
+        valor="fijo"
+        opciones={[
+          { valor: 'fijo', texto: 'Ancho fijo (90 px)' },
+          { valor: 'truncado', texto: 'Truncar con «…»' },
+          { valor: 'relleno', texto: 'Ancho automático + espacio interior (16 px)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Colapsa la ranura cuando falta un dato opcional"
+      comparar={false}
+      consigna="El 40 % de los libros del catálogo antiguo no tienen portada digitalizada. Si la ranura de imagen es obligatoria, deja un cuadro roto. Haz que la ranura sea condicional."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Ficha bibliográfica sin imagen de portada.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="ranura"
+        etiqueta="Qué hace el componente cuando no llega imagen"
+        valor="hueco"
+        opciones={[
+          { valor: 'hueco', texto: 'Dejar el recuadro vacío (hueco roto)' },
+          { valor: 'colapsar', texto: 'Colapsar la ranura y expandir el texto' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Divide el «componente navaja suiza» en dos piezas claras"
+      comparar={false}
+      consigna="Intentaron meter en un solo componente una tarjeta de artículo, un reproductor de audio, una encuesta y una tabla de precios. El resultado tiene 28 propiedades y confunde a todos. Sepáralo por responsabilidad."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Supercomponente inflado con 4 funciones incompatibles.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="arquitectura"
+        etiqueta="Arquitectura del catálogo de componentes"
+        valor="navaja"
+        opciones={[
+          { valor: 'navaja', texto: '1 supercomponente con 28 interruptores' },
+          { valor: 'modular', texto: '2 componentes simples y componibles' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Este mismo sitio (Instrumento.astro): un marco fijo con cuatro ranuras (slots)"
+      notas={[
+        {
+          ...pct(180, 44),
+          titulo: 'Cabecera fija obligatoria',
+          texto: 'Todo instrumento exige id y titulo (un encabezado <h2> real) más una consigna opcional que introduce qué observar.',
+          zona: zona(16, 16, 328, 48),
+        },
+        {
+          ...pct(110, 146),
+          titulo: 'Slot «escenario» y lectura en vivo',
+          texto: 'El lienzo izquierdo recibe cualquier SVG o composición interactiva y debajo actualiza el párrafo con aria-live.',
+          zona: zona(16, 70, 188, 192),
+        },
+        {
+          ...pct(280, 156),
+          titulo: 'Slots condicionales: «guia», «avanzados» y «pruebas»',
+          texto: 'Si un instrumento secundario no pasa el slot «guia» ni «pruebas» (como en los tres errores frecuentes), esas zonas desaparecen sin dejar rastro.',
+          zona: zona(212, 70, 132, 192),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Esquema arquitectónico del componente Instrumento.astro con su cabecera fija y sus cuatro ranuras: escenario, guía, controles avanzados y pruebas.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="16" y="16" width="328" height="48" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="26" y="34" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>CABECERA FIJA · PROPS: ID, TITULO, CONSIGNA</text>
+        <text x="26" y="52" font-family={SERIF} font-size="13" font-weight="700" fill={T}>Instrumento.astro</text>
+
+        {/* Columna izquierda: slot escenario */}
+        <rect x="16" y="70" width="188" height="128" fill={PAPEL} stroke={T} stroke-width="1.5" stroke-dasharray="4 3" />
+        <rect x="24" y="78" width="102" height="16" fill={AMARILLO} stroke={T} stroke-width="1" />
+        <text x="75" y="89" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill={T}>slot=&quot;escenario&quot;</text>
+        <text x="26" y="114" font-family={SERIF} font-size="11" fill={TXT}>Lienzo interactivo</text>
+        <text x="26" y="130" font-family={SERIF} font-size="11" fill={TXT}>con comparación A/B</text>
+
+        <rect x="16" y="206" width="188" height="56" fill={FONDO} stroke={T} stroke-width="1.2" />
+        <text x="26" y="226" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>[data-lectura] + Acciones</text>
+        <text x="26" y="244" font-family={SANS} font-size="9" fill={G}>Fijar A · Restablecer · Copiar enlace</text>
+
+        {/* Columna derecha: slots de controles */}
+        <rect x="212" y="70" width="132" height="44" fill={FONDO} stroke={T} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="222" y="88" font-family={SANS} font-size="9" font-weight="700" fill={T}>slot=&quot;guia&quot;</text>
+        <text x="222" y="102" font-family={SANS} font-size="8.5" fill={G}>Paso a paso opcional</text>
+
+        <rect x="212" y="120" width="132" height="44" fill={PAPEL} stroke={T} stroke-width="1.2" />
+        <text x="222" y="138" font-family={SANS} font-size="9" font-weight="700" fill={T}>slot (default)</text>
+        <text x="222" y="152" font-family={SANS} font-size="8.5" fill={G}>Controles principales</text>
+
+        <rect x="212" y="170" width="132" height="42" fill={FONDO} stroke={T} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="222" y="188" font-family={SANS} font-size="9" font-weight="700" fill={T}>slot=&quot;avanzados&quot;</text>
+        <text x="222" y="202" font-family={SANS} font-size="8.5" fill={G}>Plegado en &lt;details&gt;</text>
+
+        <rect x="212" y="218" width="132" height="44" fill={FONDO} stroke={T} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="222" y="236" font-family={SANS} font-size="9" font-weight="700" fill={T}>slot=&quot;pruebas&quot;</text>
+        <text x="222" y="250" font-family={SANS} font-size="8.5" fill={G}>Presets si existen</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Ficha bibliográfica: campos obligatorios frente a metadatos opcionales"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Núcleo obligatorio (autor, obra, año)',
+          texto: 'Toda fuente en el schema Zod exige autor, obra y anio. Sin esos tres datos el componente no puede existir.',
+          zona: zona(18, 22, 324, 74),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Enlace condicional (url)',
+          texto: 'Cuando existe DOI o enlace web verificado, el título se convierte en vínculo externo; cuando es un libro impreso sin URL, se renderiza como texto limpio.',
+          zona: zona(18, 106, 324, 74),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Nota pedagógica elástica',
+          texto: 'El campo nota puede ocupar una o tres líneas debajo de la referencia sin desalinear el margen izquierdo.',
+          zona: zona(18, 190, 324, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Dos instancias del componente de referencia bibliográfica: una con enlace DOI y otra de libro impreso sin enlace.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="18" y="22" width="324" height="74" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="42" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>NÚCLEO OBLIGATORIO: AUTOR + OBRA + AÑO</text>
+        <text x="30" y="62" font-family={SERIF} font-size="12.5" font-weight="700" fill={T}>Karl Gerstner (1964). Designing Programmes.</text>
+        <text x="30" y="80" font-family={SANS} font-size="10" fill={TXT}>Arthur Niggli · Sin URL (libro impreso)</text>
+
+        <rect x="18" y="106" width="324" height="74" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="30" y="126" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>CON RANURA CONDICIONAL DE ENLACE (URL PRESENTE)</text>
+        <text x="30" y="146" font-family={SERIF} font-size="12.5" font-weight="700" fill={T} text-decoration="underline">W3C Design Tokens Format Module (2024) ↗</text>
+        <text x="30" y="164" font-family={SANS} font-size="10" fill={TXT}>https://tr.designtokens.org/format/</text>
+
+        <rect x="18" y="190" width="324" height="72" fill={FONDO} stroke={REGLA} stroke-width="1.5" />
+        <text x="30" y="210" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>RANURA ELÁSTICA: NOTA DE CONTEXTO</text>
+        <text x="30" y="230" font-family={SERIF} font-size="11.5" fill={TXT}>«Especificación estándar de pares nombre-valor</text>
+        <text x="30" y="248" font-family={SERIF} font-size="11.5" fill={TXT}>independientes de la plataforma.»</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Fila de movimiento bancario: columna derecha blindada ante nombres largos"
+      notas={[
+        {
+          ...pct(120, 76),
+          titulo: 'Zona izquierda flexible (1fr)',
+          texto: 'El nombre del comercio puede tener 10 o 65 caracteres: envuelve en una segunda línea sin empujar jamás la columna del importe.',
+          zona: zona(18, 36, 206, 148),
+        },
+        {
+          ...pct(290, 76),
+          titulo: 'Zona derecha indeformable (auto)',
+          texto: 'El monto usa cifras tabulares y white-space: nowrap para que el signo y los decimales nunca se partan en dos renglones.',
+          zona: zona(230, 36, 112, 148),
+        },
+        {
+          ...pct(180, 226),
+          titulo: 'Etiqueta opcional de estado',
+          texto: 'Solo aparece cuando la transacción está «En verificación» o «Rechazada»; en pagos normales no añade ruido.',
+          zona: zona(18, 194, 324, 66),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tres filas de movimientos bancarios donde el importe a la derecha permanece alineado aunque el concepto a la izquierda ocupe una o dos líneas.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="18" y="26" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.06em" fill={G}>COMPONENTE FILA DE TRANSACCIÓN · 3 INSTANCIAS</text>
+
+        {/* Fila 1: nombre corto */}
+        <rect x="18" y="38" width="324" height="58" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="30" y="62" font-family={SANS} font-size="12" font-weight="700" fill={T}>Librería Lerner</text>
+        <text x="30" y="80" font-family={SANS} font-size="10" fill={G}>12 oct · Tarjeta débito</text>
+        <text x="330" y="68" text-anchor="end" font-family={SANS} font-size="13" font-weight="900" fill={T}>− $ 64.000</text>
+
+        {/* Fila 2: nombre muy largo que baja a 2 líneas sin mover el monto */}
+        <rect x="18" y="104" width="324" height="78" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="30" y="126" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>Cooperativa de Caficultores del</text>
+        <text x="30" y="142" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>Suroeste Antioqueño Ltda.</text>
+        <text x="30" y="164" font-family={SANS} font-size="10" fill={G}>11 oct · Transferencia</text>
+        <text x="330" y="138" text-anchor="end" font-family={SANS} font-size="13" font-weight="900" fill={T}>− $ 1.280.500</text>
+
+        {/* Fila 3: con insignia condicional */}
+        <rect x="18" y="192" width="324" height="68" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="216" font-family={SANS} font-size="12" font-weight="700" fill={T}>Editorial Universidad de Antioquia</text>
+        <rect x="30" y="226" width="112" height="18" fill={AMARILLO} stroke={T} stroke-width="1" />
+        <text x="86" y="238" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill={T}>EN VERIFICACIÓN</text>
+        <text x="330" y="228" text-anchor="end" font-family={SANS} font-size="13" font-weight="900" fill={T}>− $ 95.000</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre pruebas de resistencia (stress test), ranuras opcionales, abstracción prematura y elasticidad."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    palabras: number;
+    opcionales: string;
+    ancho: number;
+    comportamiento: string;
+    rayosx: boolean;
+  };
+
+  const BANCO_PALABRAS = [
+    'Memoria', 'visual', 'del', 'ferrocarril', 'de', 'Antioquia', 'y', 'los',
+    'archivos', 'fotográficos', 'industriales', 'conservados', 'en', 'estaciones',
+    'rurales', 'entre', 'mil', 'novecientos', 'veinte', 'y', 'setenta', 'hoy',
+  ];
+
+  function partirLineas(palabras: string[], maxCaracteres: number): string[] {
+    const lineas: string[] = [];
+    let actual = '';
+    for (const p of palabras) {
+      const candidato = actual ? `${actual} ${p}` : p;
+      if (candidato.length > maxCaracteres && actual) {
+        lineas.push(actual);
+        actual = p;
+      } else {
+        actual = candidato;
+      }
+    }
+    if (actual) lineas.push(actual);
+    return lineas;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const cardW = Math.min(e.ancho, W - 28);
+    const apilado = cardW < 340;
+    const tieneImg = e.opcionales === 'todo';
+    const tieneEtiqueta = e.opcionales !== 'minimo';
+    const esRigido = e.comportamiento === 'rigido';
+
+    const listaPalabras = BANCO_PALABRAS.slice(0, e.palabras);
+    const anchoTextoPx = tieneImg && !apilado ? cardW - 156 : cardW - 36;
+    const charsPorLinea = Math.max(14, Math.floor(anchoTextoPx / 7.8));
+    const lineasTitulo = partirLineas(listaPalabras, charsPorLinea);
+
+    const altoImgArriba = tieneImg && apilado ? 82 : 0;
+    const altoEtiqueta = tieneEtiqueta ? 20 : 0;
+    const altoTitulo = lineasTitulo.length * 20;
+    const altoMeta = 22;
+    const altoPie = 42;
+    const altoCalculado = 28 + altoImgArriba + altoEtiqueta + altoTitulo + altoMeta + altoPie;
+    const cardH = esRigido ? 148 : Math.max(136, altoCalculado);
+    const H = Math.max(290, cardH + 68);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Componente tarjeta con ${e.palabras} palabras de título, ancho de ${cardW} px y modo ${e.comportamiento}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const x0 = Math.round((W - cardW) / 2);
+    const y0 = 32;
+
+    // Cota superior de ancho del contenedor
+    const yCota = 18;
+    raiz.append(svg('line', { x1: x0, y1: yCota, x2: x0 + cardW, y2: yCota, stroke: '#6f6f6f', 'stroke-width': 1 }));
+    const txtCota = svg('text', {
+      x: x0 + cardW / 2,
+      y: yCota - 4,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 9.5,
+      'font-weight': 700,
+      fill: '#6f6f6f',
+    });
+    txtCota.textContent = `CONTENEDOR: ${cardW} PX (${apilado ? 'APILADO VERTICAL' : 'DISPOSICIÓN HORIZONTAL'})`;
+    raiz.append(txtCota);
+
+    const desborda = esRigido && altoCalculado > cardH;
+
+    // Marco de la tarjeta
+    raiz.append(
+      svg('rect', {
+        x: x0,
+        y: y0,
+        width: cardW,
+        height: cardH,
+        fill: '#ffffff',
+        stroke: desborda ? '#b3261e' : '#222222',
+        'stroke-width': 2,
+      }),
+    );
+
+    let tx = x0 + 18;
+    let ty = y0 + 18;
+
+    // Ranura de imagen opcional
+    if (tieneImg) {
+      const imgW = apilado ? cardW - 36 : 104;
+      const imgH = apilado ? 70 : Math.min(104, cardH - 36);
+      raiz.append(
+        svg('rect', {
+          x: tx,
+          y: ty,
+          width: imgW,
+          height: imgH,
+          fill: '#eaeae4',
+          stroke: e.rayosx ? '#b3261e' : '#222222',
+          'stroke-width': 1.2,
+          ...(e.rayosx ? { 'stroke-dasharray': '4 3' } : {}),
+        }),
+      );
+      const tFoto = svg('text', {
+        x: tx + imgW / 2,
+        y: ty + imgH / 2 + 4,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 9.5,
+        'font-weight': 700,
+        fill: '#444444',
+      });
+      tFoto.textContent = e.rayosx ? 'RANURA: IMAGEN' : '16:9 / 1:1';
+      raiz.append(tFoto);
+
+      if (apilado) {
+        ty += imgH + 14;
+      } else {
+        tx += imgW + 16;
+      }
+    }
+
+    // Ranura de etiqueta opcional
+    if (tieneEtiqueta) {
+      if (e.rayosx) {
+        raiz.append(
+          svg('rect', {
+            x: tx - 3,
+            y: ty - 2,
+            width: 158,
+            height: 16,
+            fill: 'none',
+            stroke: '#b3261e',
+            'stroke-width': 1,
+            'stroke-dasharray': '3 2',
+          }),
+        );
+      }
+      const tEtq = svg('text', {
+        x: tx,
+        y: ty + 10,
+        'font-family': SANS,
+        'font-size': 9.5,
+        'font-weight': 700,
+        'letter-spacing': 0.7,
+        fill: '#6f6f6f',
+      });
+      tEtq.textContent = 'CICLO DOCUMENTAL · SALA 2';
+      raiz.append(tEtq);
+      ty += 20;
+    }
+
+    // Ranura de título elástico
+    if (e.rayosx) {
+      raiz.append(
+        svg('rect', {
+          x: tx - 4,
+          y: ty - 2,
+          width: x0 + cardW - tx - 12,
+          height: lineasTitulo.length * 20 + 4,
+          fill: 'none',
+          stroke: '#b3261e',
+          'stroke-width': 1.2,
+          'stroke-dasharray': '4 2',
+        }),
+      );
+    }
+
+    lineasTitulo.forEach((linea, idx) => {
+      const yLinea = ty + 15 + idx * 20;
+      const fueraDeCaja = esRigido && yLinea > y0 + cardH - 36;
+      const tLin = svg('text', {
+        x: tx,
+        y: yLinea,
+        'font-family': SERIF,
+        'font-size': 15,
+        'font-weight': 700,
+        fill: fueraDeCaja ? '#b3261e' : '#222222',
+      });
+      tLin.textContent = linea;
+      raiz.append(tLin);
+    });
+
+    ty += lineasTitulo.length * 20 + 8;
+
+    const tMeta = svg('text', {
+      x: tx,
+      y: ty + 10,
+      'font-family': SANS,
+      'font-size': 10,
+      fill: '#444444',
+    });
+    tMeta.textContent = 'Jueves 19:00 · Entrada libre';
+    raiz.append(tMeta);
+
+    // Pie fijo de acción
+    const pieY = esRigido ? y0 + cardH - 38 : Math.max(y0 + cardH - 40, ty + 22);
+    raiz.append(
+      svg('line', {
+        x1: x0 + 18,
+        y1: pieY - 6,
+        x2: x0 + cardW - 18,
+        y2: pieY - 6,
+        stroke: '#e5e5e5',
+        'stroke-width': 1,
+      }),
+    );
+
+    const btnW = 122;
+    raiz.append(
+      svg('rect', {
+        x: x0 + cardW - 18 - btnW,
+        y: pieY,
+        width: btnW,
+        height: 26,
+        fill: desborda ? '#fbe9e7' : '#eeff41',
+        stroke: desborda ? '#b3261e' : '#222222',
+        'stroke-width': 1.5,
+      }),
+    );
+    const tBtn = svg('text', {
+      x: x0 + cardW - 18 - btnW / 2,
+      y: pieY + 17,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 900,
+      fill: desborda ? '#b3261e' : '#222222',
+    });
+    tBtn.textContent = desborda ? '¡Colisión con texto!' : 'Reservar cupo →';
+    raiz.append(tBtn);
+
+    if (e.rayosx) {
+      const tRx = svg('text', {
+        x: x0 + 18,
+        y: pieY + 17,
+        'font-family': SANS,
+        'font-size': 9,
+        'font-weight': 700,
+        fill: '#b3261e',
+      });
+      tRx.textContent = `RAYOS X · ${lineasTitulo.length} LÍN. · ALTO ${cardH} PX`;
+      raiz.append(tRx);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const apilado = e.ancho < 340;
+    if (e.comportamiento === 'rigido' && e.palabras >= 12) {
+      return `¡Desbordamiento! Con una caja rígida de 148 px de alto, un título real de <b class="dv-cifra">${n(e.palabras, 0)} palabras</b> colisiona con la botonera inferior.`;
+    }
+    const modoDisp = apilado
+      ? 'se apila verticalmente porque el contenedor bajó de 340 px'
+      : 'mantiene disposición horizontal';
+    const ranuras = e.opcionales === 'todo'
+      ? 'con imagen y etiqueta activas'
+      : e.opcionales === 'sin-imagen'
+        ? 'colapsando limpiamente la ranura de imagen'
+        : 'colapsando imagen y etiqueta sin dejar huecos vacíos';
+    return `Título de <b class="dv-cifra">${n(e.palabras, 0)} palabras</b> en contenedor de <b class="dv-cifra">${n(e.ancho, 0)} px</b>: el componente ${modoDisp}, ${ranuras}.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="componentes"]')) {
+    guiar<E>(raiz, [
+      (e) => e.palabras >= 18,
+      (e) => e.opcionales === 'minimo',
+      (e) => e.ancho <= 280,
+      (e) => e.comportamiento === 'rigido' && e.palabras >= 14,
+      (e) => e.comportamiento === 'elastico' && e.rayosx,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { regla: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const esFijo = e.regla === 'fijo';
+    const esTrunc = e.regla === 'truncado';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-size:12px;color:#444444;">Traducción / texto real (+45 %):</span>
+        <span style="
+          display:inline-block;
+          ${esFijo ? 'width:90px;white-space:nowrap;overflow:visible;border:2px solid #b3261e;background:#fbe9e7;color:#b3261e;' : ''}
+          ${esTrunc ? 'width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1.5px solid #222222;background:#eeff41;color:#222222;' : ''}
+          ${e.regla === 'relleno' ? 'padding:7px 16px;border:1.5px solid #222222;background:#eeff41;color:#222222;' : 'padding:7px 8px;'}
+          font-size:12px;font-weight:900;
+        ">Guardar y publicar ahora</span>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.regla === 'fijo') return 'Con <b class="dv-cifra">90 px fijos</b>, el texto sale fuera de la caja del botón.';
+    if (e.regla === 'truncado') return 'Truncar un botón de acción («Guardar y…») oculta qué ocurrirá al hacer clic.';
+    return '<b class="dv-cifra">Ancho intrínseco + espacio interior</b>: el botón se adapta a cualquier longitud o idioma.';
+  }
+
+  type E2 = { ranura: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const hueco = e.ranura === 'hueco';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;display:flex;gap:12px;align-items:center;">
+        ${hueco ? `<div style="width:76px;height:62px;flex-shrink:0;background:#fbe9e7;border:1.5px dashed #b3261e;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#b3261e;text-align:center;">SIN PORTADA</div>` : ''}
+        <div>
+          <p style="margin:0;font-size:10px;font-weight:700;color:#6f6f6f;">ARCHIVO IMPRESO · 1968</p>
+          <p style="margin:3px 0 0;font-family:${SERIF};font-size:14px;font-weight:700;color:#222222;">Diseño y comunicación visual · Bruno Munari</p>
+          <p style="margin:3px 0 0;font-size:11.5px;color:#444444;">Colección Biblioteca de Diseño · Sin imagen digitalizada.</p>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.ranura === 'hueco') return 'El recuadro vacío llama más la atención que el propio título del libro.';
+    return '<b class="dv-cifra">Ranura condicional</b>: cuando no hay imagen, la ficha se comporta como una entrada tipográfica completa.';
+  }
+
+  type E3 = { arquitectura: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const navaja = e.arquitectura === 'navaja';
+    d.innerHTML = navaja
+      ? `<div style="padding:12px 14px;font-family:${SANS};background:#fbe9e7;border:1.5px solid #b3261e;color:#222222;">
+          <p style="margin:0 0 6px;font-size:10px;font-weight:900;color:#b3261e;">&lt;SuperTarjeta mostrarAudio={true} mostrarEncuesta={true} mostrarPrecio={true} /&gt;</p>
+          <p style="margin:0;font-size:12px;font-weight:700;">Conferencia inaugural · 03:42 min · ¿Te gustó? [Sí/No] · $ 45.000</p>
+        </div>`
+      : `<div style="padding:12px 14px;font-family:${SANS};background:#ffffff;border:1.5px solid #222222;display:grid;grid-template-columns:1fr 1fr;gap:8px;color:#222222;">
+          <div style="padding:8px;border:1px solid #222222;background:#fbfbf9;">
+            <span style="font-size:9.5px;font-weight:700;color:#6f6f6f;">&lt;TarjetaEvento /&gt;</span>
+            <p style="margin:3px 0 0;font-size:12px;font-weight:700;">Conferencia inaugural</p>
+          </div>
+          <div style="padding:8px;border:1px solid #222222;background:#fbfbf9;">
+            <span style="font-size:9.5px;font-weight:700;color:#6f6f6f;">&lt;ReproductorAudio /&gt;</span>
+            <p style="margin:3px 0 0;font-size:12px;font-weight:700;">▶ Escuchar · 03:42 min</p>
+          </div>
+        </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.arquitectura === 'navaja') return 'Un componente con <b class="dv-cifra">responsabilidades mezcladas</b> es difícil de mantener y fácil de romper.';
+    return '<b class="dv-cifra">Responsabilidad única</b>: cada componente hace bien una sola tarea y se combina cuando hace falta.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['componentes-e1', pintarE1 as never, describirE1 as never],
+    ['componentes-e2', pintarE2 as never, describirE2 as never],
+    ['componentes-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function r1StressTest(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Probarlo con un título de 18 palabras, un título de 2 palabras y sin imagen opcional',
+        es: true,
+      },
+      {
+        texto: 'Probarlo únicamente con textos de tres palabras que midan exactamente igual en las tres tarjetas',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Acabas de diseñar el componente de tarjeta para el catálogo de cursos. ¿Cómo compruebas si su estructura aguanta la realidad antes de publicarlo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un componente se valida en sus bordes: textos muy largos, textos mínimos y ausencia de campos opcionales.',
+      repaso: 'Prueba de resistencia (stress test)',
+    };
+  }
+
+  function r2RanuraOpcional(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'La ranura colapsa por completo y el bloque de texto ocupa el espacio con naturalidad',
+        es: true,
+      },
+      {
+        texto: 'Queda un recuadro gris vacío con el texto «Sin imagen disponible» ocupando la mitad de la tarjeta',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En una lista de noticias, solo la mitad de los artículos incluye fotografía. ¿Cómo debe comportarse el componente en las instancias sin foto?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Si un dato es opcional, su ausencia no es un error: la estructura debe reacomodarse sin dejar cicatrices ni huecos vacíos.',
+      repaso: 'Ranuras opcionales',
+    };
+  }
+
+  function r3AbstraccionPrematura(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Esperar a ver si esa necesidad se repite en tres contextos reales antes de empaquetarla como componente universal',
+        es: true,
+      },
+      {
+        texto: 'Fusionarla dentro del componente de tarjeta estándar añadiendo doce interruptores nuevos',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Una sola página del sitio necesita un bloque especial para comparar dos mapas antiguos. ¿Qué recomienda Alla Kholmatova en Design Systems (2017)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Convertir una pieza única en componente compartido o forzarla dentro de otro componente existente complica todo el sistema sin aportar reutilización real.',
+      repaso: 'Evitar el componente navaja suiza',
+    };
+  }
+
+  function r4Anatomia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El orden vertical de las zonas, las reglas de espaciado y la posición de la acción principal',
+        es: true,
+      },
+      {
+        texto: 'La cantidad exacta de letras que tiene el título de cada curso',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En un componente bien construido, ¿qué parte pertenece a la estructura fija del sistema y no al contenido variable?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El componente fija la gramática espacial (jerarquía, márgenes, posición de las zonas) para que el contenido pueda variar libremente sin perder el orden.',
+      repaso: 'Estructura fija frente a contenido variable',
+    };
+  }
+
+  function r5AjusteContenedor(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta ficha tiene miniatura e información al lado, pero está metida en una columna de 230 px que deja solo 9 letras por renglón. Amplía el ancho del contenedor hasta que la disposición horizontal tenga lectura holgada (380 px o más).',
+      control: {
+        etiqueta: 'Ancho disponible para el componente',
+        min: 220,
+        max: 520,
+        paso: 20,
+        valor: 230,
+        unidad: 'px',
+      },
+      pintar: (c, v) => {
+        c.innerHTML = `
+          <div style="padding:12px;background:#fbfbf9;border:1px solid #e5e5e5;display:flex;justify-content:center;font-family:${SANS};">
+            <div style="width:${v}px;max-width:100%;padding:12px;background:#ffffff;border:1.5px solid #222222;display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:72px;height:64px;flex-shrink:0;background:#eaeae4;border:1px solid #222222;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#444444;">FOTO</div>
+              <div>
+                <span style="font-size:9.5px;font-weight:700;color:#6f6f6f;">SEMINARIO · ${v} PX</span>
+                <p style="margin:3px 0 0;font-family:${SERIF};font-size:13px;font-weight:700;color:#222222;line-height:1.25;">Historia de la imprenta moderna</p>
+              </div>
+            </div>
+          </div>`;
+      },
+      cumple: (v) => v >= 380,
+      falta: (v) => `Con ${v} px la columna de texto junto a la foto sigue siendo demasiado angosta. Sube al menos a 380 px.`,
+      porque: 'Un componente con imagen lateral necesita un umbral mínimo de ancho (o apilarse en vertical) para no estrangular la línea de lectura.',
+      repaso: 'Relación entre componente y contenedor',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>('[data-juego="componentes"]');
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        r1StressTest(),
+        r2RanuraOpcional(),
+        r3AbstraccionPrematura(),
+        r4Anatomia(),
+        r5AjusteContenedor(),
+      ]),
+    );
+  }
+</script>

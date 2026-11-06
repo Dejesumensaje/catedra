@@ -1,0 +1,178 @@
+---
+titulo: Roles semánticos
+territorio: color
+pregunta: ¿Por qué asignar colores por «lo que significan» en vez de por «cómo se llaman» evita contradicciones en una interfaz o publicación?
+resumen: "Cuando un color pasa de llamarse «azul» o «rojo» a cumplir un papel fijo —acción principal, superficie secundaria, confirmación, advertencia, error—, quien lee aprende el código una sola vez y puede anticipar qué hace cada elemento."
+modos: [comparacion, diseccion]
+orden: 22
+relaciones:
+  - concepto: interaccion-del-color
+    porQue: El significado de un color depende del sistema y del contexto en que aparece, no de una propiedad aislada del pigmento.
+  - concepto: accesibilidad-del-color
+    porQue: Ningún rol semántico puede descansar únicamente en el tono; requiere siempre una segunda señal (icono, forma o etiqueta).
+  - concepto: tokens
+    porQue: Los roles semánticos se implementan mediante tokens con nombre funcional (--color-peligro) separados del valor bruto hexadecimal.
+  - concepto: sistemas-y-excepciones
+    porQue: Reservar un color para un estado específico establece una ley del sistema; usarlo como adorno destruye la señal.
+  - concepto: semejanza
+    porQue: Todos los elementos que comparten el mismo color semántico tienden a leerse como portadores de la misma función o urgencia.
+fuentes:
+  - autor: Colin Ware
+    obra: "Information Visualization: Perception for Design (4th ed.). Morgan Kaufmann"
+    anio: 2020
+    nota: Uso semántico del color, códigos cromáticos aprendidos, límites de la memoria de trabajo (máximo 5 a 8 categorías distinguibles sin consultar leyenda) y convenciones culturales.
+  - autor: Alla Kholmatova
+    obra: "Design Systems: A practical guide to creating design languages for digital products. Smashing Media"
+    anio: 2017
+    nota: Definición de paletas funcionales y roles semánticos frente a paletas meramente decorativas.
+  - autor: W3C
+    obra: "Web Content Accessibility Guidelines (WCAG) 2.2, Criterio 1.4.1 (Use of Color)"
+    anio: 2023
+    url: https://www.w3.org/TR/WCAG22/#use-of-color
+    nota: "Regla de redundancia: un rol semántico nunca debe transmitirse exclusivamente mediante el color."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import RolesSemanticosExp from '../../components/diseno-visual/experiencias/RolesSemanticosExp.astro';
+
+<Paso id="idea" titular="Un color en un sistema es un contrato con quien lee">
+
+<RolesSemanticosExp paso="idea" />
+
+<p class="dv-frase">Elige colores por la función que cumplen, no por el adorno que hacen.</p>
+
+<div class="dv-texto">
+
+En una ilustración libre puedes pintar un recuadro de rojo porque combina bien con el fondo. En un periódico, un mapa de transporte, un tablero clínico o una aplicación web, cada color repetido entrena la expectativa de quien mira: si en la primera pantalla el azul indica «esto se puede tocar» y el rojo indica «algo falló», el lector aplicará esa misma regla en la segunda pantalla antes de terminar de leer el texto.
+
+Hablar de **roles semánticos** significa dejar de pensar en colores sueltos («pongamos este botón verde esmeralda») y definir primero qué papeles necesita comunicar el sistema: **superficie**, **texto**, **acción interactiva**, **éxito**, **advertencia** y **peligro o error**.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco piezas del vocabulario semántico</h3>
+  <dl>
+    <dt>Rol semántico</dt>
+    <dd>La función comunicativa fija que se le asigna a un color dentro de un sistema (por ejemplo, «acción principal» o «alerta destructiva»), con independencia de cuál sea su tono exacto.</dd>
+    <dt>Color de estado</dt>
+    <dd>El conjunto de colores reservados para informar qué ocurre en el sistema: confirmación o éxito, advertencia preventiva, peligro o error, e información neutra.</dd>
+    <dt>Color de acción</dt>
+    <dd>El color reservado para señalar qué elementos responden al toque o al clic (enlaces, botones primarios, controles activos).</dd>
+    <dt>Convención aprendida</dt>
+    <dd>Asociación cultural o técnica previa (como el semáforo vial o los colores de una red de metro) que acelera la interpretación cuando se respeta y produce duda cuando se invierte.</dd>
+    <dt>Límite categorial</dt>
+    <dd>El número máximo de colores nominales distintos (entre 5 y 8 según Colin Ware) que una persona puede recordar y distinguir sin volver la vista a la leyenda.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Colores usados por capricho frente a roles exclusivos">
+
+<div class="dv-texto">
+
+En la versión izquierda de esta consola de gestión de envíos, el rojo de la marca y el azul de los botones se usan también para decorar títulos y etiquetas fijas; en la derecha, cada color interviene solo cuando su función está presente.
+
+</div>
+
+<RolesSemanticosExp paso="miralo" />
+
+<div class="dv-texto">
+
+Nota lo que ocurre en la versión derecha con los envíos que van a tiempo: **no están pintados de verde**. Cuando el estado normal se mantiene en tonos neutros, el ámbar de una demora y el rojo de una cancelación conservan toda su capacidad de alerta.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Pon a prueba la consistencia y el límite de categorías">
+
+<RolesSemanticosExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas para que el color informe sin confundir">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Separa los colores de identidad de los colores de estado</h3>
+      <p>Si el color principal de una institución es rojo, naranja o verde, cuida que no sea idéntico al rojo de error, al ámbar de advertencia o al verde de éxito, y evita inundar de ese color las pantallas operativas. Reserva los colores de estado para cuando ocurra una anomalía o confirmación.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No pintes con el color de acción lo que no se puede tocar</h3>
+      <p>Por [semejanza](/diseno-visual/semejanza), si los enlaces y botones son azules (o amarillos), cualquier subtítulo, icono decorativo o pastilla informativa pintada de ese mismo color parecerá clicable. La frustración de tocar algo que no responde rompe la confianza en toda la interfaz.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Limita las categorías cromáticas a cinco (o acompáñalas de etiquetas directas)</h3>
+      <p>Evita crear tableros con diez o doce estados diferenciados solo por matices de color. Si un proceso tiene diez etapas reales, agrúpalas en tres o cuatro grandes fases semánticas (por ejemplo: pendiente, en curso, bloqueado y completado) y escribe el detalle en texto.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<RolesSemanticosExp paso="errores" />
+
+<div class="dv-texto">
+
+### Los roles semánticos en piezas reales
+
+</div>
+
+<RolesSemanticosExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta contradicciones y sobrecargas semánticas">
+
+<RolesSemanticosExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Memoria de trabajo, convenciones culturales y arquitectura de tokens">
+
+<Seccion titulo="Por qué más de siete colores dejan de funcionar como código">
+
+En *Information Visualization: Perception for Design* (2020), Colin Ware distingue dos tareas perceptuales muy diferentes al usar color para categorizar información:
+
+1. **Distinguir si dos manchas contiguas son iguales o distintas:** el ojo humano puede notar miles de diferencias sutiles cuando dos colores se tocan borde con borde.
+2. **Identificar y recordar qué significa un color aislado en otra parte de la pantalla:** aquí nuestra capacidad cae con rapidez. Sin comparar lado a lado, y teniendo que retener el código en la memoria de trabajo mientras leemos datos, solo podemos manejar con seguridad **entre 5 y 8 colores nominales**.
+
+Cuando un mapa o un gestor de proyectos introduce doce etiquetas de colores (rojo, coral, salmón, naranja, ámbar, amarillo…), la persona ya no reconoce el rol a primera vista: tiene que viajar con los ojos desde el dato hasta la leyenda una y otra vez, anulando la ventaja de velocidad que ofrecía el color.
+
+</Seccion>
+
+<Seccion titulo="Las convenciones del color son culturales y contextuales">
+
+Solemos dar por sentado que el rojo significa «pérdida o peligro» y el verde significa «ganancia o paso libre» porque ambos provienen de la señalización ferroviaria y marítima del siglo XIX y de los semáforos viales del siglo XX.
+
+Sin embargo, las asociaciones cromáticas no son universales: en las bolsas de valores de China, Japón y Taiwán, el **rojo** representa subida de precios y prosperidad, mientras que el **verde** indica caída bursátil. Del mismo modo, en meteorología un rojo oscuro indica calor extremo, pero en un plano eléctrico puede indicar una línea con tensión activa.
+
+Esto refuerza dos conclusiones prácticas: primero, conviene conocer las convenciones del público y del dominio técnico para el que diseñas; segundo, nunca confíes el significado a una mancha de color muda sin acompañarla de un signo (`+`, `−`, `▲`, `✓`) o una palabra clara.
+
+</Seccion>
+
+<Seccion titulo="De los roles semánticos a los tokens de diseño">
+
+Como explica Alla Kholmatova en *Design Systems* (2017), la forma más robusta de proteger los roles semánticos en un proyecto real consiste en traducirlos a [tokens](/diseno-visual/tokens) con nombres de propósito.
+
+En lugar de que cada quien elija en el código un valor como `#b3261e` o una variable llamada `--rojo-500`, el sistema ofrece dos capas:
+
+- **Capa base (primitiva):** define el inventario de pigmentos disponibles (`--escarlata-700: #b3261e`, `--bosque-700: #1b7a3d`).
+- **Capa semántica (de rol):** asigna cada función a un primitivo (`--color-texto-peligro: var(--escarlata-700)`, `--color-borde-exito: var(--bosque-700)`).
+
+Así, ninguna persona del equipo tiene que adivinar qué tono usar para una advertencia, y cuando la interfaz pasa a modo oscuro o a un tema de alto contraste, basta con actualizar hacia dónde apuntan los roles semánticos.
+
+</Seccion>
+
+</Paso>

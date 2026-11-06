@@ -1,0 +1,169 @@
+---
+titulo: Cierre
+territorio: percepcion
+pregunta: ¿Cómo es posible ver bordes nítidos y figuras completas allí donde el papel está vacío?
+resumen: "El sistema visual completa los tramos que faltan en una forma conocida cuando las pistas restantes bastan para reconstruirla. Mostrar menos permite decir lo mismo con más ligereza."
+modos: [laboratorio, provocacion]
+orden: 11
+relaciones:
+  - concepto: figura-fondo
+    porQue: Cuando el ojo cierra un contorno incompleto, la zona interior avanza de inmediato como figura sobre el fondo.
+  - concepto: espacio-negativo
+    porQue: El cierre activa el blanco del papel para que actúe como volumen o superficie sin añadir tinta.
+  - concepto: gestalt
+    porQue: Wertheimer identificó en 1923 el factor de cierre como muestra directa de la tendencia hacia la buena forma.
+  - concepto: continuidad
+    porQue: Los bordes ausentes se completan proyectando la dirección de los segmentos visibles hasta que se encuentran.
+  - concepto: densidad-visual
+    porQue: Confiar en el cierre permite eliminar líneas de tablas, marcos y pictogramas, aligerando toda la composición.
+fuentes:
+  - autor: Gaetano Kanizsa
+    obra: "Subjective Contours. Scientific American, 234(4), 48–52"
+    anio: 1976
+    url: https://doi.org/10.1038/scientificamerican0476-48
+    nota: Estudio clásico sobre los contornos subjetivos o ilusorios (el triángulo de Kanizsa) y cómo el sistema visual infiere superficies oclusoras y bordes de luminancia inexistentes.
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: Introducción del Faktor der Geschlossenheit (factor de cierre) como tendencia hacia figuras cerradas.
+  - autor: Steven Lehar
+    obra: "Gestalt isomorphism and the primacy of subjective conscious experience: A Gestalt Bubble model. Behavioral and Brain Sciences, 26(4), 375–408"
+    anio: 2003
+    url: https://doi.org/10.1017/S0140525X03000098
+    nota: Explicación de la reificación perceptual (construcción activa de bordes y superficies completas a partir de fragmentos).
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import CierreExp from '../../components/diseno-visual/experiencias/CierreExp.astro';
+
+<Paso id="idea" titular="No hace falta dibujar toda la línea para que la forma esté entera">
+
+<CierreExp paso="idea" />
+
+<p class="dv-frase">El ojo dibuja la línea que tú decides ahorrar.</p>
+
+<div class="dv-texto">
+
+En el mundo físico, los objetos rara vez se ven enteros: una rama tapa la mitad de una ventana, una taza asoma detrás de un libro, la sombra borra parte de un rostro. Si necesitáramos ver el 100 % de un perímetro para reconocer un objeto, no podríamos movernos por una habitación.
+
+Por eso el sistema visual practica constantemente el *cierre*: toma las esquinas, los arcos o las muescas disponibles y tiende puentes invisibles entre ellos para entregarnos una figura cerrada. En diseño gráfico y de interfaces, ese hábito perceptual es un aliado de primera fila para restar trazos redundantes sin perder claridad.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Cierre</dt>
+    <dd>La tendencia del sistema visual a completar los huecos de un contorno abierto para percibir una figura entera y estable.</dd>
+    <dt>Contorno subjetivo (o ilusorio)</dt>
+    <dd>Un borde que se percibe con nitidez —incluso con un cambio aparente de brillo— en una zona donde física y ópticamente no hay ninguna línea.</dd>
+    <dt>Inductor</dt>
+    <dd>Cada una de las piezas visibles (como los discos mordidos de Kanizsa o las cuatro esquinas de un marco) cuya alineación dispara el cierre.</dd>
+    <dt>Umbral de reconocimiento</dt>
+    <dd>La proporción mínima de rasgos que debe permanecer visible antes de que la figura colapse en fragmentos inconexos.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Dibujarlo todo frente a dejar que el ojo termine el trabajo">
+
+<div class="dv-texto">
+
+Ambas láminas muestran los mismos tres componentes (un icono de cámara, una tabla de horarios y un carrusel de capítulos), pero la segunda ahorra la mitad de los trazos confiando en el cierre perceptual.
+
+</div>
+
+<CierreExp paso="miralo" />
+
+<div class="dv-texto">
+
+Cuando dibujas hasta el último milímetro de cada caja, la pantalla se llena de rejas. Cuando conservas los vértices de un icono, quitas los barrotes verticales de una tabla o dejas asomar media tarjeta en el margen, la estructura gana ligereza y el ojo completa el resto.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Cuánto puedes borrar antes de que desaparezca la figura">
+
+<CierreExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para aplicar el cierre con precisión">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Conserva las esquinas y sacrifica los tramos rectos</h3>
+      <p>Si vas a aligerar un icono, un logotipo o un marco de enfoque, mantén intactos los vértices donde cambia el ángulo. Dos esquinas enfrentadas cierran un rectángulo; dos líneas paralelas sin esquinas solo parecen dos rayas sueltas.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Quita las líneas verticales de las tablas</h3>
+      <p>Una columna de números o palabras alineadas ya proyecta su propio borde vertical por continuidad y cierre. Eliminar los filetes verticales entre columnas reduce el recargo a la mitad sin que ninguna celda se salga de su sitio.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Usa formas truncadas en los bordes para invitar al desplazamiento</h3>
+      <p>En listas horizontales o paneles deslizables, calcula el ancho de las tarjetas para que el borde del visor corte la última pieza entre un 25 % y un 40 %. El ojo completará la tarjeta fuera de pantalla y sabrá que puede arrastrar.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<CierreExp paso="errores" />
+
+<div class="dv-texto">
+
+### El cierre en piezas reales
+
+</div>
+
+<CierreExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu ojo para los contornos invisibles">
+
+<CierreExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Kanizsa, la reificación y el poder de los vértices">
+
+<Seccion titulo="Por qué el triángulo de Kanizsa parece más blanco que el propio papel">
+
+En 1955 —y en su célebre artículo de *Scientific American* de 1976—, el psicólogo italiano Gaetano Kanizsa demostró que el cierre no es una simple deducción intelectual («sé que ahí falta una línea»), sino un fenómeno óptico que altera lo que realmente vemos.
+
+Cuando tres discos negros pierden un sector de 60° apuntando hacia un centro común, el área triangular central se percibe **más luminosa** que el papel blanco circundante, aunque un fotómetro confirme que ambos tienen exactamente la misma reflectancia. El sistema visual interpreta que los tres discos están completos pero tapados por un triángulo opaco en primer plano; para justificar esa oclusión, las áreas visuales V1 y V2 generan un contorno subjetivo y refuerzan el contraste de claridad a ambos lados de la frontera imaginaria.
+
+</Seccion>
+
+<Seccion titulo="Reificación: cuando la percepción construye más información de la que recibe">
+
+En la teoría contemporánea de la percepción (Lehar, 2003; Wagemans y otros, 2012), este aspecto generativo del cierre se denomina **reificación**: la conversión de unas pocas pistas fragmentarias en un objeto tridimensional o superficial completo.
+
+La reificación no trata a todos los puntos de un contorno por igual. Los estudios sobre reconocimiento de formas por componentes (Irving Biederman, 1987) demostraron que borrar el 50 % de un dibujo en los tramos medios de las líneas apenas afecta la velocidad con que nombramos el objeto; en cambio, borrar ese mismo 50 % justo en los **vértices, uniones en T y cambios de curvatura** destruye por completo el reconocimiento. Las esquinas son los ladrillos con los que el cerebro reconstruye la figura.
+
+</Seccion>
+
+<Seccion titulo="Cuándo falla el cierre">
+
+El cierre depende de dos condiciones: la **alineación geométrica** de los inductores y la **familiaridad** con la forma resultante.
+
+- Si en una tipografía estarcida o en un conjunto de iconos minimalistas se eliminan rasgos que distinguen a una letra de su vecina (por ejemplo, el cierre inferior que diferencia la `B` de la `R`, o el travesaño que distingue la `G` de la `C`), el lector rellenará el hueco con la hipótesis equivocada.
+- En personas con baja visión o bajo contraste ambiental, las pistas demasiado tenues no alcanzan a disparar el cierre. Síntesis no significa invisibilidad: los fragmentos que decides dejar en la página deben tener un peso y un contraste rotundos.
+
+</Seccion>
+
+</Paso>

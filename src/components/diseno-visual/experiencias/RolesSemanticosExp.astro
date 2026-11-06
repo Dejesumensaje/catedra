@@ -1,0 +1,835 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'roles-semanticos';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Provoca una contradicción entre color y significado.',
+    hacer: 'En «Asignación de roles», selecciona «Contradictoria (cruzada)».',
+    pista: 'Elige la tercera opción del primer control.',
+    preparar: { categorias: 4, redundancia: true },
+    logro: 'Cuando el botón de guardar aparece en rojo peligro y el aviso de borrado irreversible en verde éxito, el lector sufre una vacilación inmediata (efecto Stroop funcional): el código del color desmiente a las palabras.',
+  },
+  {
+    titulo: 'Observa qué ocurre cuando el color de marca invade los estados.',
+    hacer: 'En «Asignación de roles», elige «Ambigua (marca invade estados)».',
+    pista: 'Selecciona la segunda opción del primer control.',
+    logro: 'Si el mismo color rojo o azul sirve para adornar títulos, pintar etiquetas informativas y señalar errores, pierde su valor de señal. Quien usa la pantalla ya no sabe qué es clicable ni qué es urgente.',
+  },
+  {
+    titulo: 'Restaura los roles exclusivos.',
+    hacer: 'En «Asignación de roles», vuelve a «Consistente por función».',
+    pista: 'Elige la primera opción del primer control.',
+    logro: 'Cada rol (Acción primaria, Éxito, Advertencia, Peligro e Información neutra) tiene un territorio reservado y predecible.',
+  },
+  {
+    titulo: 'Supera el límite de la memoria de trabajo.',
+    hacer: 'Sube «Cantidad de categorías por color» a 10 o más.',
+    pista: 'Arrastra el deslizador hacia la derecha.',
+    logro: 'Con 10 o 12 colores nominales, varios tonos se parecen demasiado y nadie puede recordar qué significa cada uno sin mirar la leyenda constantemente.',
+  },
+  {
+    titulo: 'Acota las categorías y comprueba la redundancia.',
+    hacer: 'Baja «Cantidad de categorías por color» a 4 o 5 y, en «Más controles», alterna «Señal redundante (icono y etiqueta)».',
+    pista: 'Deja el deslizador en 4 o 5 y abre los controles avanzados.',
+    abrir: true,
+    logro: 'Cinco o menos categorías con icono y rótulo explícito se distinguen al instante e incluso sobreviven si la pantalla se ve en blanco y negro.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Dos ventanas de diálogo. En la izquierda, un aviso verde dice Se borrarán todos tus archivos y el botón rojo dice Guardar cambios. En la derecha, los colores coinciden con el significado de cada acción.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <g transform="translate(24, 16)">
+        <rect width="264" height="148" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <rect x="14" y="14" width="236" height="44" fill="#e6f6ec" stroke="#1b7a3d" stroke-width="1.5" />
+        <text x="26" y="33" font-family={SANS} font-size="10.5" font-weight="900" fill="#13592c">AVISO EN VERDE</text>
+        <text x="26" y="49" font-family={SERIF} font-size="11.5" fill="#13592c">Se borrarán todos tus archivos hoy.</text>
+
+        <rect x="14" y="74" width="112" height="38" fill="#c92a2a" stroke="#222222" stroke-width="1.5" />
+        <text x="70" y="97" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">Guardar cambios</text>
+
+        <rect x="138" y="74" width="112" height="38" fill="#1b7a3d" stroke="#222222" stroke-width="1.5" />
+        <text x="194" y="97" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">Eliminar cuenta</text>
+
+        <text x="14" y="134" font-family={SANS} font-size="9.5" font-weight="700" fill="#6f6f6f">COLOR CONTRADICE LA FUNCIÓN</text>
+      </g>
+
+      <g transform="translate(312, 16)">
+        <rect width="264" height="148" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <rect x="14" y="14" width="236" height="44" fill="#fdecec" stroke="#b3261e" stroke-width="1.5" />
+        <text x="26" y="33" font-family={SANS} font-size="10.5" font-weight="900" fill="#8c1d18">▲ PELIGRO · ACCIÓN IRREVERSIBLE</text>
+        <text x="26" y="49" font-family={SERIF} font-size="11.5" fill="#222222">Se borrarán todos tus archivos hoy.</text>
+
+        <rect x="14" y="74" width="112" height="38" fill="#f4f4f2" stroke="#222222" stroke-width="1.5" />
+        <text x="70" y="97" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#222222">Conservar todo</text>
+
+        <rect x="138" y="74" width="112" height="38" fill="#b3261e" stroke="#222222" stroke-width="1.5" />
+        <text x="194" y="97" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">Eliminar cuenta</text>
+
+        <text x="14" y="134" font-family={SANS} font-size="9.5" font-weight="700" fill="#222222">ROL SEMÁNTICO + ICONO + TEXTO</text>
+      </g>
+    </svg>
+    <p>En la tarjeta de la izquierda el texto es perfectamente legible. ¿Por qué aun así te detienes con desconfianza antes de pulsar cualquiera de los dos botones?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque en una interfaz el color no actúa como decoración libre, sino como un <strong>código aprendido</strong>. Cuando el rojo (asociado a peligro o parada) viste a «Guardar cambios» y el verde (asociado a confirmación) anuncia la pérdida de archivos, se produce una interferencia cognitiva similar al <em>efecto Stroop</em>: lo que ves antes de leer contradice lo que lees.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="El mismo color sirve para todo"
+      notas={[
+        { ...pct(180, 40), titulo: 'Color de marca que parece error', texto: 'La barra y los títulos usan el mismo rojo carmesí que los avisos de fallo: toda la pantalla parece estar en emergencia.', zona: zona(16, 16, 328, 52) },
+        { ...pct(264, 128), titulo: 'Azul en cosas que no se pueden tocar', texto: 'Las etiquetas informativas («En bodega», «Normal») usan el mismo azul que los enlaces y botones, invitando a clics en falso.', zona: zona(18, 76, 324, 96) },
+        { ...pct(180, 226), titulo: 'Diez colores sin código claro', texto: 'La barra inferior acumula pastillas de ocho tonos distintos sin símbolos ni jerarquía.', zona: zona(18, 182, 324, 80) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de gestión de pedidos donde el rojo es a la vez color de marca y de error, y el azul se usa tanto en botones como en textos no interactivos.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="18" width="324" height="40" fill="#c92a2a" />
+        <text x="30" y="43" font-family={SANS} font-size="13" font-weight="900" fill="#ffffff">GESTIÓN DE ENVÍOS · ROJO EXPRESS</text>
+
+        <rect x="18" y="70" width="324" height="44" fill="#fdecec" stroke="#c92a2a" stroke-width="1.5" />
+        <text x="30" y="90" font-family={SANS} font-size="11" font-weight="900" fill="#c92a2a">Pedido #402 · Dirección incompleta</text>
+        <rect x="242" y="79" width="88" height="26" fill="#1d64d8" />
+        <text x="286" y="96" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#ffffff">En bodega</text>
+
+        <rect x="18" y="122" width="324" height="44" fill="#fdecec" stroke="#c92a2a" stroke-width="1.5" />
+        <text x="30" y="142" font-family={SANS} font-size="11" font-weight="900" fill="#c92a2a">Pedido #403 · Entregado a tiempo</text>
+        <rect x="242" y="131" width="88" height="26" fill="#1d64d8" />
+        <text x="286" y="148" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#ffffff">Ver recibo</text>
+
+        <rect x="18" y="180" width="324" height="80" fill="#f7f7f5" stroke="#dcdcdc" stroke-width="1" />
+        <text x="30" y="200" font-family={SANS} font-size="9.5" font-weight="900" fill="#1d64d8">FILTRAR POR CATEGORÍA (NO CLICABLE)</text>
+        {['#e03131', '#2f9e44', '#1971c2', '#f08c00', '#9c36b5', '#0c8599', '#e8590c', '#5c940d'].map((c, i) => (
+          <rect x={30 + i * 38} y="214" width="32" height="28" fill={c} />
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Cada rol tiene una función exclusiva"
+      notas={[
+        { ...pct(180, 38), titulo: 'Superficie e identidad neutras', texto: 'El encabezado usa tinta carbón para dejar libres los colores de estado (rojo, ámbar, verde) cuando ocurra algo real.', zona: zona(16, 16, 328, 48) },
+        { ...pct(180, 120), titulo: 'Estados diferenciados con icono', texto: 'Solo el pedido con problema lleva borde y sello de alerta (▲); el pedido entregado usa confirmación (✓) y el estado neutro va en gris.', zona: zona(18, 68, 324, 104) },
+        { ...pct(280, 224), titulo: 'Color de acción reservado a lo clicable', texto: 'El azul interactivo y el amarillo señal solo aparecen en botones y enlaces reales.', zona: zona(18, 182, 324, 80) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo panel con cabecera en negro, alerta con icono triangular para el pedido con error, confirmación con marca de verificación para el entregado y botón de acción claramente diferenciado.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="18" width="324" height="40" fill="#222222" />
+        <text x="30" y="43" font-family={SANS} font-size="13" font-weight="900" fill="#ffffff">GESTIÓN DE ENVÍOS · PANEL OPERATIVO</text>
+
+        <rect x="18" y="70" width="324" height="44" fill="#fdecec" stroke="#b3261e" stroke-width="1.5" />
+        <text x="30" y="96" font-family={SANS} font-size="11" font-weight="900" fill="#8c1d18">▲ #402 · Falta número de puerta</text>
+        <rect x="242" y="79" width="88" height="26" fill="#222222" />
+        <text x="286" y="96" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill="#eeff41">Corregir →</text>
+
+        <rect x="18" y="122" width="324" height="44" fill="#ffffff" stroke="#d8d8d4" stroke-width="1.2" />
+        <text x="30" y="148" font-family={SANS} font-size="11" font-weight="700" fill="#222222">✓ #403 · Entregado hoy 11:20</text>
+        <rect x="242" y="131" width="88" height="26" fill="#eef6f0" stroke="#1b7a3d" stroke-width="1" />
+        <text x="286" y="148" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill="#13592c">COMPLETADO</text>
+
+        <rect x="18" y="180" width="324" height="80" fill="#f7f7f5" stroke="#dcdcdc" stroke-width="1" />
+        <text x="30" y="202" font-family={SANS} font-size="9.5" font-weight="900" fill="#444444">4 ESTADOS SEMÁNTICOS DEL SISTEMA</text>
+        <rect x="30" y="214" width="70" height="28" fill="#fdecec" stroke="#b3261e" stroke-width="1.2" />
+        <text x="65" y="232" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#8c1d18">▲ Error (1)</text>
+        <rect x="106" y="214" width="74" height="28" fill="#fef6e0" stroke="#9e6200" stroke-width="1.2" />
+        <text x="143" y="232" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#6e4300">! Espera (3)</text>
+        <rect x="186" y="214" width="70" height="28" fill="#eef6f0" stroke="#1b7a3d" stroke-width="1.2" />
+        <text x="221" y="232" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#13592c">✓ Listo (18)</text>
+        <rect x="262" y="214" width="68" height="28" fill="#eeeeee" stroke="#6f6f6f" stroke-width="1.2" />
+        <text x="296" y="232" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill="#222222">Archivado</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · Tablero de roles semánticos y límite categorial"
+    consigna="Experimenta con los cinco roles semánticos de un panel operativo (Acción primaria, Éxito, Advertencia, Peligro e Información neutra) y varía el número de categorías cromáticas en la leyenda."
+    nota="Fija la versión «Consistente por función» con 4 categorías como A, y compárala con «Ambigua» o con 11 categorías."
+  >
+    <svg slot="escenario" viewBox="0 0 640 310" role="img" aria-label="Tablero interactivo con tarjetas de estado, botones de acción y leyenda de categorías.">
+      <rect width="640" height="310" fill="#fbfbf9" />
+      <rect x="24" y="20" width="592" height="270" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="44" y="54" font-family={SANS} font-size="16" font-weight="900" fill="#222222">Estado del sistema editorial</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Activa la vista sin color en «Más controles» para verificar si los estados siguen entendiéndose por sus iconos y etiquetas." />
+
+    <Opciones
+      lab={lab}
+      variable="modoRoles"
+      etiqueta="Asignación de roles"
+      valor="consistente"
+      opciones={[
+        { valor: 'consistente', texto: 'Consistente por función' },
+        { valor: 'ambigua', texto: 'Ambigua (marca invade estados)' },
+        { valor: 'contradictoria', texto: 'Contradictoria (cruzada)' },
+      ]}
+      ayuda="Controla si cada color tiene un significado exclusivo, si se mezcla con el color decorativo o si contradice las convenciones."
+    />
+    <Deslizador
+      lab={lab}
+      variable="categorias"
+      etiqueta="Cantidad de categorías por color"
+      min={2}
+      max={12}
+      paso={1}
+      valor={4}
+      ayuda="Colin Ware documenta que por encima de 5 a 8 colores nominales la memoria de trabajo no logra retener el código sin consultar la leyenda."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="redundancia"
+        etiqueta="Señal redundante (icono y etiqueta)"
+        valor={true}
+        ayuda="Acompaña cada color de estado con un símbolo distinto (✓, !, ▲, ●) y un prefijo textual."
+      />
+      <Interruptor
+        lab={lab}
+        variable="sinColor"
+        etiqueta="Probar en escala de grises"
+        ayuda="Permite comprobar si el significado sobrevive cuando el usuario no distingue los tonos."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"modoRoles":"consistente","categorias":4,"redundancia":true,"sinColor":false}'>Sistema limpio (4 roles + iconos)</button>
+      <button type="button" class="dv-boton" data-preset='{"modoRoles":"ambigua","categorias":4,"redundancia":false,"sinColor":false}'>Marca roja invade alertas y botones</button>
+      <button type="button" class="dv-boton" data-preset='{"modoRoles":"contradictoria","categorias":4,"redundancia":false,"sinColor":false}'>Roles invertidos (efecto Stroop)</button>
+      <button type="button" class="dv-boton" data-preset='{"modoRoles":"consistente","categorias":12,"redundancia":false,"sinColor":false}'>Sobrecarga de 12 categorías cromáticas</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1. Separa el color de marca del color de error destructivo"
+      comparar={false}
+      consigna="Cuando la marca es roja y usa ese mismo rojo para los títulos, las tarjetas informativas y las alertas de error, nadie distingue una información normal de un fallo grave."
+    >
+      <svg slot="escenario" viewBox="0 0 360 155" role="img" aria-label="Formulario donde marca y error comparten el mismo color rojo.">
+        <rect width="360" height="155" fill="#ffffff" stroke="#222" />
+        <rect x="16" y="14" width="328" height="32" fill="#c92a2a" />
+        <text x="28" y="34" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">BANCA ROJA · TRANSFERENCIA</text>
+      </svg>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="separacion"
+        etiqueta="Uso del rojo en la pantalla"
+        valor="mezclado"
+        opciones={[
+          { valor: 'mezclado', texto: 'Rojo para marca, notas y errores' },
+          { valor: 'exclusivo', texto: 'Reservar el rojo solo para el error' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2. Reserva el color de acción solo para lo que se puede tocar"
+      comparar={false}
+      consigna="En esta ficha hay cinco elementos pintados de azul interactivo, pero solo uno es un enlace real. Quita el color de acción de los textos estáticos."
+    >
+      <svg slot="escenario" viewBox="0 0 360 155" role="img" aria-label="Ficha con textos estáticos pintados del mismo azul que el enlace.">
+        <rect width="360" height="155" fill="#ffffff" stroke="#222" />
+        <text x="20" y="42" font-family={SANS} font-size="14" font-weight="900" fill="#1956b4">Certificado tributario 2025</text>
+      </svg>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="usoAzul"
+        etiqueta="Qué elementos llevan el azul de acción"
+        valor="todo"
+        opciones={[
+          { valor: 'todo', texto: 'Títulos, etiquetas y enlace' },
+          { valor: 'soloEnlace', texto: 'Solo el enlace descargable' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3. Agrupa diez etiquetas de colores en estados con sentido"
+      comparar={false}
+      consigna="Un tablero con 10 colores nominales obliga a mirar la leyenda cada tres segundos. Agrúpalos en 3 estados operativos claros."
+    >
+      <svg slot="escenario" viewBox="0 0 360 155" role="img" aria-label="Diez etiquetas de colores distintos frente a tres estados agrupados.">
+        <rect width="360" height="155" fill="#ffffff" stroke="#222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="numEstados"
+        etiqueta="Número de estados por color"
+        min={3}
+        max={10}
+        paso={1}
+        valor={10}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Tablero ferroviario: silencio neutro para que hable la anomalía"
+      notas={[
+        { ...pct(180, 96), titulo: 'Los trenes a tiempo no usan color', texto: 'En lugar de pintar veinte filas de verde brillante, el estado normal («En hora») va en tinta oscura sobre papel claro.', zona: zona(18, 54, 324, 92) },
+        { ...pct(284, 174), titulo: 'Ámbar exclusivo para demoras', texto: 'El color cálido de advertencia aparece únicamente en la fila que sufre retraso real.', zona: zona(18, 150, 324, 48) },
+        { ...pct(284, 228), titulo: 'Rojo con prefijo para cancelación', texto: 'El estado crítico suma fondo suave, borde oscuro, símbolo ▲ y la palabra explícita «CANCELADO».', zona: zona(18, 202, 324, 52) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tablero de salidas de trenes donde las salidas puntuales son neutras y solo destacan la demora en ámbar y la cancelación en rojo.">
+        <rect width={W} height={H} fill="#f6f5f0" />
+        <rect x="18" y="18" width="324" height="34" fill="#222222" />
+        <text x="30" y="39" font-family={SANS} font-size="11.5" font-weight="900" fill="#ffffff">SALIDAS REGIONALES · ESTACIÓN CENTRAL</text>
+
+        <rect x="18" y="56" width="324" height="42" fill="#ffffff" stroke="#dcdcdc" />
+        <text x="30" y="81" font-family={SANS} font-size="12" font-weight="900" fill="#222222">08:15 · Medellín — Rionegro</text>
+        <text x="274" y="81" font-family={SANS} font-size="10.5" font-weight="700" fill="#444444">En hora · Vía 2</text>
+
+        <rect x="18" y="102" width="324" height="42" fill="#ffffff" stroke="#dcdcdc" />
+        <text x="30" y="127" font-family={SANS} font-size="12" font-weight="900" fill="#222222">08:30 · Medellín — La Ceja</text>
+        <text x="274" y="127" font-family={SANS} font-size="10.5" font-weight="700" fill="#444444">En hora · Vía 4</text>
+
+        <rect x="18" y="148" width="324" height="46" fill="#fef6e0" stroke="#9e6200" stroke-width="1.5" />
+        <text x="30" y="175" font-family={SANS} font-size="12" font-weight="900" fill="#222222">08:45 · Medellín — Marinilla</text>
+        <text x="236" y="175" font-family={SANS} font-size="10.5" font-weight="900" fill="#6e4300">! +12 min · Vía 1</text>
+
+        <rect x="18" y="200" width="324" height="52" fill="#fdecec" stroke="#b3261e" stroke-width="1.5" />
+        <text x="30" y="229" font-family={SANS} font-size="12" font-weight="900" fill="#8c1d18">09:00 · Medellín — Sonsón</text>
+        <rect x="234" y="212" width="96" height="26" fill="#b3261e" />
+        <text x="282" y="229" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#ffffff">▲ CANCELADO</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Formulario de pago: estados de campo inequívocos"
+      notas={[
+        { ...pct(180, 62), titulo: 'Confirmación serena', texto: 'El campo validado marca su estado con un icono ✓ verde oscuro y borde firme, sin pintar todo el fondo de verde chillón.', zona: zona(22, 22, 316, 70) },
+        { ...pct(180, 146), titulo: 'Error con instrucción concreta', texto: 'El rol de peligro combina borde rojo, icono ▲ y un mensaje que dice exactamente cómo resolver el problema.', zona: zona(22, 98, 316, 86) },
+        { ...pct(254, 228), titulo: 'Acción principal separada de los estados', texto: 'El botón de pago usa carbón y amarillo señal, de modo que nunca se confunde con los mensajes de validación.', zona: zona(176, 196, 162, 62) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Formulario con campo validado, campo con error explícito y botón de acción diferenciado.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="28" y="38" font-family={SANS} font-size="10.5" font-weight="700" fill="#222222">TITULAR DE LA CUENTA</text>
+        <rect x="28" y="46" width="304" height="36" fill="#f7fbf8" stroke="#1b7a3d" stroke-width="1.5" />
+        <text x="40" y="69" font-family={SERIF} font-size="13" fill="#222222">Elena Gómez Restrepo</text>
+        <text x="314" y="69" text-anchor="end" font-family={SANS} font-size="12" font-weight="900" fill="#13592c">✓</text>
+
+        <text x="28" y="108" font-family={SANS} font-size="10.5" font-weight="700" fill="#8c1d18">NÚMERO DE TARJETA (16 DÍGITOS)</text>
+        <rect x="28" y="116" width="304" height="36" fill="#fdecec" stroke="#b3261e" stroke-width="2" />
+        <text x="40" y="139" font-family={SANS} font-size="13" font-weight="700" fill="#222222">4532 · 8910 · 22</text>
+        <text x="28" y="170" font-family={SANS} font-size="10.5" font-weight="700" fill="#8c1d18">▲ Faltan 6 dígitos para completar el número.</text>
+
+        <rect x="28" y="204" width="120" height="40" fill="#ffffff" stroke="#6f6f6f" stroke-width="1.2" />
+        <text x="88" y="228" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#222222">Volver</text>
+
+        <rect x="164" y="204" width="168" height="40" fill="#222222" stroke="#222222" stroke-width="1.5" />
+        <text x="248" y="228" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#eeff41">PAGAR MATRÍCULA →</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Gestor de incidencias: 4 categorías acotadas con doble codificación"
+      notas={[
+        { ...pct(88, 86), titulo: 'Menos de cinco colores nominales', texto: 'Al limitar las etiquetas a cuatro roles, cualquier integrante del equipo aprende el código en el primer día.', zona: zona(22, 36, 316, 148) },
+        { ...pct(276, 96), titulo: 'Forma + texto + color', texto: 'Cada pastilla lleva un símbolo geométrico (▲, ◆, ●, ✓) además del color de fondo y borde.', zona: zona(214, 44, 120, 140) },
+        { ...pct(180, 232), titulo: 'Traducción directa a tokens', texto: 'En el código, estos colores no se llaman --rojo-2 ni --verde-claro, sino --color-estado-peligro y --color-estado-exito.', zona: zona(22, 198, 316, 60) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Lista de incidencias con cuatro etiquetas semánticas y sus nombres de token debajo.">
+        <rect width={W} height={H} fill="#f7f7f5" />
+        <rect x="22" y="22" width="316" height="164" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+
+        <text x="36" y="54" font-family={SERIF} font-size="12.5" fill="#222222">Caída del servidor de búsqueda</text>
+        <rect x="226" y="38" width="98" height="22" fill="#fdecec" stroke="#b3261e" stroke-width="1.2" />
+        <text x="275" y="53" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#8c1d18">▲ BLOQUEANTE</text>
+
+        <line x1="36" y1="68" x2="324" y2="68" stroke="#e5e5e5" />
+        <text x="36" y="92" font-family={SERIF} font-size="12.5" fill="#222222">Demora al exportar certificados</text>
+        <rect x="226" y="76" width="98" height="22" fill="#fef6e0" stroke="#9e6200" stroke-width="1.2" />
+        <text x="275" y="91" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#6e4300">◆ ATENCIÓN</text>
+
+        <line x1="36" y1="106" x2="324" y2="106" stroke="#e5e5e5" />
+        <text x="36" y="130" font-family={SERIF} font-size="12.5" fill="#222222">Actualizar guía de estilo</text>
+        <rect x="226" y="114" width="98" height="22" fill="#e8f0fe" stroke="#1956b4" stroke-width="1.2" />
+        <text x="275" y="129" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#14428a">● EN CURSO</text>
+
+        <line x1="36" y1="144" x2="324" y2="144" stroke="#e5e5e5" />
+        <text x="36" y="168" font-family={SERIF} font-size="12.5" fill="#222222">Corregir enlaces del índice</text>
+        <rect x="226" y="152" width="98" height="22" fill="#eef6f0" stroke="#1b7a3d" stroke-width="1.2" />
+        <text x="275" y="167" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill="#13592c">✓ RESUELTO</text>
+
+        <rect x="22" y="198" width="316" height="58" fill="#222222" />
+        <text x="36" y="220" font-family={SANS} font-size="9.5" font-weight="700" fill="#eeff41">--rol-peligro · --rol-advertencia</text>
+        <text x="36" y="238" font-family={SANS} font-size="9.5" font-weight="700" fill="#ffffff">--rol-progreso · --rol-exito</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre roles semánticos, interferencia entre marca y estado, límite de categorías cromáticas y redundancia."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { hslAHex, aGris } from '../../../lib/diseno-visual/contraste';
+
+  const lab = 'roles-semanticos';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    modoRoles: string;
+    categorias: number;
+    redundancia: boolean;
+    sinColor: boolean;
+  };
+
+  function aplicarGris(hex: string, sinColor: boolean): string {
+    return sinColor ? aGris(hex) : hex;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 310;
+    const g = (c: string) => aplicarGris(c, e.sinColor);
+
+    const esConsistente = e.modoRoles === 'consistente';
+    const esAmbigua = e.modoRoles === 'ambigua';
+
+    // Definición de colores según modo
+    const colCabecera = esAmbigua ? g('#c92a2a') : g('#222222');
+    const colExitoBg = esConsistente ? g('#eef6f0') : esAmbigua ? g('#fdecec') : g('#fdecec');
+    const colExitoFg = esConsistente ? g('#13592c') : esAmbigua ? g('#9e1c1c') : g('#8c1d18');
+    const colWarnBg = esConsistente ? g('#fef6e0') : esAmbigua ? g('#e8f0fe') : g('#e8f0fe');
+    const colWarnFg = esConsistente ? g('#6e4300') : esAmbigua ? g('#1956b4') : g('#1956b4');
+    const colErrBg = esConsistente ? g('#fdecec') : esAmbigua ? g('#fdecec') : g('#eef6f0');
+    const colErrFg = esConsistente ? g('#8c1d18') : esAmbigua ? g('#9e1c1c') : g('#13592c');
+    const colBtnPri = esConsistente ? g('#1956b4') : esAmbigua ? g('#c92a2a') : g('#b3261e');
+    const colBtnDanger = esConsistente ? g('#b3261e') : esAmbigua ? g('#1956b4') : g('#1b7a3d');
+
+    const raiz = svg('svg', {
+      viewBox: `0 0 ${W} ${H}`,
+      width: W,
+      height: H,
+      role: 'img',
+      'aria-label': `Tablero con asignación ${e.modoRoles} y ${e.categorias} categorías.`,
+    });
+
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const pad = 16;
+    const cw = W - pad * 2;
+    raiz.append(svg('rect', { x: pad, y: 14, width: cw, height: 38, fill: colCabecera }));
+    const tCab = svg('text', { x: pad + 14, y: 38, 'font-family': SANS, 'font-size': 12.5, 'font-weight': 900, fill: '#ffffff' });
+    tCab.textContent = esAmbigua ? 'PORTAL CORPORATIVO (MARCA ROJA INVADE TODO)' : 'CONSOLA DE PUBLICACIÓN · ROLES DE ESTADO';
+    raiz.append(tCab);
+
+    const estados = [
+      {
+        bg: colExitoBg,
+        fg: colExitoFg,
+        ico: e.redundancia ? '✓ ' : '',
+        titulo: 'Copia de seguridad completada',
+        sub: 'Verificada hace 4 minutos',
+      },
+      {
+        bg: colWarnBg,
+        fg: colWarnFg,
+        ico: e.redundancia ? '! ' : '',
+        titulo: 'Certificado vence en 5 días',
+        sub: 'Conviene renovarlo esta semana',
+      },
+      {
+        bg: colErrBg,
+        fg: colErrFg,
+        ico: e.redundancia ? '▲ ' : '',
+        titulo: 'Fallo al sincronizar 3 archivos',
+        sub: 'Requiere intervención inmediata',
+      },
+    ];
+
+    const cardW = Math.floor((cw - 16) / 3);
+    estados.forEach((st, idx) => {
+      const x = pad + idx * (cardW + 8);
+      const y = 64;
+      raiz.append(svg('rect', { x, y, width: cardW, height: 78, fill: st.bg, stroke: st.fg, 'stroke-width': 1.5 }));
+      const t1 = svg('text', { x: x + 10, y: y + 26, 'font-family': SANS, 'font-size': W < 480 ? 10 : 11, 'font-weight': 900, fill: st.fg });
+      t1.textContent = `${st.ico}${st.titulo.slice(0, W < 480 ? 18 : 28)}`;
+      raiz.append(t1);
+      const t2 = svg('text', { x: x + 10, y: y + 48, 'font-family': SERIF, 'font-size': 11, fill: '#222222' });
+      t2.textContent = st.sub.slice(0, W < 480 ? 20 : 32);
+      raiz.append(t2);
+    });
+
+    // Barra de acciones
+    const yAcc = 156;
+    raiz.append(svg('rect', { x: pad, y: yAcc, width: 152, height: 36, fill: colBtnPri, stroke: '#222222', 'stroke-width': 1.2 }));
+    const tGuardar = svg('text', { x: pad + 76, y: yAcc + 22, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 11, 'font-weight': 900, fill: '#ffffff' });
+    tGuardar.textContent = `${e.redundancia ? '✓ ' : ''}Guardar cambios`;
+    raiz.append(tGuardar);
+
+    raiz.append(svg('rect', { x: pad + 164, y: yAcc, width: 158, height: 36, fill: colBtnDanger, stroke: '#222222', 'stroke-width': 1.2 }));
+    const tBorrar = svg('text', { x: pad + 243, y: yAcc + 22, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 11, 'font-weight': 900, fill: '#ffffff' });
+    tBorrar.textContent = `${e.redundancia ? '▲ ' : ''}Borrar repositorio`;
+    raiz.append(tBorrar);
+
+    // Leyenda de categorías por color
+    const yCat = 208;
+    raiz.append(svg('rect', { x: pad, y: yCat, width: cw, height: 86, fill: '#ffffff', stroke: '#dcdcdc', 'stroke-width': 1.2 }));
+    const tLey = svg('text', { x: pad + 12, y: yCat + 20, 'font-family': SANS, 'font-size': 10, 'font-weight': 900, fill: '#222222' });
+    tLey.textContent = `CATEGORÍAS POR COLOR EN LEYENDA: ${e.categorias} ${e.categorias > 7 ? '(EXCEDE LA MEMORIA DE TRABAJO)' : '(DENTRO DEL UMBRAL ÓPTIMO)'}`;
+    raiz.append(tLey);
+
+    const wChip = Math.floor((cw - 24 - (e.categorias - 1) * 6) / e.categorias);
+    for (let i = 0; i < e.categorias; i++) {
+      const ang = Math.round((i * 360) / e.categorias);
+      const col = g(hslAHex(ang, 72, 44));
+      const cx = pad + 12 + i * (wChip + 6);
+      raiz.append(svg('rect', { x: cx, y: yCat + 32, width: wChip, height: 36, fill: col, stroke: '#222222', 'stroke-width': 1 }));
+      if (wChip >= 34) {
+        const lbl = svg('text', {
+          x: cx + wChip / 2,
+          y: yCat + 54,
+          'text-anchor': 'middle',
+          'font-family': SANS,
+          'font-size': 9.5,
+          'font-weight': 900,
+          fill: '#ffffff',
+        });
+        lbl.textContent = e.redundancia ? `C${i + 1}` : `${i + 1}`;
+        raiz.append(lbl);
+      }
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    if (e.modoRoles === 'contradictoria') {
+      return '<b class="dv-cifra">Roles cruzados</b>: el botón «Guardar cambios» luce como un peligro mortal y «Borrar repositorio» parece una confirmación inocua. Quien usa la interfaz duda o se equivoca.';
+    }
+    if (e.modoRoles === 'ambigua') {
+      return '<b class="dv-cifra">Ambigüedad semántica</b>: el rojo corporativo pinta la cabecera, la tarjeta de éxito y el botón de guardar. Cuando ocurre un fallo real, ya no tiene cómo destacar.';
+    }
+    if (e.categorias >= 8) {
+      return `Los roles de estado son claros, pero la leyenda tiene <b class="dv-cifra">${e.categorias} categorías cromáticas</b>. Por encima de 5 a 8 colores nominales (Ware, 2020), los tonos vecinos se confunden.`;
+    }
+    if (e.sinColor && !e.redundancia) {
+      return 'En <b class="dv-cifra">escala de grises y sin iconos</b>, las tarjetas y categorías pierden su diferencia semántica. Activa «Señal redundante» para recuperar el significado.';
+    }
+    return `<b class="dv-cifra">Sistema semántico consistente (${e.categorias} categorías)</b>: cada color cumple una función exclusiva${e.redundancia ? ' y cuenta con respaldo de icono y texto' : ''}.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.modoRoles === 'contradictoria',
+      (e) => e.modoRoles === 'ambigua',
+      (e) => e.modoRoles === 'consistente',
+      (e) => e.categorias >= 10,
+      (e, ini) => e.categorias <= 5 && (e.redundancia !== ini.redundancia || e.sinColor !== ini.sinColor),
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { separacion: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const exc = e.separacion === 'exclusivo';
+    const colCab = exc ? '#222222' : '#c92a2a';
+    const colInfoBg = exc ? '#f4f4f2' : '#fdecec';
+    const colInfoFg = exc ? '#222222' : '#c92a2a';
+    d.innerHTML = `<svg viewBox="0 0 360 155" role="img" aria-label="Formulario con uso del rojo ${e.separacion}.">
+      <rect width="360" height="155" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <rect x="16" y="12" width="328" height="32" fill="${colCab}" />
+      <text x="28" y="32" font-family="${SANS}" font-size="11" font-weight="900" fill="#ffffff">BANCA ROJA · TRANSFERENCIA</text>
+      <rect x="16" y="54" width="328" height="38" fill="${colInfoBg}" stroke="${colInfoFg}" stroke-width="1.2" />
+      <text x="28" y="77" font-family="${SERIF}" font-size="12" fill="${colInfoFg}">Horario de transferencias sin costo: 06:00 a 22:00</text>
+      <rect x="16" y="102" width="328" height="40" fill="#fdecec" stroke="#b3261e" stroke-width="2" />
+      <text x="28" y="126" font-family="${SANS}" font-size="11.5" font-weight="900" fill="#8c1d18">▲ Fondos insuficientes para completar el envío</text>
+    </svg>`;
+  }
+  function describirE1(e: E1) {
+    if (e.separacion === 'mezclado') {
+      return 'Cuando la cabecera, el aviso informativo y el error van en rojo, <b class="dv-cifra">la alerta real se camufla</b>.';
+    }
+    return '<b class="dv-cifra">Rol protegido</b>: la interfaz usa neutros en la estructura y reserva el rojo para cuando realmente ocurre un error.';
+  }
+
+  type E2 = { usoAzul: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const solo = e.usoAzul === 'soloEnlace';
+    const colEst = solo ? '#222222' : '#1956b4';
+    const colMeta = solo ? '#555555' : '#1956b4';
+    d.innerHTML = `<svg viewBox="0 0 360 155" role="img" aria-label="Ficha documental.">
+      <rect width="360" height="155" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <text x="22" y="34" font-family="${SANS}" font-size="10" font-weight="700" fill="${colMeta}">DOCUMENTO FISCAL · AÑO 2025</text>
+      <text x="22" y="62" font-family="${SERIF}" font-size="18" font-weight="700" fill="${colEst}">Certificado de retención</text>
+      <rect x="22" y="76" width="118" height="24" fill="${solo ? '#f0f0ee' : '#e8f0fe'}" stroke="${colMeta}" stroke-width="1" />
+      <text x="81" y="92" text-anchor="middle" font-family="${SANS}" font-size="9.5" font-weight="700" fill="${colMeta}">FORMATO PDF · 140 KB</text>
+      <text x="22" y="130" font-family="${SANS}" font-size="12.5" font-weight="900" text-decoration="underline" fill="#1956b4">Descargar certificado firmado →</text>
+    </svg>`;
+  }
+  function describirE2(e: E2) {
+    if (e.usoAzul === 'todo') {
+      return 'Si el título, la categoría y la etiqueta de peso van en azul, <b class="dv-cifra">todo parece un enlace</b> y confunde al lector.';
+    }
+    return '<b class="dv-cifra">Color interactivo exclusivo</b>: lo único azul y subrayado es la acción que realmente responde al clic.';
+  }
+
+  type E3 = { numEstados: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const nEst = e.numEstados;
+    const etiquetas3 = [
+      { t: '● Pendiente (4)', bg: '#f0f0ee', fg: '#222222' },
+      { t: '◆ En curso (3)', bg: '#e8f0fe', fg: '#14428a' },
+      { t: '✓ Listo (3)', bg: '#eef6f0', fg: '#13592c' },
+    ];
+    d.innerHTML = `<svg viewBox="0 0 360 155" role="img" aria-label="Tablero con ${nEst} categorías de color.">
+      <rect width="360" height="155" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <text x="20" y="30" font-family="${SANS}" font-size="10.5" font-weight="900" fill="#222">TAREAS DEL EQUIPO (${nEst} COLORES ACTIVOS)</text>
+      ${
+        nEst <= 4
+          ? etiquetas3
+              .map(
+                (st, i) => `
+            <g transform="translate(20, ${44 + i * 32})">
+              <rect width="320" height="26" fill="${st.bg}" stroke="${st.fg}" stroke-width="1.2" />
+              <text x="12" y="17" font-family="${SANS}" font-size="11" font-weight="900" fill="${st.fg}">${st.t}</text>
+            </g>`,
+              )
+              .join('')
+          : Array.from({ length: nEst }, (_, i) => {
+              const col = hslAHex(Math.round((i * 360) / nEst), 75, 42);
+              const colX = 20 + (i % 5) * 65;
+              const rowY = 46 + Math.floor(i / 5) * 46;
+              return `<g transform="translate(${colX}, ${rowY})">
+                <rect width="58" height="34" fill="${col}" stroke="#222" />
+                <text x="29" y="21" text-anchor="middle" font-family="${SANS}" font-size="9.5" font-weight="900" fill="#fff">Tipo ${i + 1}</text>
+              </g>`;
+            }).join('')
+      }
+    </svg>`;
+  }
+  function describirE3(e: E3) {
+    if (e.numEstados > 6) {
+      return `Con <b class="dv-cifra">${e.numEstados} colores distintos</b>, varios tonos quedan tan cerca que obligan a leer la leyenda una y otra vez.`;
+    }
+    if (e.numEstados > 4) {
+      return `${e.numEstados} colores: manejable, pero aún puede simplificarse en estados de acción.`;
+    }
+    return `<b class="dv-cifra">${e.numEstados} estados semánticos</b>: el equipo reconoce de inmediato qué está pendiente, en curso o terminado.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego ─────────────────────────────────────────────
+  function rondaNombreSemantico(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Nombrarlos por su función: «color-accion-primaria», «color-estado-peligro», «color-superficie-alerta»',
+        es: true,
+      },
+      {
+        texto: 'Nombrarlos por su apariencia física: «azul-cielo», «rojo-tomate», «amarillo-limon»',
+        es: false,
+      },
+      {
+        texto: 'Numerarlos del 1 al 15 según el orden en que se crearon',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cómo conviene definir los colores en un sistema de diseño para evitar contradicciones entre pantallas?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Nombrar un color por el rol que cumple («peligro», «acción primaria») garantiza que todos los componentes lo usen para el mismo propósito y permite adaptar el tema sin romper el significado.',
+      repaso: 'Definición de roles semánticos',
+    };
+  }
+
+  function rondaLimiteCategorial(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Entre 5 y 8 categorías cromáticas como máximo',
+        es: true,
+      },
+      {
+        texto: 'Entre 18 y 24 categorías cromáticas',
+        es: false,
+      },
+      {
+        texto: 'Tantas como permita una paleta de 256 colores',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según la evidencia recopilada por Colin Ware (2020), ¿cuántas categorías por color puede distinguir y recordar con fiabilidad una persona sin consultar la leyenda a cada instante?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La memoria de trabajo visual y la discriminación entre tonos simultáneos se saturan más allá de 5 a 8 categorías; si hay más grupos, conviene agruparlos o etiquetarlos directamente.',
+      repaso: 'Límite categorial del color',
+    };
+  }
+
+  function rondaColorInteractivo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Solo el enlace «Descargar informe PDF» usa el azul interactivo; las etiquetas de fecha van en gris neutro',
+        describir: 'Tarjeta donde solo el enlace real va en azul subrayado.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#fff" stroke="#222"/><text x="14" y="28" font-family="${SANS}" font-size="9.5" font-weight="700" fill="#6f6f6f">PUBLICADO HOY · 2,4 MB</text><text x="14" y="50" font-family="${SERIF}" font-size="14" font-weight="700" fill="#222">Balance anual</text><text x="14" y="74" font-family="${SANS}" font-size="11" font-weight="900" text-decoration="underline" fill="#1956b4">Descargar informe PDF →</text></svg>`,
+      },
+      {
+        texto: 'La fecha, el peso del archivo, el título y el borde usan el mismo azul que los botones de acción',
+        describir: 'Tarjeta donde todos los textos estáticos están pintados de azul.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#fff" stroke="#1956b4" stroke-width="2"/><text x="14" y="28" font-family="${SANS}" font-size="9.5" font-weight="700" fill="#1956b4">PUBLICADO HOY · 2,4 MB</text><text x="14" y="50" font-family="${SERIF}" font-size="14" font-weight="700" fill="#1956b4">Balance anual</text><text x="14" y="74" font-family="${SANS}" font-size="11" font-weight="900" fill="#1956b4">Descargar informe PDF →</text></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál de las dos fichas el rol de «acción interactiva» funciona sin engañar a quien navega?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Si el color reservado para enlaces y botones se usa para decorar textos estáticos, deja de anunciar dónde se puede hacer clic.',
+      repaso: 'Exclusividad del rol de acción',
+    };
+  }
+
+  function rondaRedundanciaWCAG(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Añadir un símbolo distinto (✓, !, ▲) y una palabra explícita junto a cada estado',
+        es: true,
+      },
+      {
+        texto: 'Subir la saturación del rojo y del verde al 100 %',
+        es: false,
+      },
+      {
+        texto: 'Cambiar el tipo de letra de toda la página',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Para cumplir el criterio WCAG 1.4.1 (Uso del color), ¿cómo debes reforzar un rol semántico de estado?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Ningún rol semántico debe transmitirse exclusivamente por el tono: un icono, prefijo textual o forma geométrica asegura que el mensaje se entienda incluso sin percibir el color.',
+      repaso: 'Redundancia en roles semánticos',
+    };
+  }
+
+  function rondaAjusteCategorias(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este gráfico de incidencias usa 11 colores nominales y nadie logra distinguirlos sin perderse en la leyenda. Reduce la cantidad de categorías cromáticas a un rango óptimo (5 o menos).',
+      control: {
+        etiqueta: 'Categorías cromáticas simultáneas',
+        min: 3,
+        max: 11,
+        paso: 1,
+        valor: 11,
+      },
+      pintar: (esc, v) => {
+        const w = Math.floor(310 / v);
+        esc.innerHTML = `<svg viewBox="0 0 360 115" role="img" aria-label="${v} categorías de color.">
+          <rect width="360" height="115" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+          <text x="20" y="28" font-family="${SANS}" font-size="10.5" font-weight="900" fill="#222">LEYENDA DEL TABLERO: ${v} CATEGORÍAS</text>
+          ${Array.from({ length: v }, (_, i) => {
+            const col = hslAHex(Math.round((i * 360) / v), 72, 42);
+            return `<rect x="${20 + i * w}" y="42" width="${w - 4}" height="48" fill="${col}" stroke="#222" />`;
+          }).join('')}
+        </svg>`;
+      },
+      cumple: (v) => v <= 5,
+      falta: (v) => `Con ${v} categorías todavía hay tonos muy próximos entre sí. Agrupa hasta quedar en 5 o menos.`,
+      porque: 'Al consolidar las categorías en 3 a 5 estados relevantes, cada color mantiene una distancia perceptual clara y se memoriza de inmediato.',
+      repaso: 'Consolidación de categorías',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        rondaNombreSemantico(),
+        rondaLimiteCategorial(),
+        rondaColorInteractivo(),
+        rondaRedundanciaWCAG(),
+        rondaAjusteCategorias(),
+      ]),
+    );
+  }
+</script>

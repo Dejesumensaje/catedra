@@ -1,0 +1,168 @@
+---
+titulo: Región común
+territorio: percepcion
+pregunta: ¿Cuándo hace falta encerrar elementos dentro de una caja o un fondo compartido, y cuándo esa caja solo añade ruido?
+resumen: "Los elementos situados dentro de un mismo contorno o sobre un mismo fondo se perciben como un grupo, incluso cuando están lejos o son distintos entre sí."
+modos: [laboratorio, comparacion]
+orden: 9
+relaciones:
+  - concepto: proximidad
+    porQue: Espacio y recinto cumplen la misma tarea de agrupar; donde el espacio alcanza, la caja suele sobrar.
+  - concepto: semejanza
+    porQue: Un fondo compartido dota de unidad a piezas heterogéneas que no tienen forma ni tamaño parecidos.
+  - concepto: gestalt
+    porQue: Formulada en 1992 por Stephen Palmer, la región común amplió los factores clásicos de Wertheimer con una señal de cerramiento explícito.
+  - concepto: espacio-negativo
+    porQue: Cada borde contenedor consume margen libre; abusar de recuadros reduce la superficie de descanso de la página.
+  - concepto: densidad-visual
+    porQue: Multiplicar cajas anidadas dispara la cantidad de trazos por centímetro cuadrado sin añadir información nueva.
+fuentes:
+  - autor: Stephen E. Palmer
+    obra: "Common region: A new principle of perceptual grouping. Cognitive Psychology, 24(3), 436–447"
+    anio: 1992
+    url: https://doi.org/10.1016/0010-0285(92)90014-S
+    nota: Demostración experimental de que encerrar elementos en una región compartida constituye un principio de agrupamiento autónomo capaz de imponerse sobre la proximidad y la semejanza.
+  - autor: Stephen E. Palmer y Irvin Rock
+    obra: "Rethinking perceptual organization: The role of uniform connectedness. Psychonomic Bulletin & Review, 1(1), 29–55"
+    anio: 1994
+    url: https://doi.org/10.3758/BF03200760
+    nota: Relación entre conexión uniforme, región común y segmentación temprana de escenas.
+  - autor: Johan Wagemans y otros
+    obra: "A century of Gestalt psychology in visual perception: I. Perceptual grouping and figure–ground organization. Psychological Bulletin, 138(6), 1172–1217"
+    anio: 2012
+    url: https://doi.org/10.1037/a0029333
+    nota: Comparación entre los principios clásicos de Wertheimer (1923) y los principios modernos añadidos por Palmer (1992).
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import RegionComunExp from '../../components/diseno-visual/experiencias/RegionComunExp.astro';
+
+<Paso id="idea" titular="Lo que comparte un recinto se percibe como un mismo objeto">
+
+<RegionComunExp paso="idea" />
+
+<p class="dv-frase">Un borde o un fondo compartido agrupa con más fuerza que la distancia.</p>
+
+<div class="dv-texto">
+
+Cuando la distancia no basta para dejar claro qué elementos van juntos —porque la pantalla es estrecha o porque un grupo mezcla piezas muy distintas entre sí—, el diseño recurre a la *región común*: encerrar el conjunto dentro de un contorno o apoyarlo sobre una bandeja de color diferente al papel.
+
+Es una herramienta tan potente que resulta fácil abusar de ella. Una sola región común ordena un tablero complejo; cuatro regiones metidas unas dentro de otras convierten la página en un laberinto de marcos.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Región común</dt>
+    <dd>La tendencia a percibir como grupo todos los elementos ubicados dentro de un mismo perímetro cerrado o sobre una misma superficie cromática.</dd>
+    <dt>Contorno explícito</dt>
+    <dd>Una línea continua que encierra un área y actúa como frontera física entre lo que pertenece al grupo y lo que queda fuera.</dd>
+    <dt>Fondo compartido</dt>
+    <dd>Un cambio sutil de claridad o tono respecto al papel que agrupa elementos sin necesidad de dibujar bordes oscuros.</dd>
+    <dt>Cajas anidadas</dt>
+    <dd>La acumulación de recuadros dentro de otros recuadros, donde los bordes intermedios repiten agrupamientos que ya estaban claros.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="El síndrome de las muñecas rusas frente a un contenedor con propósito">
+
+<div class="dv-texto">
+
+En la vista izquierda de este panel de cuenta se encerró cada nivel jerárquico dentro de su propia caja con borde; en la derecha se reservó la región común para el único bloque que la necesita.
+
+</div>
+
+<RegionComunExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión recargada hay diez rectángulos dibujados para mostrar cuatro datos. En la versión limpia, una única bandeja suave sostiene el resumen del plan (que mezcla precio, fecha y botón), mientras las preferencias de abajo se ordenan con espacio y filetes simples.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Cuándo ayuda una caja y cuándo satura la pantalla">
+
+<RegionComunExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres criterios antes de dibujar una caja más">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Pregunta primero si el espacio puede hacer ese trabajo</h3>
+      <p>Si los elementos del grupo tienen un formato parecido y dispones de margen alrededor, acércalos entre sí y aléjalos del resto. Ahorrarás cuatro líneas por cada caja que decidas no dibujar.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Reserva la región común para grupos heterogéneos o densos</h3>
+      <p>Usa una tarjeta o bandeja cuando el grupo reúna piezas dispares (una foto, un título, un precio, un selector de cantidad y un botón) que perderían cohesión si solo dependieran del espacio.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No anides más de un nivel visible de contenedor</h3>
+      <p>Si una sección ya tiene un fondo gris o un borde exterior, organiza su interior mediante alineación, espacio o un simple filete horizontal, nunca metiendo nuevas cajas con borde dentro de la primera.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<RegionComunExp paso="errores" />
+
+<div class="dv-texto">
+
+### La región común en piezas reales
+
+</div>
+
+<RegionComunExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu criterio sobre bordes y contenedores">
+
+<RegionComunExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="De Wertheimer a Palmer: por qué un borde pesa tanto">
+
+<Seccion titulo="El principio que se añadió setenta años después">
+
+En su artículo fundacional de 1923, Max Wertheimer describió la proximidad, la semejanza, la buena continuación y el cierre, pero no incluyó la región común como factor independiente. Durante décadas se asumió que encerrar objetos en un círculo era solo un caso derivado del cierre o de la proximidad respecto a la línea.
+
+En 1992, el psicólogo cognitivo Stephen E. Palmer demostró mediante una serie de experimentos controlados que la región común opera como un principio autónomo. Al colocar hileras de puntos equidistantes o emparejados por distancia y rodear pares alternos con óvalos, comprobó que los observadores agrupaban según los óvalos, incluso cuando la distancia física o el parecido de tamaño pedían lo contrario.
+
+</Seccion>
+
+<Seccion titulo="Por qué los recintos vencen a la distancia">
+
+Dos años después, Palmer y Irvin Rock (1994) propusieron que el sistema visual organiza las escenas en etapas: primero divide la imagen en **regiones conectadas** de luminancia o textura uniforme (*uniform connectedness*), y sobre esas unidades iniciales aplica después los agrupamientos de proximidad y región común.
+
+Un fondo compartido o un borde cerrado aprovecha ese mecanismo temprano de segmentación de superficies. Para el sistema visual, una bandeja gris clara no es una pista abstracta: se interpreta como un objeto físico sobre el cual descansan las piezas interiores.
+
+</Seccion>
+
+<Seccion titulo="El coste oculto de cada contenedor en la densidad visual">
+
+Si la región común es tan eficaz, ¿por qué no encerrar cada grupo en una caja? Porque un borde cerrado no es invisible: añade cuatro segmentos nuevos y cuatro esquinas que compiten por la atención con las letras y las cifras.
+
+Cuando se anidan tres niveles de tarjetas (una página con marco, que contiene secciones con marco, que contienen tarjetas con marco), la [densidad visual](/diseno-visual/densidad-visual) se dispara y el [espacio negativo](/diseno-visual/espacio-negativo) queda troceado en estrechos pasillos entre líneas paralelas. La regla práctica de los sistemas editoriales y de interfaz más limpios es estricta: **si puedes quitar un recuadro sin que dos grupos se mezclen, ese recuadro sobra**.
+
+</Seccion>
+
+</Paso>

@@ -59,3 +59,42 @@ export function resolverRelaciones(concepto: Concepto, todas: Concepto[]): Relac
 export function territorioPorId(id: string): Territorio {
   return territorios.find((t) => t.id === id)!;
 }
+
+export interface PasoRuta {
+  slug: string;
+  porque: string;
+}
+
+export const RUTA_INICIAL: PasoRuta[] = [
+  { slug: 'proximidad', porque: 'Empieza aquí: cómo la distancia agrupa lo que va junto.' },
+  { slug: 'semejanza', porque: 'Qué pasa cuando el parecido dice otra cosa que la distancia.' },
+  { slug: 'escalas-tipograficas', porque: 'Cómo el tamaño ordena qué se lee primero, segundo y tercero.' },
+  { slug: 'interaccion-del-color', porque: 'Por qué ningún color se ve solo y cómo probar que el texto se lea.' },
+  { slug: 'reticulas-y-alineacion', porque: 'Las columnas invisibles que sostienen todos los bloques de una página.' },
+  { slug: 'sistemas-y-excepciones', porque: 'Cómo compartir reglas entre muchas piezas y romper una con intención.' },
+  { slug: 'enfasis', porque: 'Cómo construir un único centro de atención sin que toda la página grite.' },
+];
+
+export interface VecinosRuta {
+  indice: number;
+  total: number;
+  actual?: PasoRuta & { entrada: Concepto };
+  anterior?: PasoRuta & { entrada: Concepto };
+  siguiente?: PasoRuta & { entrada: Concepto };
+}
+
+export function vecinosEnRuta(slug: string, todas: Concepto[]): VecinosRuta | null {
+  const porSlug = new Map(todas.map((c) => [c.id, c]));
+  const resuelta = RUTA_INICIAL
+    .map((r) => ({ ...r, entrada: porSlug.get(r.slug) }))
+    .filter((r): r is PasoRuta & { entrada: Concepto } => Boolean(r.entrada));
+  const idx = resuelta.findIndex((r) => r.slug === slug);
+  if (idx === -1) return null;
+  return {
+    indice: idx + 1,
+    total: resuelta.length,
+    actual: resuelta[idx],
+    anterior: idx > 0 ? resuelta[idx - 1] : undefined,
+    siguiente: idx < resuelta.length - 1 ? resuelta[idx + 1] : undefined,
+  };
+}

@@ -1,0 +1,1063 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'densidad-visual';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Sube el ruido de las cajas y rejillas.',
+    hacer: 'Sube «Tinta no informativa (bordes y adornos)» por encima de 80 %.',
+    pista: 'Arrastra el segundo deslizador hacia la derecha.',
+    preparar: { registros: 16, ruido: 15, vista: 'tabla', metricas: true },
+    logro: 'Los datos no cambiaron, pero ahora están encerrados en una jaula de bordes gruesos, sombras, iconos repetidos y etiquetas redundantes. La razón tinta-datos se desploma.',
+  },
+  {
+    titulo: 'Poda la tinta que no informa.',
+    hacer: 'Baja «Tinta no informativa (bordes y adornos)» a 10 % o menos.',
+    pista: 'Mueve el segundo deslizador hacia el extremo izquierdo.',
+    logro: 'Al quitar las líneas verticales y los marcos innecesarios, las 16 filas respiran sin haber borrado un solo número. La alineación reemplaza a la jaula.',
+  },
+  {
+    titulo: 'Aumenta la densidad de datos manteniendo la limpieza.',
+    hacer: 'Con el ruido bajo (≤ 15 %), sube «Cantidad de datos visibles» a 24.',
+    pista: 'Mueve el primer deslizador hasta el extremo derecho.',
+    logro: 'Cuando la razón tinta-datos es alta, la pantalla admite mostrar el triple de registros a la vez sin sentirse abarrotada, permitiendo comparar de un vistazo sin hacer scroll.',
+  },
+  {
+    titulo: 'Comprueba el error opuesto: inflar tanto que no cabe nada.',
+    hacer: 'Baja «Cantidad de datos visibles» a 4 y abre «Más controles» para cambiar «Disposición» a «Tarjetas infladas».',
+    abrir: true,
+    preparar: { registros: 16, ruido: 10 },
+    logro: 'Cuando cada fila se convierte en una tarjeta gigante con márgenes desmesurados, la densidad de información cae tanto que quien consulta pierde la visión de conjunto.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos tablas con exactamente los mismos doce valores: a la izquierda encerrados en una jaula negra de bordes gruesos y cebreado oscuro; a la derecha alineados con filetes horizontales finos y alta razón tinta-datos.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+
+        <!-- Izquierda: Baja razón tinta-datos (jaula burocrática) -->
+        <g transform="translate(22, 16)">
+          <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={ROJO}>12 DATOS + JAULA PESADA (ABARROTAMIENTO)</text>
+          <rect x="4" y="24" width="256" height="130" fill={T} />
+          <rect x="0" y="20" width="256" height="130" fill="#ffffff" stroke={T} stroke-width="2.5" />
+          <!-- Cabecera negra -->
+          <rect x="0" y="20" width="256" height="26" fill={T} />
+          <text x="10" y="37" font-family={SANS} font-size="10" font-weight="900" fill={AMARILLO}>ESTACIÓN</text>
+          <text x="118" y="37" font-family={SANS} font-size="10" font-weight="900" fill={AMARILLO}>SALIDA</text>
+          <text x="190" y="37" font-family={SANS} font-size="10" font-weight="900" fill={AMARILLO}>VÍA</text>
+          <!-- Filas con cebreado oscuro y rejilla gruesa -->
+          {[
+            ['Norte', '08:15', 'Vía #02'],
+            ['Centro', '08:30', 'Vía #04'],
+            ['Puerto', '08:45', 'Vía #01'],
+            ['Lago', '09:00', 'Vía #03'],
+          ].map(([est, hora, via], i) => {
+            const y = 46 + i * 26;
+            return (
+              <g>
+                <rect x="0" y={y} width="256" height="26" fill={i % 2 === 0 ? '#dcdcd2' : '#ffffff'} stroke={T} stroke-width="2.2" />
+                <text x="10" y={y + 17} font-family={SANS} font-size="10.5" font-weight="900" fill={T}>■ {est}</text>
+                <text x="118" y={y + 17} font-family={SANS} font-size="10.5" font-weight="900" fill={T}>⏰ {hora}</text>
+                <text x="190" y={y + 17} font-family={SANS} font-size="10.5" font-weight="900" fill={T}>{via}</text>
+              </g>
+            );
+          })}
+          <line x1="108" y1="20" x2="108" y2="150" stroke={T} stroke-width="2.5" />
+          <line x1="180" y1="20" x2="180" y2="150" stroke={T} stroke-width="2.5" />
+        </g>
+
+        <!-- Derecha: Alta razón tinta-datos (Tufte) -->
+        <g transform="translate(322, 16)">
+          <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={T}>LOS MISMOS 12 DATOS · SIN TINTA DE ADORNO</text>
+          <rect x="0" y="20" width="256" height="130" fill="#ffffff" stroke={T} stroke-width="1.2" />
+          <text x="16" y="38" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>ESTACIÓN</text>
+          <text x="168" y="38" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>SALIDA</text>
+          <text x="236" y="38" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>VÍA</text>
+          <line x1="16" y1="45" x2="240" y2="45" stroke={T} stroke-width="1.2" />
+          {[
+            ['Norte', '08:15', '2'],
+            ['Centro', '08:30', '4'],
+            ['Puerto', '08:45', '1'],
+            ['Lago', '09:00', '3'],
+          ].map(([est, hora, via], i) => {
+            const y = 46 + i * 25;
+            return (
+              <g>
+                {i > 0 && <line x1="16" y1={y} x2="240" y2={y} stroke="#e5e5e0" stroke-width="1" />}
+                <text x="16" y={y + 17} font-family={SANS} font-size="11" font-weight="700" fill={T}>{est}</text>
+                <text x="168" y={y + 17} text-anchor="end" font-family={SANS} font-size="11" font-weight="700" fill={T}>{hora}</text>
+                <text x="236" y={y + 17} text-anchor="end" font-family={SANS} font-size="11" fill={TXT}>{via}</text>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    </div>
+    <p>Cuenta los datos de ambas tablas: en las dos hay exactamente 4 estaciones, 4 horas y 4 vías (12 valores). ¿Por qué la primera parece saturada y la segunda se lee con tanta calma?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque la sensación de ahogo en la primera tabla no proviene de la cantidad de datos, sino de la *tinta no informativa*: los barrotes verticales de `2,5 px`, el cebreado oscuro, los iconos repetidos y la palabra «Vía #» escrita cuatro veces cuando ya está en el encabezado de la columna. Al eliminar la jaula y dejar que el alineamiento separe las columnas, la misma densidad de información se vuelve diáfana.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Ruido gráfico y etiquetas repetidas en cada celda"
+      notas={[
+        {
+          ...pct(180, 96),
+          titulo: 'Etiquetas redundantes («Precio:», «Cambio:»)',
+          texto: 'Cada tarjeta vuelve a escribir las palabras «Activo:», «Precio:» y «Variación:» seis veces, gastando la mitad del espacio en rótulos repetidos.',
+          zona: zona(16, 48, 328, 152),
+        },
+        {
+          ...pct(312, 138),
+          titulo: 'Cajas dentro de cajas',
+          texto: 'Cada dato lleva su propio recuadro con sombra dura y borde grueso. Los marcos pesan más que las cifras.',
+          zona: zona(182, 52, 158, 146),
+        },
+        {
+          ...pct(180, 238),
+          titulo: 'Baja densidad real: solo caben 4 registros',
+          texto: 'A pesar de verse abarrotada, la pantalla apenas logra mostrar 4 filas y obliga a desplazar la vista para comparar el resto.',
+          zona: zona(16, 204, 328, 62),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel financiero abarrotado de cajas, sombras y etiquetas repetidas donde solo caben cuatro activos.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="14" y="14" width="332" height="252" fill="#fbfbf9" stroke={T} stroke-width="2" />
+        <rect x="22" y="22" width="316" height="24" fill={T} />
+        <text x="30" y="38" font-family={SANS} font-size="10.5" font-weight="900" fill={AMARILLO}>MONITOR DE INDICADORES (SOLO 4 VISIBLES)</text>
+        {[
+          ['Cobre', '4,12 USD', '+1,8 %'],
+          ['Trigo', '5,84 USD', '-0,6 %'],
+          ['Café', '2,45 USD', '+3,1 %'],
+          ['Maíz', '4,30 USD', '+0,2 %'],
+        ].map(([nom, val, cam], i) => {
+          const c = i % 2;
+          const f = Math.floor(i / 2);
+          const x = 24 + c * 160;
+          const y = 54 + f * 96;
+          return (
+            <g>
+              <rect x={x + 4} y={y + 4} width="150" height="84" fill={T} />
+              <rect x={x} y={y} width="150" height="84" fill="#ffffff" stroke={T} stroke-width="2" />
+              <rect x={x + 6} y={y + 6} width="138" height="18" fill="#e9e9e2" stroke={T} stroke-width="1.2" />
+              <text x={x + 12} y={y + 18} font-family={SANS} font-size="9.5" font-weight="900" fill={T}>ACTIVO: {nom.toUpperCase()}</text>
+              <rect x={x + 6} y={y + 30} width="138" height="22" fill="#ffffff" stroke={T} stroke-width="1.2" />
+              <text x={x + 12} y={y + 45} font-family={SANS} font-size="10" font-weight="700" fill={T}>PRECIO: {val}</text>
+              <rect x={x + 6} y={y + 56} width="138" height="22" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+              <text x={x + 12} y={y + 71} font-family={SANS} font-size="9.5" font-weight="900" fill={T}>VARIACIÓN: {cam}</text>
+            </g>
+          );
+        })}
+        <text x="180" y="256" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>PÁGINA 1 DE 5 · DESPLAZA PARA VER LOS OTROS 16</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Alta densidad de datos con mínima tinta de estructura"
+      notas={[
+        {
+          ...pct(180, 44),
+          titulo: 'El encabezado nombra una sola vez',
+          texto: 'Las etiquetas de columna aparecen arriba una única vez. Las filas quedan libres para mostrar únicamente valores.',
+          zona: zona(24, 24, 312, 34),
+        },
+        {
+          ...pct(234, 146),
+          titulo: 'Minigráficos (sparklines) integrados',
+          texto: 'Cada línea incorpora una curva histórica de 10 puntos en el alto de una palabra: multiplica la información sin añadir cajas.',
+          zona: zona(186, 58, 74, 184),
+        },
+        {
+          ...pct(88, 198),
+          titulo: 'Doble de registros en la misma superficie',
+          texto: 'En el mismo espacio donde antes cabían 4 cajas ruidosas ahora se comparan 8 series completas con tendencia y variación.',
+          zona: zona(24, 58, 312, 188),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo monitor financiero presentando ocho activos con minigráficos de tendencia y cifras alineadas sin rejillas pesadas.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="16" width="324" height="248" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <text x="32" y="38" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>MATERIA PRIMA</text>
+        <text x="172" y="38" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>USD</text>
+        <text x="218" y="38" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>30 DÍAS</text>
+        <text x="328" y="38" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={G}>VAR.</text>
+        <line x1="32" y1="46" x2="328" y2="46" stroke={T} stroke-width="1.4" />
+        {[
+          ['Cobre', '4,12', 'M192,64 L204,61 L216,65 L228,58 L240,54 L252,52', '+1,8 %', false],
+          ['Trigo', '5,84', 'M192,84 L204,85 L216,88 L228,87 L240,91 L252,93', '-0,6 %', false],
+          ['Café arábica', '2,45', 'M192,118 L204,115 L216,112 L228,108 L240,104 L252,100', '+3,1 %', true],
+          ['Maíz', '4,30', 'M192,135 L204,136 L216,134 L228,135 L240,134 L252,133', '+0,2 %', false],
+          ['Aluminio', '2,38', 'M192,162 L204,160 L216,158 L228,159 L240,156 L252,154', '+1,1 %', false],
+          ['Soja', '11,40', 'M192,182 L204,184 L216,186 L228,185 L240,188 L252,190', '-0,9 %', false],
+          ['Cacao', '7,92', 'M192,214 L204,210 L216,208 L228,205 L240,202 L252,199', '+2,4 %', false],
+          ['Algodón', '0,84', 'M192,232 L204,232 L216,233 L228,231 L240,232 L252,231', '0,0 %', false],
+        ].map(([nom, val, ruta, cam, dest], i) => {
+          const y = 48 + i * 24;
+          return (
+            <g>
+              {Boolean(dest) && <rect x="28" y={y + 2} width="304" height="20" fill={AMARILLO} />}
+              {i > 0 && <line x1="32" y1={y} x2="328" y2={y} stroke="#e7e7e0" stroke-width="1" />}
+              <text x="32" y={y + 16} font-family={SANS} font-size="11" font-weight={dest ? '900' : '700'} fill={T}>{nom}</text>
+              <text x="172" y={y + 16} text-anchor="end" font-family={SANS} font-size="11" font-weight="700" fill={T}>{val}</text>
+              <path d={String(ruta)} fill="none" stroke={T} stroke-width="1.5" />
+              <circle cx="252" cy={Number(String(ruta).split(',').pop())} r="2.2" fill={T} />
+              <text x="328" y={y + 16} text-anchor="end" font-family={SANS} font-size="10.5" font-weight="700" fill={String(cam).startsWith('-') ? ROJO : T}>{cam}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · densidad de datos frente a tinta no informativa (Tufte)"
+    consigna="Controla por separado cuántos registros útiles muestra la superficie y cuánta tinta de adorno (rejillas, marcos, sombras y etiquetas repetidas) los rodea. Comprueba que una pantalla puede tener muchos datos y muy poco ruido."
+    nota="Fija como A una vista con 8 datos y 90 % de tinta no informativa, y compárala como B con 24 datos y 5 % de tinta no informativa."
+  >
+    <svg slot="escenario" viewBox="0 0 640 340" role="img" aria-label="Tabla comparativa con 16 registros de datos y alta razón tinta-datos.">
+      <rect width="640" height="340" fill="#fbfbf9" />
+      <rect x="48" y="20" width="544" height="296" fill="#ffffff" stroke={T} stroke-width="1.5" />
+      <line x1="68" y1="54" x2="572" y2="54" stroke={T} stroke-width="1.5" />
+      {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+        <g>
+          <line x1="68" y1={84 + i * 28} x2="572" y2={84 + i * 28} stroke="#e5e5e0" stroke-width="1" />
+          <rect x="68" y={66 + i * 28} width="110" height="8" fill={T} />
+          <rect x="240" y={66 + i * 28} width="64" height="8" fill={TXT} />
+          <rect x="380" y={66 + i * 28} width="84" height="8" fill={AMARILLO} stroke={T} stroke-width="1" />
+          <rect x="510" y={66 + i * 28} width="48" height="8" fill={T} />
+        </g>
+      ))}
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Recuerda la fórmula de Tufte: maximiza la razón tinta-datos dentro de lo que necesita quien lee." />
+
+    <Deslizador
+      lab={lab}
+      variable="registros"
+      etiqueta="Cantidad de datos visibles"
+      min={4}
+      max={24}
+      paso={4}
+      valor={16}
+      ayuda="Número de registros informativos mostrados simultáneamente en el panel."
+    />
+    <Deslizador
+      lab={lab}
+      variable="ruido"
+      etiqueta="Tinta no informativa (bordes y adornos)"
+      min={0}
+      max={100}
+      paso={5}
+      valor={15}
+      unidad="%"
+      ayuda="0 %: solo datos y alineación. 100 %: rejillas gruesas, sombras, cebreado intenso y etiquetas redundantes."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="vista"
+        etiqueta="Disposición"
+        valor="tabla"
+        opciones={[
+          { valor: 'tabla', texto: 'Tabla compacta' },
+          { valor: 'tarjetas', texto: 'Tarjetas infladas' },
+        ]}
+        ayuda="Compara la lectura matricial frente a encerrar cada registro en una tarjeta separada."
+      />
+      <Interruptor
+        lab={lab}
+        variable="metricas"
+        etiqueta="Mostrar razón tinta-datos estimada"
+        activo={true}
+        ayuda="Calcula qué porcentaje del trazo visible corresponde a información real frente a ornamento."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"registros":24,"ruido":5,"vista":"tabla","metricas":true}'>Alta densidad limpia (Tufte)</button>
+      <button type="button" class="dv-boton" data-preset='{"registros":8,"ruido":95,"vista":"tabla","metricas":true}'>Pocos datos en jaula burocrática</button>
+      <button type="button" class="dv-boton" data-preset='{"registros":4,"ruido":20,"vista":"tarjetas","metricas":true}'>Tarjetas infladas (baja densidad)</button>
+      <button type="button" class="dv-boton" data-preset='{"registros":16,"ruido":15,"vista":"tabla","metricas":true}'>Equilibrio operativo (16 filas)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Adelgazar la «jaula» de una tabla"
+      comparar={false}
+      consigna="Los barrotes verticales y horizontales de 3 px compiten con las cifras. Reduce el peso de la rejilla hasta dejar solo filetes horizontales sutiles."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Tabla encerrada en rejilla negra de 3 px</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="jaula"
+        etiqueta="Peso de la rejilla y bordes verticales"
+        min={0}
+        max={100}
+        paso={10}
+        valor={100}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Quitar etiquetas repetidas en cada fila"
+      comparar={false}
+      consigna="Repetir «Ruta:», «Hora:» y «Estado:» en cada una de las filas duplica el texto sin añadir información. Lleva los rótulos al encabezado único."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Etiquetas repetidas en todas las filas</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="rotulos"
+        etiqueta="Dónde van los nombres de los campos"
+        valor="repetidos"
+        opciones={[
+          { valor: 'repetidos', texto: 'Repetidos en cada fila' },
+          { valor: 'encabezado', texto: 'Una sola vez en el encabezado' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Evitar la fragmentación por exceso de margen"
+      comparar={false}
+      consigna="Alguien puso 42 px de relleno a cada fila de una lista de comparación: ahora solo caben 2 elementos en pantalla y es imposible compararlos. Compacta el alto de fila."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Filas infladas que impiden comparar</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="compactar"
+        etiqueta="Filas visibles en la misma ventana"
+        min={2}
+        max={6}
+        paso={1}
+        valor={2}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Tabla periódica de los elementos: 118 fichas en una sola vista"
+      notas={[
+        {
+          ...pct(94, 128),
+          titulo: 'Múltiplos pequeños (small multiples)',
+          texto: 'Cada celda repite exactamente la misma microestructura (número atómico arriba, símbolo en el centro, masa abajo). Aprendes a leer una y sabes leer las 118.',
+          zona: zona(26, 62, 138, 132),
+        },
+        {
+          ...pct(180, 74),
+          titulo: 'La posición codifica datos',
+          texto: 'El lugar de cada celda (fila = periodo, columna = grupo) comunica propiedades químicas sin escribir una sola palabra adicional.',
+          zona: zona(26, 36, 308, 48),
+        },
+        {
+          ...pct(268, 212),
+          titulo: 'Cero etiquetas repetidas',
+          texto: 'Ninguna casilla escribe «Símbolo:» ni «Número:». La posición fija dentro del módulo basta.',
+          zona: zona(186, 156, 148, 86),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Fragmento de la tabla periódica mostrando cómo cada módulo compacto comunica cuatro datos sin repetir etiquetas.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="18" width="324" height="244" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <text x="30" y="38" font-family={SANS} font-size="8.5" font-weight="700" letter-spacing="0.4" fill={G}>ESTRUCTURA REPETIBLE · 4 DATOS POR CELDA SIN ETIQUETAS</text>
+        <!-- Rejilla de elementos (6 columnas x 3 filas) -->
+        {[
+          ['6', 'C', 'Carbono', '12,01', true],
+          ['7', 'N', 'Nitrógeno', '14,00', false],
+          ['8', 'O', 'Oxígeno', '15,99', false],
+          ['9', 'F', 'Flúor', '18,99', false],
+          ['10', 'Ne', 'Neón', '20,18', false],
+          ['14', 'Si', 'Silicio', '28,08', false],
+          ['15', 'P', 'Fósforo', '30,97', false],
+          ['16', 'S', 'Azufre', '32,06', false],
+          ['17', 'Cl', 'Cloro', '35,45', false],
+          ['18', 'Ar', 'Argón', '39,95', false],
+          ['32', 'Ge', 'Germanio', '72,63', false],
+          ['33', 'As', 'Arsénico', '74,92', false],
+          ['34', 'Se', 'Selenio', '78,97', false],
+          ['35', 'Br', 'Bromo', '79,90', false],
+          ['36', 'Kr', 'Kriptón', '83,80', false],
+        ].map(([num, sim, nom, masa, foco], idx) => {
+          const c = idx % 5;
+          const f = Math.floor(idx / 5);
+          const x = 30 + c * 60;
+          const y = 52 + f * 64;
+          return (
+            <g>
+              <rect x={x} y={y} width="54" height="58" fill={foco ? AMARILLO : '#fbfbf9'} stroke={T} stroke-width={foco ? '1.8' : '1.1'} />
+              <text x={x + 5} y={y + 12} font-family={SANS} font-size="8.5" font-weight="700" fill={G}>{num}</text>
+              <text x={x + 27} y={y + 32} text-anchor="middle" font-family={SANS} font-size="16" font-weight="900" fill={T}>{sim}</text>
+              <text x={x + 27} y={y + 43} text-anchor="middle" font-family={SANS} font-size="7.5" fill={TXT}>{nom}</text>
+              <text x={x + 27} y={y + 53} text-anchor="middle" font-family={SANS} font-size="7.5" font-weight="700" fill={G}>{masa}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Pronóstico meteorológico por horas: lectura micro y macro"
+      notas={[
+        {
+          ...pct(180, 92),
+          titulo: 'Curva continua en lugar de 12 cajas',
+          texto: 'Una sola línea une las temperaturas de todo el día. De lejos ves el pico de calor (lectura macro); de cerca lees el grado exacto a las 14:00 (lectura micro).',
+          zona: zona(26, 56, 308, 86),
+        },
+        {
+          ...pct(180, 174),
+          titulo: 'Alineación vertical por franja horaria',
+          texto: 'Hora, temperatura, lluvia y viento comparten la misma columna vertical sin necesitar barrotes que las separen.',
+          zona: zona(26, 144, 308, 72),
+        },
+        {
+          ...pct(196, 78),
+          titulo: 'Énfasis reservado al máximo diario',
+          texto: 'Solo el valor máximo lleva marcador destacado; el resto acompaña con serenidad.',
+          zona: zona(168, 56, 64, 54),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel meteorológico horario donde una curva continua muestra temperatura, probabilidad de lluvia y horas alineadas sin rejilla pesada.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="20" width="324" height="240" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <text x="32" y="42" font-family={SANS} font-size="10" font-weight="900" fill={T}>MEDELLÍN · PRONÓSTICO 24 HORAS</text>
+        <text x="328" y="42" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>24 DATOS EN UNA BANDA</text>
+        <!-- Curva de temperatura -->
+        <path d="M44,126 C88,122 132,96 196,78 C240,68 284,104 316,118" fill="none" stroke={T} stroke-width="2.2" />
+        {[
+          [44, 126, '06:00', '17°', '10 %'],
+          [98, 114, '09:00', '21°', '10 %'],
+          [148, 92, '12:00', '25°', '20 %'],
+          [196, 78, '15:00', '27°', '60 %'],
+          [252, 96, '18:00', '22°', '40 %'],
+          [310, 116, '21:00', '19°', '15 %'],
+        ].map(([x, y, h, temp, lluv], i) => (
+          <g>
+            <line x1={x} y1={Number(y) + 6} x2={x} y2="218" stroke="#ecece4" stroke-width="1" />
+            <circle cx={x} cy={y} r={i === 3 ? 5.5 : 3.5} fill={i === 3 ? AMARILLO : T} stroke={T} stroke-width="1.5" />
+            <text x={x} y={Number(y) - 10} text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>{temp}</text>
+            <text x={x} y="176" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={TXT}>{lluv}</text>
+            <text x={x} y="212" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>{h}</text>
+          </g>
+        ))}
+        <text x="32" y="162" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>PROBABILIDAD DE LLUVIA</text>
+        <line x1="32" y1="194" x2="328" y2="194" stroke="#dcdcd4" stroke-width="1" />
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo=" Contraste de contexto: portada de decisión frente a cabina de trabajo"
+      notas={[
+        {
+          ...pct(96, 138),
+          titulo: 'Baja densidad para una decisión única',
+          texto: 'En una portada o paso de bienvenida conviene baja densidad: un título, una frase y un botón.',
+          zona: zona(24, 48, 144, 188),
+        },
+        {
+          ...pct(264, 138),
+          titulo: 'Alta densidad para consulta experta',
+          texto: 'En un explorador de archivos o un editor diario, quien trabaja necesita ver 15 o 20 filas a la vez sin hacer scroll constante.',
+          zona: zona(184, 48, 152, 188),
+        },
+        {
+          ...pct(180, 32),
+          titulo: 'La densidad depende de la tarea',
+          texto: 'Ninguna de las dos es superior en abstracto: el error es usar densidad de cartel en una tabla de control, o densidad de tabla en un cartel.',
+          zona: zona(24, 18, 312, 26),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Comparación lado a lado entre una pantalla de bienvenida de baja densidad y un explorador técnico de alta densidad.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <text x="180" y="32" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.8" fill={T}>CADA TAREA PIDE SU DENSIDAD</text>
+        <!-- Izquierda: Portada baja densidad -->
+        <rect x="24" y="46" width="144" height="196" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="36" y="68" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>BIENVENIDA (BAJA)</text>
+        <text x="36" y="116" font-family={SERIF} font-size="16" font-weight="700" fill={T}>Archivo 2026</text>
+        <rect x="36" y="128" width="96" height="4.5" fill={TXT} />
+        <rect x="36" y="138" width="76" height="4.5" fill={TXT} />
+        <rect x="36" y="164" width="84" height="24" fill={T} />
+        <text x="78" y="179" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill={AMARILLO}>ENTRAR →</text>
+        <!-- Derecha: Explorador alta densidad -->
+        <rect x="188" y="46" width="148" height="196" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="200" y="68" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>CONSULTA (ALTA)</text>
+        <line x1="200" y1="76" x2="324" y2="76" stroke={T} stroke-width="1.2" />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <g>
+            {i === 2 && <rect x="196" y={80 + i * 17} width="132" height="15" fill={AMARILLO} />}
+            <rect x="200" y={85 + i * 17} width="58" height="4.5" fill={T} />
+            <rect x="272" y={85 + i * 17} width="24" height="4.5" fill={TXT} />
+            <rect x="306" y={85 + i * 17} width="16" height="4.5" fill={G} />
+          </g>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre razón tinta-datos, abarrotamiento gráfico, múltiplos pequeños y elección de densidad. Cambian cada vez que juegas."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    registros: number;
+    ruido: number;
+    vista: string;
+    metricas: boolean;
+  };
+
+  const FILAS_DATOS = [
+    ['Medellín', '1.495 m', '22,4 °C', '1.650 mm'],
+    ['Bogotá', '2.640 m', '14,0 °C', '1.010 mm'],
+    ['Cali', '1.018 m', '24,6 °C', '1.480 mm'],
+    ['Barranquilla', '18 m', '28,2 °C', '820 mm'],
+    ['Manizales', '2.160 m', '17,2 °C', '1.850 mm'],
+    ['Bucaramanga', '959 m', '23,8 °C', '1.150 mm'],
+    ['Pasto', '2.527 m', '13,5 °C', '840 mm'],
+    ['Pereira', '1.411 m', '21,8 °C', '2.210 mm'],
+  ];
+
+  function calcularRazonTinta(e: E) {
+    // Razón tinta-datos de Tufte (entre 0,15 y 0,94)
+    const penalizacionVista = e.vista === 'tarjetas' ? 0.18 : 0;
+    const razon = Math.max(0.15, Math.min(0.95, 0.94 - (e.ruido / 100) * 0.68 - penalizacionVista));
+    return { razon };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = W < 480 ? 330 : 350;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    const { razon } = calcularRazonTinta(e);
+    const kRuido = e.ruido / 100;
+
+    raiz.setAttribute(
+      'aria-label',
+      `Panel con ${e.registros} datos visibles y ${e.ruido} % de tinta no informativa. Razón tinta-datos: ${Math.round(razon * 100)} %.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 480 ? 18 : 44;
+    const padY = 18;
+    const cw = W - padX * 2;
+    const ch = H - padY * 2 - (e.metricas ? 24 : 0);
+
+    raiz.append(svg('rect', { x: padX, y: padY, width: cw, height: ch, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.5 + kRuido * 1.5 }));
+
+    const numFilas = Math.max(1, Math.round(e.registros / 4));
+
+    if (e.vista === 'tarjetas') {
+      const cols = 2;
+      const rows = Math.ceil(numFilas / cols);
+      const gap = 12;
+      const cardW = (cw - 28 - gap) / cols;
+      const cardH = Math.min(82, (ch - 28 - gap * Math.max(1, rows - 1)) / Math.max(1, rows));
+
+      for (let i = 0; i < numFilas; i++) {
+        const c = i % cols;
+        const r = Math.floor(i / cols);
+        const x = padX + 14 + c * (cardW + gap);
+        const y = padY + 14 + r * (cardH + gap);
+        if (y + cardH > padY + ch - 6) break;
+        const [ciudad, alt, temp, lluvia] = FILAS_DATOS[i % FILAS_DATOS.length];
+
+        if (kRuido > 0.35) {
+          raiz.append(svg('rect', { x: x + 3, y: y + 3, width: cardW, height: cardH, fill: TINTA }));
+        }
+        raiz.append(
+          svg('rect', {
+            x,
+            y,
+            width: cardW,
+            height: cardH,
+            fill: i === 0 ? AMARILLO : kRuido > 0.5 ? '#ecece2' : '#fbfbf9',
+            stroke: TINTA,
+            'stroke-width': 1.2 + kRuido * 1.5,
+          }),
+        );
+        const t1 = svg('text', { x: x + 10, y: y + 18, 'font-family': SANS, 'font-size': 11, 'font-weight': 900, fill: TINTA });
+        t1.textContent = kRuido > 0.4 ? `CIUDAD: ${ciudad}` : ciudad;
+        raiz.append(t1);
+        const t2 = svg('text', { x: x + 10, y: y + 34, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: TEXTO });
+        t2.textContent = `Altitud: ${alt} · Temp: ${temp}`;
+        raiz.append(t2);
+        const t3 = svg('text', { x: x + 10, y: y + 48, 'font-family': SANS, 'font-size': 9.5, fill: GRIS });
+        t3.textContent = `Precipitación: ${lluvia}`;
+        raiz.append(t3);
+      }
+    } else {
+      const ix = padX + 16;
+      const iw = cw - 32;
+      const headY = padY + 24;
+      const colX = [ix, ix + iw * 0.36, ix + iw * 0.62, ix + iw * 0.88];
+
+      if (kRuido > 0.5) {
+        raiz.append(svg('rect', { x: ix - 6, y: padY + 8, width: iw + 12, height: 22, fill: TINTA }));
+      }
+
+      const cabeceras = ['ESTACIÓN', 'ALTITUD', 'TEMP. MEDIA', 'LLUVIA ANUAL'];
+      cabeceras.forEach((h, idx) => {
+        const th = svg('text', {
+          x: idx === 0 ? colX[idx] : colX[idx],
+          y: headY,
+          'font-family': SANS,
+          'font-size': 9.5,
+          'font-weight': 900,
+          fill: kRuido > 0.5 ? AMARILLO : GRIS,
+        });
+        th.textContent = h;
+        raiz.append(th);
+      });
+
+      raiz.append(svg('line', { x1: ix - 6, y1: padY + 32, x2: ix + iw + 6, y2: padY + 32, stroke: TINTA, 'stroke-width': 1.2 + kRuido * 1.5 }));
+
+      const areaH = ch - 44;
+      const rowH = Math.min(38, Math.max(24, Math.floor(areaH / numFilas)));
+
+      for (let i = 0; i < numFilas; i++) {
+        const ry = padY + 34 + i * rowH;
+        const [ciudad, alt, temp, lluvia] = FILAS_DATOS[i % FILAS_DATOS.length];
+
+        if (kRuido > 0.25 && i % 2 === 1) {
+          raiz.append(
+            svg('rect', {
+              x: ix - 6,
+              y: ry,
+              width: iw + 12,
+              height: rowH,
+              fill: kRuido > 0.65 ? '#dcdcd2' : '#f3f3ee',
+            }),
+          );
+        }
+
+        // Filete horizontal
+        if (i > 0 || kRuido > 0.3) {
+          raiz.append(
+            svg('line', {
+              x1: ix - 6,
+              y1: ry,
+              x2: ix + iw + 6,
+              y2: ry,
+              stroke: kRuido > 0.45 ? TINTA : '#e5e5e0',
+              'stroke-width': kRuido > 0.45 ? 1 + kRuido * 1.6 : 1,
+            }),
+          );
+        }
+
+        const pref = kRuido > 0.6 ? ['Est: ', 'Alt: ', 'T: ', 'Pluv: '] : ['', '', '', ''];
+        const vals = [ciudad, alt, temp, lluvia];
+        vals.forEach((v, cIdx) => {
+          const tv = svg('text', {
+            x: colX[cIdx],
+            y: ry + rowH * 0.64,
+            'font-family': SANS,
+            'font-size': 10.5,
+            'font-weight': cIdx === 0 || kRuido > 0.7 ? 700 : 500,
+            fill: TINTA,
+          });
+          tv.textContent = `${pref[cIdx]}${v}`;
+          raiz.append(tv);
+        });
+      }
+
+      // Barrotes verticales cuando sube el ruido
+      if (kRuido > 0.2) {
+        for (const cxPos of [colX[1] - 10, colX[2] - 10, colX[3] - 10]) {
+          raiz.append(
+            svg('line', {
+              x1: cxPos,
+              y1: padY + 8,
+              x2: cxPos,
+              y2: padY + 34 + numFilas * rowH,
+              stroke: kRuido > 0.5 ? TINTA : '#c8c8c0',
+              'stroke-width': 0.8 + kRuido * 1.8,
+            }),
+          );
+        }
+      }
+    }
+
+    if (e.metricas) {
+      const pctRazon = Math.round(razon * 100);
+      const limpio = pctRazon >= 70;
+      const pie = svg('text', {
+        x: W / 2,
+        y: H - 8,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11.5,
+        'font-weight': 700,
+        fill: limpio ? TINTA : COTA,
+      });
+      pie.textContent = `Datos visibles: ${e.registros} · Razón tinta-datos: ${pctRazon} % (${limpio ? 'Alta claridad' : 'Exceso de tinta de adorno'})`;
+      raiz.append(pie);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { razon } = calcularRazonTinta(e);
+    const pctRazon = Math.round(razon * 100);
+
+    if (e.ruido >= 55) {
+      return `Con <b class="dv-cifra">${e.ruido} % de tinta no informativa</b>, la razón tinta-datos cae al <b class="dv-cifra">${pctRazon} %</b>. Las rejillas verticales, el cebreado pesado y los rótulos repetidos compiten con los ${e.registros} valores.`;
+    }
+    if (e.vista === 'tarjetas' && e.registros <= 8) {
+      return `Al encerrar los datos en tarjetas infladas solo muestras <b class="dv-cifra">${e.registros} valores</b>. La baja densidad obliga a desplazar la vista para comparar registros que cabrían en una sola tabla limpia.`;
+    }
+    return `Razón tinta-datos del <b class="dv-cifra">${pctRazon} %</b> con <b class="dv-cifra">${e.registros} datos visibles</b>: al eliminar barrotes verticales y etiquetas redundantes, la alineación sostiene una lectura densa y serena.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="densidad-visual"]')) {
+    guiar<E>(raiz, [
+      (e) => e.ruido >= 80,
+      (e) => e.ruido <= 10,
+      (e) => e.ruido <= 15 && e.registros >= 24,
+      (e) => e.registros <= 4 && e.vista === 'tarjetas',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { jaula: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const k = e.jaula / 100;
+    const grosorH = k > 0.3 ? `${(1 + k * 2).toFixed(1)}px solid #222` : '1px solid #e5e5e0';
+    const grosorV = k > 0.15 ? `${(k * 2.5).toFixed(1)}px solid #222` : 'none';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;background:#fff;">
+          <thead>
+            <tr style="border-bottom:1.5px solid #222;color:#6f6f6f;font-size:10px;text-align:left;">
+              <th style="padding:6px;border-right:${grosorV};">TREN</th>
+              <th style="padding:6px;border-right:${grosorV};">SALIDA</th>
+              <th style="padding:6px;text-align:right;">ANDÉN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:${grosorH};">
+              <td style="padding:6px;font-weight:700;border-right:${grosorV};">Regional 104</td>
+              <td style="padding:6px;border-right:${grosorV};">07:45</td>
+              <td style="padding:6px;text-align:right;font-weight:700;">3</td>
+            </tr>
+            <tr style="border-bottom:${grosorH};">
+              <td style="padding:6px;font-weight:700;border-right:${grosorV};">Expreso 210</td>
+              <td style="padding:6px;border-right:${grosorV};">08:10</td>
+              <td style="padding:6px;text-align:right;font-weight:700;">1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.jaula > 50) return 'Los barrotes verticales y horizontales gruesos <b class="dv-cifra">encierran las cifras en una jaula</b>.';
+    if (e.jaula > 15) return 'La rejilla empieza a adelgazarse y los números ganan claridad.';
+    return '<b class="dv-cifra">Sin barrotes verticales</b>: el alineamiento mantiene las columnas ordenadas con la mitad de tinta.';
+  }
+
+  type E2 = { rotulos: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const rep = e.rotulos === 'repetidos';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;background:#fff;border:1.5px solid #222;">
+        ${
+          rep
+            ? `<div style="display:grid;gap:6px;font-size:11.5px;">
+                <div style="padding:6px;background:#f3f3ee;border:1px solid #222;"><b>Curso:</b> Tipografía I · <b>Aula:</b> 302 · <b>Cupos:</b> 24</div>
+                <div style="padding:6px;background:#f3f3ee;border:1px solid #222;"><b>Curso:</b> Color · <b>Aula:</b> 108 · <b>Cupos:</b> 18</div>
+                <div style="padding:6px;background:#f3f3ee;border:1px solid #222;"><b>Curso:</b> Retículas · <b>Aula:</b> 204 · <b>Cupos:</b> 20</div>
+              </div>`
+            : `<table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <thead><tr style="border-bottom:1.5px solid #222;font-size:10px;color:#6f6f6f;text-align:left;"><th style="padding:4px;">CURSO</th><th style="padding:4px;">AULA</th><th style="padding:4px;text-align:right;">CUPOS</th></tr></thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid #e5e5e0;"><td style="padding:5px 4px;font-weight:700;">Tipografía I</td><td style="padding:5px 4px;">302</td><td style="padding:5px 4px;text-align:right;">24</td></tr>
+                  <tr style="border-bottom:1px solid #e5e5e0;"><td style="padding:5px 4px;font-weight:700;">Color</td><td style="padding:5px 4px;">108</td><td style="padding:5px 4px;text-align:right;">18</td></tr>
+                  <tr><td style="padding:5px 4px;font-weight:700;">Retículas</td><td style="padding:5px 4px;">204</td><td style="padding:5px 4px;text-align:right;">20</td></tr>
+                </tbody>
+              </table>`
+        }
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.rotulos === 'repetidos') return 'Las palabras «Curso:», «Aula:» y «Cupos:» <b class="dv-cifra">se repiten en cada línea</b> y estorban la comparación.';
+    return '<b class="dv-cifra">Encabezado único</b>: nombras cada columna una vez y los ojos recorren las cifras en vertical.';
+  }
+
+  type E3 = { compactar: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const items = [
+      ['Plan Básico', '10 GB', 'Gratis'],
+      ['Plan Estudio', '100 GB', '8 USD'],
+      ['Plan Taller', '500 GB', '16 USD'],
+      ['Plan Editorial', '2 TB', '29 USD'],
+      ['Plan Archivo', '5 TB', '54 USD'],
+      ['Plan Campus', 'Ilimitado', '90 USD'],
+    ].slice(0, e.compactar);
+    const padV = Math.round(24 - e.compactar * 3);
+    d.innerHTML = `
+      <div style="padding:12px 16px;font-family:${SANS};color:#222;background:#fff;border:1.5px solid #222;">
+        ${items
+          .map(
+            ([nom, cap, pre], idx) => `
+          <div style="display:flex;justify-content:space-between;padding:${padV}px 6px;border-bottom:${idx < items.length - 1 ? '1px solid #e5e5e0' : 'none'};font-size:12px;">
+            <strong style="color:#222;">${nom}</strong>
+            <span style="color:#444;">${cap}</span>
+            <strong style="color:#222;">${pre}</strong>
+          </div>`,
+          )
+          .join('')}
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.compactar <= 2) return `Con solo <b class="dv-cifra">${e.compactar} filas visibles</b>, el exceso de margen impide comparar las opciones de un vistazo.`;
+    if (e.compactar <= 4) return `Ahora caben ${e.compactar} planes simultáneamente.`;
+    return `<b class="dv-cifra">${e.compactar} filas visibles a la vez</b>: la densidad compacta permite comparar toda la escala sin desplazar la pantalla.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['densidad-visual-e1', pintarE1 as never, describirE1 as never],
+    ['densidad-visual-e2', pintarE2 as never, describirE2 as never],
+    ['densidad-visual-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function rondaRazonTinta(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Eliminar las líneas verticales, adelgazar las horizontales y alinear las cifras a la derecha',
+        es: true,
+      },
+      {
+        texto: 'Borrar la mitad de las filas de datos y poner un borde negro de 3 px a las que queden',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Una tabla con 20 filas de datos se siente pesada y confusa. Según el principio de razón tinta-datos de Edward Tufte, ¿qué conviene hacer primero?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La claridad no se consigue mutilando datos útiles, sino podando la tinta no informativa (barrotes, cajas y sombras) para que la propia alineación de las cifras construya las columnas.',
+      repaso: 'Razón tinta-datos (data-ink ratio)',
+    };
+  }
+
+  function rondaEtiquetasRedundantes(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Colocar «Autor», «Año» y «Signatura» una sola vez en el encabezado de la tabla',
+        es: true,
+      },
+      {
+        texto: 'Repetir las palabras «Autor:», «Año:» y «Signatura:» dentro de cada una de las 50 tarjetas del catálogo',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En un listado bibliográfico de 50 libros, ¿cuál de estas dos estructuras evita la redundancia visual?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Si repites tres etiquetas en 50 filas, obligas al ojo a saltar 150 palabras idénticas que no aportan información nueva.',
+      repaso: 'Eliminar etiquetas redundantes',
+    };
+  }
+
+  function rondaContextoDensidad(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un horario de trenes o un panel de monitoreo técnico donde se comparan decenas de valores',
+        es: true,
+      },
+      {
+        texto: 'Un diálogo de confirmación urgente con una sola pregunta de sí o no',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál de estos dos casos una alta densidad de datos es una virtud funcional y no un defecto?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En tareas de consulta y comparación experta, ver muchos datos en una sola vista evita tener que recordar cifras entre una pantalla y otra.',
+      repaso: 'Densidad según la tarea',
+    };
+  }
+
+  function rondaSmallMultiples(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Múltiplos pequeños (small multiples): repetir el mismo minigráfico a la misma escala para cada serie',
+        es: true,
+      },
+      {
+        texto: 'Cambiar el tipo de gráfico, la escala y los colores en cada una de las doce provincias para dar variedad',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Quieres comparar la evolución de lluvias de 12 regiones en poco espacio. ¿Qué estrategia permite leer las 12 series sin esfuerzo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En los múltiplos pequeños el diseño es constante y solo cambian los datos: una vez entiendes el primer gráfico, lees los otros once de forma inmediata.',
+      repaso: 'Múltiplos pequeños (small multiples)',
+    };
+  }
+
+  function rondaAjustePodarTinta(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta tabla no tiene demasiados datos: tiene demasiada jaula. Baja la «Tinta decorativa y bordes» por debajo del 20 % sin perder ninguna cifra.',
+      control: {
+        etiqueta: 'Tinta decorativa y bordes',
+        min: 0,
+        max: 100,
+        paso: 10,
+        valor: 90,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const k = v / 100;
+        const bordeV = k > 0.2 ? `${Math.max(1, Math.round(k * 3))}px solid #222` : 'none';
+        const bordeH = k > 0.2 ? `${Math.max(1, Math.round(k * 2.5))}px solid #222` : '1px solid #e5e5e0';
+        const bgPar = k > 0.3 ? '#dcdcd2' : '#ffffff';
+        c.innerHTML = `<div style="padding:12px;background:#fbfbf9;font-family:${SANS};">
+          <table style="width:100%;border-collapse:collapse;background:#fff;border:${k > 0.2 ? '2px solid #222' : '1px solid #ccc'};font-size:12px;color:#222;">
+            <thead>
+              <tr style="background:${k > 0.4 ? '#222' : '#fff'};color:${k > 0.4 ? AMARILLO : '#6f6f6f'};border-bottom:1.5px solid #222;font-size:10px;text-align:left;">
+                <th style="padding:6px;border-right:${bordeV};">SALA</th>
+                <th style="padding:6px;border-right:${bordeV};">AFORO</th>
+                <th style="padding:6px;text-align:right;">OCUPACIÓN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:${bordeH};background:${bgPar};">
+                <td style="padding:6px;font-weight:700;border-right:${bordeV};">${k > 0.5 ? '■ Sala: ' : ''}Aula Magna</td>
+                <td style="padding:6px;border-right:${bordeV};">320</td>
+                <td style="padding:6px;text-align:right;font-weight:700;">94 %</td>
+              </tr>
+              <tr style="border-bottom:${bordeH};">
+                <td style="padding:6px;font-weight:700;border-right:${bordeV};">${k > 0.5 ? '■ Sala: ' : ''}Auditorio Sur</td>
+                <td style="padding:6px;border-right:${bordeV};">180</td>
+                <td style="padding:6px;text-align:right;font-weight:700;">78 %</td>
+              </tr>
+              <tr style="background:${bgPar};">
+                <td style="padding:6px;font-weight:700;border-right:${bordeV};">${k > 0.5 ? '■ Sala: ' : ''}Sala de Cámara</td>
+                <td style="padding:6px;border-right:${bordeV};">90</td>
+                <td style="padding:6px;text-align:right;font-weight:700;">100 %</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>`;
+      },
+      cumple: (v) => v <= 20,
+      falta: (v) => `Al ${v} %, las líneas verticales y los marcos siguen compitiendo con las cifras. Baja a 20 % o menos.`,
+      porque: 'Al reducir la tinta estructural al mínimo necesario, las nueve celdas se leen al instante y la tabla respira sin borrar un solo dato.',
+      repaso: 'Podar la tinta no informativa',
+    };
+  }
+
+  const juegoRoot = document.querySelector<HTMLElement>('[data-juego="densidad-visual"]');
+  if (juegoRoot) {
+    jugar(juegoRoot, () =>
+      barajar([
+        rondaRazonTinta(),
+        rondaEtiquetasRedundantes(),
+        rondaContextoDensidad(),
+        rondaSmallMultiples(),
+        rondaAjustePodarTinta(),
+      ]),
+    );
+  }
+</script>

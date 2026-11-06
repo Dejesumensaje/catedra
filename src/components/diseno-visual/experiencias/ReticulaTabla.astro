@@ -7,6 +7,11 @@ import Opciones from '../controles/Opciones.astro';
 
 <div class="dv-especimenes">
   <Instrumento id="ret-tabla" titulo="Arregla una tabla" comparar={false} consigna="¿Qué sala recibió más visitas? Las cifras están alineadas de una manera que obliga a leerlas una por una. Cambia la alineación para que las cantidades se puedan comparar con una sola mirada. Prueba las tres opciones y observa cómo cambia la lectura.">
+    <div slot="escenario" style="padding:14px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#222;">
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e5e5e5;"><span>Sala norte</span><span>1.204</span></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e5e5e5;"><span>Sala de lectura</span><span>987</span></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Hemeroteca</span><span>12.310</span></div>
+    </div>
     <Opciones
       lab="ret-tabla"
       variable="alin"

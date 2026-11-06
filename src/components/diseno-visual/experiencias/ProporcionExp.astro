@@ -1,0 +1,1060 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'proporcion';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Comprueba el empate del 50 %.',
+    hacer: 'Lleva «División principal / secundaria» a 50 %.',
+    pista: 'Ubica el deslizador justo en la mitad (50 %).',
+    preparar: { formato: '3:2', division: 62, margenes: 'canon', cotas: true },
+    logro: 'Al 50 %, la imagen y la columna de texto ocupan exactamente la misma superficie. Ninguna domina ni acompaña: la mirada duda entre las dos mitades.',
+  },
+  {
+    titulo: 'Observa la incomodidad de la zona tibia.',
+    hacer: 'Mueve «División principal / secundaria» a 48 % o 52 %.',
+    pista: 'Desplaza el control apenas 2 puntos a la izquierda o a la derecha del centro.',
+    logro: 'Entre 46 % y 54 % la diferencia es demasiado pequeña para leerse como una decisión jerárquica y demasiado grande para verse simétrica. Suele percibirse como un 50/50 mal medido.',
+  },
+  {
+    titulo: 'Establece una proporción clara (5:3 o 2:1).',
+    hacer: 'Lleva «División principal / secundaria» a un valor entre 62 % y 68 %.',
+    pista: 'Mueve el deslizador hacia la derecha hasta cruzar el 60 %.',
+    logro: 'Con una partición cercana a 5:3 (62 %) o 2:1 (67 %), la zona principal domina sin ambigüedad y la columna secundaria actúa como contrapeso informativo.',
+  },
+  {
+    titulo: 'Cambia la proporción exterior del formato.',
+    hacer: 'En «Proporción del formato», selecciona «1:1,414 (DIN A4)».',
+    pista: 'Elige la opción DIN A4 en el primer selector.',
+    logro: 'La norma DIN (1:√2) tiene una propiedad única: si doblas o divides la hoja por la mitad del lado largo, las dos mitades conservan exactamente la misma proporción 1:1,414 del pliego original.',
+  },
+  {
+    titulo: 'Compara márgenes iguales frente a márgenes progresivos.',
+    hacer: 'Abre «Más controles» y cambia «Relación de márgenes» a «Uniforme (1:1:1:1)» y luego a «Progresiva (2:3:4:6)».',
+    abrir: true,
+    preparar: { formato: '2:3', division: 62 },
+    logro: 'Con márgenes idénticos arriba y abajo, la caja impresa parece hundirse por gravedad óptica. La progresión clásica (más espacio al pie que a la cabeza) sostiene visualmente el bloque.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos pliegos con imagen y texto: a la izquierda divididos en 50 % y 50 % en empate; a la derecha divididos en 62 % y 38 % (razón 5:3) con jerarquía clara.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+
+        <!-- Izquierda: 50% / 50% -->
+        <g transform="translate(24, 18)">
+          <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={G}>PARTICIÓN 50 % / 50 % · RAZÓN 1:1</text>
+          <rect x="0" y="20" width="256" height="132" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <!-- Mitad izquierda imagen -->
+          <rect x="10" y="30" width="114" height="112" fill="#e5e5e0" stroke={T} stroke-width="1.2" />
+          <circle cx="67" cy="76" r="22" fill={T} />
+          <line x1="22" y1="124" x2="112" y2="124" stroke={G} stroke-width="2" />
+          <!-- Eje central 50% -->
+          <line x1="128" y1="20" x2="128" y2="152" stroke={ROJO} stroke-width="1.5" stroke-dasharray="3 3" />
+          <!-- Mitad derecha texto -->
+          <rect x="136" y="34" width="102" height="12" fill={T} />
+          <rect x="136" y="52" width="94" height="8" fill={T} />
+          <rect x="136" y="72" width="106" height="5" fill={TXT} />
+          <rect x="136" y="82" width="100" height="5" fill={TXT} />
+          <rect x="136" y="92" width="104" height="5" fill={TXT} />
+          <rect x="136" y="102" width="82" height="5" fill={TXT} />
+          <rect x="136" y="124" width="64" height="14" fill="#ffffff" stroke={T} stroke-width="1.2" />
+          <text x="64" y="148" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>50 %</text>
+          <text x="192" y="148" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>50 %</text>
+        </g>
+
+        <!-- Derecha: 62% / 38% (5:3) -->
+        <g transform="translate(320, 18)">
+          <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={T}>PARTICIÓN 62 % / 38 % · RAZÓN 5:3</text>
+          <rect x="0" y="20" width="256" height="132" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <!-- 62% imagen dominante -->
+          <rect x="10" y="30" width="144" height="112" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+          <circle cx="82" cy="80" r="28" fill={T} />
+          <line x1="26" y1="126" x2="138" y2="126" stroke={T} stroke-width="2" />
+          <!-- Eje 62% -->
+          <line x1="160" y1="20" x2="160" y2="152" stroke={T} stroke-width="1.2" stroke-dasharray="3 3" />
+          <!-- 38% columna de texto -->
+          <rect x="168" y="34" width="76" height="11" fill={T} />
+          <rect x="168" y="50" width="64" height="7" fill={T} />
+          <rect x="168" y="68" width="76" height="4.5" fill={TXT} />
+          <rect x="168" y="77" width="72" height="4.5" fill={TXT} />
+          <rect x="168" y="86" width="74" height="4.5" fill={TXT} />
+          <rect x="168" y="95" width="58" height="4.5" fill={TXT} />
+          <rect x="168" y="124" width="56" height="14" fill={T} />
+          <text x="82" y="148" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>62 % (5)</text>
+          <text x="208" y="148" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>38 % (3)</text>
+        </g>
+      </svg>
+    </div>
+    <p>Los dos pliegos contienen la misma imagen y el mismo texto. ¿En cuál de los dos queda claro de inmediato qué bloque manda y cuál acompaña?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En el segundo (`62 % / 38 %`, razón aproximada `5:3`). Cuando divides una superficie en dos partes iguales (`50 % / 50 %`), ambas mitades reclaman el mismo protagonismo y producen un empate estático. Cuando la partición es francamente desigual, aparece una relación entre dominante y subordinado.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Particiones tibias y medidas inconexas"
+      notas={[
+        {
+          ...pct(184, 92),
+          titulo: 'División casi a la mitad (48 % / 52 %)',
+          texto: 'La foto y la columna de datos miden casi lo mismo, pero no exactamente igual. En vez de verse equilibrado, parece un centrado que falló por pocos milímetros.',
+          zona: zona(18, 52, 324, 134),
+        },
+        {
+          ...pct(312, 118),
+          titulo: 'Recorte indeciso (1:1,06)',
+          texto: 'El recuadro de la fotografía no es ni cuadrado franco (1:1) ni rectangular claro (4:3 o 3:2). Esa ambigüedad geométrica incomoda a la vista.',
+          zona: zona(22, 58, 152, 122),
+        },
+        {
+          ...pct(180, 248),
+          titulo: 'Margen inferior aplastado',
+          texto: 'El margen superior es más alto que el inferior y las tres franjas horizontales tienen alturas parecidas entre sí, por lo que la ficha parece caerse hacia el borde inferior.',
+          zona: zona(18, 192, 324, 76),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ficha editorial con partición indecisa de 48 % y 52 %, recorte casi cuadrado y margen inferior estrecho.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="24" width="324" height="244" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <!-- Encabezado pesado -->
+        <rect x="28" y="34" width="304" height="22" fill="#e9e9e4" />
+        <text x="36" y="49" font-family={SANS} font-size="10" font-weight="700" fill={T}>ARCHIVO DE ARQUITECTURA · FICHA 14</text>
+        <!-- División 48% / 52% -->
+        <line x1="174" y1="56" x2="174" y2="190" stroke={ROJO} stroke-width="1" stroke-dasharray="3 2" />
+        <rect x="28" y="64" width="138" height="122" fill="#dcdcd4" stroke={T} stroke-width="1.2" />
+        <rect x="52" y="88" width="90" height="74" fill="none" stroke={T} stroke-width="1.5" />
+        <text x="97" y="130" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>1 : 1,06</text>
+        <!-- Derecha 52% -->
+        <text x="182" y="82" font-family={SERIF} font-size="15" font-weight="700" fill={T}>Pabellón Nórdico</text>
+        <text x="182" y="98" font-family={SANS} font-size="10" font-weight="700" fill={G}>Sverre Fehn · 1962</text>
+        <rect x="182" y="110" width="142" height="5" fill={TXT} />
+        <rect x="182" y="121" width="136" height="5" fill={TXT} />
+        <rect x="182" y="132" width="144" height="5" fill={TXT} />
+        <rect x="182" y="143" width="118" height="5" fill={TXT} />
+        <text x="97" y="182" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" fill={ROJO}>48 %</text>
+        <text x="252" y="182" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" fill={ROJO}>52 %</text>
+        <!-- Bloque inferior casi igual de alto y pegado al borde -->
+        <rect x="28" y="194" width="304" height="68" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <text x="38" y="214" font-family={SANS} font-size="10" font-weight="700" fill={T}>NOTA DE CONSTRUCCIÓN</text>
+        <rect x="38" y="224" width="276" height="5" fill={TXT} />
+        <rect x="38" y="235" width="260" height="5" fill={TXT} />
+        <rect x="38" y="246" width="220" height="5" fill={TXT} />
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Razón 2:1 y márgenes progresivos"
+      notas={[
+        {
+          ...pct(224, 108),
+          titulo: 'Partición en tercios (2:1)',
+          texto: 'La fotografía ocupa dos tercios del ancho útil (67 %) y la columna de texto un tercio (33 %). La relación 2:1 organiza el recorrido de inmediato.',
+          zona: zona(26, 46, 308, 168),
+        },
+        {
+          ...pct(124, 118),
+          titulo: 'Formato 3:2 definido',
+          texto: 'El encuadre de la imagen mantiene una proporción clásica 3:2 que dialoga con la caja general del pliego.',
+          zona: zona(26, 52, 198, 132),
+        },
+        {
+          ...pct(180, 246),
+          titulo: 'Margen inferior generoso (progresión)',
+          texto: 'El pie deja el doble de espacio que la cabeza. Ese zócalo sostiene la composición y evita que parezca hundirse.',
+          zona: zona(18, 214, 324, 54),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma ficha editorial organizada en proporción 2:1 (dos tercios para la imagen en formato 3:2 y un tercio para la ficha), con margen inferior amplio.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="16" width="324" height="248" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <!-- Cabecera compacta -->
+        <text x="30" y="36" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1" fill={G}>ARCHIVO DE ARQUITECTURA · FICHA 14</text>
+        <line x1="30" y1="43" x2="330" y2="43" stroke="#dcdcd6" stroke-width="1" />
+        <!-- 2/3 imagen en proporción 3:2 (192 x 128) -->
+        <rect x="30" y="54" width="192" height="128" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <rect x="54" y="72" width="144" height="92" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <line x1="54" y1="102" x2="198" y2="102" stroke={T} stroke-width="1.2" />
+        <line x1="102" y1="72" x2="102" y2="164" stroke={T} stroke-width="1.2" />
+        <line x1="150" y1="72" x2="150" y2="164" stroke={T} stroke-width="1.2" />
+        <text x="126" y="177" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>2/3 · FORMATO 3:2</text>
+        <!-- Línea de tercio -->
+        <line x1="230" y1="50" x2="230" y2="212" stroke={T} stroke-width="1" stroke-dasharray="3 3" />
+        <!-- 1/3 columna derecha -->
+        <text x="238" y="68" font-family={SERIF} font-size="15" font-weight="700" fill={T}>Pabellón</text>
+        <text x="238" y="89" font-family={SERIF} font-size="15" font-weight="700" fill={T}>Nórdico</text>
+        <text x="238" y="106" font-family={SANS} font-size="10" font-weight="700" fill={G}>Sverre Fehn, 1962</text>
+        <rect x="238" y="120" width="88" height="4.5" fill={TXT} />
+        <rect x="238" y="130" width="82" height="4.5" fill={TXT} />
+        <rect x="238" y="140" width="86" height="4.5" fill={TXT} />
+        <rect x="238" y="150" width="68" height="4.5" fill={TXT} />
+        <text x="284" y="177" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>1/3 (33 %)</text>
+        <!-- Pie con zócalo amplio debajo -->
+        <line x1="30" y1="194" x2="330" y2="194" stroke="#dcdcd6" stroke-width="1" />
+        <text x="30" y="210" font-family={SERIF} font-size="11" fill={TXT}>Luz difusa mediante vigas de hormigón de 60 mm de espesor.</text>
+        <text x="180" y="246" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>ZÓCALO DE APOYO · MARGEN INFERIOR AMPLIO</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · laboratorio de formatos y particiones"
+    consigna="Ajusta la proporción exterior del formato, mueve la división entre la zona principal y la secundaria, y compara qué ocurre cuando pasas del empate (50 %) a razones como 3:2 (60 %), 5:3 (62 %) o 2:1 (67 %)."
+    nota="Fija una división de 50 % como A y compárala con 62 % (5:3) o 67 % (2:1) como B para observar cómo desaparece la indecisión."
+  >
+    <svg slot="escenario" viewBox="0 0 640 340" role="img" aria-label="Pliego editorial en proporción 3:2 dividido en 62 % para la imagen principal y 38 % para la columna de texto.">
+      <rect width="640" height="340" fill="#fbfbf9" />
+      <rect x="110" y="26" width="420" height="280" fill="#ffffff" stroke={T} stroke-width="1.8" />
+      <rect x="138" y="54" width="224" height="196" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      <rect x="378" y="54" width="124" height="18" fill={T} />
+      <rect x="378" y="82" width="110" height="8" fill={G} />
+      <rect x="378" y="106" width="120" height="6" fill={TXT} />
+      <rect x="378" y="118" width="114" height="6" fill={TXT} />
+      <rect x="378" y="130" width="118" height="6" fill={TXT} />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba otros formatos y activa las líneas de razón matemática en «Más controles»." />
+
+    <Opciones
+      lab={lab}
+      variable="formato"
+      etiqueta="Proporción del formato"
+      valor="3:2"
+      opciones={[
+        { valor: '1:1', texto: '1:1 (Cuadrado)' },
+        { valor: '4:5', texto: '4:5 (Editorial)' },
+        { valor: 'din', texto: '1:1,414 (DIN A4)' },
+        { valor: '3:2', texto: '3:2 (Clásico)' },
+        { valor: '16:9', texto: '16:9 (Pantalla)' },
+      ]}
+      ayuda="Relación entre el ancho y el alto del soporte exterior."
+    />
+    <Deslizador
+      lab={lab}
+      variable="division"
+      etiqueta="División principal / secundaria"
+      min={20}
+      max={80}
+      paso={1}
+      valor={62}
+      unidad="%"
+      ayuda="Porcentaje del espacio interior asignado a la zona principal. Entre 46 % y 54 % aparece la zona tibia."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="margenes"
+        etiqueta="Relación de márgenes"
+        valor="canon"
+        opciones={[
+          { valor: 'uniforme', texto: 'Uniforme (1:1:1:1)' },
+          { valor: 'canon', texto: 'Progresiva (2:3:4:6)' },
+          { valor: 'estrecho', texto: 'Mínima' },
+        ]}
+        ayuda="La progresión clásica 2:3:4:6 da más espacio al margen exterior y al pie para sostener la mancha."
+      />
+      <Interruptor
+        lab={lab}
+        variable="cotas"
+        etiqueta="Mostrar razones matemáticas y diagnóstico"
+        activo={true}
+        ayuda="Dibuja las cotas, la razón simplificada más cercana y señala si la partición cae en empate."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"formato":"3:2","division":50,"margenes":"uniforme","cotas":true}'>Empate indeciso (50 / 50)</button>
+      <button type="button" class="dv-boton" data-preset='{"formato":"3:2","division":62,"margenes":"canon","cotas":true}'>Sección 5:3 (62 / 38)</button>
+      <button type="button" class="dv-boton" data-preset='{"formato":"din","division":67,"margenes":"canon","cotas":true}'>Hoja DIN A4 en tercios (2:1)</button>
+      <button type="button" class="dv-boton" data-preset='{"formato":"16:9","division":75,"margenes":"uniforme","cotas":true}'>Interfaz 3:1 (lienzo + panel)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Salir del empate 50 / 50 entre dos paneles"
+      comparar={false}
+      consigna="Esta interfaz divide la pantalla exactamente por la mitad entre el menú lateral y el documento de trabajo. Asigna al documento principal al menos dos tercios (67 %) o tres cuartos (75 %) del ancho."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">50 % menú lateral · 50 % lienzo de trabajo</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="lienzo"
+        etiqueta="Ancho del lienzo principal"
+        min={45}
+        max={80}
+        paso={1}
+        valor={50}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Corregir un «casi cuadrado» accidental"
+      comparar={false}
+      consigna="El recorte de esta fotografía mide 1:1,06: no parece un rectángulo intencional, sino un cuadrado que salió descuadrado. Elige una proporción definida."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Recorte ambiguo 1 : 1,06</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="recorte"
+        etiqueta="Proporción del recorte"
+        valor="1:1.06"
+        opciones={[
+          { valor: '1:1.06', texto: '1:1,06 (Tibia)' },
+          { valor: '1:1', texto: '1:1 (Cuadrado franco)' },
+          { valor: '4:3', texto: '4:3 (Rectangular)' },
+          { valor: '3:2', texto: '3:2 (Horizontal)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Dar más zócalo al pie que a la cabeza"
+      comparar={false}
+      consigna="Cuando el margen inferior es menor o igual que el superior, el bloque parece resbalar hacia abajo. Aumenta la proporción del margen inferior respecto al superior."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Margen inferior insuficiente</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="pie"
+        etiqueta="Proporción del margen inferior frente al superior"
+        min={80}
+        max={200}
+        paso={10}
+        valor={90}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Pliego de libro clásico: canon de márgenes 2:3:4:6 (Tschichold)"
+      notas={[
+        {
+          ...pct(180, 128),
+          titulo: 'Lomo compartido (2 + 2 = 4)',
+          texto: 'El margen interior de cada página mide 2 partes, de modo que al abrir el libro ambos márgenes centrales suman 4 partes y equilibran el margen exterior.',
+          zona: zona(156, 36, 48, 174),
+        },
+        {
+          ...pct(312, 118),
+          titulo: 'Progresión 2 : 3 : 4 : 6',
+          texto: 'Interior (2), cabeza (3), exterior (4) y pie (6). Ninguna medida es arbitraria: todas nacen de la misma proporción de la página.',
+          zona: zona(204, 24, 134, 232),
+        },
+        {
+          ...pct(264, 228),
+          titulo: 'Caja de texto semejante a la página',
+          texto: 'La mancha tipográfica conserva exactamente la misma razón ancho/alto que la hoja que la contiene.',
+          zona: zona(204, 48, 98, 152),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Doble página de libro abierto mostrando las diagonales de Van de Graaf y la progresión de márgenes 2:3:4:6.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <!-- Pliego doble: dos páginas de 156 x 234 (razón 2:3) -->
+        <rect x="24" y="23" width="156" height="234" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <rect x="180" y="23" width="156" height="234" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <!-- Diagonales constructivas sutiles -->
+        <line x1="24" y1="257" x2="336" y2="23" stroke="#d8d8d0" stroke-width="1" stroke-dasharray="3 3" />
+        <line x1="24" y1="23" x2="336" y2="257" stroke="#d8d8d0" stroke-width="1" stroke-dasharray="3 3" />
+        <line x1="180" y1="257" x2="336" y2="23" stroke="#d8d8d0" stroke-width="1" stroke-dasharray="3 3" />
+        <!-- Cajas de texto (márgenes 2:3:4:6 -> ext 34, cabeza 26, int 18, pie 52) -->
+        <rect x="58" y="49" width="104" height="156" fill="#f4f4ee" stroke={T} stroke-width="1.2" />
+        <rect x="198" y="49" width="104" height="156" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <g>
+            <line x1="66" y1={62 + i * 15} x2="154" y2={62 + i * 15} stroke={TXT} stroke-width="2" />
+            <line x1="206" y1={62 + i * 15} x2="294" y2={62 + i * 15} stroke={T} stroke-width="2" />
+          </g>
+        ))}
+        <!-- Cotas de razón 2:3:4:6 en la página derecha -->
+        <text x="189" y="130" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={ROJO}>2</text>
+        <text x="250" y="40" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={ROJO}>3</text>
+        <text x="319" y="130" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={ROJO}>4</text>
+        <text x="250" y="234" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={ROJO}>6</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Norma DIN 476 / ISO 216 (1:√2): invariancia al doblar"
+      notas={[
+        {
+          ...pct(112, 138),
+          titulo: 'Razón irracional 1 : 1,414',
+          texto: 'El lado largo mide exactamente la diagonal de un cuadrado construido sobre el lado corto (√2).',
+          zona: zona(28, 30, 156, 220),
+        },
+        {
+          ...pct(264, 86),
+          titulo: 'Mitad idéntica (A4 → A5)',
+          texto: 'Al cortar o doblar la hoja por la mitad del lado largo, el nuevo formato conserva la misma razón 1:√2 sin desperdiciar papel.',
+          zona: zona(184, 30, 148, 110),
+        },
+        {
+          ...pct(264, 196),
+          titulo: 'Escala continua (A5 → A6 → A7)',
+          texto: 'Un cartel A2, un folleto A4 y una postal A6 admiten reducir o ampliar la misma maqueta sin que cambien los márgenes relativos.',
+          zona: zona(184, 140, 148, 110),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Subdivisión sucesiva de una hoja DIN desde A3 hasta A7 conservando siempre la razón 1 a raíz de 2.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <!-- Rectángulo total 304 x 215 (1.414 : 1) -->
+        <rect x="28" y="32" width="304" height="215" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <!-- Mitad izquierda: A4 (152 x 215 -> 1:1.414) -->
+        <rect x="28" y="32" width="152" height="215" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="104" y="132" text-anchor="middle" font-family={SANS} font-size="18" font-weight="900" fill={T}>A4</text>
+        <text x="104" y="152" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>210 × 297 mm</text>
+        <text x="104" y="170" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={TXT}>1 : 1,414</text>
+        <!-- Arriba derecha: A5 (152 x 107.5) -->
+        <rect x="180" y="32" width="152" height="107.5" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="256" y="82" text-anchor="middle" font-family={SANS} font-size="15" font-weight="900" fill={T}>A5</text>
+        <text x="256" y="100" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>148 × 210 mm · 1 : 1,414</text>
+        <!-- Abajo derecha izq: A6 (76 x 107.5) -->
+        <rect x="180" y="139.5" width="76" height="107.5" fill="#f3f3ee" stroke={T} stroke-width="1.5" />
+        <text x="218" y="192" text-anchor="middle" font-family={SANS} font-size="13" font-weight="900" fill={T}>A6</text>
+        <text x="218" y="208" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>1 : 1,414</text>
+        <!-- Abajo derecha der arriba: A7 (76 x 53.75) -->
+        <rect x="256" y="139.5" width="76" height="53.75" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="294" y="170" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>A7</text>
+        <!-- Abajo derecha der abajo: A8 -->
+        <rect x="256" y="193.25" width="38" height="53.75" fill="#e9e9e2" stroke={T} stroke-width="1.2" />
+        <text x="275" y="224" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>A8</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Aplicación de escritorio: partición asimétrica 1 : 3"
+      notas={[
+        {
+          ...pct(68, 136),
+          titulo: 'Navegación subordinada (25 %)',
+          texto: 'El panel lateral ocupa exactamente un cuarto del ancho: suficiente para leer etiquetas sin robar espacio al documento.',
+          zona: zona(22, 34, 80, 212),
+        },
+        {
+          ...pct(218, 136),
+          titulo: 'Lienzo dominante (75 %)',
+          texto: 'Tres cuartos de la ventana quedan dedicados a la lectura y edición. La relación 1:3 deja claro cuál es el espacio de trabajo.',
+          zona: zona(102, 34, 236, 212),
+        },
+        {
+          ...pct(218, 72),
+          titulo: 'Cabecera a un octavo del alto',
+          texto: 'La barra superior ocupa una franja estrecha (1:8 del alto) para no partir verticalmente la ventana en dos bloques rivales.',
+          zona: zona(102, 34, 236, 34),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Interfaz de aplicación con barra lateral de 25 % y área principal de 75 % (razón 1:3).">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="22" y="34" width="316" height="212" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <!-- Sidebar 1/4 = 79px -->
+        <rect x="22" y="34" width="79" height="212" fill="#f3f3ee" stroke={T} stroke-width="1.4" />
+        <text x="34" y="54" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>PROYECTOS</text>
+        <rect x="32" y="68" width="58" height="16" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="38" y="79" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>01 · Síntesis</text>
+        <rect x="34" y="94" width="48" height="5" fill={TXT} />
+        <rect x="34" y="108" width="52" height="5" fill={TXT} />
+        <rect x="34" y="122" width="42" height="5" fill={TXT} />
+        <text x="61" y="234" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>1/4 (25 %)</text>
+        <!-- Lienzo 3/4 = 237px -->
+        <line x1="101" y1="64" x2="338" y2="64" stroke="#dcdcd4" stroke-width="1.2" />
+        <text x="118" y="53" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>DOCUMENTO ACTIVO · 1/8 DE ALTO</text>
+        <text x="118" y="94" font-family={SERIF} font-size="18" font-weight="700" fill={T}>Informe de estructuras</text>
+        <rect x="118" y="108" width="186" height="5" fill={TXT} />
+        <rect x="118" y="120" width="174" height="5" fill={TXT} />
+        <rect x="118" y="132" width="180" height="5" fill={TXT} />
+        <rect x="118" y="152" width="194" height="54" fill="#fbfbf9" stroke={T} stroke-width="1.2" />
+        <rect x="128" y="164" width="110" height="30" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="220" y="234" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>3/4 · LIENZO DOMINANTE (75 %)</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre particiones, zona tibia, proporción DIN y márgenes. Cambian cada vez que juegas."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    formato: string;
+    division: number;
+    margenes: string;
+    cotas: boolean;
+  };
+
+  const FORMATOS: Record<string, { w: number; h: number; nombre: string }> = {
+    '1:1': { w: 280, h: 280, nombre: '1 : 1 (Cuadrado)' },
+    '4:5': { w: 256, h: 300, nombre: '4 : 5 (Editorial)' },
+    din: { w: 220, h: 304, nombre: '1 : 1,414 (DIN A4)' },
+    '3:2': { w: 420, h: 280, nombre: '3 : 2 (Clásico)' },
+    '16:9': { w: 464, h: 261, nombre: '16 : 9 (Pantalla)' },
+  };
+
+  function razonCercana(pct: number): { etq: string; tibia: boolean; empate: boolean } {
+    const empate = pct === 50;
+    const tibia = pct >= 46 && pct <= 54 && pct !== 50;
+    const pares: [number, string][] = [
+      [20, '1 : 4'],
+      [25, '1 : 3'],
+      [33.3, '1 : 2'],
+      [38.2, '3 : 5 (áurea)'],
+      [40, '2 : 3'],
+      [50, '1 : 1 (mitades)'],
+      [60, '3 : 2'],
+      [61.8, '5 : 3 (áurea)'],
+      [66.7, '2 : 1 (tercios)'],
+      [75, '3 : 1 (cuartos)'],
+      [80, '4 : 1'],
+    ];
+    let mejor = pares[0];
+    for (const p of pares) {
+      if (Math.abs(p[0] - pct) < Math.abs(mejor[0] - pct)) mejor = p;
+    }
+    const etq = Math.abs(mejor[0] - pct) <= 3.2 ? mejor[1] : `${pct} : ${100 - pct}`;
+    return { etq, tibia, empate };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = W < 480 ? 320 : 350;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    const f = FORMATOS[e.formato] ?? FORMATOS['3:2'];
+    const info = razonCercana(e.division);
+
+    raiz.setAttribute(
+      'aria-label',
+      `Formato ${f.nombre} con división interior ${e.division} % y ${100 - e.division} % (${info.etq}).`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const maxW = W - (W < 480 ? 36 : 80);
+    const maxH = H - (e.cotas ? 58 : 36);
+    const esc = Math.min(maxW / f.w, maxH / f.h);
+    const pw = Math.round(f.w * esc);
+    const ph = Math.round(f.h * esc);
+    const px = Math.round((W - pw) / 2);
+    const py = Math.round((H - ph - (e.cotas ? 18 : 0)) / 2);
+
+    // Sombra dura sutil del pliego
+    raiz.append(svg('rect', { x: px + 5, y: py + 5, width: pw, height: ph, fill: '#e5e5e0' }));
+    raiz.append(svg('rect', { x: px, y: py, width: pw, height: ph, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.8 }));
+
+    // Márgenes según selección
+    const baseM = Math.max(10, Math.round(Math.min(pw, ph) * 0.065));
+    const mIzq = e.margenes === 'estrecho' ? Math.round(baseM * 0.55) : e.margenes === 'canon' ? Math.round(baseM * 1.1) : baseM;
+    const mDer = e.margenes === 'estrecho' ? Math.round(baseM * 0.55) : e.margenes === 'canon' ? Math.round(baseM * 1.45) : baseM;
+    const mArr = e.margenes === 'estrecho' ? Math.round(baseM * 0.55) : e.margenes === 'canon' ? Math.round(baseM * 0.95) : baseM;
+    const mAba = e.margenes === 'estrecho' ? Math.round(baseM * 0.55) : e.margenes === 'canon' ? Math.round(baseM * 1.95) : baseM;
+
+    const ix = px + mIzq;
+    const iy = py + mArr;
+    const iw = Math.max(60, pw - mIzq - mDer);
+    const ih = Math.max(60, ph - mArr - mAba);
+    const gap = Math.max(8, Math.round(baseM * 0.6));
+
+    // Si el formato es más ancho que alto dividimos en columnas; si es vertical, en filas
+    const esHorizontal = pw >= ph * 1.05;
+    const k = e.division / 100;
+
+    if (esHorizontal) {
+      const w1 = Math.round((iw - gap) * k);
+      const w2 = iw - gap - w1;
+      const x2 = ix + w1 + gap;
+
+      // Zona 1 (imagen/protagonista)
+      raiz.append(
+        svg('rect', {
+          x: ix,
+          y: iy,
+          width: w1,
+          height: ih,
+          fill: info.tibia || info.empate ? '#f3ecea' : AMARILLO,
+          stroke: info.tibia || info.empate ? COTA : TINTA,
+          'stroke-width': 1.5,
+        }),
+      );
+      const rCirc = Math.max(10, Math.min(w1, ih) * 0.22);
+      raiz.append(svg('circle', { cx: ix + w1 / 2, cy: iy + ih * 0.45, r: rCirc, fill: TINTA }));
+      const etq1 = svg('text', {
+        x: ix + w1 / 2,
+        y: iy + ih - 10,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11,
+        'font-weight': 700,
+        fill: info.tibia || info.empate ? COTA : TINTA,
+      });
+      etq1.textContent = `${e.division} %`;
+      raiz.append(etq1);
+
+      // Zona 2 (texto/secundaria)
+      raiz.append(svg('rect', { x: x2, y: iy, width: w2, height: ih, fill: '#fbfbf9', stroke: '#dcdcd4', 'stroke-width': 1 }));
+      const padT = Math.min(10, Math.max(4, w2 * 0.08));
+      const tw = Math.max(12, w2 - padT * 2);
+      raiz.append(svg('rect', { x: x2 + padT, y: iy + 10, width: tw * 0.85, height: 10, fill: TINTA }));
+      raiz.append(svg('rect', { x: x2 + padT, y: iy + 26, width: tw * 0.6, height: 6, fill: GRIS }));
+      for (let l = 0; l < 5; l++) {
+        const ly = iy + 44 + l * 11;
+        if (ly + 6 < iy + ih - 22) {
+          raiz.append(svg('rect', { x: x2 + padT, y: ly, width: tw * (l === 4 ? 0.65 : 0.94), height: 4.5, fill: TEXTO }));
+        }
+      }
+      const etq2 = svg('text', {
+        x: x2 + w2 / 2,
+        y: iy + ih - 10,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11,
+        'font-weight': 700,
+        fill: GRIS,
+      });
+      etq2.textContent = `${100 - e.division} %`;
+      raiz.append(etq2);
+
+      if (e.cotas) {
+        const divX = ix + w1 + gap / 2;
+        raiz.append(
+          svg('line', {
+            x1: divX,
+            y1: py - 6,
+            x2: divX,
+            y2: py + ph + 6,
+            stroke: COTA,
+            'stroke-width': 1.5,
+            'stroke-dasharray': '4 3',
+          }),
+        );
+      }
+    } else {
+      const h1 = Math.round((ih - gap) * k);
+      const h2 = ih - gap - h1;
+      const y2 = iy + h1 + gap;
+
+      raiz.append(
+        svg('rect', {
+          x: ix,
+          y: iy,
+          width: iw,
+          height: h1,
+          fill: info.tibia || info.empate ? '#f3ecea' : AMARILLO,
+          stroke: info.tibia || info.empate ? COTA : TINTA,
+          'stroke-width': 1.5,
+        }),
+      );
+      const rCirc = Math.max(8, Math.min(iw, h1) * 0.22);
+      raiz.append(svg('circle', { cx: ix + iw / 2, cy: iy + h1 * 0.46, r: rCirc, fill: TINTA }));
+      const etq1 = svg('text', {
+        x: ix + iw - 10,
+        y: iy + h1 - 8,
+        'text-anchor': 'end',
+        'font-family': SANS,
+        'font-size': 10.5,
+        'font-weight': 700,
+        fill: info.tibia || info.empate ? COTA : TINTA,
+      });
+      etq1.textContent = `${e.division} %`;
+      raiz.append(etq1);
+
+      raiz.append(svg('rect', { x: ix, y: y2, width: iw, height: h2, fill: '#fbfbf9', stroke: '#dcdcd4', 'stroke-width': 1 }));
+      raiz.append(svg('rect', { x: ix + 10, y: y2 + 10, width: iw * 0.68, height: 9, fill: TINTA }));
+      for (let l = 0; l < 3; l++) {
+        const ly = y2 + 26 + l * 10;
+        if (ly + 5 < y2 + h2 - 14) {
+          raiz.append(svg('rect', { x: ix + 10, y: ly, width: iw * (l === 2 ? 0.55 : 0.84), height: 4.5, fill: TEXTO }));
+        }
+      }
+      const etq2 = svg('text', {
+        x: ix + iw - 10,
+        y: y2 + h2 - 8,
+        'text-anchor': 'end',
+        'font-family': SANS,
+        'font-size': 10.5,
+        'font-weight': 700,
+        fill: GRIS,
+      });
+      etq2.textContent = `${100 - e.division} %`;
+      raiz.append(etq2);
+
+      if (e.cotas) {
+        const divY = iy + h1 + gap / 2;
+        raiz.append(
+          svg('line', {
+            x1: px - 6,
+            y1: divY,
+            x2: px + pw + 6,
+            y2: divY,
+            stroke: COTA,
+            'stroke-width': 1.5,
+            'stroke-dasharray': '4 3',
+          }),
+        );
+      }
+    }
+
+    if (e.cotas) {
+      const estadoTxt = info.empate
+        ? 'EMPATE 1:1 (ambas zonas compiten)'
+        : info.tibia
+          ? 'ZONA TIBIA (parece un 50/50 mal medido)'
+          : `PARTICIÓN CLARA · ${info.etq}`;
+      const pie = svg('text', {
+        x: W / 2,
+        y: H - 10,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11.5,
+        'font-weight': 700,
+        fill: info.tibia || info.empate ? COTA : TINTA,
+      });
+      pie.textContent = `Formato ${f.nombre} · ${estadoTxt}`;
+      raiz.append(pie);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const f = FORMATOS[e.formato] ?? FORMATOS['3:2'];
+    const info = razonCercana(e.division);
+    const notaMargen =
+      e.margenes === 'canon'
+        ? ' El margen inferior progresivo sostiene la caja sobre el plano.'
+        : e.margenes === 'uniforme'
+          ? ' Con márgenes idénticos en los cuatro lados, la caja tiende a verse ligeramente caída.'
+          : '';
+
+    if (info.empate) {
+      return `En el formato <b class="dv-cifra">${f.nombre}</b>, la partición <b class="dv-cifra">50 % / 50 %</b> divide la superficie en dos mitades iguales. Ninguna zona domina ni acompaña.${notaMargen}`;
+    }
+    if (info.tibia) {
+      return `La partición <b class="dv-cifra">${e.division} % / ${100 - e.division} %</b> cae en la <b class="dv-cifra">zona tibia (46 %–54 %)</b>: la diferencia es demasiado tímida para leerse como jerarquía y parece un centrado impreciso.${notaMargen}`;
+    }
+    return `Partición <b class="dv-cifra">${e.division} % / ${100 - e.division} %</b>, cercana a la razón <b class="dv-cifra">${info.etq}</b> en un formato ${f.nombre}. La diferencia franca entre las partes deja claro qué zona protagoniza y cuál acompaña.${notaMargen}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="proporcion"]')) {
+    guiar<E>(raiz, [
+      (e) => e.division === 50,
+      (e) => e.division >= 46 && e.division <= 54 && e.division !== 50,
+      (e) => e.division >= 60 && e.division <= 70,
+      (e) => e.formato === 'din',
+      (e, ini) => e.margenes !== ini.margenes && e.margenes === 'canon',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { lienzo: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const sec = 100 - e.lienzo;
+    const bien = e.lienzo >= 64;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;">
+        <div style="display:grid;grid-template-columns:${sec}fr ${e.lienzo}fr;gap:8px;min-height:112px;">
+          <div style="background:#f3f3ee;border:1.5px solid #222;padding:8px;display:flex;flex-direction:column;justify-content:space-between;">
+            <span style="font-size:10px;font-weight:700;color:#6f6f6f;">MENÚ LATERAL</span>
+            <strong style="font-size:15px;">${sec} %</strong>
+          </div>
+          <div style="background:${bien ? AMARILLO : '#ffffff'};border:1.5px solid #222;padding:10px;display:flex;flex-direction:column;justify-content:space-between;">
+            <span style="font-size:10px;font-weight:700;color:#222;">DOCUMENTO DE TRABAJO</span>
+            <strong style="font-size:18px;">${e.lienzo} % del ancho</strong>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.lienzo < 55) return `Con <b class="dv-cifra">${100 - e.lienzo} % / ${e.lienzo} %</b>, el menú lateral compite en tamaño con el documento.`;
+    if (e.lienzo < 64) return `Al ${e.lienzo} % empieza a separarse, pero conviene llegar al menos a dos tercios (67 %).`;
+    return `<b class="dv-cifra">Relación clara (${100 - e.lienzo} % / ${e.lienzo} %)</b>: el menú se subordina y el documento domina.`;
+  }
+
+  type E2 = { recorte: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const dims: Record<string, [number, number, string]> = {
+      '1:1.06': [116, 123, '1 : 1,06 (Casi cuadrado indeciso)'],
+      '1:1': [120, 120, '1 : 1 (Cuadrado exacto)'],
+      '4:3': [148, 111, '4 : 3 (Rectángulo clásico)'],
+      '3:2': [165, 110, '3 : 2 (Horizontal franco)'],
+    };
+    const [w, h, etq] = dims[e.recorte] ?? dims['1:1.06'];
+    const malo = e.recorte === '1:1.06';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;display:flex;align-items:center;gap:14px;">
+        <div style="width:${w}px;height:${h}px;background:${malo ? '#f3ecea' : AMARILLO};border:2px solid ${malo ? COTA : '#222'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0;">
+          ${e.recorte.replace('.', ',')}
+        </div>
+        <div>
+          <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:${malo ? COTA : '#222'};">${etq}</p>
+          <p style="margin:0;font-size:12px;color:#444;line-height:1.4;">${malo ? 'La diferencia de 6 % entre ancho y alto parece un error de recorte.' : 'La geometría se percibe decidida al primer vistazo.'}</p>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.recorte === '1:1.06') return 'Un recorte <b class="dv-cifra">1 : 1,06</b> no es ni cuadrado ni apaisado: genera incomodidad visual.';
+    return `Proporción <b class="dv-cifra">${e.recorte.replace('.', ',')}</b>: la forma tiene una identidad geométrica nítida.`;
+  }
+
+  type E3 = { pie: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const arr = 18;
+    const aba = Math.round((arr * e.pie) / 100);
+    const bien = e.pie >= 140;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SERIF};color:#222;display:flex;justify-content:center;">
+        <div style="width:220px;background:#fff;border:1.5px solid #222;padding:${arr}px 18px ${aba}px;">
+          <div style="background:${bien ? AMARILLO : '#f3f3ee'};border:1.2px solid #222;padding:10px 12px;">
+            <p style="margin:0 0 4px;font-family:${SANS};font-size:10px;font-weight:700;color:#6f6f6f;">CABEZA: ${arr} px · PIE: ${aba} px</p>
+            <p style="margin:0;font-size:13px;font-weight:700;">El bloque necesita un zócalo inferior más alto que el encabezado.</p>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.pie <= 100) return `El margen inferior mide el <b class="dv-cifra">${e.pie} %</b> del superior: la caja parece hundirse.`;
+    if (e.pie < 140) return `Al ${e.pie} % mejora el apoyo, aunque la progresión clásica da entre 150 % y 200 % al pie.`;
+    return `<b class="dv-cifra">Pie al ${e.pie} % del margen superior</b>: el espacio inferior sostiene ópticamente la caja.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['proporcion-e1', pintarE1 as never, describirE1 as never],
+    ['proporcion-e2', pintarE2 as never, describirE2 as never],
+    ['proporcion-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function rondaEmpate(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Partición 62 % / 38 % (razón aproximada 5:3)',
+        describir: 'Dos columnas desiguales donde la izquierda ocupa 62 % y la derecha 38 %.',
+        es: true,
+        html: `<div style="display:grid;grid-template-columns:62fr 38fr;gap:6px;padding:8px;background:#fbfbf9;border:1px solid #ccc;font-family:${SANS};">
+          <div style="background:${AMARILLO};border:1.5px solid #222;padding:14px 8px;font-weight:900;font-size:12px;">IMAGEN 62 %</div>
+          <div style="background:#fff;border:1px solid #999;padding:14px 8px;font-size:11px;color:#444;">Texto 38 %</div>
+        </div>`,
+      },
+      {
+        texto: 'Partición 49 % / 51 % (casi mitades iguales)',
+        describir: 'Dos columnas casi idénticas de 49 % y 51 %.',
+        es: false,
+        html: `<div style="display:grid;grid-template-columns:49fr 51fr;gap:6px;padding:8px;background:#fbfbf9;border:1px solid #ccc;font-family:${SANS};">
+          <div style="background:#e9e9e2;border:1.5px solid #222;padding:14px 8px;font-weight:700;font-size:12px;">IMAGEN 49 %</div>
+          <div style="background:#fff;border:1.5px solid #222;padding:14px 8px;font-weight:700;font-size:12px;">TEXTO 51 %</div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas dos particiones establece una relación clara entre zona dominante y zona secundaria sin caer en la zona tibia?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Una división de 49 % / 51 % cae en la zona tibia: las dos mitades empatan y además parecen mal medidas. En cambio, 62 % / 38 % (5:3) define con claridad qué bloque manda.',
+      repaso: 'Partición desigual frente a zona tibia',
+    };
+  }
+
+  function rondaDin(): Ronda {
+    const ops = barajar([
+      {
+        texto: '1 : √2 (aproximadamente 1 : 1,414, norma DIN)',
+        es: true,
+      },
+      {
+        texto: '1 : 1 (cuadrado perfecto)',
+        es: false,
+      },
+      {
+        texto: '16 : 9 (formato panorámico)',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál es la única proporción de página que, al doblarse exactamente por la mitad de su lado largo, produce dos hojas con la misma proporción que la original?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En un rectángulo de lados 1 y √2, al dividir el lado largo entre 2 obtenemos lados 1 y √2/2, cuya razón sigue siendo √2 : 1 (1 : 1,414). En esa propiedad se basa toda la serie ISO/DIN (A0, A1, A2, A3, A4, A5).',
+      repaso: 'Proporción 1:√2 de la norma DIN',
+    };
+  }
+
+  function rondaCasiCuadrado(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Usar un cuadrado exacto (1:1) o un rectángulo franco (4:3 o 3:2)',
+        describir: 'Dos marcos definidos: 1:1 y 3:2.',
+        es: true,
+      },
+      {
+        texto: 'Dejar el marco en 1 : 1,05 para que quede a medio camino entre cuadrado y rectángulo',
+        describir: 'Un marco ambiguo de 1:1,05.',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al maquetar una galería notas que las fotos quedaron con proporción 1 : 1,05. ¿Qué decisión resuelve la ambigüedad visual?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Una diferencia del 5 % respecto al cuadrado no alcanza a percibirse como rectángulo intencional: el sistema visual la interpreta como un cuadrado descuadrado.',
+      repaso: 'Geometría franca frente a casi cuadrado',
+    };
+  }
+
+  function rondaMargenes(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El margen inferior (pie) es mayor que el superior (cabeza), como en la progresión 2:3:4:6',
+        es: true,
+      },
+      {
+        texto: 'El margen superior es el doble que el inferior para empujar el texto contra el borde de abajo',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cómo se reparten los márgenes verticales en la tradición editorial clásica para evitar que la caja de texto parezca hundirse?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como el centro óptico está ligeramente por encima del centro geométrico, dejar más espacio en el pie que en la cabeza sostiene visualmente la mancha tipográfica.',
+      repaso: 'Progresión de márgenes',
+    };
+  }
+
+  function rondaAjusteParticion(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este pliego está partido al 50 % entre la fotografía principal y la nota lateral. Mueve la división hasta darle a la fotografía una proporción dominante clara (entre 62 % y 72 %).',
+      control: {
+        etiqueta: 'Ancho de la fotografía principal',
+        min: 40,
+        max: 80,
+        paso: 2,
+        valor: 50,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const bien = v >= 62 && v <= 72;
+        c.innerHTML = `<div style="display:grid;grid-template-columns:${v}fr ${100 - v}fr;gap:8px;padding:12px;background:#fbfbf9;border:1.5px solid #222;font-family:${SANS};">
+          <div style="background:${bien ? AMARILLO : '#e9e9e2'};border:1.5px solid #222;padding:20px 10px;text-align:center;font-weight:900;font-size:14px;color:#222;">
+            FOTOGRAFÍA · ${v} %
+          </div>
+          <div style="background:#fff;border:1px solid #6f6f6f;padding:20px 8px;text-align:center;font-size:12px;color:#444;">
+            Nota · ${100 - v} %
+          </div>
+        </div>`;
+      },
+      cumple: (v) => v >= 62 && v <= 72,
+      falta: (v) =>
+        v < 56
+          ? `Al ${v} %, las dos columnas siguen demasiado parejas. Sube por encima de 62 %.`
+          : v < 62
+            ? `Al ${v} % empieza a separarse, pero una razón 5:3 (62 %) o 2:1 (67 %) es más rotunda.`
+            : `Al ${v} %, la columna de nota queda demasiado estrecha. Ubícalo entre 62 % y 72 %.`,
+      porque: 'En torno a 62 %–68 % (razones 5:3 y 2:1), la fotografía domina el pliego y la columna lateral conserva un ancho cómodo para leerse.',
+      repaso: 'Salir del empate 50/50',
+    };
+  }
+
+  const juegoRoot = document.querySelector<HTMLElement>('[data-juego="proporcion"]');
+  if (juegoRoot) {
+    jugar(juegoRoot, () =>
+      barajar([
+        rondaEmpate(),
+        rondaDin(),
+        rondaCasiCuadrado(),
+        rondaMargenes(),
+        rondaAjusteParticion(),
+      ]),
+    );
+  }
+</script>

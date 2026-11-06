@@ -1,0 +1,1026 @@
+---
+// Ambigüedad visual: el umbral 50/50 donde dos interpretaciones empatan
+// (Zeki, 2004; Gombrich, 1960; Munari, 1968).
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'ambiguedad';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TX = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Observa el empate perceptivo al 50 %.',
+    hacer: 'Pon «Balance entre la lectura A y la lectura B» exactamente en 50 %.',
+    pista: 'Sitúa el primer deslizador en la mitad (50 %).',
+    preparar: { terreno: 'agrupacion', ayudas: false },
+    logro: 'Cuando la distancia horizontal y la distancia vertical entre las fichas son idénticas, el ojo oscila sin decidir si la matriz está organizada en tres filas o en cuatro columnas.',
+  },
+  {
+    titulo: 'Desambigua hacia la lectura A (filas).',
+    hacer: 'Baja «Balance entre la lectura A y la lectura B» a 20 % o menos.',
+    pista: 'Mueve el deslizador hacia la izquierda.',
+    logro: 'Al acercar las piezas en horizontal y separarlas en vertical, la ambigüedad desaparece: ahora todo el mundo lee tres filas horizontales inequívocas.',
+  },
+  {
+    titulo: 'Pasa a un control binario de interfaz.',
+    hacer: 'En «Terreno de prueba» elige «Selector de 2 estados» y lleva el balance a 50 %.',
+    pista: 'Selecciona la tercera opción y devuelve el deslizador a 50 %.',
+    logro: 'Con solo dos pastillas («Público» y «Privado»), pintar una de oscuro y otra de blanco sin ninguna señal adicional crea una duda clásica: ¿la activa es la oscura o la iluminada?',
+  },
+  {
+    titulo: 'Explora la ambigüedad poética en un símbolo.',
+    hacer: 'En «Terreno de prueba» selecciona «Símbolo reversible (cartel)» y deja el balance entre 45 % y 55 %.',
+    pista: 'Elige la segunda opción con el deslizador cerca del centro.',
+    logro: 'En un cartel cultural, mantener dos figuras en equilibrio 50/50 (el lomo de un libro abierto y las alas de un pájaro) no es un fallo: invita a mirar dos veces y une dos ideas en una sola imagen.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="A la izquierda, un interruptor ambiguo de dos botones donde no se sabe si el audio está encendido o apagado; a la derecha, un cartel de feria del libro donde un libro abierto es a la vez una puerta.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <!-- 1. Equívoco funcional en interfaz -->
+      <rect x="28" y="18" width="252" height="144" fill="#ffffff" stroke={T} stroke-width="1.5" />
+      <text x="44" y="42" font-family={SANS} font-size="10" font-weight="700" fill={ROJO}>1 · EQUÍVOCO EN UN CONTROL</text>
+      <text x="154" y="72" text-anchor="middle" font-family={SANS} font-size="12" font-weight="700" fill={T}>Micrófono de la sala</text>
+      <rect x="74" y="86" width="80" height="34" fill={T} stroke={T} stroke-width="2" />
+      <text x="114" y="107" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill="#ffffff">ENCENDIDO</text>
+      <rect x="154" y="86" width="80" height="34" fill="#ffffff" stroke={T} stroke-width="2" />
+      <text x="194" y="107" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill={T}>APAGADO</text>
+      <text x="154" y="144" text-anchor="middle" font-family={SANS} font-size="11" fill={TX}>¿Te están oyendo ahora mismo o no?</text>
+
+      <!-- 2. Doble sentido expresivo en cartel -->
+      <rect x="320" y="18" width="252" height="144" fill="#ffffff" stroke={T} stroke-width="1.5" />
+      <text x="336" y="42" font-family={SANS} font-size="10" font-weight="700" fill={T}>2 · DOBLE LECTURA EN UN CARTEL</text>
+      <g transform="translate(416 54)">
+        <!-- Libro abierto cuyas páginas forman una puerta luminosa -->
+        <polygon points="0,12 30,4 30,68 0,60" fill={T} />
+        <polygon points="60,12 30,4 30,68 60,60" fill={T} />
+        <rect x="18" y="20" width="24" height="48" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <circle cx="36" cy="44" r="2.2" fill={T} />
+      </g>
+      <text x="446" y="144" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Libro abierto + puerta = «Leer abre mundos»</text>
+    </svg>
+    <p>Ambas piezas admiten dos interpretaciones al mismo tiempo. ¿Por qué en la primera es un error grave y en la segunda un acierto?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Como distinguió Bruno Munari (1968), un instrumento operativo necesita una lectura <strong>unívoca</strong>: dudar medio segundo sobre si el micrófono está activo provoca errores. En cambio, un cartel o un símbolo editorial busca detener la mirada y condensar dos conceptos en una sola huella visual: allí la <strong>ambigüedad controlada</strong> multiplica el significado.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Ambigüedad accidental en una pantalla operativa"
+      notas={[
+        {
+          ...pct(180, 68),
+          titulo: 'El dilema de los dos botones',
+          texto: 'Cuando un selector segmentado tiene exactamente dos opciones («Borrador» / «Publicado»), no queda claro si el fondo negro significa «seleccionado» o «botón disponible para pulsar».',
+          zona: zona(48, 36, 264, 52),
+        },
+        {
+          ...pct(180, 148),
+          titulo: 'Etiqueta a mitad de camino entre dos campos',
+          texto: 'El rótulo «Código postal» está a 14 px del campo superior y a 14 px del campo inferior: el usuario no sabe cuál de las dos cajas debe rellenar.',
+          zona: zona(34, 102, 292, 92),
+        },
+        {
+          ...pct(286, 236),
+          titulo: 'Icono sin palabra que admite tres lecturas',
+          texto: 'Una flecha hacia abajo sola puede significar «Descargar archivo», «Desplegar más opciones» o «Mover al final».',
+          zona: zona(236, 206, 94, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Formulario con tres ambigüedades funcionales: un selector binario confuso, una etiqueta equidistante entre dos cajas de texto y un botón con solo una flecha.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <!-- Selector binario ambiguo -->
+        <rect x="64" y="42" width="116" height="36" fill={T} stroke={T} stroke-width="1.5" />
+        <text x="122" y="64" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">BORRADOR</text>
+        <rect x="180" y="42" width="116" height="36" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="238" y="64" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>PUBLICADO</text>
+
+        <!-- Etiqueta equidistante -->
+        <rect x="44" y="106" width="272" height="28" fill="#f7f7f4" stroke={T} stroke-width="1.5" />
+        <text x="44" y="152" font-family={SANS} font-size="11" font-weight="700" fill={T}>Código postal de entrega</text>
+        <rect x="44" y="164" width="272" height="28" fill="#f7f7f4" stroke={T} stroke-width="1.5" />
+
+        <!-- Icono solitario ambiguo -->
+        <rect x="44" y="214" width="184" height="36" fill="#f3f3ef" stroke="#cfcfc8" />
+        <text x="58" y="236" font-family={SANS} font-size="11" fill={TX}>informe-anual.pdf</text>
+        <rect x="248" y="214" width="68" height="36" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="282" y="238" text-anchor="middle" font-family={SANS} font-size="18" font-weight="900" fill={T}>↓</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Interfaz desambiguada: una sola lectura posible para cada control"
+      notas={[
+        {
+          ...pct(180, 62),
+          titulo: 'Estado explícito con marca de verificación',
+          texto: 'Añadir el signo «✓» y un rótulo de estado («Estado actual: Borrador») elimina cualquier duda en el selector de dos opciones.',
+          zona: zona(38, 28, 284, 62),
+        },
+        {
+          ...pct(180, 148),
+          titulo: 'Proximidad 1:3 entre etiqueta y campo',
+          texto: 'Cada rótulo se sitúa a 4 px de su propio campo y a 18 px del anterior. La agrupación es instantánea.',
+          zona: zona(38, 98, 284, 98),
+        },
+        {
+          ...pct(256, 234),
+          titulo: 'Verbo + icono',
+          texto: 'Acompañar la flecha con la palabra «Descargar PDF» cierra la puerta a interpretaciones equivocadas.',
+          zona: zona(182, 206, 144, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo formulario desambiguado: el selector muestra una marca de verificación clara, cada etiqueta está pegada a su campo y el botón dice Descargar PDF.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="44" y="36" font-family={SANS} font-size="10" font-weight="700" fill={G}>ESTADO DEL DOCUMENTO</text>
+        <rect x="44" y="44" width="136" height="36" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="112" y="66" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>✓ BORRADOR</text>
+        <rect x="180" y="44" width="136" height="36" fill="#ffffff" stroke="#cfcfc8" stroke-width="1.5" />
+        <text x="248" y="66" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={G}>Publicado</text>
+
+        <text x="44" y="106" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>Dirección principal</text>
+        <rect x="44" y="112" width="272" height="26" fill="#f7f7f4" stroke={T} stroke-width="1.5" />
+
+        <text x="44" y="158" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>Código postal de entrega</text>
+        <rect x="44" y="164" width="272" height="26" fill="#f7f7f4" stroke={T} stroke-width="1.5" />
+
+        <rect x="44" y="214" width="134" height="36" fill="#f3f3ef" stroke="#cfcfc8" />
+        <text x="54" y="236" font-family={SANS} font-size="10.5" fill={TX}>informe-anual.pdf</text>
+        <rect x="186" y="214" width="130" height="36" fill={T} />
+        <text x="251" y="236" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={AMARILLO}>↓ Descargar PDF</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · el umbral de biestabilidad (lectura A ↔ 50/50 ↔ lectura B)"
+    consigna="Mueve el deslizador entre el extremo A (0 %), la zona de ambigüedad máxima (50 %) y el extremo B (100 %). Cambia el terreno de prueba para observar cuándo ese empate 50/50 bloquea una tarea y cuándo enriquece un símbolo."
+    nota="Fija en A el punto exacto de empate (50 %) y compáralo con B desplazando el control a 15 % o a 85 %. Observa cuán poco hace falta para romper la indecisión perceptual."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Matriz de doce bloques en el umbral 50/50 donde las distancias horizontales y verticales empatan.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      {[0, 1, 2].map((f) =>
+        [0, 1, 2, 3].map((c) => (
+          <rect x={156 + c * 92} y={54 + f * 78} width="56" height="44" fill="#ffffff" stroke="#222222" stroke-width="2" />
+        )),
+      )}
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Activa «Añadir señal redundante de desambiguación» en «Más controles» para ver cómo un filete o un icono rompen un empate al instante." />
+
+    <Opciones
+      lab={lab}
+      variable="terreno"
+      etiqueta="Terreno de prueba"
+      valor="agrupacion"
+      opciones={[
+        { valor: 'agrupacion', texto: 'Agrupación (¿filas o columnas?)' },
+        { valor: 'simbolo', texto: 'Símbolo reversible (cartel)' },
+        { valor: 'interfaz', texto: 'Selector de 2 estados' },
+      ]}
+      ayuda="Explora el mismo umbral matemático 50/50 en organización espacial, gráfica editorial e interfaz."
+    />
+    <Deslizador
+      lab={lab}
+      variable="balance"
+      etiqueta="Balance entre la lectura A y la lectura B"
+      min={0}
+      max={100}
+      paso={5}
+      valor={50}
+      unidad="%"
+      ayuda="0 %: domina por completo la lectura A. 50 %: máxima ambigüedad (empate perceptivo). 100 %: domina la lectura B."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="ayudas"
+        etiqueta="Añadir señal redundante de desambiguación"
+        activo={false}
+        ayuda="Introduce una segunda pista (filetes, marcas de verificación o etiquetas) que resuelve la duda incluso en el 50 %."
+      />
+      <Interruptor
+        lab={lab}
+        variable="curva"
+        etiqueta="Mostrar el medidor de certidumbre perceptual"
+        activo={true}
+        ayuda="Muestra la probabilidad relativa de cada lectura."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"terreno":"agrupacion","balance":50,"ayudas":false}'>Empate espacial 50/50 (¿filas o columnas?)</button>
+      <button type="button" class="dv-boton" data-preset='{"terreno":"agrupacion","balance":15,"ayudas":false}'>Desambiguado en 3 filas claras</button>
+      <button type="button" class="dv-boton" data-preset='{"terreno":"interfaz","balance":50,"ayudas":false}'>Selector binario ambiguo</button>
+      <button type="button" class="dv-boton" data-preset='{"terreno":"simbolo","balance":50,"ayudas":false}'>Doble lectura intencional en cartel (50/50)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1 · Resuelve la trampa del selector de dos opciones"
+      comparar={false}
+      consigna="En un conmutador de solo dos botones («Mensual» / «Anual»), cambiar únicamente el color de fondo deja al usuario dudando cuál está activo. Añade una señal inequívoca."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Plan de facturación: Mensual / Anual</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="diseno"
+        etiqueta="Diseño del control"
+        valor="solo-color"
+        opciones={[
+          { valor: 'solo-color', texto: 'Dos cajas (negra y blanca)' },
+          { valor: 'check', texto: 'Con marca «✓» y borde activo' },
+          { valor: 'radio', texto: 'Botones de radio explícitos' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2 · Acompaña los iconos polisémicos con una palabra"
+      comparar={false}
+      consigna="Un icono de estrella, corazón o marcador aislado puede significar «Guardar para después», «Calificar», «Destacar para todos» o «Suscribirse». Elige la versión que elimina la duda."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Barra de acciones de un artículo</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="rotulo"
+        etiqueta="Presentación de los botones"
+        valor="iconos"
+        opciones={[
+          { valor: 'iconos', texto: 'Solo iconos (★  ⚑  ↗)' },
+          { valor: 'verbos', texto: 'Icono + verbo concreto' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3 · Saca la distancia entre grupos de la zona de empate"
+      comparar={false}
+      consigna="Cada precio está a la misma distancia del plato de arriba y del plato de abajo (16 px). Acerca cada precio a su plato correspondiente para que nadie pague el valor equivocado."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Carta de cafetería</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="espacioEntrePlatos"
+        etiqueta="Separación entre un plato y el siguiente"
+        min={8}
+        max={36}
+        paso={2}
+        valor={8}
+        unidad="px"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cartel cultural (al modo de Shigeo Fukuda): figura-fondo reversible"
+      notas={[
+        {
+          ...pct(148, 128),
+          titulo: 'Primera lectura: silueta oscura',
+          texto: 'Si tomas el carbón como figura y el amarillo como fondo, lees la llave antigua de una ciudad.',
+          zona: zona(58, 62, 168, 124),
+        },
+        {
+          ...pct(216, 128),
+          titulo: 'Segunda lectura: contraforma luminosa',
+          texto: 'Los dientes de la llave recortan en el espacio amarillo las torres y tejados del perfil urbano: una sola forma contiene ambos temas.',
+          zona: zona(142, 74, 148, 98),
+        },
+        {
+          ...pct(180, 232),
+          titulo: 'Datos prácticos fuera del juego',
+          texto: 'La ambigüedad se reserva a la imagen central; la fecha, el lugar y el horario al pie son totalmente unívocos.',
+          zona: zona(26, 202, 308, 56),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel sobre patrimonio urbano donde el paletón de una llave negra recorta al mismo tiempo el perfil de edificios sobre fondo amarillo.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="24" y="20" width="312" height="172" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <!-- Llave cuyo paletón es un skyline -->
+        <circle cx="96" cy="106" r="34" fill={T} />
+        <circle cx="96" cy="106" r="14" fill={AMARILLO} />
+        <rect x="126" y="98" width="174" height="16" fill={T} />
+        <!-- Dientes de la llave hacia abajo con huecos de edificios -->
+        <rect x="172" y="114" width="128" height="58" fill={T} />
+        <!-- Ventanas / recorte de rascacielos en amarillo -->
+        <rect x="184" y="132" width="18" height="42" fill={AMARILLO} />
+        <rect x="210" y="122" width="22" height="52" fill={AMARILLO} />
+        <rect x="240" y="140" width="16" height="34" fill={AMARILLO} />
+        <rect x="264" y="126" width="24" height="48" fill={AMARILLO} />
+
+        <text x="28" y="218" font-family={SANS} font-size="16" font-weight="900" fill={T}>HABITAR EL CENTRO</text>
+        <text x="28" y="238" font-family={SERIF} font-size="12" fill={TX}>Jornadas de arquitectura y derecho a la vivienda</text>
+        <text x="28" y="256" font-family={SANS} font-size="10" font-weight="700" fill={G}>14 Y 15 DE NOVIEMBRE · ENTRADA LIBRE</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Interfaz crítica: desambiguación total en un panel de permisos"
+      notas={[
+        {
+          ...pct(268, 86),
+          titulo: 'Verbo de estado presente + icono',
+          texto: 'En vez de un interruptor mudo, cada fila indica con palabras exactas el estado actual («Solo lectura», «Puede editar»).',
+          zona: zona(198, 54, 134, 136),
+        },
+        {
+          ...pct(112, 86),
+          titulo: 'Región común por fila',
+          texto: 'Cada persona y su permiso quedan encerrados en la misma banda horizontal para que la vista nunca cruce el renglón equivocado.',
+          zona: zona(24, 54, 312, 42),
+        },
+        {
+          ...pct(180, 228),
+          titulo: 'Acción destructiva diferenciada',
+          texto: 'El botón de revocar acceso explica su consecuencia en lugar de decir simplemente «Aceptar» o «Sí».',
+          zona: zona(24, 202, 312, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de control de accesos donde cada fila encierra al usuario y su estado explícito con texto y marca visual.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="28" y="38" font-family={SANS} font-size="10.5" font-weight="900" letter-spacing="1" fill={G}>ACCESO AL REPOSITORIO</text>
+
+        <rect x="28" y="54" width="304" height="40" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <text x="40" y="78" font-family={SANS} font-size="12" font-weight="700" fill={T}>Elena Gómez</text>
+        <rect x="208" y="62" width="114" height="24" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="265" y="78" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill={T}>✓ PUEDE EDITAR</text>
+
+        <rect x="28" y="102" width="304" height="40" fill="#ffffff" stroke="#d8d8d2" stroke-width="1.2" />
+        <text x="40" y="126" font-family={SANS} font-size="12" font-weight="700" fill={T}>Marco Restrepo</text>
+        <rect x="208" y="110" width="114" height="24" fill="#f3f3ef" stroke="#b8b8b0" />
+        <text x="265" y="126" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={TX}>SOLO LECTURA</text>
+
+        <rect x="28" y="150" width="304" height="40" fill="#ffffff" stroke="#d8d8d2" stroke-width="1.2" />
+        <text x="40" y="174" font-family={SANS} font-size="12" font-weight="700" fill={T}>Invitados externos</text>
+        <rect x="208" y="158" width="114" height="24" fill="#f3f3ef" stroke="#b8b8b0" />
+        <text x="265" y="174" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={G}>SIN ACCESO</text>
+
+        <rect x="28" y="210" width="184" height="34" fill="#ffffff" stroke={ROJO} stroke-width="1.8" />
+        <text x="120" y="231" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={ROJO}>Revocar enlaces públicos</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Señalética y tablas de horarios: eliminar la ambigüedad de lectura"
+      notas={[
+        {
+          ...pct(180, 74),
+          titulo: 'Dirección de la flecha vinculada al andén',
+          texto: 'Cada destino va encerrado en el mismo bloque que su flecha y su número de vía para impedir cruces diagonales.',
+          zona: zona(22, 34, 316, 78),
+        },
+        {
+          ...pct(180, 166),
+          titulo: 'Bandas horizontales alternas',
+          texto: 'En una lista ancha donde el nombre de la estación está lejos de la hora de salida, un filete o banda guía el ojo de lado a lado.',
+          zona: zona(22, 124, 316, 86),
+        },
+        {
+          ...pct(292, 236),
+          titulo: 'Formato de 24 horas sin duda AM/PM',
+          texto: 'Escribir «18:40» en lugar de «6:40» elimina una de las ambigüedades más frecuentes en billetes y reservas.',
+          zona: zona(232, 124, 106, 128),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tablero de estación ferroviaria con flechas agrupadas por cajón, bandas horizontales de guía y horas en formato de 24 horas.">
+        <rect width={W} height={H} fill="#f4f4f0" />
+        <rect x="24" y="24" width="148" height="72" fill={T} />
+        <text x="40" y="54" font-family={SANS} font-size="22" font-weight="900" fill={AMARILLO}>← VÍA 1</text>
+        <text x="40" y="78" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">Centro · Universidad</text>
+
+        <rect x="188" y="24" width="148" height="72" fill={T} />
+        <text x="320" y="54" text-anchor="end" font-family={SANS} font-size="22" font-weight="900" fill={AMARILLO}>VÍA 2 →</text>
+        <text x="320" y="78" text-anchor="end" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">Puerto · Estación Sur</text>
+
+        <rect x="24" y="114" width="312" height="140" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="36" y="136" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>PRÓXIMAS SALIDAS</text>
+        <text x="324" y="136" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>HORA (24 H)</text>
+
+        <rect x="25" y="146" width="310" height="32" fill="#f7f7f3" />
+        <text x="36" y="166" font-family={SANS} font-size="12" font-weight="700" fill={T}>Tren Regional · Norte</text>
+        <text x="324" y="166" text-anchor="end" font-family={SANS} font-size="13" font-weight="900" fill={T}>18:15</text>
+
+        <rect x="25" y="178" width="310" height="32" fill="#ffffff" />
+        <text x="36" y="198" font-family={SANS} font-size="12" font-weight="700" fill={T}>Expreso Nocturno · Costa</text>
+        <text x="324" y="198" text-anchor="end" font-family={SANS} font-size="13" font-weight="900" fill={T}>18:40</text>
+
+        <rect x="25" y="210" width="310" height="32" fill="#f7f7f3" />
+        <text x="36" y="230" font-family={SANS} font-size="12" font-weight="700" fill={T}>Línea Circular · Talleres</text>
+        <text x="324" y="230" text-anchor="end" font-family={SANS} font-size="13" font-weight="900" fill={T}>19:05</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre selectores binarios, umbrales de agrupación 50/50 y la diferencia entre equívoco funcional y doble sentido poético."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  type E = {
+    terreno: string;
+    balance: number;
+    ayudas: boolean;
+    curva: boolean;
+  };
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  function calcularEstado(e: E) {
+    // 50 es empate máximo (ambigüedad = 100 %)
+    const distCentro = Math.abs(e.balance - 50);
+    const ambiguedadBruta = Math.max(0, Math.round((1 - distCentro / 35) * 100));
+    const ambiguedad = e.ayudas && e.terreno !== 'simbolo' ? Math.min(15, ambiguedadBruta) : ambiguedadBruta;
+    const enEmpate = distCentro <= 12 && (!e.ayudas || e.terreno === 'simbolo');
+    return { ambiguedad, enEmpate };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = e.curva ? 330 : 270;
+    const { ambiguedad, enEmpate } = calcularEstado(e);
+    const k = e.balance / 100; // 0 = A, 0.5 = 50/50, 1 = B
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Laboratorio de ambigüedad en modo ${e.terreno} con balance ${e.balance} % y nivel de ambigüedad ${ambiguedad} %.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const cx = W / 2;
+    const cy = 128;
+
+    if (e.terreno === 'agrupacion') {
+      // Matriz 3 filas x 4 columnas: en k=0 filas muy juntas, en k=0.5 distancias iguales, en k=1 columnas muy juntas
+      const gapX = 8 + k * 44; // de 8 px a 52 px
+      const gapY = 8 + (1 - k) * 44; // de 52 px a 8 px
+      const wFicha = 44;
+      const hFicha = 30;
+      const totalW = 4 * wFicha + 3 * gapX;
+      const totalH = 3 * hFicha + 2 * gapY;
+      const startX = cx - totalW / 2;
+      const startY = cy - totalH / 2;
+
+      if (e.ayudas) {
+        // Filetes guía según el lado dominante (o filas por defecto)
+        if (k <= 0.5) {
+          for (let f = 0; f < 3; f++) {
+            const fy = startY + f * (hFicha + gapY) - 4;
+            raiz.append(svg('rect', { x: startX - 6, y: fy, width: totalW + 12, height: hFicha + 8, fill: '#f0f0ea', stroke: TINTA, 'stroke-width': 1 }));
+          }
+        } else {
+          for (let c = 0; c < 4; c++) {
+            const fx = startX + c * (wFicha + gapX) - 4;
+            raiz.append(svg('rect', { x: fx, y: startY - 6, width: wFicha + 8, height: totalH + 12, fill: '#f0f0ea', stroke: TINTA, 'stroke-width': 1 }));
+          }
+        }
+      }
+
+      for (let f = 0; f < 3; f++) {
+        for (let c = 0; c < 4; c++) {
+          const x = startX + c * (wFicha + gapX);
+          const y = startY + f * (hFicha + gapY);
+          raiz.append(
+            svg('rect', {
+              x,
+              y,
+              width: wFicha,
+              height: hFicha,
+              fill: enEmpate ? AMARILLO : '#ffffff',
+              stroke: enEmpate ? COTA : TINTA,
+              'stroke-width': 1.8,
+            }),
+          );
+        }
+      }
+
+      const tInfo = svg('text', {
+        x: cx,
+        y: 232,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11,
+        'font-weight': 700,
+        fill: enEmpate ? COTA : TINTA,
+      });
+      tInfo.textContent = enEmpate
+        ? `EMPATE ESPACIAL: ${Math.round(gapX)} PX HORIZONTAL VS. ${Math.round(gapY)} PX VERTICAL`
+        : k < 0.5
+          ? `LECTURA A: 3 FILAS HORIZONTALES (${Math.round(gapX)} PX VS. ${Math.round(gapY)} PX)`
+          : `LECTURA B: 4 COLUMNAS VERTICALES (${Math.round(gapX)} PX VS. ${Math.round(gapY)} PX)`;
+      raiz.append(tInfo);
+    } else if (e.terreno === 'simbolo') {
+      // Cartel cultural con figura-fondo: libro abierto (A) vs. pájaro / puerta (B)
+      const cardW = Math.min(340, W - 40);
+      const cardH = 190;
+      const cardX = cx - cardW / 2;
+      const cardY = 26;
+
+      raiz.append(svg('rect', { x: cardX, y: cardY, width: cardW, height: cardH, fill: AMARILLO, stroke: TINTA, 'stroke-width': 2 }));
+
+      // Dibujo central cuyas proporciones cambian con k
+      const alaAbierta = 16 + k * 28;
+      const lomoAlto = 74 - k * 24;
+      // Dos trapecios que parecen páginas de un libro (k bajo) o alas en vuelo (k alto), y en k=0.5 ambas cosas a la vez
+      raiz.append(
+        svg('polygon', {
+          points: `${cx - 72},${cy - alaAbierta} ${cx - 2},${cy - 14} ${cx - 2},${cy - 14 + lomoAlto} ${cx - 72},${cy - alaAbierta + lomoAlto}`,
+          fill: TINTA,
+        }),
+      );
+      raiz.append(
+        svg('polygon', {
+          points: `${cx + 72},${cy - alaAbierta} ${cx + 2},${cy - 14} ${cx + 2},${cy - 14 + lomoAlto} ${cx + 72},${cy - alaAbierta + lomoAlto}`,
+          fill: TINTA,
+        }),
+      );
+
+      // Si k < 0.65 se ven renglones o lomo; si k > 0.35 se ve silueta de ave/puerta en la contraforma
+      if (k <= 0.65) {
+        raiz.append(svg('line', { x1: cx - 54, y1: cy + 4, x2: cx - 16, y2: cy + 12, stroke: AMARILLO, 'stroke-width': 2 }));
+        raiz.append(svg('line', { x1: cx + 54, y1: cy + 4, x2: cx + 16, y2: cy + 12, stroke: AMARILLO, 'stroke-width': 2 }));
+      }
+
+      const tCartel = svg('text', {
+        x: cx,
+        y: cardY + cardH - 16,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 12,
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      tCartel.textContent = enEmpate
+        ? 'FERIA DEL LIBRO · DOS LECTURAS EN UNA SOLA IMAGEN'
+        : k < 0.5
+          ? 'LECTURA LITERAL A: SOLO UN LIBRO ABIERTO'
+          : 'LECTURA LITERAL B: SOLO ALAS EN VUELO';
+      raiz.append(tCartel);
+    } else {
+      // Interfaz: selector de 2 estados
+      const boxW = Math.min(340, W - 40);
+      const boxX = cx - boxW / 2;
+      raiz.append(svg('rect', { x: boxX, y: 40, width: boxW, height: 156, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.8 }));
+
+      const tCab = svg('text', {
+        x: cx,
+        y: 72,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 12,
+        'font-weight': 700,
+        fill: TINTA,
+      });
+      tCab.textContent = 'Visibilidad del archivo en la red';
+      raiz.append(tCab);
+
+      const bW = 124;
+      const bH = 40;
+      const b1X = cx - bW - (e.ayudas ? 8 : 0);
+      const b2X = cx + (e.ayudas ? 8 : 0);
+      const bY = 92;
+
+      const focoA = k <= 0.5;
+      raiz.append(
+        svg('rect', {
+          x: b1X,
+          y: bY,
+          width: bW,
+          height: bH,
+          fill: enEmpate ? TINTA : focoA ? AMARILLO : '#ffffff',
+          stroke: TINTA,
+          'stroke-width': focoA || enEmpate ? 2.2 : 1.2,
+        }),
+      );
+      const t1 = svg('text', {
+        x: b1X + bW / 2,
+        y: bY + 25,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 12,
+        'font-weight': 900,
+        fill: enEmpate ? '#ffffff' : TINTA,
+      });
+      t1.textContent = !enEmpate && focoA ? '✓ PÚBLICO' : 'PÚBLICO';
+      raiz.append(t1);
+
+      raiz.append(
+        svg('rect', {
+          x: b2X,
+          y: bY,
+          width: bW,
+          height: bH,
+          fill: !enEmpate && !focoA ? AMARILLO : '#ffffff',
+          stroke: TINTA,
+          'stroke-width': !focoA || enEmpate ? 2.2 : 1.2,
+        }),
+      );
+      const t2 = svg('text', {
+        x: b2X + bW / 2,
+        y: bY + 25,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 12,
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      t2.textContent = !enEmpate && !focoA ? '✓ PRIVADO' : 'PRIVADO';
+      raiz.append(t2);
+
+      const tEstado = svg('text', {
+        x: cx,
+        y: 168,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11,
+        'font-weight': 700,
+        fill: enEmpate ? COTA : TEXTO,
+      });
+      tEstado.textContent = enEmpate
+        ? '¿Está activo «Público» (por ser oscuro) o «Privado» (por estar iluminado)?'
+        : focoA
+          ? 'Estado inequívoco: el archivo es PÚBLICO.'
+          : 'Estado inequívoco: el archivo es PRIVADO.';
+      raiz.append(tEstado);
+    }
+
+    // Barra inferior de certidumbre vs. ambigüedad
+    if (e.curva) {
+      const bx = W < 460 ? 20 : 44;
+      const by = 258;
+      const bw = W - bx * 2;
+      const bh = 46;
+
+      raiz.append(svg('rect', { x: bx, y: by, width: bw, height: bh, fill: '#ffffff', stroke: '#dcdcd4' }));
+      // Zona central 50/50 sombreada
+      raiz.append(svg('rect', { x: bx + bw * 0.36, y: by, width: bw * 0.28, height: bh, fill: AMARILLO, 'fill-opacity': 0.45 }));
+
+      const marcadorX = bx + k * bw;
+      raiz.append(svg('line', { x1: marcadorX, y1: by, x2: marcadorX, y2: by + bh, stroke: TINTA, 'stroke-width': 2.5 }));
+      raiz.append(svg('circle', { cx: marcadorX, cy: by + bh / 2, r: 6, fill: enEmpate ? COTA : TINTA }));
+
+      const lA = svg('text', { x: bx + 8, y: by + 16, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: TINTA });
+      lA.textContent = '100 % LECTURA A';
+      raiz.append(lA);
+
+      const lCentro = svg('text', { x: cx, y: by + 16, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 9.5, 'font-weight': 900, fill: TINTA });
+      lCentro.textContent = `ZONA 50/50 · AMBIGÜEDAD: ${ambiguedad} %`;
+      raiz.append(lCentro);
+
+      const lB = svg('text', { x: bx + bw - 8, y: by + 16, 'text-anchor': 'end', 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: TINTA });
+      lB.textContent = '100 % LECTURA B';
+      raiz.append(lB);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { ambiguedad, enEmpate } = calcularEstado(e);
+
+    if (e.terreno === 'simbolo') {
+      if (enEmpate) {
+        return `Plurisignificación activa (<b class="dv-cifra">equilibrio ${e.balance} / ${100 - e.balance}</b>): en un cartel o símbolo cultural, mantener vivas ambas lecturas a la vez detiene la mirada y condensa dos ideas en una sola figura.`;
+      }
+      return `Al llevar el balance a <b class="dv-cifra">${e.balance} %</b>, una de las dos figuras domina por completo y el símbolo pierde su doble sentido.`;
+    }
+
+    if (enEmpate) {
+      return `Ambigüedad crítica (<b class="dv-cifra">${n(ambiguedad, 0)} %</b>): las dos interpretaciones tienen casi la misma fuerza (${e.balance} % frente a ${100 - e.balance} %). En una tabla de datos o en un control de interfaz, este empate detiene y confunde a quien lo usa.`;
+    }
+
+    return `Lectura desambiguada (<b class="dv-cifra">ambigüedad ${n(ambiguedad, 0)} %</b>): una interpretación supera claramente a la otra y la vista comprende la relación sin vacilar.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="ambiguedad"]')) {
+    guiar<E>(raiz, [
+      (e) => e.terreno === 'agrupacion' && e.balance === 50,
+      (e) => e.terreno === 'agrupacion' && e.balance <= 20,
+      (e) => e.terreno === 'interfaz' && e.balance === 50,
+      (e) => e.terreno === 'simbolo' && e.balance >= 45 && e.balance <= 55,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────────────────
+  type E1 = { diseno: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    if (e.diseno === 'solo-color') {
+      d.innerHTML = `
+        <div style="padding:18px;background:#fbfbf9;font-family:${SANS};display:flex;justify-content:center;">
+          <div style="display:inline-flex;border:2px solid #222;">
+            <span style="padding:8px 16px;background:#222;color:#fff;font-size:12px;font-weight:800;">Mensual</span>
+            <span style="padding:8px 16px;background:#fff;color:#222;font-size:12px;font-weight:800;">Anual</span>
+          </div>
+        </div>`;
+      return;
+    }
+    if (e.diseno === 'check') {
+      d.innerHTML = `
+        <div style="padding:18px;background:#fbfbf9;font-family:${SANS};display:flex;justify-content:center;gap:8px;">
+          <span style="padding:8px 14px;background:#eeff41;color:#222;border:2px solid #222;font-size:12px;font-weight:900;">✓ Mensual (activo)</span>
+          <span style="padding:8px 14px;background:#fff;color:#6f6f6f;border:1px solid #ccc;font-size:12px;font-weight:700;">Cambiar a Anual</span>
+        </div>`;
+      return;
+    }
+    d.innerHTML = `
+      <div style="padding:18px;background:#fbfbf9;font-family:${SANS};display:flex;justify-content:center;gap:18px;font-size:13px;color:#222;font-weight:700;">
+        <span>◉ Facturación mensual</span>
+        <span style="color:#6f6f6f;">◯ Facturación anual</span>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.diseno === 'solo-color') return 'Con <b class="dv-cifra">dos cajas pegadas</b>, nadie sabe con certeza si la opción activa es la negra o la blanca.';
+    if (e.diseno === 'check') return '<b class="dv-cifra">Marca «✓» y jerarquía clara</b>: el estado seleccionado no depende solo del color.';
+    return '<b class="dv-cifra">Botones de radio</b>: la convención del círculo relleno elimina toda ambigüedad binaria.';
+  }
+
+  type E2 = { rotulo: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const solo = e.rotulo === 'iconos';
+    d.innerHTML = `
+      <div style="padding:18px;background:#fbfbf9;font-family:${SANS};display:flex;justify-content:center;gap:10px;">
+        <span style="padding:7px 12px;background:#fff;border:1.5px solid #222;font-size:12px;font-weight:700;color:#222;">${solo ? '★' : '★ Guardar en mi lista'}</span>
+        <span style="padding:7px 12px;background:#fff;border:1.5px solid #222;font-size:12px;font-weight:700;color:#222;">${solo ? '⚑' : '⚑ Reportar errata'}</span>
+        <span style="padding:7px 12px;background:#fff;border:1.5px solid #222;font-size:12px;font-weight:700;color:#222;">${solo ? '↗' : '↗ Copiar cita'}</span>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.rotulo === 'iconos') return 'Tres iconos sueltos (<b class="dv-cifra">★ ⚑ ↗</b>) obligan a adivinar qué ocurrirá al hacer clic.';
+    return '<b class="dv-cifra">Icono + verbo</b>: el icono acelera el barrido visual y la palabra fija el significado exacto.';
+  }
+
+  type E3 = { espacioEntrePlatos: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const empate = e.espacioEntrePlatos <= 12;
+    d.innerHTML = `
+      <div style="padding:16px 20px;background:#fff;border:1.5px solid ${empate ? COTA : '#ddd'};font-family:${SANS};color:#222;">
+        <div style="margin-bottom:${e.espacioEntrePlatos}px;">
+          <strong style="display:block;font-size:13px;margin-bottom:8px;">Café filtrado de origen</strong>
+          <span style="display:block;font-size:12px;color:#6f6f6f;">3,50 €</span>
+        </div>
+        <div style="margin-bottom:${e.espacioEntrePlatos}px;">
+          <strong style="display:block;font-size:13px;margin-bottom:8px;">Tostada de masa madre y aceite</strong>
+          <span style="display:block;font-size:12px;color:#6f6f6f;">6,00 €</span>
+        </div>
+        <div>
+          <strong style="display:block;font-size:13px;margin-bottom:8px;">Tarta tibia de manzana</strong>
+          <span style="display:block;font-size:12px;color:#6f6f6f;">5,20 €</span>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.espacioEntrePlatos <= 12) return `Con <b class="dv-cifra">${e.espacioEntrePlatos} px</b> entre platos y 8 px dentro de cada plato, el precio «3,50 €» queda a mitad de camino entre el café y la tostada.`;
+    return `<b class="dv-cifra">${e.espacioEntrePlatos} px entre platos</b> frente a 8 px internos: cada precio pertenece sin duda a su plato.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['ambiguedad-e1', pintarE1 as never, describirE1 as never],
+    ['ambiguedad-e2', pintarE2 as never, describirE2 as never],
+    ['ambiguedad-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego (5 rondas) ──────────────────────────────────────────────
+  function rondaSelectorDos(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un selector de exactamente 2 opciones donde solo cambia el color entre ambas',
+        es: true,
+      },
+      {
+        texto: 'Un selector de 4 opciones donde tres son blancas y una sola está resaltada en amarillo',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Por qué un control segmentado de 2 opciones es mucho más ambiguo que uno de 4 opciones?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Con 4 opciones, tres comparten el estilo de reposo y la única distinta se identifica al instante por semejanza (3 contra 1). Con solo 2 opciones (1 contra 1), sin una marca adicional como «✓» no sabemos cuál es el fondo y cuál la figura activa.',
+      repaso: 'La trampa del selector binario',
+    };
+  }
+
+  function rondaMunari(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Unívoco y libre de dobles lecturas en señales e interfaces operativas; plurisignificativo cuando se busca resonancia poética en un cartel o símbolo',
+        es: true,
+      },
+      {
+        texto: 'Ambiguo en los formularios bancarios para entretener al usuario y literal en las portadas de poesía',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según la distinción de Bruno Munari (1968), ¿cuándo conviene eliminar la ambigüedad y cuándo conviene cultivarla?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En una señal de tráfico, un cuadro de mando o un formulario, cualquier segundo de duda puede causar un error operativo; en un cartel cultural o una ilustración editorial, la doble lectura invita al espectador a participar completando el sentido.',
+      repaso: 'Mensaje operativo frente a mensaje poético',
+    };
+  }
+
+  function rondaDialogoConfirmacion(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Pregunta «¿Cancelar la inscripción?» con los botones «Seguir inscrito» y «Cancelar inscripción»',
+        describir: 'Diálogo con verbos específicos en cada botón.',
+        es: true,
+        html: `<div class="jg-amb-box">
+          <strong style="font-size:12px;color:#222;">¿Cancelar la inscripción al curso?</strong>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <span style="padding:4px 9px;border:1.5px solid #222;font-size:11px;font-weight:700;color:#222;">Seguir inscrito</span>
+            <span style="padding:4px 9px;background:#222;color:#eeff41;font-size:11px;font-weight:700;">Cancelar inscripción</span>
+          </div>
+        </div>`,
+      },
+      {
+        texto: 'Pregunta «¿Cancelar la inscripción?» con los botones «Cancelar» y «Aceptar»',
+        describir: 'Diálogo donde la palabra Cancelar se contradice con la pregunta.',
+        es: false,
+        html: `<div class="jg-amb-box">
+          <strong style="font-size:12px;color:#222;">¿Cancelar la inscripción al curso?</strong>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <span style="padding:4px 9px;border:1.5px solid #222;font-size:11px;font-weight:700;color:#222;">Cancelar</span>
+            <span style="padding:4px 9px;background:#222;color:#eeff41;font-size:11px;font-weight:700;">Aceptar</span>
+          </div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de los dos diálogos evita la ambigüedad verbal y visual al confirmar una baja?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando la pregunta ya contiene el verbo «Cancelar», poner un botón «Cancelar» al lado de «Aceptar» crea una trampa: ¿«Cancelar» significa anular la inscripción o cerrar la ventana sin anularla? Nombrar el resultado concreto deshace el equívoco.',
+      repaso: 'Desambiguar acciones críticas',
+    };
+  }
+
+  function rondaBiestabilidad(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El sistema visual alterna entre las dos lecturas posibles sin poder estabilizar ambas como figura dominante a la vez',
+        es: true,
+      },
+      {
+        texto: 'La imagen se vuelve invisible para la retina humana',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué ocurre en la percepción ante una figura biestable (como la copa de Rubin o el cubo de Necker) según Semir Zeki (2004)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando dos hipótesis perceptivas tienen la misma evidencia geométrica, la corteza visual oscila entre una interpretación y la otra.',
+      repaso: 'Biestabilidad perceptual',
+    };
+  }
+
+  function rondaAjustarProximidad(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Las etiquetas de precio están a 18 px tanto del producto de la izquierda como del producto de la derecha. Reduce la distancia entre cada producto y su precio para eliminar la ambigüedad.',
+      control: {
+        etiqueta: 'Distancia entre el producto y su propio precio',
+        min: 4,
+        max: 20,
+        paso: 2,
+        valor: 18,
+        unidad: 'px',
+      },
+      pintar: (c, v) => {
+        const gapEntrePares = 36 - v;
+        c.innerHTML = `<div style="padding:18px;background:#fbfbf9;font-family:${SANS};display:flex;align-items:center;justify-content:center;gap:${gapEntrePares}px;">
+          <div style="display:flex;align-items:center;gap:${v}px;">
+            <span style="padding:6px 10px;background:#fff;border:1.5px solid #222;font-size:11.5px;font-weight:700;color:#222;">Cuaderno A5</span>
+            <strong style="padding:4px 7px;background:#eeff41;border:1.5px solid #222;font-size:11.5px;color:#222;">12 €</strong>
+          </div>
+          <div style="display:flex;align-items:center;gap:${v}px;">
+            <span style="padding:6px 10px;background:#fff;border:1.5px solid #222;font-size:11.5px;font-weight:700;color:#222;">Pluma fuente</span>
+            <strong style="padding:4px 7px;background:#eeff41;border:1.5px solid #222;font-size:11.5px;color:#222;">38 €</strong>
+          </div>
+        </div>`;
+      },
+      cumple: (v) => v <= 8,
+      falta: (v) => `A ${v} px la etiqueta «12 €» sigue demasiado cerca de «Pluma fuente». Acércala a 8 px o menos de su producto.`,
+      porque: 'Cuando la distancia interna (dentro del par) es tres o cuatro veces menor que la distancia externa (entre pares), la agrupación queda libre de ambigüedad.',
+      repaso: 'Desambiguar por proximidad',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="ambiguedad"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaSelectorDos(),
+        rondaMunari(),
+        rondaDialogoConfirmacion(),
+        rondaBiestabilidad(),
+        rondaAjustarProximidad(),
+      ]),
+    );
+  }
+</script>
+
+<style is:global>
+  .jg-amb-box {
+    padding: 0.75rem;
+    background: #fafaf7;
+    border: 1px solid #e0e0d8;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

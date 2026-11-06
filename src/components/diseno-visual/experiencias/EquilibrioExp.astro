@@ -1,0 +1,888 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'equilibrio';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Desequilibra el cartel hacia la izquierda.',
+    hacer: 'Lleva «Distancia del contrapeso al eje» a 10 %.',
+    pista: 'Mueve el primer deslizador hacia la izquierda.',
+    preparar: { distancia: 75, tamano: 45, tono: 'oscuro', vectores: true },
+    logro: 'Cuando el sello secundario se acerca al centro sin alejarse hacia la derecha, el bloque principal de la izquierda hunde ese costado y el centro de gravedad se sale del punto de equilibrio.',
+  },
+  {
+    titulo: 'Equilibra usando el brazo de palanca.',
+    hacer: 'Sube «Distancia del contrapeso al eje» entre 70 % y 85 %.',
+    pista: 'Desplaza el primer deslizador hacia la derecha.',
+    logro: 'Como en una balanza romana, una pieza pequeña situada lejos del eje central multiplica su momento visual y compensa una masa mucho mayor colocada cerca del centro.',
+  },
+  {
+    titulo: 'Compensa tamaño con oscuridad o acento.',
+    hacer: 'Baja «Tamaño del contrapeso» a 25 % y en «Tono del contrapeso» elige «Acento vivo».',
+    pista: 'Reduce el segundo deslizador y cambia el selector de tono a la tercera opción.',
+    logro: 'Aunque el contrapeso redujo su área a la mitad, el alto contraste cromático y su lejanía al centro mantienen estable la composición.',
+  },
+  {
+    titulo: 'Comprueba la diferencia entre centro matemático y centro óptico.',
+    hacer: 'Abre «Más controles» y mueve «Altura vertical del conjunto» de 55 % a 45 %.',
+    abrir: true,
+    preparar: { distancia: 75, tamano: 45, tono: 'oscuro', altura: 58, vectores: true },
+    logro: 'Cuando el centro de masa cae por debajo del 50 % geométrico, el cartel parece pesado y caído. Subirlo ligeramente hacia el centro óptico (~45 %–47 % desde arriba) le devuelve ligereza.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos marcos comparados como balanzas: a la izquierda un círculo grande gris cerca del centro equilibrado por un círculo pequeño negro cerca del borde derecho; a la derecha dos discos pesados acumulados en la esquina derecha que vuelcan el plano.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+
+        <!-- Izquierda: Equilibrio por brazo de palanca -->
+        <g transform="translate(24, 16)">
+          <text x="0" y="12" font-family={SANS} font-size="9" font-weight="700" letter-spacing="0.3" fill={T}>EQUILIBRADO · MASA GRANDE + CONTRAPESO LEJOS</text>
+          <rect x="0" y="20" width="256" height="122" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <line x1="128" y1="20" x2="128" y2="142" stroke="#dcdcd4" stroke-width="1.2" stroke-dasharray="3 3" />
+          <!-- Disco grande claro cerca del centro (x=96, brazo=32) -->
+          <circle cx="94" cy="80" r="34" fill="#d8d8d0" stroke={T} stroke-width="1.5" />
+          <text x="94" y="84" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>GRANDE</text>
+          <!-- Brazo de palanca -->
+          <line x1="94" y1="126" x2="218" y2="126" stroke={T} stroke-width="1.5" />
+          <polygon points="128,126 122,136 134,136" fill={T} />
+          <!-- Disco pequeño negro lejos del centro (x=218, brazo=90) -->
+          <circle cx="218" cy="80" r="13" fill={T} />
+          <circle cx="218" cy="80" r="5" fill={AMARILLO} />
+        </g>
+
+        <!-- Derecha: Volcado hacia un lado -->
+        <g transform="translate(320, 16)">
+          <text x="0" y="12" font-family={SANS} font-size="9" font-weight="700" letter-spacing="0.3" fill={ROJO}>DESEQUILIBRADO · TODO EL PESO EN UN COSTADO</text>
+          <rect x="0" y="20" width="256" height="122" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <line x1="128" y1="20" x2="128" y2="142" stroke="#dcdcd4" stroke-width="1.2" stroke-dasharray="3 3" />
+          <!-- Dos masas pesadas a la derecha -->
+          <circle cx="182" cy="68" r="30" fill={T} />
+          <circle cx="226" cy="100" r="18" fill={ROJO} />
+          <!-- Barra inclinada -->
+          <line x1="46" y1="114" x2="228" y2="134" stroke={ROJO} stroke-width="1.8" />
+          <polygon points="128,124 122,136 134,136" fill={ROJO} />
+          <text x="58" y="84" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>VACÍO SIN APOYO</text>
+        </g>
+      </svg>
+    </div>
+    <p>En ninguno de los dos cuadros las figuras son simétricas. ¿Por qué el primero se siente estable y el segundo parece hundirse hacia la derecha?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque el equilibrio visual sigue la ley de la palanca: una figura grande y gris colocada cerca del centro se compensa con una figura pequeña, oscura y contrastada situada cerca del borde opuesto. En el segundo cuadro todas las masas densas están del mismo lado del eje y nada les hace contrapeso.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Todo el peso acumulado sobre el margen izquierdo"
+      notas={[
+        {
+          ...pct(98, 92),
+          titulo: 'Cuatro bloques pesados en fila',
+          texto: 'El sello negro, el titular grueso, la fotografía oscura y el botón se apilan todos en la mitad izquierda del formato.',
+          zona: zona(22, 24, 156, 232),
+        },
+        {
+          ...pct(268, 134),
+          titulo: 'Mitad derecha desfondada',
+          texto: 'El lado derecho queda vacío por descuido, sin ningún anclaje ni contrapeso que sostenga la diagonal del pliego.',
+          zona: zona(184, 24, 154, 232),
+        },
+        {
+          ...pct(98, 234),
+          titulo: 'Caída hacia la esquina inferior',
+          texto: 'La caja negra más densa se ubica abajo a la izquierda, tirando del centro de gravedad hacia el rincón inferior.',
+          zona: zona(24, 188, 148, 64),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portada de informe donde el logotipo, el titular, la foto oscura y el sello negro se acumulan todos en la izquierda.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="16" width="324" height="248" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <line x1="180" y1="16" x2="180" y2="264" stroke={ROJO} stroke-width="1" stroke-dasharray="3 3" />
+        <!-- Todo apilado a la izquierda -->
+        <rect x="30" y="28" width="96" height="22" fill={T} />
+        <text x="38" y="43" font-family={SANS} font-size="9.5" font-weight="900" fill={AMARILLO}>INFORME ANUAL</text>
+        <text x="30" y="70" font-family={SERIF} font-size="19" font-weight="700" fill={T}>Observatorio</text>
+        <text x="30" y="95" font-family={SERIF} font-size="19" font-weight="700" fill={T}>del Río</text>
+        <rect x="30" y="108" width="136" height="74" fill={T} />
+        <circle cx="98" cy="145" r="22" fill="#444444" stroke="#ffffff" stroke-width="1.5" />
+        <rect x="30" y="192" width="136" height="54" fill={ROJO} />
+        <text x="42" y="216" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">EDICIÓN 2026</text>
+        <text x="42" y="232" font-family={SANS} font-size="9.5" font-weight="700" fill="#ffffff">CARTOGRAFÍA Y DATOS</text>
+        <!-- Centro de gravedad corrido a la izquierda y abajo -->
+        <circle cx="112" cy="168" r="7" fill={ROJO} stroke="#ffffff" stroke-width="2" />
+        <text x="256" y="142" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" fill={ROJO}>SIN CONTRAPESO</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Equilibrio dinámico en diagonal sobre el centro óptico"
+      notas={[
+        {
+          ...pct(108, 108),
+          titulo: 'Masa principal arriba a la izquierda',
+          texto: 'El titular y la fotografía forman el bloque mayor cerca del centro óptico superior, sin hundir la base de la portada.',
+          zona: zona(26, 36, 184, 152),
+        },
+        {
+          ...pct(288, 218),
+          titulo: 'Contrapeso denso en el extremo opuesto',
+          texto: 'El sello negro con acento amarillo es mucho más pequeño, pero al situarse lejos del centro —abajo a la derecha— equilibra toda la diagonal.',
+          zona: zona(228, 184, 102, 62),
+        },
+        {
+          ...pct(180, 126),
+          titulo: 'Centro de gravedad estable',
+          texto: 'La suma de pesos coincide con el eje central de la página ligeramente por encima de la mitad matemática.',
+          zona: zona(156, 102, 48, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma portada equilibrada: titular e imagen arriba a la izquierda compensados en diagonal por el sello denso abajo a la derecha.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="16" width="324" height="248" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <line x1="180" y1="16" x2="180" y2="264" stroke="#dcdcd4" stroke-width="1" stroke-dasharray="3 3" />
+        <line x1="18" y1="128" x2="342" y2="128" stroke="#dcdcd4" stroke-width="1" stroke-dasharray="3 3" />
+        <!-- Diagonal de equilibrio -->
+        <line x1="112" y1="106" x2="280" y2="214" stroke={T} stroke-width="1" stroke-dasharray="3 3" />
+        <!-- Bloque principal arriba izquierda -->
+        <text x="32" y="42" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1" fill={G}>INFORME ANUAL · CARTOGRAFÍA</text>
+        <text x="32" y="68" font-family={SERIF} font-size="22" font-weight="700" fill={T}>Observatorio del Río</text>
+        <rect x="32" y="82" width="168" height="96" fill="#e5e5de" stroke={T} stroke-width="1.5" />
+        <circle cx="116" cy="130" r="28" fill={T} />
+        <!-- Contrapeso pequeño pero muy denso abajo a la derecha -->
+        <rect x="234" y="188" width="94" height="54" fill={T} />
+        <rect x="244" y="198" width="38" height="12" fill={AMARILLO} />
+        <text x="244" y="224" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">2026</text>
+        <text x="244" y="236" font-family={SANS} font-size="8.5" font-weight="700" fill="#d8d8d0">ATLAS Y DATOS</text>
+        <!-- Centro de gravedad en el centro óptico -->
+        <circle cx="180" cy="128" r="6" fill={AMARILLO} stroke={T} stroke-width="2" />
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · balanza perceptual en dos ejes"
+    consigna="El bloque principal está a la izquierda del centro. Mueve la distancia, el tamaño y el tono del contrapeso derecho (y la altura vertical en «Más controles») para llevar el centro de gravedad compuesto hasta la diana del centro óptico."
+    nota="Observa cómo puedes lograr exactamente el mismo equilibrio con un contrapeso grande y gris cerca del centro (fíjalo como A) o con uno pequeño y saturado junto al margen (B)."
+  >
+    <svg slot="escenario" viewBox="0 0 640 340" role="img" aria-label="Balanza bidimensional sobre un cartel con una masa grande a la izquierda y un contrapeso a la derecha.">
+      <rect width="640" height="340" fill="#fbfbf9" />
+      <rect x="90" y="24" width="460" height="280" fill="#ffffff" stroke={T} stroke-width="1.8" />
+      <line x1="320" y1="24" x2="320" y2="304" stroke="#dcdcd4" stroke-dasharray="4 3" />
+      <rect x="130" y="64" width="160" height="140" fill="#dcdcd4" stroke={T} stroke-width="1.5" />
+      <rect x="430" y="160" width="72" height="72" fill={T} />
+      <circle cx="320" cy="152" r="7" fill={AMARILLO} stroke={T} stroke-width="2" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Experimenta combinando tamaño, distancia y tono para descubrir cuántas configuraciones distintas producen equilibrio." />
+
+    <Deslizador
+      lab={lab}
+      variable="distancia"
+      etiqueta="Distancia del contrapeso al eje"
+      min={10}
+      max={95}
+      paso={5}
+      valor={75}
+      unidad="%"
+      ayuda="Brazo de palanca horizontal hacia el margen derecho."
+    />
+    <Deslizador
+      lab={lab}
+      variable="tamano"
+      etiqueta="Tamaño del contrapeso"
+      min={20}
+      max={90}
+      paso={5}
+      valor={45}
+      unidad="%"
+      ayuda="Superficie del bloque secundario respecto al bloque principal."
+    />
+    <Opciones
+      lab={lab}
+      variable="tono"
+      etiqueta="Tono del contrapeso"
+      valor="oscuro"
+      opciones={[
+        { valor: 'claro', texto: 'Gris claro' },
+        { valor: 'oscuro', texto: 'Negro denso' },
+        { valor: 'acento', texto: 'Acento vivo' },
+      ]}
+      ayuda="Un bloque oscuro o muy contrastado pesa más que uno claro del mismo tamaño."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="altura"
+        etiqueta="Altura vertical del conjunto"
+        min={35}
+        max={65}
+        paso={1}
+        valor={46}
+        unidad="%"
+        ayuda="Posición vertical medida desde arriba. El centro óptico se sitúa cerca del 46 %."
+      />
+      <Interruptor
+        lab={lab}
+        variable="vectores"
+        etiqueta="Mostrar centro de gravedad y ejes de palanca"
+        activo={true}
+        ayuda="Dibuja la diana del centro óptico y el punto exacto donde cae la suma de pesos."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"distancia":75,"tamano":45,"tono":"oscuro","altura":46,"vectores":true}'>Equilibrio clásico por palanca</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":90,"tamano":25,"tono":"acento","altura":46,"vectores":true}'>Punto pequeño de acento en el borde</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":15,"tamano":40,"tono":"claro","altura":46,"vectores":true}'>Volcado hacia la izquierda</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":75,"tamano":45,"tono":"oscuro","altura":62,"vectores":true}'>Hundido por debajo del centro óptico</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Compensar una cabecera cargada a un solo lado"
+      comparar={false}
+      consigna="El título y la imagen están pegados a la izquierda y la derecha de la tarjeta parece vacía y caída. Desplaza la ficha de fecha e inscripción hacia el margen derecho para actuar como contrapeso."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Todo el peso acumulado a la izquierda</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="contrapeso"
+        etiqueta="Posición horizontal del sello de inscripción"
+        min={0}
+        max={100}
+        paso={10}
+        valor={10}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Subir del centro matemático al centro óptico"
+      comparar={false}
+      consigna="Un título colocado en el 50 % matemático o más abajo parece colgar pesadamente. Súbelo hacia el centro óptico (entre 42 % y 46 % desde el borde superior)."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Título caído por debajo del centro óptico</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="posicionY"
+        etiqueta="Distancia desde el borde superior"
+        min={36}
+        max={60}
+        paso={2}
+        valor={56}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Equilibrar área grande con densidad cromática"
+      comparar={false}
+      consigna="A la izquierda hay una fotografía grande pero suave. Si a la derecha pones otro bloque igual de grande y además negro, la derecha aplasta la página. Ajusta el tamaño del bloque negro para que equilibre sin imponerse."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Bloque negro demasiado grande a la derecha</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="escalaNegro"
+        etiqueta="Tamaño del bloque negro derecho"
+        min={25}
+        max={100}
+        paso={5}
+        valor={95}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cartel tipográfico suizo: diagonal asimétrica compensada"
+      notas={[
+        {
+          ...pct(114, 96),
+          titulo: 'Masa tipográfica dominante',
+          texto: 'El titular en cuerpo grande ocupa el cuadrante superior izquierdo, cerca del eje central pero desplazado hacia arriba.',
+          zona: zona(26, 36, 178, 108),
+        },
+        {
+          ...pct(284, 206),
+          titulo: 'Punto de anclaje en la esquina opuesta',
+          texto: 'Un bloque compacto de datos sobre fondo amarillo y negro en el rincón inferior derecho sostiene el extremo de la diagonal.',
+          zona: zona(232, 168, 102, 74),
+        },
+        {
+          ...pct(272, 78),
+          titulo: 'Vacío activo en el cuadrante libre',
+          texto: 'El espacio despejado arriba a la derecha no desequilibra la pieza porque el bloque inferior derecho tensa ese costado.',
+          zona: zona(214, 32, 120, 118),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel de concierto con un gran titular arriba a la izquierda y una ficha amarilla y negra abajo a la derecha que equilibra la diagonal.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="20" y="20" width="320" height="240" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <text x="34" y="48" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>TONHALLE · ZÜRICH</text>
+        <text x="34" y="82" font-family={SANS} font-size="29" font-weight="900" letter-spacing="-1" fill={T}>musica</text>
+        <text x="34" y="116" font-family={SANS} font-size="29" font-weight="900" letter-spacing="-1" fill={T}>viva</text>
+        <rect x="34" y="128" width="136" height="6" fill={T} />
+        <!-- Diagonal sutil -->
+        <line x1="110" y1="96" x2="282" y2="205" stroke="#dcdcd4" stroke-width="1.2" stroke-dasharray="3 3" />
+        <!-- Contrapeso abajo derecha -->
+        <rect x="236" y="172" width="90" height="72" fill={T} />
+        <rect x="246" y="182" width="70" height="16" fill={AMARILLO} />
+        <text x="252" y="193" font-family={SANS} font-size="9" font-weight="900" fill={T}>19 NOV 20:15</text>
+        <text x="246" y="214" font-family={SANS} font-size="9.5" font-weight="700" fill="#ffffff">Bartók · Webern</text>
+        <text x="246" y="228" font-family={SANS} font-size="9" fill="#d8d8d0">Sala grande</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Cabecera web: fotografía extensa frente a botón de alto contraste"
+      notas={[
+        {
+          ...pct(254, 138),
+          titulo: 'Superficie grande de contraste medio',
+          texto: 'La ilustración derecha ocupa mucha área, pero usa trazos claros que moderan su densidad por centímetro cuadrado.',
+          zona: zona(184, 44, 148, 188),
+        },
+        {
+          ...pct(98, 188),
+          titulo: 'Concentración de tinta a la izquierda',
+          texto: 'El titular negro y el botón sólido concentran el máximo contraste en menos superficie, nivelando la balanza.',
+          zona: zona(30, 68, 144, 146),
+        },
+        {
+          ...pct(180, 40),
+          titulo: 'Barra superior como puente horizontal',
+          texto: 'La línea de navegación recorre de margen a margen y ata ambos lados bajo un mismo techo.',
+          zona: zona(26, 26, 308, 24),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cabecera de sitio web con titular y botón negro a la izquierda equilibrando una ilustración grande y clara a la derecha.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="20" width="324" height="240" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <text x="32" y="40" font-family={SANS} font-size="10" font-weight="900" fill={T}>ARCHIVO SONORO</text>
+        <text x="328" y="40" text-anchor="end" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>CATÁLOGO · MAPA · ACERCA</text>
+        <line x1="32" y1="48" x2="328" y2="48" stroke="#e5e5e0" stroke-width="1.2" />
+        <!-- Izquierda: texto denso + CTA -->
+        <text x="32" y="86" font-family={SERIF} font-size="17.5" font-weight="700" fill={T}>Paisajes acústicos</text>
+        <text x="32" y="110" font-family={SERIF} font-size="17.5" font-weight="700" fill={T}>de los Andes</text>
+        <rect x="32" y="126" width="132" height="5" fill={TXT} />
+        <rect x="32" y="137" width="120" height="5" fill={TXT} />
+        <rect x="32" y="148" width="104" height="5" fill={TXT} />
+        <rect x="32" y="172" width="118" height="30" fill={T} />
+        <text x="91" y="191" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill={AMARILLO}>ESCUCHAR MAPA →</text>
+        <!-- Derecha: ilustración amplia pero clara -->
+        <rect x="188" y="64" width="140" height="172" fill="#f3f3ee" stroke={T} stroke-width="1.2" />
+        <circle cx="258" cy="150" r="48" fill="none" stroke={T} stroke-width="1.5" />
+        <circle cx="258" cy="150" r="28" fill="none" stroke={G} stroke-width="1.2" stroke-dasharray="3 3" />
+        <circle cx="258" cy="150" r="8" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Portada clásica: elevación hacia el centro óptico"
+      notas={[
+        {
+          ...pct(180, 108),
+          titulo: 'Centro óptico (45 % desde arriba)',
+          texto: 'El título y el emblema se sitúan por encima de la mitad matemática para que no parezcan resbalar hacia el borde inferior.',
+          zona: zona(72, 62, 216, 86),
+        },
+        {
+          ...pct(180, 140),
+          titulo: 'Mitad matemática (50 %)',
+          texto: 'La línea punteada marca la mitad exacta de la hoja: colocar el centro del bloque ahí dejaría la portada visualmente pesada.',
+          zona: zona(44, 132, 272, 22),
+        },
+        {
+          ...pct(180, 232),
+          titulo: 'Pie editorial como contrapeso',
+          texto: 'El sello pequeño en la base ancla el eje vertical y deja respirar el tercio central.',
+          zona: zona(110, 214, 140, 32),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portada de libro donde el bloque de título se ubica en el centro óptico al 45 % de la altura, por encima del 50 % matemático.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="82" y="16" width="196" height="248" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <!-- Mitad matemática y=140 -->
+        <line x1="68" y1="140" x2="292" y2="140" stroke={ROJO} stroke-width="1" stroke-dasharray="3 3" />
+        <text x="296" y="143" font-family={SANS} font-size="8.5" font-weight="700" fill={ROJO}>50 %</text>
+        <!-- Centro óptico y=112 -->
+        <line x1="68" y1="112" x2="292" y2="112" stroke={T} stroke-width="1" stroke-dasharray="2 2" />
+        <text x="296" y="115" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>45 %</text>
+        <!-- Bloque de título centrado en y=108 -->
+        <text x="180" y="78" text-anchor="middle" font-family={SANS} font-size="9" font-weight="700" letter-spacing="1.4" fill={G}>RUDOLF ARNHEIM</text>
+        <text x="180" y="102" text-anchor="middle" font-family={SERIF} font-size="18" font-weight="700" fill={T}>El poder del centro</text>
+        <rect x="162" y="114" width="36" height="14" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="180" y="236" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" letter-spacing="1" fill={G}>EDICIONES CÁTEDRA</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre peso visual, brazo de palanca, centro óptico y compensación asimétrica. Cambian cada vez que juegas."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    distancia: number;
+    tamano: number;
+    tono: string;
+    altura: number;
+    vectores: boolean;
+  };
+
+  function calcularEquilibrio(e: E) {
+    // Bloque A (izquierda): momento fijo hacia la izquierda = 100 unidades
+    const momentoIzq = 100;
+    const factorTono = e.tono === 'acento' ? 1.55 : e.tono === 'oscuro' ? 1.25 : 0.65;
+    const pesoDer = (e.tamano / 45) * factorTono;
+    const brazoDer = e.distancia / 75;
+    const momentoDer = 100 * pesoDer * brazoDer;
+    // Desviación horizontal (-100 izq a +100 der; 0 = equilibrado)
+    const desvioX = Math.round(((momentoDer - momentoIzq) / (momentoDer + momentoIzq)) * 100);
+    // Desviación vertical respecto al centro óptico (46 %)
+    const desvioY = e.altura - 46;
+    const equilibrado = Math.abs(desvioX) <= 12 && Math.abs(desvioY) <= 5;
+    return { desvioX, desvioY, equilibrado, momentoDer };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = W < 480 ? 320 : 350;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    const { desvioX, desvioY, equilibrado } = calcularEquilibrio(e);
+
+    raiz.setAttribute(
+      'aria-label',
+      `Cartel con masa principal a la izquierda y contrapeso al ${e.distancia} % de distancia, tamaño ${e.tamano} % y tono ${e.tono}. Desviación horizontal: ${desvioX} %.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 480 ? 22 : 68;
+    const padY = 22;
+    const cw = W - padX * 2;
+    const ch = H - padY * 2 - (e.vectores ? 24 : 0);
+    const cx = padX + cw / 2;
+    const cyOptico = padY + ch * 0.46;
+    const cyGeom = padY + ch * 0.5;
+
+    // Marco del cartel
+    raiz.append(svg('rect', { x: padX + 4, y: padY + 4, width: cw, height: ch, fill: '#e5e5e0' }));
+    raiz.append(svg('rect', { x: padX, y: padY, width: cw, height: ch, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.8 }));
+
+    if (e.vectores) {
+      // Eje vertical central y línea de centro óptico
+      raiz.append(svg('line', { x1: cx, y1: padY, x2: cx, y2: padY + ch, stroke: '#dcdcd4', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
+      raiz.append(svg('line', { x1: padX, y1: cyOptico, x2: padX + cw, y2: cyOptico, stroke: '#dcdcd4', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
+      raiz.append(svg('line', { x1: padX, y1: cyGeom, x2: padX + cw, y2: cyGeom, stroke: '#ecece6', 'stroke-width': 1 }));
+    }
+
+    const baseY = padY + (ch * e.altura) / 100;
+
+    // Bloque principal izquierdo (grande, gris cálido, cerca del centro)
+    const wIzq = Math.round(cw * 0.36);
+    const hIzq = Math.round(ch * 0.52);
+    const xIzq = Math.round(cx - wIzq * 0.88);
+    const yIzq = Math.round(baseY - hIzq * 0.52);
+
+    raiz.append(svg('rect', { x: xIzq, y: yIzq, width: wIzq, height: hIzq, fill: '#e6e6de', stroke: TINTA, 'stroke-width': 1.5 }));
+    raiz.append(svg('rect', { x: xIzq + 12, y: yIzq + 14, width: wIzq * 0.72, height: 12, fill: TINTA }));
+    raiz.append(svg('rect', { x: xIzq + 12, y: yIzq + 32, width: wIzq * 0.54, height: 8, fill: TEXTO }));
+    raiz.append(svg('circle', { cx: xIzq + wIzq / 2, cy: yIzq + hIzq * 0.66, r: Math.min(wIzq, hIzq) * 0.18, fill: '#b8b8b0', stroke: TINTA, 'stroke-width': 1.2 }));
+
+    // Contrapeso derecho
+    const maxDerX = padX + cw - 18;
+    const minDerX = cx + 12;
+    const escala = 0.35 + (e.tamano / 100) * 0.65;
+    const wDer = Math.round(cw * 0.24 * escala);
+    const hDer = Math.round(ch * 0.32 * escala);
+    const centroDerX = Math.round(minDerX + wDer / 2 + ((maxDerX - minDerX - wDer) * e.distancia) / 100);
+    const xDer = Math.round(centroDerX - wDer / 2);
+    const yDer = Math.round(baseY + hIzq * 0.08 - hDer / 2);
+
+    const fillDer = e.tono === 'acento' ? AMARILLO : e.tono === 'oscuro' ? TINTA : '#e6e6de';
+    const txtDer = e.tono === 'oscuro' ? '#ffffff' : TINTA;
+
+    if (e.tono === 'acento') {
+      raiz.append(svg('rect', { x: xDer + 4, y: yDer + 4, width: wDer, height: hDer, fill: TINTA }));
+    }
+    raiz.append(svg('rect', { x: xDer, y: yDer, width: wDer, height: hDer, fill: fillDer, stroke: TINTA, 'stroke-width': e.tono === 'acento' ? 2.2 : 1.5 }));
+    raiz.append(svg('rect', { x: xDer + 8, y: yDer + hDer * 0.32, width: Math.max(10, wDer - 16), height: Math.max(4, hDer * 0.14), fill: txtDer }));
+    raiz.append(svg('rect', { x: xDer + 8, y: yDer + hDer * 0.58, width: Math.max(8, (wDer - 16) * 0.65), height: Math.max(3, hDer * 0.1), fill: e.tono === 'oscuro' ? AMARILLO : TEXTO }));
+
+    if (e.vectores) {
+      const cIzqX = xIzq + wIzq / 2;
+      const cIzqY = yIzq + hIzq / 2;
+      const cDerY = yDer + hDer / 2;
+
+      // Línea de palanca entre ambos centros
+      raiz.append(svg('line', { x1: cIzqX, y1: cIzqY, x2: centroDerX, y2: cDerY, stroke: TINTA, 'stroke-width': 1.2, 'stroke-dasharray': '3 3' }));
+
+      // Diana del centro óptico ideal
+      raiz.append(svg('circle', { cx, cy: cyOptico, r: 12, fill: 'none', stroke: TINTA, 'stroke-width': 1.2, 'stroke-dasharray': '2 2' }));
+
+      // Centro de gravedad real resultante
+      const cgX = Math.round(cx + (desvioX / 100) * (cw * 0.32));
+      const cgY = baseY;
+      raiz.append(
+        svg('circle', {
+          cx: cgX,
+          cy: cgY,
+          r: 7,
+          fill: equilibrado ? AMARILLO : COTA,
+          stroke: TINTA,
+          'stroke-width': 2,
+        }),
+      );
+
+      const estadoTxt = equilibrado
+        ? '✓ CENTRO DE GRAVEDAD EN EL CENTRO ÓPTICO'
+        : Math.abs(desvioX) > 12
+          ? desvioX < 0
+            ? `CARGADO A LA IZQUIERDA (${desvioX} %)`
+            : `CARGADO A LA DERECHA (+${desvioX} %)`
+          : desvioY > 5
+            ? 'CAÍDO POR DEBAJO DEL CENTRO ÓPTICO'
+            : 'DEMASIADO ALTO';
+
+      const pie = svg('text', {
+        x: W / 2,
+        y: H - 8,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 11.5,
+        'font-weight': 700,
+        fill: equilibrado ? TINTA : COTA,
+      });
+      pie.textContent = estadoTxt;
+      raiz.append(pie);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { desvioX, desvioY, equilibrado } = calcularEquilibrio(e);
+    const nombreTono = e.tono === 'acento' ? 'acento de alto contraste' : e.tono === 'oscuro' ? 'negro denso' : 'gris claro';
+
+    if (equilibrado) {
+      return `<b class="dv-cifra">Composición en equilibrio</b>: el contrapeso en ${nombreTono} al <b class="dv-cifra">${e.distancia} %</b> del eje compensa la masa principal y sitúa el centro de gravedad sobre el centro óptico (${e.altura} % de altura).`;
+    }
+    if (Math.abs(desvioX) > 12) {
+      if (desvioX < 0) {
+        return `El plano se inclina hacia la <b class="dv-cifra">izquierda (${desvioX} %)</b>. El contrapeso derecho (${nombreTono}, tamaño ${e.tamano} %, distancia ${e.distancia} %) no tiene suficiente momento: aléjalo hacia el margen, agrándalo o sube su contraste.`;
+      }
+      return `El plano se inclina hacia la <b class="dv-cifra">derecha (+${desvioX} %)</b>. El contrapeso pesa más que la figura principal: acércalo al eje, reduce su tamaño o suaviza su tono.`;
+    }
+    if (desvioY > 5) {
+      return `Equilibrio horizontal resuelto, pero la altura está al <b class="dv-cifra">${e.altura} %</b>: por debajo del centro óptico (46 %), el conjunto parece hundirse hacia el borde inferior.`;
+    }
+    return `Equilibrio horizontal resuelto, aunque la altura (<b class="dv-cifra">${e.altura} %</b>) deja el conjunto demasiado pegado al borde superior.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="equilibrio"]')) {
+    guiar<E>(raiz, [
+      (e) => e.distancia <= 20,
+      (e) => e.distancia >= 70 && e.distancia <= 85,
+      (e) => e.tamano <= 30 && e.tono === 'acento',
+      (e) => e.altura >= 43 && e.altura <= 47,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { contrapeso: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const bien = e.contrapeso >= 70;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;">
+        <div style="background:#fff;border:1.5px solid #222;padding:12px;position:relative;min-height:108px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="width:52%;background:#e6e6de;border:1.5px solid #222;padding:8px 10px;">
+            <span style="font-size:9.5px;font-weight:700;color:#555555;">SIMPOSIO ANUAL</span>
+            <p style="margin:2px 0 0;font-family:${SERIF};font-size:15px;font-weight:700;">Cartografía del agua</p>
+          </div>
+          <div style="margin-left:${Math.round(e.contrapeso * 0.62)}%;width:38%;background:${bien ? TINTA : '#444'};color:${bien ? AMARILLO : '#fff'};padding:6px 9px;font-size:11px;font-weight:700;border:1.5px solid #222;">
+            14 OCT · INSCRIPCIÓN →
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.contrapeso < 40) return 'Con ambos bloques a la izquierda, <b class="dv-cifra">la mitad derecha queda desfondada</b>.';
+    if (e.contrapeso < 70) return 'El sello empieza a compensar el peso, pero todavía puede acercarse más al margen derecho.';
+    return '<b class="dv-cifra">Equilibrio en diagonal</b>: el sello en el extremo derecho sostiene el peso del titular izquierdo.';
+  }
+
+  type E2 = { posicionY: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const bien = e.posicionY >= 42 && e.posicionY <= 47;
+    const topPx = Math.round(((e.posicionY - 30) / 35) * 64);
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SERIF};color:#222;display:flex;justify-content:center;">
+        <div style="width:210px;height:126px;background:#fff;border:1.5px solid #222;position:relative;">
+          <div style="position:absolute;left:0;right:0;top:50%;border-top:1px dashed ${COTA};"></div>
+          <div style="position:absolute;left:16px;right:16px;top:${14 + topPx}px;background:${bien ? AMARILLO : '#f3f3ee'};border:1.5px solid #222;padding:8px;text-align:center;">
+            <strong style="font-size:13px;">Ensayos sobre la mirada</strong>
+            <span style="display:block;font-family:${SANS};font-size:9.5px;font-weight:700;color:#444;">Altura: ${e.posicionY} %</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.posicionY > 50) return `Al <b class="dv-cifra">${e.posicionY} %</b> (por debajo de la mitad matemática), el bloque parece caerse.`;
+    if (e.posicionY >= 48) return `En torno al <b class="dv-cifra">${e.posicionY} %</b> matemático, la gravedad óptica aún lo hace ver levemente bajo.`;
+    if (e.posicionY >= 42) return `<b class="dv-cifra">Centro óptico (${e.posicionY} %)</b>: el margen inferior ligeramente mayor sostiene el título con naturalidad.`;
+    return `Al ${e.posicionY} % queda demasiado pegado al borde superior.`;
+  }
+
+  type E3 = { escalaNegro: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const bien = e.escalaNegro >= 35 && e.escalaNegro <= 55;
+    const hDer = Math.round(92 * (e.escalaNegro / 100));
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:#fff;border:1.5px solid #222;padding:12px;min-height:116px;">
+          <div style="width:54%;height:92px;background:#e6e6de;border:1.5px solid #222;padding:10px;display:flex;align-items:flex-end;">
+            <span style="font-size:11px;font-weight:700;color:#222;">Fotografía clara (100 % área)</span>
+          </div>
+          <div style="width:${Math.round(38 * (e.escalaNegro / 100) + 12)}%;height:${hDer}px;background:#222;color:${bien ? AMARILLO : '#fff'};padding:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;text-align:center;">
+            Sello negro (${e.escalaNegro} %)
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.escalaNegro > 65) return `Al <b class="dv-cifra">${e.escalaNegro} %</b>, la mancha negra es tan grande y densa que hunde el lado derecho.`;
+    if (e.escalaNegro < 35) return `Al ${e.escalaNegro} % queda demasiado pequeña para compensar la fotografía.`;
+    return `<b class="dv-cifra">Equilibrio tono-superficie (${e.escalaNegro} %)</b>: el negro pesa más por centímetro cuadrado, por eso necesita menos área.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['equilibrio-e1', pintarE1 as never, describirE1 as never],
+    ['equilibrio-e2', pintarE2 as never, describirE2 as never],
+    ['equilibrio-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function rondaPalanca(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Una figura grande gris cerca del centro y una pequeña negra cerca del margen derecho',
+        describir: 'Bloque grande claro cerca del centro y punto negro pequeño cerca del borde derecho.',
+        es: true,
+        html: `<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#fbfbf9;border:1px solid #ccc;">
+          <div style="margin-left:22%;width:64px;height:52px;background:#dcdcd4;border:1.5px solid #222;"></div>
+          <div style="width:22px;height:22px;background:#222;border:2px solid #222;"></div>
+        </div>`,
+      },
+      {
+        texto: 'Una figura grande negra junto al borde izquierdo y una pequeña gris claro cerca del centro',
+        describir: 'Bloque grande negro en el extremo izquierdo y bloque pequeño claro en el medio.',
+        es: false,
+        html: `<div style="display:flex;align-items:center;gap:24px;padding:14px 16px;background:#fbfbf9;border:1px solid #ccc;">
+          <div style="width:68px;height:54px;background:#222;"></div>
+          <div style="width:22px;height:22px;background:#e5e5e0;border:1px solid #6f6f6f;"></div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas dos composiciones asimétricas aplica correctamente el principio del brazo de palanca?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un elemento grande y claro situado cerca del centro se compensa con un elemento pequeño y muy contrastado situado lejos del eje. Si el elemento más grande y oscuro se va además al borde, vuelca la composición.',
+      repaso: 'Brazo de palanca visual',
+    };
+  }
+
+  function rondaCentroOptico(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Colocarlo ligeramente por encima de la mitad matemática (en torno al 45 %–47 % desde arriba)',
+        es: true,
+      },
+      {
+        texto: 'Colocarlo al 58 % desde arriba para acercarlo al borde inferior',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al centrar un único emblema en la portada de un libro, notas que al 50 % exacto de la altura parece ligeramente caído. ¿Cómo se corrige?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Por efecto de la gravedad perceptual descrita por Arnheim, el centro óptico está un poco más arriba que el centro geométrico. Dejar algo más de espacio abajo sostiene la figura.',
+      repaso: 'Centro óptico frente a centro geométrico',
+    };
+  }
+
+  function rondaPesoFactores(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un círculo pequeño de color amarillo intenso con borde negro aislado cerca de la esquina derecha',
+        es: true,
+      },
+      {
+        texto: 'Un círculo pequeño gris pálido pegado al costado de la fotografía central',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Tienes una fotografía grande en la mitad izquierda del cartel. ¿Cuál de estos dos elementos pequeños tiene suficiente peso visual para equilibrarla desde la derecha?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El aislamiento espacial, el alto contraste y la distancia al eje central multiplican el peso perceptual de una forma pequeña.',
+      repaso: 'Factores del peso visual',
+    };
+  }
+
+  function rondaArribaAbajo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'La composición donde los bloques más anchos y oscuros actúan en la base o se compensan en diagonal',
+        es: true,
+      },
+      {
+        texto: 'La composición donde tres bloques negros macizos cuelgan del borde superior sobre una base vacía',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según la gravedad visual en el eje vertical, ¿cuál de estas dos configuraciones se percibe más estable?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un peso excesivo acumulado en el borde superior sin apoyo ni contrapeso inferior hace que la composición parezca a punto de desplomarse.',
+      repaso: 'Estabilidad vertical',
+    };
+  }
+
+  function rondaAjusteContrapeso(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El bloque principal está a la izquierda. Aleja el contrapeso negro hacia la derecha hasta equilibrar la balanza (entre 68 % y 88 % de distancia al eje).',
+      control: {
+        etiqueta: 'Distancia del contrapeso hacia el borde derecho',
+        min: 10,
+        max: 95,
+        paso: 5,
+        valor: 20,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const bien = v >= 68 && v <= 88;
+        c.innerHTML = `<div style="padding:14px;background:#fbfbf9;border:1.5px solid #222;font-family:${SANS};position:relative;min-height:96px;display:flex;align-items:center;">
+          <div style="margin-left:14%;width:110px;height:64px;background:#dcdcd4;border:1.5px solid #222;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#222;">MASA PRINCIPAL</div>
+          <div style="position:absolute;left:${48 + Math.round(v * 0.42)}%;width:44px;height:44px;background:#222;color:${bien ? AMARILLO : '#fff'};border:2px solid #222;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;">${v} %</div>
+        </div>`;
+      },
+      cumple: (v) => v >= 68 && v <= 88,
+      falta: (v) =>
+        v < 68
+          ? `Al ${v} %, el contrapeso sigue demasiado cerca del centro y la izquierda pesa más.`
+          : `Al ${v} %, queda pegado al filo exterior. Ubícalo entre 68 % y 88 %.`,
+      porque: 'Al alejar el bloque denso hacia el tercio derecho (68 %–88 %), su brazo de palanca compensa la mayor superficie del bloque izquierdo.',
+      repaso: 'Equilibrio por distancia al eje',
+    };
+  }
+
+  const juegoRoot = document.querySelector<HTMLElement>('[data-juego="equilibrio"]');
+  if (juegoRoot) {
+    jugar(juegoRoot, () =>
+      barajar([
+        rondaPalanca(),
+        rondaCentroOptico(),
+        rondaPesoFactores(),
+        rondaArribaAbajo(),
+        rondaAjusteContrapeso(),
+      ]),
+    );
+  }
+</script>

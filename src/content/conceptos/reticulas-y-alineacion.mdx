@@ -2,12 +2,14 @@
 titulo: Retículas y alineación
 territorio: composicion
 pregunta: ¿Por qué una página con bloques distintos puede verse ordenada?
-resumen: "Los elementos alineados comparten referencias y crean estructura. Descubre las columnas invisibles de una página, organiza bloques con ellas y prueba cuándo conviene apartarse de la retícula."
-modos: [laboratorio, comparacion, diseccion, provocacion]
+resumen: "Los elementos alineados comparten referencias y crean estructura. Encuentra las columnas invisibles de una página, organiza bloques con ellas y prueba cuándo conviene apartarse de la retícula."
+modos: [diseccion, comparacion]
 orden: 5
 relaciones:
   - concepto: proximidad
     porQue: El medianil y los márgenes definen distancias entre los bloques. Esas distancias ayudan a decidir qué elementos parecen formar parte de una misma unidad.
+  - concepto: enfasis
+    porQue: Cuando la retícula mantiene estables los márgenes y ejes de toda la página, sacar un único bloque de esa estructura lo convierte en centro de atención.
   - concepto: escalas-tipograficas
     porQue: La retícula ayuda a decidir dónde se ubican los textos. La escala tipográfica organiza sus tamaños, y la jerarquía resultante permite reconocer qué se lee primero.
   - concepto: sistemas-y-excepciones
@@ -80,9 +82,7 @@ No hace falta que las líneas de la retícula aparezcan en el resultado final. S
 
 <div class="dv-texto">
 
-El título, la imagen, el número, los dos textos y el pie de foto aparecen dos veces. El contenido y las piezas son los mismos. Lo que cambia es la manera de distribuirlos.
-
-Toca los números para observar qué decisiones organizan cada composición.
+El título, la imagen, el número, los dos textos y el pie de foto aparecen dos veces: el contenido y las piezas son los mismos; lo que cambia es la manera de alinearlos.
 
 </div>
 
@@ -90,9 +90,9 @@ Toca los números para observar qué decisiones organizan cada composición.
 
 <div class="dv-texto">
 
-En la primera versión, ningún bloque está necesariamente muy lejos de donde podría estar. El problema aparece al observarlos juntos: las pequeñas diferencias se acumulan y la composición pierde coherencia.
+En la versión sin retícula, ningún bloque está demasiado lejos de donde podría estar, pero al observarlos juntos las pequeñas diferencias se acumulan y la composición pierde coherencia.
 
-En la segunda, los bloques siguen siendo distintos, pero sus posiciones se relacionan. La página empieza a leerse como una sola composición. La retícula no elimina las diferencias entre los elementos: les proporciona una estructura común.
+Al alinearlos sobre columnas compartidas, los bloques conservan sus diferencias de tamaño y función pero la página se lee como una sola unidad.
 
 </div>
 
@@ -131,8 +131,6 @@ En la segunda, los bloques siguen siendo distintos, pero sus posiciones se relac
 
 ### Errores que se repiten
 
-Los tres primeros ejemplos muestran problemas habituales de alineación. El último te permite corregir una tabla mediante un control.
-
 </div>
 
 <ReticulaErrores />
@@ -142,10 +140,6 @@ Los tres primeros ejemplos muestran problemas habituales de alineación. El últ
 <div class="dv-texto">
 
 ### Las retículas en piezas reales
-
-La estructura cambia según el soporte. Una página web puede organizarse en doce columnas; una revista, en tres columnas de texto; una aplicación móvil puede utilizar solo dos líneas verticales de alineación.
-
-Toca los números para explorar cómo se aplica el principio en cada caso.
 
 </div>
 
@@ -165,7 +159,7 @@ En los tres casos, la retícula no impone una apariencia única. Permite estable
 
 </Paso>
 
-<Paso id="a-fondo">
+<Paso id="a-fondo" titular="Ejes invisibles, proporción de columnas y cuándo romper la retícula">
 
 <Seccion titulo="La relación que produce el efecto">
 

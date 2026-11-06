@@ -1,0 +1,171 @@
+---
+// Paso 4 de énfasis: tres errores frecuentes, cada uno con un control para
+// corregirlo y un escenario inicial visible sin JS.
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+---
+
+<div class="dv-especimenes">
+  <Instrumento
+    id="enf-entorno"
+    titulo="Calma el resto en vez de gritar más"
+    comparar={false}
+    consigna="El dato principal ya es grande, pero los cuatro datos secundarios tienen bordes gruesos y texto negro que le roban atención. Baja el peso de los elementos secundarios y observa cómo destaca el dato principal sin necesidad de agrandarlo."
+  >
+    <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+      <p style="margin:0 0 8px;font-size:22px;font-weight:900;">1.420 asistentes</p>
+      <p style="margin:0;font-size:13px;font-weight:700;">4 salas · 18 charlas · 3 días · Entrada libre</p>
+    </div>
+    <Deslizador
+      lab="enf-entorno"
+      variable="calma"
+      etiqueta="Calma de los datos secundarios"
+      min={0}
+      max={100}
+      valor={0}
+      unidad="%"
+      ayuda="0 %: todo en negrita y con borde grueso. 100 %: los datos secundarios ceden el protagonismo."
+    />
+  </Instrumento>
+
+  <Instrumento
+    id="enf-aislar"
+    titulo="Destaca una cita usando solo espacio"
+    comparar={false}
+    consigna="Una frase clave está apretada entre dos párrafos del mismo tamaño. No puedes cambiar el color ni el tamaño de la letra. Aumenta el espacio alrededor de la frase y observa cuándo se convierte en el centro de la página."
+  >
+    <div slot="escenario" style="padding:16px 18px;font-family:'PT Serif',Georgia,serif;font-size:13px;color:#333;">
+      <p style="margin:0;">El énfasis no depende solo del tamaño: también nace del silencio que rodea a una pieza.</p>
+    </div>
+    <Deslizador
+      lab="enf-aislar"
+      variable="espacio"
+      etiqueta="Espacio alrededor de la frase"
+      min={0}
+      max={44}
+      valor={2}
+      unidad="px"
+    />
+  </Instrumento>
+
+  <Instrumento
+    id="enf-falso"
+    titulo="Corrige un énfasis en el lugar equivocado"
+    comparar={false}
+    consigna="En esta ventana de confirmación, el botón «Cancelar» y el código interno llaman más la atención que la acción principal. Asigna el mayor contraste al elemento que realmente importa."
+  >
+    <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#222;">
+      <p style="margin:0 0 8px;font-weight:700;">¿Enviar solicitud de beca?</p>
+    </div>
+    <Opciones
+      lab="enf-falso"
+      variable="foco"
+      etiqueta="Qué recibe el mayor contraste"
+      valor="codigo"
+      opciones={[
+        { valor: 'codigo', texto: 'El código interno' },
+        { valor: 'cancelar', texto: 'El botón secundario' },
+        { valor: 'enviar', texto: 'La acción principal' },
+      ]}
+    />
+  </Instrumento>
+</div>
+
+<script>
+  import { conectar } from '../../../lib/diseno-visual/estado';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  // ── 1. calmar el entorno ────────────────────────
+  type C = { calma: number };
+  const METRICAS = [
+    ['Salas abiertas', '4'],
+    ['Charlas', '18'],
+    ['Días', '3'],
+    ['Modalidad', 'Gratis'],
+  ];
+  function pintarEntorno(d: HTMLElement, e: C) {
+    const k = e.calma / 100;
+    const gris = Math.round(0x22 + k * (0x6f - 0x22));
+    const borde = Math.max(1, 2.5 - k * 1.5);
+    const colorBorde = k > 0.6 ? '#e5e5e5' : '#222222';
+    const peso = k > 0.45 ? 400 : 700;
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <div style="padding:10px 12px;border:2px solid #222;background:#fff;margin-bottom:10px;">
+          <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:0.1em;color:#6f6f6f;">ASISTENCIA TOTAL</p>
+          <p style="margin:2px 0 0;font-size:24px;font-weight:900;line-height:1.1;">1.420 personas</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          ${METRICAS.map(
+            ([etq, val]) => `
+            <div style="padding:7px 9px;border:${borde}px solid ${colorBorde};background:#fff;color:rgb(${gris},${gris},${gris});">
+              <p style="margin:0;font-size:10px;font-weight:${peso};">${etq}</p>
+              <p style="margin:2px 0 0;font-size:14px;font-weight:${peso};">${val}</p>
+            </div>`,
+          ).join('')}
+        </div>
+      </div>`;
+  }
+  function describirEntorno(e: C) {
+    if (e.calma < 25) return 'Las cinco cajas tienen bordes negros gruesos y negrita: <b class="dv-cifra">todas compiten</b> con la cifra principal.';
+    if (e.calma < 65) return 'Los datos secundarios empiezan a ceder espacio visual. La asistencia total se lee primero.';
+    return '<b class="dv-cifra">Un solo foco claro</b>: sin cambiar el tamaño de «1.420 personas», ahora domina porque el resto dejó de gritar.';
+  }
+
+  // ── 2. aislar con espacio ───────────────────────
+  type A = { espacio: number };
+  function pintarAislar(d: HTMLElement, e: A) {
+    const padV = 4 + e.espacio;
+    const padH = Math.round(e.espacio * 0.65);
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};font-size:13px;line-height:1.48;color:#444;">
+        <p style="margin:0;">El catálogo reúne noventa carteles impresos en talleres del barrio entre 1984 y 2012, conservados por sus propios autores.</p>
+        <p style="margin:${padV}px ${padH}px;font-style:italic;color:#222;">«Lo que queda en silencio en la hoja sostiene lo que tiene que oírse.»</p>
+        <p style="margin:0;">La exposición estará abierta de martes a domingo en la sala del segundo piso, con visitas comentadas cada tarde.</p>
+      </div>`;
+  }
+  function describirAislar(e: A) {
+    if (e.espacio < 10) return `${e.espacio} px de margen adicional: la frase queda pegada a los párrafos y <b class="dv-cifra">pasa inadvertida</b>.`;
+    if (e.espacio < 24) return `${e.espacio} px: la cita empieza a separarse, aunque todavía se siente cerca del texto continuo.`;
+    return `<b class="dv-cifra">${e.espacio} px de aire</b> arriba y abajo: el vacío que rodea a la cita la convierte en el punto focal sin cambiar su tamaño.`;
+  }
+
+  // ── 3. foco equivocado ──────────────────────────
+  type F = { foco: string };
+  function pintarFalso(d: HTMLElement, e: F) {
+    const esCodigo = e.foco === 'codigo';
+    const esCancelar = e.foco === 'cancelar';
+    const esEnviar = e.foco === 'enviar';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
+          <p style="margin:0;font-size:15px;font-weight:900;">¿Enviar solicitud de beca?</p>
+          <span style="font-size:10px;font-weight:700;padding:3px 6px;${esCodigo ? 'background:#222;color:#eeff41;border:2px solid #222;' : 'color:#6f6f6f;border:1px solid #e5e5e5;'}">REF-0942</span>
+        </div>
+        <p style="margin:0 0 14px;font-size:12.5px;color:#444;line-height:1.4;">Una vez enviada, recibirás la confirmación en tu correo.</p>
+        <div style="display:flex;gap:8px;">
+          <span style="padding:6px 11px;font-size:12px;font-weight:700;border:1.5px solid #222;${esCancelar ? 'background:#222;color:#fff;' : 'background:#fff;color:#222;'}">Cancelar</span>
+          <span style="padding:6px 12px;font-size:12px;font-weight:700;border:1.5px solid #222;${esEnviar ? 'background:#222;color:#fff;' : 'background:#fff;color:#222;'}">Enviar solicitud</span>
+        </div>
+      </div>`;
+  }
+  function describirFalso(e: F) {
+    if (e.foco === 'codigo') return 'El código «REF-0942» tiene el mayor contraste, aunque <b class="dv-cifra">nadie entra a leer ese dato</b> primero.';
+    if (e.foco === 'cancelar') return 'El botón «Cancelar» atrae la mirada antes que «Enviar solicitud» y puede provocar un clic accidental.';
+    return '<b class="dv-cifra">El énfasis coincide con la prioridad</b>: la acción principal destaca y el código queda disponible sin estorbar.';
+  }
+
+  const conf: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['enf-entorno', pintarEntorno as never, describirEntorno as never],
+    ['enf-aislar', pintarAislar as never, describirAislar as never],
+    ['enf-falso', pintarFalso as never, describirFalso as never],
+  ];
+  for (const [id, pintar, describir] of conf) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar, describir });
+    }
+  }
+</script>

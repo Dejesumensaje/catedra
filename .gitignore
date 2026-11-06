@@ -30,3 +30,6 @@ pnpm-debug.log*
 # notas personales del docente
 outlines/*fichas-docente*
 Claude outputs/
+
+# capturas de la skill verificar-render
+.verificar-render/

@@ -1,0 +1,1202 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'tokens';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const PAPEL = '#ffffff';
+const FONDO = '#fbfbf9';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Cambia de tema sin tocar los componentes.',
+    hacer: 'En «Tema activo (reasignación semántica)», selecciona «Alto contraste».',
+    pista: 'Elige la segunda opción del primer control.',
+    logro: 'La cabecera, la tarjeta, el formulario y la alerta cambiaron al unísono porque no tenían colores fijos: cada pieza lee tokens semánticos como «--superficie-papel» y «--tinta-principal».',
+  },
+  {
+    titulo: 'Prueba un registro editorial cálido.',
+    hacer: 'En «Tema activo (reasignación semántica)», selecciona «Editorial».',
+    pista: 'Elige la tercera opción del primer control.',
+    logro: 'El mismo código de interfaz adopta una paleta de papel crema y acento terracota. El token separa qué función cumple cada elemento de qué valor concreto tiene hoy.',
+  },
+  {
+    titulo: 'Propaga el espacio interior desde un único punto.',
+    hacer: 'Sube «Token --espacio-interior» a 20 px o más.',
+    pista: 'Arrastra el deslizador de espacio interior hacia la derecha.',
+    preparar: { tema: 'claro' },
+    logro: 'El margen interno de la tarjeta, del bloque de formulario y del aviso crece de manera coordinada. Nadie tuvo que editar tres hojas de estilo por separado.',
+  },
+  {
+    titulo: 'Reasigna el token de acento semántico.',
+    hacer: 'En «Token --acento-estado apunta a», selecciona «Terracota (#b3261e)».',
+    pista: 'Elige la segunda opción del selector de acento.',
+    logro: 'Cambiar a qué primitivo apunta el token semántico transforma al instante la etiqueta de estado y el indicador activo sin alterar textos ni bordes.',
+  },
+  {
+    titulo: 'Detecta un valor suelto («hardcoded») infiltrado.',
+    hacer: 'Abre «Más controles», activa «Infiltrar un valor bruto (#222222) sin token» y cambia «Tema activo (reasignación semántica)» a «Alto contraste».',
+    pista: 'Despliega «Más controles», marca la casilla y elige el tema «Alto contraste».',
+    preparar: { tema: 'claro', infiltrado: false },
+    abrir: true,
+    logro: 'Mientras toda la interfaz invierte sus colores con limpieza, el bloque que tenía «#222222» escrito a fuego queda negro sobre negro y se vuelve ilegible. Un solo valor sin token rompe la propagación del sistema.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Dos diagramas comparados: a la izquierda, cambiar el valor bruto #222222 rompe a la vez el texto, el borde y el botón; a la derecha, tres tokens con nombre permiten cambiar solo el botón.">
+      <rect width="600" height="180" fill={FONDO} />
+      {/* Izquierda: valor bruto */}
+      <g transform="translate(18, 16)">
+        <rect width="268" height="148" fill={PAPEL} stroke={REGLA} stroke-width="1.5" />
+        <text x="14" y="22" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.06em" fill={ROJO}>SIN TOKENS · VALOR BRUTO #222222</text>
+        <rect x="14" y="34" width="92" height="24" fill={T} />
+        <text x="60" y="50" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={AMARILLO}>#222222 → #b3261e</text>
+        <path d="M 106 46 L 138 36 M 106 46 L 138 74 M 106 46 L 138 112" stroke={ROJO} stroke-width="1.5" stroke-dasharray="3 2" />
+        <rect x="140" y="24" width="114" height="110" fill={PAPEL} stroke={ROJO} stroke-width="2.5" />
+        <text x="150" y="46" font-family={SANS} font-size="12" font-weight="700" fill={ROJO}>Título en rojo</text>
+        <text x="150" y="64" font-family={SERIF} font-size="10.5" fill={ROJO}>Párrafo también</text>
+        <text x="150" y="78" font-family={SERIF} font-size="10.5" fill={ROJO}>teñido por error.</text>
+        <rect x="150" y="94" width="94" height="26" fill={ROJO} />
+        <text x="197" y="111" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={PAPEL}>Botón acción</text>
+      </g>
+
+      {/* Derecha: con tokens semánticos */}
+      <g transform="translate(314, 16)">
+        <rect width="268" height="148" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="14" y="22" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.06em" fill={T}>CON TOKENS · ROL SEMÁNTICO</text>
+        <rect x="14" y="34" width="104" height="22" fill={FONDO} stroke={T} stroke-width="1" />
+        <text x="20" y="49" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>--color-texto</text>
+        <rect x="14" y="64" width="104" height="22" fill={FONDO} stroke={T} stroke-width="1" />
+        <text x="20" y="79" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>--color-borde</text>
+        <rect x="14" y="94" width="104" height="24" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="20" y="110" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>--color-accion</text>
+
+        <path d="M 118 45 L 142 44 M 118 75 L 142 75 M 118 106 L 142 107" stroke={T} stroke-width="1.4" />
+        <rect x="144" y="24" width="110" height="110" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="154" y="46" font-family={SANS} font-size="12" font-weight="700" fill={T}>Título intacto</text>
+        <text x="154" y="64" font-family={SERIF} font-size="10.5" fill={TXT}>El cuerpo y el borde</text>
+        <text x="154" y="78" font-family={SERIF} font-size="10.5" fill={TXT}>conservan su rol.</text>
+        <rect x="154" y="94" width="90" height="26" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="199" y="111" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>Botón acción</text>
+      </g>
+    </svg>
+    <p>En una tarjeta el texto, el borde y el botón usan hoy el mismo color <code>#222222</code>. ¿Qué pasa mañana cuando quieres que solo los botones cambien de color?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Si las tres piezas apuntan directamente al valor bruto <code>#222222</code>, un «buscar y reemplazar» teñirá por accidente los párrafos y los bordes, o te obligará a revisar archivo por archivo para decidir cuál <code>#222222</code> era botón y cuál era texto. Cuando cada pieza apunta a un token con nombre de función (<code>--color-texto</code>, <code>--color-borde</code>, <code>--color-accion</code>), aunque hoy valgan lo mismo, mañana puedes cambiar solo <code>--color-accion</code> con precisión quirúrgica.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="19 grises al azar y 14 medidas sueltas"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Proliferación de grises casi idénticos',
+          texto: 'Conviven #666666, #6b6b6b, #707070 y #737373. Nadie sabe cuál es el oficial ni cuál cumple el contraste mínimo.',
+          zona: zona(16, 18, 328, 76),
+        },
+        {
+          ...pct(330, 148),
+          titulo: 'Márgenes nacidos a ojo',
+          texto: 'Cada tarjeta usa 13 px, 15 px, 17 px o 21 px de espacio interior según quién la escribió ese día.',
+          zona: zona(16, 104, 328, 82),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Imposible cambiar de tema',
+          texto: 'Al intentar crear un modo de alto contraste, hay que auditar cientos de líneas con números mágicos sin contexto.',
+          zona: zona(16, 194, 328, 70),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Hoja de estilos caótica con diecinueve valores hexadecimales parecidos y márgenes irregulares de 13, 15, 17 y 21 píxeles.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="18" y="18" width="324" height="74" fill="#f7f7f5" stroke="#d4d4d4" stroke-width="1.5" />
+        <text x="28" y="36" font-family={SANS} font-size="10" font-weight="700" fill={ROJO}>VALORES SUELTOS EN EL CÓDIGO (19 GRISES)</text>
+        <text x="28" y="54" font-family={SANS} font-size="10.5" fill={T}>color: #666; · color: #6b6b6b; · border: #707070;</text>
+        <text x="28" y="72" font-family={SANS} font-size="10.5" fill={T}>color: #737373; · background: #fafafa; · #f4f4f4;</text>
+
+        <rect x="18" y="106" width="154" height="78" fill={PAPEL} stroke="#666666" stroke-width="1.5" />
+        <text x="31" y="127" font-family={SANS} font-size="11" font-weight="700" fill={T}>Tarjeta A (pad: 13 px)</text>
+        <text x="31" y="145" font-family={SERIF} font-size="11" fill="#6b6b6b">Subtítulo en #6b6b6b</text>
+        <rect x="31" y="154" width="84" height="20" fill="#292929" />
+        <text x="73" y="168" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={PAPEL}>Botón #292929</text>
+
+        <rect x="188" y="106" width="154" height="78" fill="#fcfcfc" stroke="#707070" stroke-width="2" />
+        <text x="209" y="131" font-family={SANS} font-size="11.5" font-weight="700" fill="#1e1e1e">Tarjeta B (pad: 21 px)</text>
+        <text x="209" y="149" font-family={SERIF} font-size="11" fill="#737373">Subtítulo en #737373</text>
+        <rect x="209" y="156" width="84" height="20" fill="#111111" />
+        <text x="251" y="170" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={PAPEL}>Botón #111111</text>
+
+        <rect x="18" y="198" width="324" height="64" fill="#fbe9e7" stroke={ROJO} stroke-width="1.5" />
+        <text x="30" y="220" font-family={SANS} font-size="11" font-weight="700" fill={ROJO}>14 medidas de margen sin relación: 7, 11, 13, 15, 19, 21 px…</text>
+        <text x="30" y="240" font-family={SERIF} font-size="11.5" fill={T}>Cada pantalla parece diseñada por un equipo distinto.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="4 tokens de color y una escala de 5 espacios"
+      notas={[
+        {
+          ...pct(330, 52),
+          titulo: 'Vocabulario semántico acotado',
+          texto: 'Cuatro tokens de color (--tinta, --texto, --secundario, --amarillo) cubren todas las jerarquías con contraste verificado.',
+          zona: zona(16, 18, 328, 76),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Consistencia entre piezas',
+          texto: 'Ambas tarjetas leen --espacio-m (16 px) y --tinta (#222222). Si cambia el token, las dos se ajustan a la vez.',
+          zona: zona(16, 104, 328, 82),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Escala de espaciado predecible',
+          texto: 'Cinco peldaños con nombre (4, 8, 16, 24 y 40 px) eliminan las dudas al maquetar cualquier bloque nuevo.',
+          zona: zona(16, 194, 328, 70),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Sistema gobernado por cuatro tokens semánticos de color y cinco tokens de espacio interior perfectamente alineados.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="18" y="18" width="324" height="74" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="28" y="36" font-family={SANS} font-size="10" font-weight="700" fill={T}>TOKENS DEL SISTEMA (4 COLORES · 5 ESPACIOS)</text>
+        <text x="28" y="54" font-family={SANS} font-size="10.5" fill={T}>--tinta: #222222 · --texto: #444444 · --secundario: #6f6f6f</text>
+        <text x="28" y="72" font-family={SANS} font-size="10.5" fill={T}>--espacio-xs: 4 px · -s: 8 px · -m: 16 px · -l: 24 px · -xl: 40 px</text>
+
+        <rect x="18" y="106" width="154" height="78" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="34" y="128" font-family={SANS} font-size="11" font-weight="700" fill={T}>Tarjeta A (--espacio-m)</text>
+        <text x="34" y="146" font-family={SERIF} font-size="11" fill={G}>Usa --secundario</text>
+        <rect x="34" y="154" width="90" height="20" fill={T} />
+        <text x="79" y="168" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={AMARILLO}>Usa --tinta</text>
+
+        <rect x="188" y="106" width="154" height="78" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="204" y="128" font-family={SANS} font-size="11" font-weight="700" fill={T}>Tarjeta B (--espacio-m)</text>
+        <text x="204" y="146" font-family={SERIF} font-size="11" fill={G}>Usa --secundario</text>
+        <rect x="204" y="154" width="90" height="20" fill={T} />
+        <text x="249" y="168" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={AMARILLO}>Usa --tinta</text>
+
+        <rect x="18" y="198" width="324" height="64" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="30" y="220" font-family={SANS} font-size="9.8" font-weight="900" fill={T}>1 cambio en :root actualiza 100 pantallas sin buscar ni reemplazar</text>
+        <text x="30" y="240" font-family={SERIF} font-size="11.5" fill={T}>La decisión se toma una vez y se propaga con nombre propio.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Consola de dos capas · tokens primitivos y tokens semánticos"
+    consigna="A la izquierda ves el árbol de tokens (primitivos y semánticos); a la derecha, una mini interfaz con cabecera, tarjeta, campo de formulario y alerta que los consume en vivo. Reasigna el tema o cambia un token para ver cómo se propaga."
+    nota="Fija el tema claro como A y cámbialo a Alto contraste o Editorial en B: verás que los cuatro componentes no cambian su estructura, solo el valor al que apuntan sus tokens semánticos."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Consola de tokens conectada a una interfaz compuesta por cabecera, tarjeta de evento, formulario y alerta de estado.">
+      <rect width="640" height="320" fill={FONDO} />
+      <rect x="20" y="20" width="230" height="280" fill={PAPEL} stroke={T} stroke-width="1.5" />
+      <text x="34" y="44" font-family={SANS} font-size="11" font-weight="700" fill={T}>CAPA SEMÁNTICA (:root)</text>
+      <text x="34" y="70" font-family={SANS} font-size="10.5" fill={TXT}>--superficie-papel → #ffffff</text>
+      <text x="34" y="92" font-family={SANS} font-size="10.5" fill={TXT}>--tinta-principal → #222222</text>
+      <text x="34" y="114" font-family={SANS} font-size="10.5" fill={TXT}>--acento-estado → #eeff41</text>
+      <text x="34" y="136" font-family={SANS} font-size="10.5" fill={TXT}>--espacio-interior → 16 px</text>
+      <rect x="270" y="20" width="350" height="280" fill={PAPEL} stroke={T} stroke-width="1.5" />
+      <text x="290" y="50" font-family={SANS} font-size="14" font-weight="900" fill={T}>Vista previa de los 4 bloques</text>
+      <rect x="290" y="68" width="310" height="72" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      <text x="306" y="96" font-family={SANS} font-size="12" font-weight="700" fill={T}>Alerta gobernada por --acento-estado</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Combina temas, cambia el radio de borde o activa las etiquetas de tokens en «Más controles» para inspeccionar qué variable gobierna cada pieza." />
+
+    <Opciones
+      lab={lab}
+      variable="tema"
+      etiqueta="Tema activo (reasignación semántica)"
+      valor="claro"
+      opciones={[
+        { valor: 'claro', texto: 'Claro' },
+        { valor: 'contraste', texto: 'Alto contraste' },
+        { valor: 'editorial', texto: 'Editorial' },
+      ]}
+      ayuda="Cambia a qué valores primitivos apuntan --superficie-papel y --tinta-principal sin tocar los componentes."
+    />
+
+    <Opciones
+      lab={lab}
+      variable="acento"
+      etiqueta="Token --acento-estado apunta a"
+      valor="amarillo"
+      opciones={[
+        { valor: 'amarillo', texto: 'Amarillo (#eeff41)' },
+        { valor: 'terracota', texto: 'Terracota (#b3261e)' },
+        { valor: 'salvia', texto: 'Verde salvia (#2e6f40)' },
+      ]}
+      ayuda="Observa cómo cambian a la vez la insignia de estado, el foco del campo y el borde de la alerta."
+    />
+
+    <Deslizador
+      lab={lab}
+      variable="espacio"
+      etiqueta="Token --espacio-interior"
+      min={8}
+      max={24}
+      paso={4}
+      valor={16}
+      unidad="px"
+      ayuda="Gobierna el margen interno de la tarjeta, del formulario y de la alerta desde un solo lugar."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="radio"
+        etiqueta="Token --radio-borde"
+        min={0}
+        max={12}
+        paso={2}
+        valor={0}
+        unidad="px"
+        ayuda="Propaga el redondeo a tarjetas, botones, entradas de texto e insignias."
+      />
+      <Interruptor
+        lab={lab}
+        variable="infiltrado"
+        etiqueta="Infiltrar un valor bruto (#222222) sin token"
+        ayuda="Fija a fuego #222222 en el subtítulo del formulario para ver cómo falla al cambiar al tema de alto contraste."
+      />
+      <Interruptor
+        lab={lab}
+        variable="rayosx"
+        etiqueta="Mostrar qué token lee cada pieza"
+        activo={true}
+        ayuda="Superpone las etiquetas de los tokens semánticos sobre la interfaz."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"tema":"claro","acento":"amarillo","espacio":16,"radio":0,"infiltrado":false}'>Sistema canónico (claro)</button>
+      <button type="button" class="dv-boton" data-preset='{"tema":"contraste","acento":"amarillo","espacio":16,"radio":0,"infiltrado":false}'>Modo alto contraste limpio</button>
+      <button type="button" class="dv-boton" data-preset='{"tema":"contraste","acento":"amarillo","espacio":16,"radio":0,"infiltrado":true}'>Fuga de valor bruto en modo oscuro</button>
+      <button type="button" class="dv-boton" data-preset='{"tema":"editorial","acento":"terracota","espacio":20,"radio":4,"infiltrado":false}'>Edición revista cálida</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Nombra el token por su función, no por su apariencia"
+      comparar={false}
+      consigna="El botón principal usa un token llamado «--azul-oscuro». Cuando la revista cambia su identidad a terracota o entra en modo oscuro, el nombre miente o obliga a buscarlo en todos los archivos. Cámbialo a un nombre semántico."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;font-weight:700;">--azul-oscuro: #b3261e (contradicción semántica)</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="nombre"
+        etiqueta="Cómo nombras el token del botón principal"
+        valor="apariencia"
+        opciones={[
+          { valor: 'apariencia', texto: '--azul-oscuro (apariencia)' },
+          { valor: 'posicion', texto: '--color-abajo-derecha (posición)' },
+          { valor: 'funcion', texto: '--color-accion-primaria (función)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Consolida 12 medidas casi iguales en una escala de 5 tokens"
+      comparar={false}
+      consigna="Tres tarjetas contiguas tienen márgenes de 11 px, 15 px y 19 px nacidos al azar. Reduce la proliferación conectándolas a una escala de 5 tokens de espaciado."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">12 medidas sueltas (7, 9, 11, 13, 15, 17, 19, 21 px…)</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="consolidacion"
+        etiqueta="Nivel de consolidación en tokens de espacio"
+        min={0}
+        max={100}
+        paso={25}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Caza el valor bruto infiltrado que rompe el cambio de tema"
+      comparar={false}
+      consigna="En modo de alto contraste, dos tarjetas se leen bien pero la tercera desaparece porque alguien escribió color: #222222 en vez de usar var(--tinta-principal). Sustituye el valor infiltrado por el token."
+    >
+      <div slot="escenario" style={`padding:14px 16px;font-family:${SANS};color:${T};`}>
+        <p style="margin:0;">Tarjeta 3 con #222222 fijo sobre fondo oscuro.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="regla"
+        etiqueta="Declaración de color en la tercera tarjeta"
+        valor="bruto"
+        opciones={[
+          { valor: 'bruto', texto: 'Valor bruto: color: #222222' },
+          { valor: 'token', texto: 'Token: color: var(--tinta-principal)' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Este mismo sitio (global.css): seis tokens gobiernan toda la cátedra"
+      notas={[
+        {
+          ...pct(110, 56),
+          titulo: 'Seis tokens de color en :root',
+          texto: '--amarillo (#eeff41), --tinta (#222222), --texto (#444444), --secundario (#6f6f6f), --papel (#ffffff) y --regla (#e5e5e5) bastan para todas las páginas.',
+          zona: zona(16, 20, 328, 78),
+        },
+        {
+          ...pct(210, 146),
+          titulo: 'Ajuste de accesibilidad desde un solo punto',
+          texto: 'Cuando --secundario pasó de #888888 a #6f6f6f para superar el contraste AA (4,5:1), todas las etiquetas del sitio quedaron corregidas al instante.',
+          zona: zona(16, 108, 328, 76),
+        },
+        {
+          ...pct(250, 232),
+          titulo: 'Dos tokens tipográficos',
+          texto: '--serif (PT Serif) para lectura inmersiva y --sans (Roboto) para navegación, controles y datos tabulares.',
+          zona: zona(16, 194, 328, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Declaración :root de global.css en el repositorio Cátedra con sus seis tokens de color y dos tokens tipográficos.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <rect x="16" y="20" width="328" height="78" fill={FONDO} stroke={T} stroke-width="1.5" />
+        <text x="28" y="40" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.08em" fill={G}>SRC/STYLES/GLOBAL.CSS · :ROOT</text>
+        <g transform="translate(28, 50)">
+          <rect x="0" y="0" width="44" height="34" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+          <text x="22" y="21" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>--amarillo</text>
+          <rect x="52" y="0" width="44" height="34" fill={T} stroke={T} stroke-width="1.2" />
+          <text x="74" y="21" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={PAPEL}>--tinta</text>
+          <rect x="104" y="0" width="44" height="34" fill={TXT} stroke={T} stroke-width="1.2" />
+          <text x="126" y="21" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={PAPEL}>--texto</text>
+          <rect x="156" y="0" width="54" height="34" fill={G} stroke={T} stroke-width="1.2" />
+          <text x="183" y="21" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={PAPEL}>--secundario</text>
+          <rect x="218" y="0" width="42" height="34" fill={PAPEL} stroke={T} stroke-width="1.2" />
+          <text x="239" y="21" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>--papel</text>
+          <rect x="268" y="0" width="36" height="34" fill={REGLA} stroke={T} stroke-width="1.2" />
+          <text x="286" y="21" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>--regla</text>
+        </g>
+
+        <rect x="16" y="108" width="328" height="76" fill={PAPEL} stroke={T} stroke-width="1.5" />
+        <text x="28" y="130" font-family={SANS} font-size="11" font-weight="900" fill={T}>Propagación de accesibilidad: #888888 → #6f6f6f</text>
+        <text x="28" y="150" font-family={SERIF} font-size="11.5" fill={TXT}>Cambiar una sola línea en :root subió el contraste de</text>
+        <text x="28" y="168" font-family={SERIF} font-size="11.5" fill={G}>3,5:1 a 5,0:1 en todas las fechas, cotas y metadatos.</text>
+
+        <rect x="16" y="194" width="328" height="68" fill={FONDO} stroke={REGLA} stroke-width="1.5" />
+        <text x="28" y="218" font-family={SERIF} font-size="13" font-weight="700" fill={T}>--serif: 'PT Serif', Georgia, serif (lectura)</text>
+        <text x="28" y="242" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>--sans: 'Roboto', sans-serif (datos y controles)</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Publicación multitema: la misma noticia en edición día, noche y tinta electrónica"
+      notas={[
+        {
+          ...pct(68, 140),
+          titulo: 'Tema diurno (papel)',
+          texto: '--superficie apunta a blanco cálido y --tinta-cuerpo a carbón #222222 para lectura con luz ambiental.',
+          zona: zona(16, 48, 102, 210),
+        },
+        {
+          ...pct(180, 140),
+          titulo: 'Tema nocturno (OLED)',
+          texto: 'El mismo componente de artículo invierte --superficie (#181818) y --tinta-cuerpo (#f2f2ee) sin duplicar el HTML.',
+          zona: zona(129, 48, 102, 210),
+        },
+        {
+          ...pct(292, 140),
+          titulo: 'Tema e-ink / impresión',
+          texto: 'Suprime grises intermedios y fija bordes nítidos de 2 px reasignando los tokens de borde y acento.',
+          zona: zona(242, 48, 102, 210),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tres columnas que muestran la misma tarjeta de noticia renderizada en tema diurno, nocturno y tinta electrónica mediante tokens semánticos.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="16" y="30" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="0.03em" fill={T}>UN SOLO COMPONENTE · TRES TABLAS DE TOKENS SEMÁNTICOS</text>
+
+        {/* Columna 1: Día */}
+        <g transform="translate(16, 48)">
+          <rect width="102" height="210" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+          <text x="10" y="22" font-family={SANS} font-size="9" font-weight="700" fill={G}>TEMA DÍA</text>
+          <rect x="10" y="32" width="52" height="16" fill={AMARILLO} stroke={T} stroke-width="1" />
+          <text x="36" y="43" text-anchor="middle" font-family={SANS} font-size="8" font-weight="900" fill={T}>CRÓNICA</text>
+          <text x="10" y="68" font-family={SERIF} font-size="12" font-weight="700" fill={T}>El archivo</text>
+          <text x="10" y="84" font-family={SERIF} font-size="12" font-weight="700" fill={T}>de tipos</text>
+          <line x1="10" y1="98" x2="92" y2="98" stroke={REGLA} stroke-width="1.5" />
+          <text x="10" y="118" font-family={SERIF} font-size="9.5" fill={TXT}>Lectura sobre</text>
+          <text x="10" y="132" font-family={SERIF} font-size="9.5" fill={TXT}>papel claro con</text>
+          <text x="10" y="146" font-family={SERIF} font-size="9.5" fill={TXT}>contraste suave.</text>
+          <text x="10" y="192" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>4 min · Bog</text>
+        </g>
+
+        {/* Columna 2: Noche */}
+        <g transform="translate(129, 48)">
+          <rect width="102" height="210" fill="#1b1b1b" stroke={T} stroke-width="1.5" />
+          <text x="10" y="22" font-family={SANS} font-size="9" font-weight="700" fill="#c8c8c2">TEMA NOCHE</text>
+          <rect x="10" y="32" width="52" height="16" fill={AMARILLO} />
+          <text x="36" y="43" text-anchor="middle" font-family={SANS} font-size="8" font-weight="900" fill="#1b1b1b">CRÓNICA</text>
+          <text x="10" y="68" font-family={SERIF} font-size="12" font-weight="700" fill="#f4f4f0">El archivo</text>
+          <text x="10" y="84" font-family={SERIF} font-size="12" font-weight="700" fill="#f4f4f0">de tipos</text>
+          <line x1="10" y1="98" x2="92" y2="98" stroke="#444444" stroke-width="1.5" />
+          <text x="10" y="118" font-family={SERIF} font-size="9.5" fill="#dcdcd6">Tokens apuntan</text>
+          <text x="10" y="132" font-family={SERIF} font-size="9.5" fill="#dcdcd6">a paleta oscura</text>
+          <text x="10" y="146" font-family={SERIF} font-size="9.5" fill="#dcdcd6">verificada.</text>
+          <text x="10" y="192" font-family={SANS} font-size="8.5" font-weight="700" fill="#c8c8c2">4 min · Bog</text>
+        </g>
+
+        {/* Columna 3: Tinta electrónica */}
+        <g transform="translate(242, 48)">
+          <rect width="102" height="210" fill={PAPEL} stroke={T} stroke-width="2.5" />
+          <text x="10" y="22" font-family={SANS} font-size="9" font-weight="700" fill={T}>TEMA E-INK</text>
+          <rect x="10" y="32" width="52" height="16" fill={PAPEL} stroke={T} stroke-width="2" />
+          <text x="36" y="43" text-anchor="middle" font-family={SANS} font-size="8" font-weight="900" fill={T}>CRÓNICA</text>
+          <text x="10" y="68" font-family={SERIF} font-size="12" font-weight="700" fill={T}>El archivo</text>
+          <text x="10" y="84" font-family={SERIF} font-size="12" font-weight="700" fill={T}>de tipos</text>
+          <line x1="10" y1="98" x2="92" y2="98" stroke={T} stroke-width="2" />
+          <text x="10" y="118" font-family={SERIF} font-size="9.5" fill={T}>Cero grises:</text>
+          <text x="10" y="132" font-family={SERIF} font-size="9.5" fill={T}>todo en tinta</text>
+          <text x="10" y="146" font-family={SERIF} font-size="9.5" fill={T}>100 % negra.</text>
+          <text x="10" y="192" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>4 min · Bog</text>
+        </g>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Escala modular de espaciado: cinco peldaños con propósito claro"
+      notas={[
+        {
+          ...pct(90, 82),
+          titulo: '--espacio-xs (4 px) y --espacio-s (8 px)',
+          texto: 'Reservados para distancias internas entre elementos estrechamente vinculados: un icono y su etiqueta, o el título y su subtítulo.',
+          zona: zona(18, 44, 324, 68),
+        },
+        {
+          ...pct(180, 152),
+          titulo: '--espacio-m (16 px) y --espacio-l (24 px)',
+          texto: 'El relleno estándar de tarjetas, paneles y separación entre grupos distintos dentro de un mismo módulo.',
+          zona: zona(18, 120, 324, 68),
+        },
+        {
+          ...pct(280, 224),
+          titulo: '--espacio-xl (40 px)',
+          texto: 'Separa secciones mayores de la página para que la ley de proximidad distinga bloques temáticos sin usar líneas divisorias.',
+          zona: zona(18, 196, 324, 66),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Escala de cinco tokens de espaciado desde 4 píxeles hasta 40 píxeles con barras proporcionales y su uso recomendado.">
+        <rect width={W} height={H} fill={PAPEL} />
+        <text x="20" y="30" font-family={SANS} font-size="10.5" font-weight="700" letter-spacing="0.06em" fill={T}>ESCALA DE TOKENS DE ESPACIO (PROGRESIÓN CON NOMBRE)</text>
+
+        {[
+          { token: '--espacio-xs', val: '4 px', w: 12, uso: 'Icono ↔ etiqueta, superíndice', y: 48 },
+          { token: '--espacio-s', val: '8 px', w: 24, uso: 'Etiqueta ↔ campo de texto', y: 86 },
+          { token: '--espacio-m', val: '16 px', w: 48, uso: 'Relleno interior de tarjeta', y: 128 },
+          { token: '--espacio-l', val: '24 px', w: 72, uso: 'Entre tarjetas vecinas', y: 170 },
+          { token: '--espacio-xl', val: '40 px', w: 96, uso: 'Salto entre secciones', y: 214 },
+        ].map((f) => (
+          <g transform={`translate(20, ${f.y})`}>
+            <text x="0" y="16" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>{f.token}</text>
+            <text x="90" y="16" font-family={SANS} font-size="10" font-weight="700" fill={G}>{f.val}</text>
+            <rect x="124" y="4" width={f.w} height="16" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+            <text x={130 + f.w} y="16" font-family={SERIF} font-size="9.5" fill={TXT}>{f.uso}</text>
+          </g>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre nomenclatura semántica, capas de tokens, valores infiltrados y escalas de espaciado."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    tema: string;
+    acento: string;
+    espacio: number;
+    radio: number;
+    infiltrado: boolean;
+    rayosx: boolean;
+  };
+
+  const TEMAS: Record<string, { nombre: string; papel: string; fondo: string; tinta: string; texto: string; sec: string; regla: string }> = {
+    claro: {
+      nombre: 'Claro',
+      papel: '#ffffff',
+      fondo: '#fbfbf9',
+      tinta: '#222222',
+      texto: '#444444',
+      sec: '#6f6f6f',
+      regla: '#e5e5e5',
+    },
+    contraste: {
+      nombre: 'Alto contraste',
+      papel: '#161616',
+      fondo: '#0d0d0d',
+      tinta: '#f5f5f0',
+      texto: '#deded8',
+      sec: '#b8b8b0',
+      regla: '#3d3d3d',
+    },
+    editorial: {
+      nombre: 'Editorial',
+      papel: '#f7f3e8',
+      fondo: '#efe9d8',
+      tinta: '#2b2118',
+      texto: '#4a3b2c',
+      sec: '#6e5d4f',
+      regla: '#d8cebe',
+    },
+  };
+
+  const ACENTOS: Record<string, { hex: string; tintaSobreAcento: string; nombre: string }> = {
+    amarillo: { hex: '#eeff41', tintaSobreAcento: '#222222', nombre: '#eeff41' },
+    terracota: { hex: '#b3261e', tintaSobreAcento: '#ffffff', nombre: '#b3261e' },
+    salvia: { hex: '#2e6f40', tintaSobreAcento: '#ffffff', nombre: '#2e6f40' },
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const estrecho = W < 520;
+    const H = estrecho ? 460 : 330;
+    const t = TEMAS[e.tema] ?? TEMAS.claro;
+    const ac = ACENTOS[e.acento] ?? ACENTOS.amarillo;
+    const pad = e.espacio;
+    const r = e.radio;
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Consola de tokens en tema ${t.nombre} con espacio interior de ${pad} px y acento ${ac.nombre}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const colIzqW = estrecho ? W - 28 : Math.round(W * 0.38);
+    const colDerX = estrecho ? 14 : colIzqW + 26;
+    const colDerW = estrecho ? W - 28 : W - colDerX - 14;
+    const colDerY = estrecho ? 168 : 14;
+    const colDerH = estrecho ? H - 182 : H - 28;
+
+    // Panel izquierdo: Árbol de tokens
+    const panelTokens = svg('g');
+    panelTokens.append(
+      svg('rect', {
+        x: 14,
+        y: 14,
+        width: colIzqW,
+        height: estrecho ? 142 : H - 28,
+        rx: 0,
+        fill: '#ffffff',
+        stroke: '#222222',
+        'stroke-width': 1.5,
+      }),
+    );
+
+    const titIzq = svg('text', {
+      x: 26,
+      y: 34,
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 900,
+      'letter-spacing': 0.8,
+      fill: '#222222',
+    });
+    titIzq.textContent = `TABLA DE TOKENS · TEMA ${t.nombre.toUpperCase()}`;
+    panelTokens.append(titIzq);
+
+    const filas = [
+      { tok: '--superficie-papel', val: t.papel, muestra: t.papel },
+      { tok: '--tinta-principal', val: t.tinta, muestra: t.tinta },
+      { tok: '--texto-secundario', val: t.sec, muestra: t.sec },
+      { tok: '--acento-estado', val: ac.nombre, muestra: ac.hex },
+      { tok: '--espacio-interior', val: `${pad} px`, muestra: null },
+      { tok: '--radio-borde', val: `${r} px`, muestra: null },
+    ];
+
+    const filasVisibles = estrecho ? filas.slice(0, 4) : filas;
+    filasVisibles.forEach((f, idx) => {
+      const fy = 52 + idx * (estrecho ? 22 : 38);
+      if (!estrecho) {
+        panelTokens.append(
+          svg('rect', {
+            x: 24,
+            y: fy - 12,
+            width: colIzqW - 20,
+            height: 30,
+            fill: '#fbfbf9',
+            stroke: '#e5e5e5',
+            'stroke-width': 1,
+          }),
+        );
+      }
+      const txtTok = svg('text', {
+        x: 30,
+        y: fy + 6,
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: '#222222',
+      });
+      txtTok.textContent = f.tok;
+      panelTokens.append(txtTok);
+
+      if (f.muestra) {
+        panelTokens.append(
+          svg('rect', {
+            x: 14 + colIzqW - 78,
+            y: fy - 6,
+            width: 14,
+            height: 14,
+            fill: f.muestra,
+            stroke: '#222222',
+            'stroke-width': 1,
+          }),
+        );
+      }
+      const txtVal = svg('text', {
+        x: 14 + colIzqW - 18,
+        y: fy + 6,
+        'text-anchor': 'end',
+        'font-family': SANS,
+        'font-size': 9.5,
+        'font-weight': 700,
+        fill: '#6f6f6f',
+      });
+      txtVal.textContent = f.val;
+      panelTokens.append(txtVal);
+    });
+
+    raiz.append(panelTokens);
+
+    // Panel derecho: Interfaz que consume los tokens
+    const ui = svg('g');
+    ui.append(
+      svg('rect', {
+        x: colDerX,
+        y: colDerY,
+        width: colDerW,
+        height: colDerH,
+        rx: r,
+        fill: t.fondo,
+        stroke: t.tinta,
+        'stroke-width': 1.5,
+      }),
+    );
+
+    // 1. Cabecera
+    const cabY = colDerY + 12;
+    const cabX = colDerX + 14;
+    const cabW = colDerW - 28;
+    const txtMarca = svg('text', {
+      x: cabX,
+      y: cabY + 14,
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 900,
+      'letter-spacing': 0.8,
+      fill: t.tinta,
+    });
+    txtMarca.textContent = 'ARCHIVO SONORO';
+    ui.append(txtMarca);
+
+    // Insignia de estado (consume --acento-estado y --radio-borde)
+    const badgeW = 86;
+    ui.append(
+      svg('rect', {
+        x: cabX + cabW - badgeW,
+        y: cabY,
+        width: badgeW,
+        height: 20,
+        rx: r,
+        fill: ac.hex,
+        stroke: t.tinta,
+        'stroke-width': 1.2,
+      }),
+    );
+    const txtBadge = svg('text', {
+      x: cabX + cabW - badgeW / 2,
+      y: cabY + 14,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 9,
+      'font-weight': 900,
+      fill: ac.tintaSobreAcento,
+    });
+    txtBadge.textContent = 'EN VIVO · 24 H';
+    ui.append(txtBadge);
+
+    // 2. Tarjeta principal (consume --superficie-papel, --espacio-interior, --radio-borde)
+    const cardY = cabY + 30;
+    const cardH = Math.min(116, 72 + pad * 1.8);
+    ui.append(
+      svg('rect', {
+        x: cabX,
+        y: cardY,
+        width: cabW,
+        height: cardH,
+        rx: r,
+        fill: t.papel,
+        stroke: t.tinta,
+        'stroke-width': 1.5,
+      }),
+    );
+
+    const kText = svg('text', {
+      x: cabX + pad,
+      y: cardY + pad + 8,
+      'font-family': SANS,
+      'font-size': 9,
+      'font-weight': 700,
+      'letter-spacing': 0.6,
+      fill: t.sec,
+    });
+    kText.textContent = 'SESIÓN 04 · FONOTECA';
+    ui.append(kText);
+
+    const hText = svg('text', {
+      x: cabX + pad,
+      y: cardY + pad + 26,
+      'font-family': SERIF,
+      'font-size': 15,
+      'font-weight': 700,
+      fill: t.tinta,
+    });
+    hText.textContent = 'Paisajes de cinta magnética';
+    ui.append(hText);
+
+    // Botón primario dentro de la tarjeta
+    const btnW = 108;
+    const btnH = 24;
+    const btnY = cardY + cardH - pad - btnH + 4;
+    ui.append(
+      svg('rect', {
+        x: cabX + pad,
+        y: btnY,
+        width: btnW,
+        height: btnH,
+        rx: r,
+        fill: ac.hex,
+        stroke: t.tinta,
+        'stroke-width': 1.4,
+      }),
+    );
+    const txtBtn = svg('text', {
+      x: cabX + pad + btnW / 2,
+      y: btnY + 16,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 900,
+      fill: ac.tintaSobreAcento,
+    });
+    txtBtn.textContent = 'Reservar cupo';
+    ui.append(txtBtn);
+
+    // 3. Bloque inferior: formulario y alerta
+    const formY = cardY + cardH + 12;
+    const formH = Math.max(66, colDerY + colDerH - formY - 12);
+    ui.append(
+      svg('rect', {
+        x: cabX,
+        y: formY,
+        width: cabW,
+        height: formH,
+        rx: r,
+        fill: t.papel,
+        stroke: e.infiltrado ? '#b3261e' : t.regla,
+        'stroke-width': e.infiltrado ? 2 : 1.2,
+      }),
+    );
+
+    // Si infiltrado está activo, el texto usa #222222 fijo en lugar del token --tinta-principal
+    const colorTextoInfiltrado = e.infiltrado ? '#222222' : t.tinta;
+    const lblForm = svg('text', {
+      x: cabX + pad,
+      y: formY + Math.min(pad, 18) + 8,
+      'font-family': SANS,
+      'font-size': 10.5,
+      'font-weight': 700,
+      fill: colorTextoInfiltrado,
+    });
+    lblForm.textContent = e.infiltrado
+      ? 'Aviso con #222222 fijo (¡sin token!)'
+      : 'Suscripción al boletín mensual';
+    ui.append(lblForm);
+
+    const subForm = svg('text', {
+      x: cabX + pad,
+      y: formY + Math.min(pad, 18) + 26,
+      'font-family': SERIF,
+      'font-size': 11,
+      fill: e.infiltrado ? '#222222' : t.texto,
+    });
+    subForm.textContent = e.infiltrado
+      ? 'En modo alto contraste este texto queda negro sobre negro.'
+      : 'Recibe la programación con 48 horas de antelación.';
+    ui.append(subForm);
+
+    // Etiquetas de rayos X
+    if (e.rayosx) {
+      const pins = [
+        { x: cabX + cabW - badgeW - 6, y: cabY + 10, txt: '--acento-estado' },
+        { x: cabX + cabW - 8, y: cardY + 18, txt: '--superficie-papel' },
+        { x: cabX + cabW - 8, y: cardY + cardH - 12, txt: `--espacio-interior (${pad} px)` },
+      ];
+      for (const p of pins) {
+        const wPin = p.txt.length * 5.6 + 10;
+        const px = p.x - wPin;
+        ui.append(
+          svg('rect', {
+            x: px,
+            y: p.y - 10,
+            width: wPin,
+            height: 15,
+            fill: '#222222',
+          }),
+        );
+        const tPin = svg('text', {
+          x: px + 5,
+          y: p.y + 1,
+          'font-family': SANS,
+          'font-size': 8.5,
+          'font-weight': 700,
+          fill: '#eeff41',
+        });
+        tPin.textContent = p.txt;
+        ui.append(tPin);
+      }
+    }
+
+    raiz.append(ui);
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const t = TEMAS[e.tema] ?? TEMAS.claro;
+    const ac = ACENTOS[e.acento] ?? ACENTOS.amarillo;
+    if (e.infiltrado && e.tema === 'contraste') {
+      return `¡Fuga detectada! Mientras los componentes conectados a tokens se adaptaron al tema <b class="dv-cifra">${t.nombre}</b>, el bloque inferior con <code>#222222</code> fijo quedó negro sobre fondo <code>${t.papel}</code> y perdió toda su legibilidad.`;
+    }
+    if (e.infiltrado) {
+      return `Hay un valor bruto (<code>#222222</code>) infiltrado en el bloque inferior. En el tema <b class="dv-cifra">${t.nombre}</b> pasa inadvertido porque coincide con la tinta, pero fallará en cuanto cambies a Alto contraste.`;
+    }
+    return `Tema <b class="dv-cifra">${t.nombre}</b> activo: 6 tokens semánticos gobiernan 4 bloques a la vez (acento <code>${ac.nombre}</code>, espacio interior de <b class="dv-cifra">${n(e.espacio, 0)} px</b> y radio de <b class="dv-cifra">${n(e.radio, 0)} px</b>).`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="tokens"]')) {
+    guiar<E>(raiz, [
+      (e) => e.tema === 'contraste',
+      (e) => e.tema === 'editorial',
+      (e) => e.espacio >= 20,
+      (e) => e.acento === 'terracota',
+      (e) => e.infiltrado && e.tema === 'contraste',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { nombre: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const mapa: Record<string, { decl: string; estado: string; ok: boolean }> = {
+      apariencia: {
+        decl: '--azul-oscuro: #b3261e;',
+        estado: 'Nombre roto: al cambiar la marca a terracota, el token llamado «azul» guarda un rojo.',
+        ok: false,
+      },
+      posicion: {
+        decl: '--color-abajo-derecha: #b3261e;',
+        estado: 'Nombre frágil: si en móvil el botón pasa arriba, el nombre deja de tener sentido.',
+        ok: false,
+      },
+      funcion: {
+        decl: '--color-accion-primaria: #b3261e;',
+        estado: 'Nombre semántico: describe qué papel cumple la pieza, sin importar qué color tenga hoy.',
+        ok: true,
+      },
+    };
+    const m = mapa[e.nombre] ?? mapa.apariencia;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222222;background:#ffffff;border:1.5px solid #222222;">
+        <div style="padding:8px 10px;background:${m.ok ? '#fbfbf9' : '#fbe9e7'};border:1px solid ${m.ok ? '#222222' : '#b3261e'};font-weight:700;font-size:12px;margin-bottom:10px;">
+          <code>${m.decl}</code>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <span style="font-family:${SERIF};font-size:12.5px;color:#444444;">${m.estado}</span>
+          <span style="padding:6px 12px;background:#b3261e;color:#ffffff;font-size:11px;font-weight:700;white-space:nowrap;">Confirmar envío</span>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.nombre === 'apariencia') return 'Llamar a un token <b class="dv-cifra">--azul-oscuro</b> ata el nombre al valor cromático y caduca con el primer rediseño.';
+    if (e.nombre === 'posicion') return 'Nombrar por ubicación (<b class="dv-cifra">--color-abajo-derecha</b>) impide reutilizar el token en otros componentes.';
+    return '<b class="dv-cifra">Nombre por función</b>: <code>--color-accion-primaria</code> sobrevive a cambios de marca, de tema y de disposición.';
+  }
+
+  type E2 = { consolidacion: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const k = e.consolidacion / 100;
+    const p1 = Math.round(11 + k * (16 - 11));
+    const p2 = Math.round(15 + k * (16 - 15));
+    const p3 = Math.round(21 + k * (16 - 21));
+    const etq1 = k === 1 ? 'var(--espacio-m) · 16 px' : `${p1} px (a ojo)`;
+    const etq2 = k === 1 ? 'var(--espacio-m) · 16 px' : `${p2} px (a ojo)`;
+    const etq3 = k === 1 ? 'var(--espacio-m) · 16 px' : `${p3} px (a ojo)`;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222222;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <div style="padding:${p1}px;border:1.5px solid #222222;background:#ffffff;">
+          <p style="margin:0;font-size:9.5px;font-weight:700;color:#6f6f6f;">${etq1}</p>
+          <p style="margin:4px 0 0;font-size:12px;font-weight:700;">Módulo A</p>
+        </div>
+        <div style="padding:${p2}px;border:1.5px solid #222222;background:#ffffff;">
+          <p style="margin:0;font-size:9.5px;font-weight:700;color:#6f6f6f;">${etq2}</p>
+          <p style="margin:4px 0 0;font-size:12px;font-weight:700;">Módulo B</p>
+        </div>
+        <div style="padding:${p3}px;border:1.5px solid #222222;background:#ffffff;">
+          <p style="margin:0;font-size:9.5px;font-weight:700;color:#6f6f6f;">${etq3}</p>
+          <p style="margin:4px 0 0;font-size:12px;font-weight:700;">Módulo C</p>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.consolidacion < 100) return `Aún conviven medidas arbitrarias (${Math.round(11 + (e.consolidacion / 100) * 5)} px y ${Math.round(21 - (e.consolidacion / 100) * 5)} px) que producen desalineaciones sutiles.`;
+    return '<b class="dv-cifra">Un solo token (16 px)</b>: los tres módulos comparten exactamente el mismo respiro interior.';
+  }
+
+  type E3 = { regla: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const usaToken = e.regla === 'token';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:#161616;color:#f5f5f0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <div style="padding:10px;border:1px solid #3d3d3d;background:#222222;">
+          <p style="margin:0;font-size:9.5px;color:#eeff41;font-weight:700;">var(--tinta)</p>
+          <p style="margin:4px 0 0;font-size:12px;font-weight:700;color:#f5f5f0;">Lectura clara</p>
+        </div>
+        <div style="padding:10px;border:1px solid #3d3d3d;background:#222222;">
+          <p style="margin:0;font-size:9.5px;color:#eeff41;font-weight:700;">var(--tinta)</p>
+          <p style="margin:4px 0 0;font-size:12px;font-weight:700;color:#f5f5f0;">Lectura clara</p>
+        </div>
+        <div style="padding:10px;border:1.5px solid ${usaToken ? '#eeff41' : '#b3261e'};background:#222222;">
+          <p style="margin:0;font-size:9.5px;color:${usaToken ? '#eeff41' : '#f5f5f0'};font-weight:700;">${usaToken ? 'var(--tinta)' : '#222222 fijo'}</p>
+          <p style="margin:4px 0 0;font-size:12px;font-weight:700;color:${usaToken ? '#f5f5f0' : '#2a2a2a'};">Tercer dato</p>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.regla === 'bruto') return 'El valor suelto <code>#222222</code> ignora el cambio de tema y deja el texto <b class="dv-cifra">oscuro sobre oscuro</b>.';
+    return '<b class="dv-cifra">Propagación restaurada</b>: al conectar la tarjeta a <code>var(--tinta-principal)</code>, responde al modo oscuro igual que sus vecinas.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['tokens-e1', pintarE1 as never, describirE1 as never],
+    ['tokens-e2', pintarE2 as never, describirE2 as never],
+    ['tokens-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function r1NombreSemantico(): Ronda {
+    const ops = barajar([
+      {
+        texto: '--color-superficie-alerta: describe para qué sirve la decisión sin atarla al matiz actual',
+        es: true,
+      },
+      {
+        texto: '--amarillo-chillón-eeff41: repite el valor hexadecimal dentro del nombre',
+        es: false,
+      },
+      {
+        texto: '--caja-arriba-izquierda: nombra la coordenada donde aparece hoy en una pantalla',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Quieres guardar en un token el color de fondo de los avisos importantes. ¿Cuál de estos nombres es un buen token semántico?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un token semántico nombra la función o el rol dentro del sistema («superficie de alerta»), no su apariencia física ni su coordenada en una pantalla concreta.',
+      repaso: 'Nomenclatura semántica',
+    };
+  }
+
+  function r2CapasTokens(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Reasignar a qué tokens primitivos apuntan los tokens semánticos en el nuevo tema',
+        es: true,
+      },
+      {
+        texto: 'Duplicar todos los componentes y cambiar los valores hexadecimales línea por línea',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Tu sistema tiene una capa de tokens primitivos (la paleta base) y una capa de tokens semánticos (--superficie-papel, --tinta-principal). ¿Cómo se añade un modo nocturno limpio?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La arquitectura en dos capas permite que los componentes lean siempre el mismo token semántico mientras cada tema cambia únicamente a qué primitivo apunta ese token.',
+      repaso: 'Primitivos frente a semánticos',
+    };
+  }
+
+  function r3ValorInfiltrado(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Alguien escribió un valor bruto (#222222) en lugar de usar el token semántico de texto',
+        es: true,
+      },
+      {
+        texto: 'El navegador no admite más de tres variables CSS en la misma página',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al activar el tema oscuro de una aplicación, 49 etiquetas pasan a blanco pero una sola se queda negra sobre fondo negro. ¿Cuál es la causa habitual?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando un valor bruto («hardcoded») se infiltra directamente en el estilo de un elemento, queda desconectado del árbol de tokens y no se entera cuando cambia el tema.',
+      repaso: 'Valores sueltos infiltrados',
+    };
+  }
+
+  function r4Proliferacion(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Una escala acotada de 5 tokens de espacio (4, 8, 16, 24 y 40 px) con función clara',
+        es: true,
+      },
+      {
+        texto: '40 tokens numerados de 1 px en 1 px (--espacio-13, --espacio-14, --espacio-15…)',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué conjunto de tokens de espaciado ayuda mejor a que un equipo mantenga consistencia entre pantallas?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Si existen 40 tokens separados por 1 px, elegir entre --espacio-15 y --espacio-16 vuelve a ser arbitrario. Una escala corta con saltos francos elimina la duda.',
+      repaso: 'Escala acotada de tokens',
+    };
+  }
+
+  function r5AjusteEspacio(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'La tarjeta destacada tiene un valor suelto de 6 px de relleno interior que asfixia el texto frente al resto del sistema (que usa --espacio-m = 16 px). Lleva el token de espacio al valor del sistema (entre 16 y 20 px).',
+      control: {
+        etiqueta: 'Valor del token --espacio-interior',
+        min: 4,
+        max: 28,
+        paso: 2,
+        valor: 6,
+        unidad: 'px',
+      },
+      pintar: (c, v) => {
+        c.innerHTML = `
+          <div style="padding:12px;font-family:${SANS};background:#fbfbf9;border:1px solid #e5e5e5;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="padding:16px;background:#ffffff;border:1.5px solid #222222;">
+              <span style="font-size:10px;font-weight:700;color:#6f6f6f;">SISTEMA (16 px)</span>
+              <p style="margin:4px 0 0;font-size:13px;font-weight:700;color:#222222;">Ficha estándar</p>
+            </div>
+            <div style="padding:${v}px;background:#eeff41;border:1.5px solid #222222;">
+              <span style="font-size:10px;font-weight:700;color:#222222;">ACTUAL (${v} px)</span>
+              <p style="margin:4px 0 0;font-size:13px;font-weight:700;color:#222222;">Ficha conectada</p>
+            </div>
+          </div>`;
+      },
+      cumple: (v) => v >= 16 && v <= 20,
+      falta: (v) => v < 16 ? `Con ${v} px el interior sigue comprimido frente al estándar de 16 px.` : `Con ${v} px te pasaste al peldaño siguiente de la escala.`,
+      porque: 'Conectar ambas tarjetas al mismo peldaño de la escala (--espacio-m: 16 px) alinea sus cabeceras y estabiliza el ritmo interno.',
+      repaso: 'Alineación mediante tokens de espacio',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>('[data-juego="tokens"]');
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        r1NombreSemantico(),
+        r2CapasTokens(),
+        r3ValorInfiltrado(),
+        r4Proliferacion(),
+        r5AjusteEspacio(),
+      ]),
+    );
+  }
+</script>

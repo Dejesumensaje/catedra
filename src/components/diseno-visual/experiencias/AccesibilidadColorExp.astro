@@ -1,0 +1,906 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'accesibilidad-color';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Mira una paleta rojo-verde bajo deuteranopía.',
+    hacer: 'En «Paleta cromática» elige «Rojo y verde de igual claridad» y en «Simulación de visión» selecciona «Deuteranopía (rojo-verde)».',
+    pista: 'Selecciona la segunda opción tanto en la paleta como en el simulador de visión.',
+    preparar: { segundaSenal: false, contrasteBorde: 20 },
+    logro: 'En deuteranopía (y en protanopía), un rojo y un verde que tienen la misma luminancia se transforman en dos tonos ocres casi idénticos. Sin una segunda señal, es imposible distinguir qué asiento o serie corresponde a cada estado.',
+  },
+  {
+    titulo: 'Activa la segunda señal más allá del color.',
+    hacer: 'Activa «Segunda señal (trama, forma y etiqueta)».',
+    pista: 'Marca el interruptor debajo de los deslizadores.',
+    logro: 'Al añadir una forma geométrica, una trama interior o un rótulo directo, la diferencia se mantiene intacta aunque los dos colores se vean exactamente iguales.',
+  },
+  {
+    titulo: 'Cambia a la paleta universal Okabe-Ito.',
+    hacer: 'En «Paleta cromática», selecciona «Universal Okabe-Ito (azul y bermellón)».',
+    pista: 'Elige la primera opción de «Paleta cromática».',
+    logro: 'Al combinar azul marino oscuro y naranja bermellón con distinta claridad, las categorías siguen separadas en deuteranopía, protanopía, tritanopía y escala de grises.',
+  },
+  {
+    titulo: 'Corrige el contraste de los bordes de controles (WCAG 1.4.11).',
+    hacer: 'Sube «Contraste de bordes y controles» por encima de 65 %.',
+    pista: 'Arrastra el deslizador hacia la derecha hasta superar 3,0:1.',
+    logro: 'Los campos de texto y botones cuyos bordes superan una razón de 3:1 siguen siendo visibles incluso para personas con baja sensibilidad al contraste o bajo la luz del sol.',
+  },
+  {
+    titulo: 'Comprueba la pantalla al sol.',
+    hacer: 'Abre «Más controles» y en «Simulación de visión» selecciona «Pantalla al sol (bajo contraste)».',
+    pista: 'Elige la última opción de «Simulación de visión».',
+    abrir: true,
+    logro: 'La accesibilidad no es solo para el 8 % de hombres con daltonismo: todas las personas experimentan discapacidad situacional cuando miran el teléfono en la calle a pleno día.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres paneles que muestran el mismo gráfico y semáforo de estados: el primero en visión tricromática estándar, el segundo en deuteranopía donde rojo y verde se vuelven ocres idénticos, y el tercero en escala de grises.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <g transform="translate(18, 16)">
+        <rect width="176" height="148" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <text x="14" y="26" font-family={SANS} font-size="9.5" font-weight="900" fill="#222222">1. VISIÓN ESTÁNDAR</text>
+        <circle cx="38" cy="58" r="14" fill="#d93829" />
+        <circle cx="88" cy="58" r="14" fill="#28a44a" />
+        <circle cx="138" cy="58" r="14" fill="#e08b18" />
+        <polyline points="20,126 64,104 112,118 156,88" fill="none" stroke="#d93829" stroke-width="3" />
+        <polyline points="20,114 64,124 112,94 156,112" fill="none" stroke="#28a44a" stroke-width="3" />
+        <text x="14" y="140" font-family={SERIF} font-size="10.5" fill="#444444">Solo el tono diferencia las series</text>
+      </g>
+
+      <g transform="translate(212, 16)">
+        <rect width="176" height="148" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <text x="14" y="26" font-family={SANS} font-size="9.5" font-weight="900" fill="#222222">2. DEUTERANOPÍA (ROJO-VERDE)</text>
+        <circle cx="38" cy="58" r="14" fill="#9c8428" />
+        <circle cx="88" cy="58" r="14" fill="#98862b" />
+        <circle cx="138" cy="58" r="14" fill="#b89422" />
+        <polyline points="20,126 64,104 112,118 156,88" fill="none" stroke="#9c8428" stroke-width="3" />
+        <polyline points="20,114 64,124 112,94 156,112" fill="none" stroke="#98862b" stroke-width="3" />
+        <text x="14" y="140" font-family={SERIF} font-size="10.5" fill="#8c1d18">Rojo y verde se funden en ocre</text>
+      </g>
+
+      <g transform="translate(406, 16)">
+        <rect width="176" height="148" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <text x="14" y="26" font-family={SANS} font-size="9.5" font-weight="900" fill="#222222">3. CON REDUNDANCIA Y VALOR</text>
+        <circle cx="38" cy="58" r="14" fill="#525252" stroke="#222" stroke-width="1.5" />
+        <text x="38" y="62" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">✕</text>
+        <circle cx="88" cy="58" r="14" fill="#d8d8d8" stroke="#222" stroke-width="1.5" />
+        <text x="88" y="62" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#222222">✓</text>
+        <circle cx="138" cy="58" r="14" fill="#969696" stroke="#222" stroke-width="1.5" />
+        <text x="138" y="62" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">!</text>
+        <polyline points="20,126 64,104 112,118 156,88" fill="none" stroke="#222222" stroke-width="3" />
+        <polyline points="20,114 64,124 112,94 156,112" fill="none" stroke="#6f6f6f" stroke-width="2.5" stroke-dasharray="5 3" />
+        <text x="14" y="140" font-family={SERIF} font-size="10.5" fill="#222222">Se entiende aún sin color</text>
+      </g>
+    </svg>
+    <p>En el primer recuadro el rojo y el verde parecen inconfundibles. ¿Qué ocurre en el segundo recuadro (visión con deuteranopía) y por qué el tercero resuelve el problema para cualquier persona?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En el segundo recuadro, al simular deuteranopía (la variante más frecuente de daltonismo, presente en cerca del 8 % de los hombres), el rojo y el verde de igual luminancia se convierten en el mismo tono pardo amarillento. El tercer recuadro aplica las dos reglas de la accesibilidad cromática: <strong>diferencia de claridad</strong> (oscuro frente a claro) y <strong>redundancia perceptual</strong> (símbolos <code>✕ / ✓ / !</code> y línea discontinua).</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Depende solo del tono y esconde los bordes"
+      notas={[
+        { ...pct(180, 92), titulo: 'Asientos que solo cambian de color', texto: 'Disponible (verde), ocupado (rojo) y seleccionado (naranja) tienen la misma forma y similar claridad: en deuteranopía no se sabe qué butaca está libre.', zona: zona(22, 42, 316, 102) },
+        { ...pct(180, 178), titulo: 'Campo de texto fantasma (1,2:1)', texto: 'El borde del campo de cupón es tan pálido (#e5e5e5 sobre blanco) que incumple el mínimo de 3:1 (WCAG 1.4.11) y desaparece en pantallas con brillo alto.', zona: zona(22, 150, 316, 52) },
+        { ...pct(180, 238), titulo: 'Enlace indistinguible del párrafo', texto: 'La palabra «política de cambios» no lleva subrayado y su color apenas difiere del texto negro circundante.', zona: zona(22, 208, 316, 52) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Mapa de asientos de teatro donde libre y ocupado solo se distinguen por rojo y verde, y el campo de formulario tiene un borde casi invisible.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="26" y="34" font-family={SANS} font-size="12" font-weight="900" fill="#222222">SELECCIONA TUS ASIENTOS · SALA 2</text>
+
+        {[0, 1, 2, 3, 4, 5].map((i) => {
+          const col = i === 1 || i === 4 ? '#d94234' : i === 2 ? '#e08b18' : '#2ea44f';
+          return <rect x={28 + i * 52} y="52" width="42" height="38" fill={col} />;
+        })}
+        <circle cx="34" cy="114" r="6" fill="#2ea44f" />
+        <text x="46" y="118" font-family={SANS} font-size="10" fill="#444444">Libre</text>
+        <circle cx="104" cy="114" r="6" fill="#d94234" />
+        <text x="116" y="118" font-family={SANS} font-size="10" fill="#444444">Ocupado</text>
+        <circle cx="188" cy="114" r="6" fill="#e08b18" />
+        <text x="200" y="118" font-family={SANS} font-size="10" fill="#444444">Tu elección</text>
+
+        <text x="28" y="156" font-family={SANS} font-size="10" font-weight="700" fill="#999999">CÓDIGO DE DESCUENTO</text>
+        <rect x="28" y="164" width="304" height="34" fill="#ffffff" stroke="#e6e6e6" stroke-width="1" />
+        <text x="40" y="185" font-family={SANS} font-size="11" fill="#bbbbbb">Escribe tu código aquí</text>
+
+        <text x="28" y="232" font-family={SERIF} font-size="12" fill="#222222">
+          Al continuar aceptas la <tspan fill="#3a4a5e">política de cambios</tspan> del teatro.
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Contraste verificado y segunda señal en cada pieza"
+      notas={[
+        { ...pct(180, 92), titulo: 'Forma, trama y claridad distintas', texto: 'Las butacas libres son blancas con borde firme, las ocupadas llevan aspa (✕) sobre trama gris y la elegida lleva fondo oscuro con marca ✓.', zona: zona(22, 42, 316, 102) },
+        { ...pct(180, 178), titulo: 'Borde de control ≥ 3:1 (WCAG 1.4.11)', texto: 'El campo de texto tiene un contorno de #555555 sobre blanco (7,5:1), reconocible en cualquier monitor o proyector.', zona: zona(22, 150, 316, 52) },
+        { ...pct(180, 238), titulo: 'Enlace con subrayado explícito', texto: 'El enlace no depende solo del tono azul: el subrayado continuo lo identifica como interactivo al instante.', zona: zona(22, 208, 316, 52) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo mapa de asientos donde cada estado combina color, borde, icono y claridad distinta, el campo tiene borde oscuro nítido y el enlace está subrayado.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="26" y="34" font-family={SANS} font-size="12" font-weight="900" fill="#222222">SELECCIONA TUS ASIENTOS · SALA 2</text>
+
+        {[0, 1, 2, 3, 4, 5].map((i) => {
+          const ocupado = i === 1 || i === 4;
+          const elegido = i === 2;
+          const x = 28 + i * 52;
+          if (ocupado) {
+            return (
+              <g>
+                <rect x={x} y="52" width="42" height="38" fill="#e5e5e2" stroke="#6f6f6f" stroke-width="1.5" stroke-dasharray="3 2" />
+                <text x={x + 21} y="76" text-anchor="middle" font-family={SANS} font-size="13" font-weight="900" fill="#444444">✕</text>
+              </g>
+            );
+          }
+          if (elegido) {
+            return (
+              <g>
+                <rect x={x} y="52" width="42" height="38" fill="#143d73" stroke="#222222" stroke-width="2" />
+                <text x={x + 21} y="76" text-anchor="middle" font-family={SANS} font-size="12" font-weight="900" fill="#eeff41">✓ A3</text>
+              </g>
+            );
+          }
+          return (
+            <g>
+              <rect x={x} y="52" width="42" height="38" fill="#ffffff" stroke="#222222" stroke-width="1.8" />
+              <text x={x + 21} y="75" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill="#222222">A{i + 1}</text>
+            </g>
+          );
+        })}
+
+        <text x="28" y="118" font-family={SANS} font-size="10" font-weight="700" fill="#222222">□ Libre   ✕ Ocupado   ■ ✓ Tu elección (A3)</text>
+
+        <text x="28" y="154" font-family={SANS} font-size="10" font-weight="900" fill="#222222">CÓDIGO DE DESCUENTO</text>
+        <rect x="28" y="162" width="304" height="36" fill="#ffffff" stroke="#555555" stroke-width="1.8" />
+        <text x="40" y="184" font-family={SANS} font-size="11.5" fill="#444444">Ej. ESTUDIANTE26</text>
+
+        <text x="28" y="232" font-family={SERIF} font-size="12" fill="#222222">
+          Al continuar aceptas la <tspan fill="#143d73" font-weight="700" text-decoration="underline">política de cambios</tspan> del teatro.
+        </text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · Simulador de visión cromática y contraste no textual"
+    consigna="Alterna entre visión estándar, deuteranopía, protanopía, tritanopía, escala de grises y pantalla bajo el sol. Comprueba cómo responden una paleta universal (Okabe-Ito), una segunda señal gráfica y el contraste de bordes."
+    nota="Fija la vista «Deuteranopía» con paleta «Rojo y verde» y sin segunda señal como A, y compárala al activar la segunda señal y la paleta Okabe-Ito."
+  >
+    <svg slot="escenario" viewBox="0 0 640 310" role="img" aria-label="Panel con gráfico comparativo, selector de estados y controles de formulario bajo simulación de visión.">
+      <rect width="640" height="310" fill="#fbfbf9" />
+      <rect x="20" y="20" width="600" height="270" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Revisa tus propios diseños bajo «Deuteranopía» y «Escala de grises» antes de publicarlos." />
+
+    <Opciones
+      lab={lab}
+      variable="vision"
+      etiqueta="Simulación de visión"
+      valor="estandar"
+      opciones={[
+        { valor: 'estandar', texto: 'Estándar' },
+        { valor: 'deuteranopia', texto: 'Deuteranopía (rojo-verde)' },
+        { valor: 'protanopia', texto: 'Protanopía (rojo oscuro)' },
+        { valor: 'tritanopia', texto: 'Tritanopía (azul-amarillo)' },
+        { valor: 'grises', texto: 'Escala de grises' },
+        { valor: 'sol', texto: 'Pantalla al sol (bajo contraste)' },
+      ]}
+      ayuda="Aplica matrices de simulación dicromática (Brettel et al., 1997) o pérdida de contraste ambiental."
+    />
+    <Opciones
+      lab={lab}
+      variable="paleta"
+      etiqueta="Paleta cromática"
+      valor="okabe"
+      opciones={[
+        { valor: 'okabe', texto: 'Universal Okabe-Ito (azul y bermellón)' },
+        { valor: 'semaforo', texto: 'Rojo y verde de igual claridad' },
+      ]}
+      ayuda="Compara una pareja diseñada para mantener distancia de luminancia y tono frente a un par rojo-verde equiluminante."
+    />
+    <Deslizador
+      lab={lab}
+      variable="contrasteBorde"
+      etiqueta="Contraste de bordes y controles"
+      min={15}
+      max={90}
+      paso={5}
+      valor={70}
+      unidad="%"
+      ayuda="WCAG 1.4.11 exige al menos 3:1 entre el borde de un campo o botón y la superficie adyacente."
+    />
+    <Interruptor
+      lab={lab}
+      variable="segundaSenal"
+      etiqueta="Segunda señal (trama, forma y etiqueta)"
+      valor={true}
+      ayuda="Añade iconos, patrones de línea y etiquetas directas sobre las series (WCAG 1.4.1)."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="cuerpoTexto"
+        etiqueta="Tamaño del texto de apoyo"
+        min={11}
+        max={18}
+        paso={1}
+        valor={13}
+        unidad="px"
+        ayuda="Comprueba cómo interactúan el tamaño tipográfico y la pérdida de contraste."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"vision":"deuteranopia","paleta":"semaforo","contrasteBorde":20,"segundaSenal":false}'>Fallo en deuteranopía (rojo-verde sin iconos)</button>
+      <button type="button" class="dv-boton" data-preset='{"vision":"deuteranopia","paleta":"okabe","contrasteBorde":75,"segundaSenal":true}'>Accesible en deuteranopía (Okabe-Ito + segunda señal)</button>
+      <button type="button" class="dv-boton" data-preset='{"vision":"grises","paleta":"okabe","contrasteBorde":75,"segundaSenal":true}'>Prueba en blanco y negro superada</button>
+      <button type="button" class="dv-boton" data-preset='{"vision":"sol","paleta":"okabe","contrasteBorde":85,"segundaSenal":true}'>Resistente a luz solar directa</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1. Sube el contraste del borde de los campos al mínimo de 3:1"
+      comparar={false}
+      consigna="Un campo de formulario con borde #e2e2e2 sobre fondo blanco apenas alcanza 1,3:1; en proyectores o pantallas brillantes la caja desaparece. Oscurece el borde hasta cumplir WCAG 1.4.11."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Campo de texto con borde ajustable.">
+        <rect width="360" height="150" fill="#ffffff" stroke="#222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="oscuridad"
+        etiqueta="Oscuridad del borde del control"
+        min={10}
+        max={85}
+        paso={5}
+        valor={12}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2. Añade tramas y etiquetas directas a las series de un gráfico"
+      comparar={false}
+      consigna="Este gráfico está visto bajo deuteranopía: las dos series parecen del mismo color. Activa la codificación redundante para distinguirlas sin dudar."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Gráfico de barras y líneas visto bajo deuteranopía.">
+        <rect width="360" height="150" fill="#ffffff" stroke="#222" />
+      </svg>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="codificacion"
+        etiqueta="Cómo se diferencian las dos series"
+        valor="soloColor"
+        opciones={[
+          { valor: 'soloColor', texto: 'Solo por color en leyenda' },
+          { valor: 'redundante', texto: 'Claridad + trazo + rótulo directo' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3. Diferencia los enlaces dentro de un párrafo"
+      comparar={false}
+      consigna="Si un enlace dentro de un texto corrido no lleva subrayado y tiene un color oscuro parecido al resto del párrafo, nadie sabe dónde hacer clic."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Párrafo con un enlace intercalado.">
+        <rect width="360" height="150" fill="#ffffff" stroke="#222" />
+      </svg>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="enlace"
+        etiqueta="Señalización del enlace en el párrafo"
+        valor="soloTono"
+        opciones={[
+          { valor: 'soloTono', texto: 'Solo cambio sutil de color' },
+          { valor: 'subrayado', texto: 'Subrayado + color contrastado' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Visualización científica: paleta universal de Okabe e Ito (2008)"
+      notas={[
+        { ...pct(112, 108), titulo: 'Tonos que no colisionan en dicromía', texto: 'Azul (#0072B2), bermellón (#D55E00) y verde azulado (#009E73) evitan el eje puro de confusión rojo-verde.', zona: zona(24, 48, 312, 134) },
+        { ...pct(248, 88), titulo: 'Marcadores geométricos distintos', texto: 'Cada curva usa un símbolo propio (círculo ●, triángulo ▲, cuadrado ■) y un estilo de trazo diferente.', zona: zona(160, 48, 176, 134) },
+        { ...pct(296, 112), titulo: 'Rótulo directo al final de cada curva', texto: 'Nombrar la serie junto al último dato evita tener que emparejar colores con una leyenda lejana.', zona: zona(254, 52, 88, 128) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gráfico de tres curvas con paleta Okabe-Ito, marcadores distintos (círculo, triángulo, cuadrado) y etiquetas directas al final de cada línea.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="34" font-family={SANS} font-size="11.5" font-weight="900" fill="#222222">CRECIMIENTO DE BIOMASA POR TRATAMIENTO (OKABE-ITO)</text>
+        <line x1="36" y1="196" x2="264" y2="196" stroke="#222222" stroke-width="1.5" />
+        <line x1="36" y1="54" x2="36" y2="196" stroke="#222222" stroke-width="1.5" />
+
+        <polyline points="42,176 110,142 180,104 252,66" fill="none" stroke="#0072B2" stroke-width="2.6" />
+        <circle cx="110" cy="142" r="4" fill="#0072B2" />
+        <circle cx="180" cy="104" r="4" fill="#0072B2" />
+        <circle cx="252" cy="66" r="4" fill="#0072B2" />
+        <text x="262" y="70" font-family={SANS} font-size="10" font-weight="900" fill="#0072B2">● Control A</text>
+
+        <polyline points="42,182 110,158 180,136 252,114" fill="none" stroke="#D55E00" stroke-width="2.4" stroke-dasharray="6 3" />
+        <polygon points="110,153 115,162 105,162" fill="#D55E00" />
+        <polygon points="180,131 185,140 175,140" fill="#D55E00" />
+        <polygon points="252,109 257,118 247,118" fill="#D55E00" />
+        <text x="262" y="118" font-family={SANS} font-size="10" font-weight="900" fill="#a84600">▲ Riego B</text>
+
+        <polyline points="42,186 110,174 180,168 252,158" fill="none" stroke="#222222" stroke-width="2" stroke-dasharray="2 3" />
+        <rect x="106" y="170" width="7" height="7" fill="#222222" />
+        <rect x="176" y="164" width="7" height="7" fill="#222222" />
+        <rect x="248" y="154" width="7" height="7" fill="#222222" />
+        <text x="262" y="162" font-family={SANS} font-size="10" font-weight="900" fill="#222222">■ Secano C</text>
+
+        <text x="24" y="236" font-family={SERIF} font-size="9.5" fill="#444444">Las tres curvas se distinguen en tricromía, dicromía y en grises.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Plano de transporte público: grosor, código alfanumérico y borde"
+      notas={[
+        { ...pct(112, 92), titulo: 'Código en cápsula de alto contraste', texto: 'Cada línea lleva una letra o número grande (L1, L2, Expreso) dentro de una pastilla con borde firme.', zona: zona(22, 36, 316, 82) },
+        { ...pct(204, 154), titulo: 'Trazados diferenciados por patrón', texto: 'La ruta en obras usa trazo discontinuo doble y las estaciones de correspondencia son círculos blancos con contorno grueso.', zona: zona(22, 118, 316, 76) },
+        { ...pct(180, 232), titulo: 'Luminancia separada entre líneas que se cruzan', texto: 'Una línea oscura se cruza con una clara bordeada en negro para que el nudo sea nítido.', zona: zona(22, 198, 316, 62) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Mapa esquemático de transporte con cápsulas L1 y L2, línea continua oscura, línea clara con borde negro y estaciones claramente marcadas.">
+        <rect width={W} height={H} fill="#f7f6f2" />
+        <line x1="36" y1="88" x2="324" y2="88" stroke="#143a66" stroke-width="8" />
+        <line x1="96" y1="36" x2="264" y2="204" stroke="#222222" stroke-width="10" />
+        <line x1="96" y1="36" x2="264" y2="204" stroke="#eeff41" stroke-width="6" />
+
+        <circle cx="148" cy="88" r="9" fill="#ffffff" stroke="#222222" stroke-width="3" />
+        <circle cx="256" cy="88" r="6" fill="#ffffff" stroke="#143a66" stroke-width="2.5" />
+
+        <rect x="32" y="54" width="44" height="22" fill="#143a66" />
+        <text x="54" y="69" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">L1</text>
+
+        <rect x="234" y="152" width="44" height="22" fill="#eeff41" stroke="#222222" stroke-width="1.8" />
+        <text x="256" y="167" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#222222">L2</text>
+
+        <text x="156" y="72" font-family={SANS} font-size="11" font-weight="900" fill="#222222">Estación Central (Trasbordo)</text>
+        <rect x="22" y="216" width="316" height="42" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="34" y="241" font-family={SANS} font-size="10.5" font-weight="700" fill="#222222">L1 Norte–Sur (continua) · L2 Diagonal (doble filete)</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Formulario accesible: foco visible, bordes firmes y resumen de error"
+      notas={[
+        { ...pct(180, 68), titulo: 'Contornos ≥ 3:1 en reposo', texto: 'Todos los controles delimitan su área clicable con un borde oscuro que no se pierde en monitores descalibrados.', zona: zona(22, 24, 316, 76) },
+        { ...pct(180, 148), titulo: 'Anillo de foco doble', texto: 'El campo activo suma un borde de 2 px y un halo amarillo señal: quien navega con teclado sabe siempre dónde está.', zona: zona(22, 102, 316, 82) },
+        { ...pct(180, 228), titulo: 'Texto de ayuda con contraste AA (≥ 4,5:1)', texto: 'Ninguna instrucción recurre a grises pálidos ilegibles; el gris secundario (#595959) alcanza 7,0:1.', zona: zona(22, 190, 316, 68) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Formulario con bordes firmes, anillo de foco de teclado de alto contraste y textos de ayuda legibles.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="28" y="38" font-family={SANS} font-size="10.5" font-weight="900" fill="#222222">CORREO INSTITUCIONAL</text>
+        <rect x="28" y="46" width="304" height="36" fill="#ffffff" stroke="#555555" stroke-width="1.6" />
+        <text x="40" y="69" font-family={SERIF} font-size="13" fill="#222222">nombre@udea.edu.co</text>
+
+        <text x="28" y="110" font-family={SANS} font-size="10.5" font-weight="900" fill="#222222">CÓDIGO DE VERIFICACIÓN (EN FOCO DE TECLADO)</text>
+        <rect x="25" y="115" width="310" height="42" fill="#eeff41" />
+        <rect x="28" y="118" width="304" height="36" fill="#ffffff" stroke="#222222" stroke-width="2.2" />
+        <text x="40" y="141" font-family={SANS} font-size="14" font-weight="900" letter-spacing="2" fill="#222222">849 · _ _ _</text>
+
+        <text x="28" y="182" font-family={SERIF} font-size="12" fill="#444444">Ingresa los 6 dígitos enviados hace un minuto.</text>
+        <rect x="28" y="202" width="164" height="40" fill="#222222" />
+        <text x="110" y="226" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill="#ffffff">CONFIRMAR ACCESO</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre visión dicromática, criterios WCAG 1.4.1, 1.4.3 y 1.4.11, paleta Okabe-Ito y señales redundantes."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { hexARgb, rgbAHex, razonContraste, aGris } from '../../../lib/diseno-visual/contraste';
+
+  const lab = 'accesibilidad-color';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    vision: string;
+    paleta: string;
+    contrasteBorde: number;
+    segundaSenal: boolean;
+    cuerpoTexto: number;
+  };
+
+  function simularColor(hex: string, vision: string): string {
+    if (vision === 'estandar') return hex;
+    if (vision === 'grises') return aGris(hex);
+    const [r, g, b] = hexARgb(hex);
+    if (vision === 'deuteranopia') {
+      return rgbAHex([
+        0.625 * r + 0.375 * g,
+        0.7 * r + 0.3 * g,
+        0.3 * g + 0.7 * b,
+      ]);
+    }
+    if (vision === 'protanopia') {
+      return rgbAHex([
+        0.567 * r + 0.433 * g,
+        0.558 * r + 0.442 * g,
+        0.242 * g + 0.758 * b,
+      ]);
+    }
+    if (vision === 'tritanopia') {
+      return rgbAHex([
+        0.95 * r + 0.05 * g,
+        0.433 * g + 0.567 * b,
+        0.475 * g + 0.525 * b,
+      ]);
+    }
+    // 'sol': lavado hacia blanco por reflejo ambiental
+    return rgbAHex([
+      r + (255 - r) * 0.48,
+      g + (255 - g) * 0.48,
+      b + (255 - b) * 0.48,
+    ]);
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 310;
+    const sim = (c: string) => simularColor(c, e.vision);
+
+    const colA = e.paleta === 'okabe' ? sim('#005a8d') : sim('#d43f2f');
+    const colB = e.paleta === 'okabe' ? sim('#d55e00') : sim('#2ca048');
+    const colNeutro = sim('#e8eaed');
+
+    const grisBorde = Math.round(235 - (e.contrasteBorde / 100) * 185);
+    const hexBordeOriginal = rgbAHex([grisBorde, grisBorde, grisBorde]);
+    const hexBorde = sim(hexBordeOriginal);
+    const razonBorde = razonContraste(hexBordeOriginal, '#ffffff');
+    const razonSeries = razonContraste(colA, colB);
+
+    const raiz = svg('svg', {
+      viewBox: `0 0 ${W} ${H}`,
+      width: W,
+      height: H,
+      role: 'img',
+      'aria-label': `Simulación ${e.vision} con paleta ${e.paleta}.`,
+    });
+
+    raiz.append(svg('rect', { width: W, height: H, fill: sim('#fbfbf9') }));
+
+    const pad = 16;
+    const cw = W - pad * 2;
+    raiz.append(svg('rect', { x: pad, y: 14, width: cw, height: H - 28, fill: sim('#ffffff'), stroke: sim('#222222'), 'stroke-width': 1.5 }));
+
+    const cab = svg('text', {
+      x: pad + 16,
+      y: 40,
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 900,
+      fill: sim('#222222'),
+    });
+    cab.textContent = `VISTA: ${e.vision.toUpperCase()} · DIFERENCIA ENTRE SERIES: ${n(razonSeries, 1)}:1`;
+    raiz.append(cab);
+
+    // 1. Gráfico de dos series y tarjetas de estado
+    const gx = pad + 16;
+    const gy = 56;
+    const gw = Math.floor(cw * 0.54);
+    const gh = 132;
+
+    raiz.append(svg('rect', { x: gx, y: gy, width: gw, height: gh, fill: colNeutro, stroke: hexBorde, 'stroke-width': 1.5 }));
+
+    // Serie A y Serie B
+    const pA = `${gx + 16},${gy + 104} ${gx + gw * 0.36},${gy + 76} ${gx + gw * 0.68},${gy + 54} ${gx + gw - 36},${gy + 30}`;
+    const pB = `${gx + 16},${gy + 96} ${gx + gw * 0.36},${gy + 88} ${gx + gw * 0.68},${gy + 72} ${gx + gw - 36},${gy + 68}`;
+
+    raiz.append(svg('polyline', { points: pA, fill: 'none', stroke: colA, 'stroke-width': 3 }));
+    raiz.append(
+      svg('polyline', {
+        points: pB,
+        fill: 'none',
+        stroke: colB,
+        'stroke-width': 3,
+        ...(e.segundaSenal ? { 'stroke-dasharray': '7 4' } : {}),
+      }),
+    );
+
+    if (e.segundaSenal) {
+      raiz.append(svg('circle', { cx: gx + gw - 36, cy: gy + 30, r: 5, fill: colA, stroke: sim('#ffffff'), 'stroke-width': 1.5 }));
+      raiz.append(svg('rect', { x: gx + gw - 41, y: gy + 63, width: 10, height: 10, fill: colB, stroke: sim('#ffffff'), 'stroke-width': 1.5 }));
+    }
+
+    const etqA = svg('text', { x: gx + 14, y: gy + 24, 'font-family': SANS, 'font-size': 10.5, 'font-weight': 900, fill: colA });
+    etqA.textContent = e.segundaSenal ? '● Serie A (Continua · +42 %)' : 'Serie A';
+    raiz.append(etqA);
+
+    const etqB = svg('text', { x: gx + 14, y: gy + 42, 'font-family': SANS, 'font-size': 10.5, 'font-weight': 900, fill: colB });
+    etqB.textContent = e.segundaSenal ? '■ Serie B (Discontinua · +12 %)' : 'Serie B';
+    raiz.append(etqB);
+
+    // 2. Estado de asientos / pastillas a la derecha
+    const sx = gx + gw + 14;
+    const sw = cw - gw - 46;
+    raiz.append(svg('rect', { x: sx, y: gy, width: sw, height: 60, fill: colA, stroke: sim('#222222'), 'stroke-width': 1.2 }));
+    const tSt1 = svg('text', { x: sx + 12, y: gy + 26, 'font-family': SANS, 'font-size': 11, 'font-weight': 900, fill: sim('#ffffff') });
+    tSt1.textContent = e.segundaSenal ? '✓ CUPO DISPONIBLE' : 'Estado 1 (Color A)';
+    raiz.append(tSt1);
+    const tSt1Sub = svg('text', { x: sx + 12, y: gy + 44, 'font-family': SERIF, 'font-size': 11, fill: sim('#ffffff') });
+    tSt1Sub.textContent = '18 plazas abiertas';
+    raiz.append(tSt1Sub);
+
+    raiz.append(
+      svg('rect', {
+        x: sx,
+        y: gy + 72,
+        width: sw,
+        height: 60,
+        fill: colB,
+        stroke: sim('#222222'),
+        'stroke-width': 1.2,
+        ...(e.segundaSenal ? { 'stroke-dasharray': '5 3' } : {}),
+      }),
+    );
+    const tSt2 = svg('text', { x: sx + 12, y: gy + 98, 'font-family': SANS, 'font-size': 11, 'font-weight': 900, fill: sim('#ffffff') });
+    tSt2.textContent = e.segundaSenal ? '✕ LISTA CERRADA' : 'Estado 2 (Color B)';
+    raiz.append(tSt2);
+    const tSt2Sub = svg('text', { x: sx + 12, y: gy + 116, 'font-family': SERIF, 'font-size': 11, fill: sim('#ffffff') });
+    tSt2Sub.textContent = 'Sin cupos hoy';
+    raiz.append(tSt2Sub);
+
+    // 3. Controles de formulario en la franja inferior (WCAG 1.4.11)
+    const fy = 204;
+    const tCampo = svg('text', {
+      x: gx,
+      y: fy + 14,
+      'font-family': SANS,
+      'font-size': 10,
+      'font-weight': 900,
+      fill: sim('#222222'),
+    });
+    tCampo.textContent = `CAMPO DE FORMULARIO · BORDE ${n(razonBorde, 1)}:1 ${razonBorde >= 3 ? '(CUMPLE ≥ 3:1)' : '(FALLA < 3:1)'}`;
+    raiz.append(tCampo);
+
+    raiz.append(svg('rect', { x: gx, y: fy + 22, width: cw - 32, height: 42, fill: sim('#ffffff'), stroke: hexBorde, 'stroke-width': 2 }));
+    const txtIn = svg('text', {
+      x: gx + 14,
+      y: fy + 48,
+      'font-family': SERIF,
+      'font-size': e.cuerpoTexto,
+      fill: sim('#333333'),
+    });
+    txtIn.textContent = 'El contorno del control necesita al menos 3:1 para no desaparecer.';
+    raiz.append(txtIn);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const grisBorde = Math.round(235 - (e.contrasteBorde / 100) * 185);
+    const razonBorde = razonContraste(rgbAHex([grisBorde, grisBorde, grisBorde]), '#ffffff');
+    const colA = simularColor(e.paleta === 'okabe' ? '#005a8d' : '#d43f2f', e.vision);
+    const colB = simularColor(e.paleta === 'okabe' ? '#d55e00' : '#2ca048', e.vision);
+    const razonSeries = razonContraste(colA, colB);
+
+    if ((e.vision === 'deuteranopia' || e.vision === 'protanopia' || e.vision === 'grises') && e.paleta === 'semaforo' && !e.segundaSenal) {
+      return `En <b class="dv-cifra">${e.vision}</b>, el rojo y el verde tienen una diferencia de luminancia de apenas <b class="dv-cifra">${n(razonSeries, 1)}:1</b> y carecen de iconos o tramas: ambas series son indistinguibles.`;
+    }
+    if (razonBorde < 3.0) {
+      return `El borde del campo de formulario mide <b class="dv-cifra">${n(razonBorde, 1)}:1</b> (por debajo del mínimo de 3:1 de WCAG 1.4.11). Sube «Contraste de bordes y controles».`;
+    }
+    if (e.segundaSenal && e.paleta === 'okabe') {
+      return `<b class="dv-cifra">Diseño universal completo</b>: la paleta Okabe-Ito mantiene distancia de luminancia (${n(razonSeries, 1)}:1), la segunda señal identifica cada estado sin depender del tono y el borde alcanza ${n(razonBorde, 1)}:1.`;
+    }
+    return `Vista <b class="dv-cifra">${e.vision}</b>: contraste de borde en ${n(razonBorde, 1)}:1 y relación entre categorías de ${n(razonSeries, 1)}:1${e.segundaSenal ? ' reforzada con forma y etiqueta' : ''}.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.paleta === 'semaforo' && e.vision === 'deuteranopia',
+      (e) => e.segundaSenal === true,
+      (e) => e.paleta === 'okabe',
+      (e) => e.contrasteBorde >= 65,
+      (e) => e.vision === 'sol',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { oscuridad: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const v = Math.round(238 - (e.oscuridad / 100) * 185);
+    const hex = rgbAHex([v, v, v]);
+    const r = razonContraste(hex, '#ffffff');
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Control con borde ${n(r, 1)} a 1.">
+      <rect width="360" height="150" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <text x="22" y="34" font-family="${SANS}" font-size="10.5" font-weight="900" fill="#222">CONTRASTE DEL BORDE: ${n(r, 1)}:1 ${r >= 3 ? '(✓ CUMPLE 3:1)' : '(✗ INSUFICIENTE)'}</text>
+      <text x="22" y="60" font-family="${SANS}" font-size="11" font-weight="700" fill="#222">Número de documento</text>
+      <rect x="22" y="70" width="316" height="44" fill="#ffffff" stroke="${hex}" stroke-width="2" />
+      <text x="36" y="96" font-family="${SERIF}" font-size="13.5" fill="#444">1037618492</text>
+    </svg>`;
+  }
+  function describirE1(e: E1) {
+    const v = Math.round(238 - (e.oscuridad / 100) * 185);
+    const r = razonContraste(rgbAHex([v, v, v]), '#ffffff');
+    if (r < 3.0) return `Con <b class="dv-cifra">${n(r, 1)}:1</b>, el contorno del campo casi no se ve y falla el criterio WCAG 1.4.11.`;
+    return `<b class="dv-cifra">Borde nítido (${n(r, 1)}:1)</b>: supera el mínimo de 3:1 para componentes de interfaz.`;
+  }
+
+  type E2 = { codificacion: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const red = e.codificacion === 'redundante';
+    const col1 = red ? '#183a6c' : '#9c8428';
+    const col2 = red ? '#c97818' : '#96862a';
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Gráfico bajo deuteranopía.">
+      <rect width="360" height="150" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <text x="20" y="28" font-family="${SANS}" font-size="10" font-weight="900" fill="#222">SIMULACIÓN DEUTERANOPÍA · INGRESOS FRENTE A GASTOS</text>
+      <polyline points="28,118 110,92 190,74 268,48" fill="none" stroke="${col1}" stroke-width="3" />
+      <polyline points="28,108 110,102 190,94 268,96" fill="none" stroke="${col2}" stroke-width="3" ${red ? 'stroke-dasharray="6 3"' : ''} />
+      ${
+        red
+          ? `<circle cx="268" cy="48" r="4.5" fill="${col1}" /><text x="278" y="52" font-family="${SANS}" font-size="10.5" font-weight="900" fill="${col1}">● Ingresos</text>
+             <rect x="264" y="92" width="8" height="8" fill="${col2}" /><text x="278" y="100" font-family="${SANS}" font-size="10.5" font-weight="900" fill="#222">■ Gastos</text>`
+          : `<text x="28" y="138" font-family="${SANS}" font-size="10" font-weight="700" fill="${col1}">■ Ingresos</text>
+             <text x="116" y="138" font-family="${SANS}" font-size="10" font-weight="700" fill="${col2}">■ Gastos</text>`
+      }
+    </svg>`;
+  }
+  function describirE2(e: E2) {
+    if (e.codificacion === 'soloColor') {
+      return 'Bajo deuteranopía, <b class="dv-cifra">ambas líneas lucen del mismo color pardo</b> y la leyenda no ayuda a distinguirlas.';
+    }
+    return '<b class="dv-cifra">Doble codificación activa</b>: diferencia de claridad, trazo discontinuo, marcador y etiqueta directa.';
+  }
+
+  type E3 = { enlace: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const sub = e.enlace === 'subrayado';
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Párrafo con enlace.">
+      <rect width="360" height="150" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+      <text x="22" y="48" font-family="${SERIF}" font-size="14" fill="#222222">Puedes consultar el calendario de entregas en</text>
+      <text x="22" y="72" font-family="${SERIF}" font-size="14" fill="#222222">la <tspan fill="${sub ? '#0f4496' : '#2f3d4c'}" font-weight="${sub ? '700' : '400'}" ${sub ? 'text-decoration="underline"' : ''}>guía oficial del semestre</tspan> antes del viernes</text>
+      <text x="22" y="96" font-family="${SERIF}" font-size="14" fill="#222222">o escribir a la coordinación académica.</text>
+      <text x="22" y="130" font-family="${SANS}" font-size="10" font-weight="700" fill="#555">${sub ? '✓ Subrayado + contraste claro' : '✗ Sin subrayado y con contraste 1,3:1 frente al texto vecino'}</text>
+    </svg>`;
+  }
+  function describirE3(e: E3) {
+    if (e.enlace === 'soloTono') {
+      return 'Sin subrayado y con un azul tan cercano al negro del párrafo, <b class="dv-cifra">el enlace pasa inadvertido</b>.';
+    }
+    return '<b class="dv-cifra">Enlace inequívoco</b>: el subrayado ofrece una señal de forma que no depende de distinguir matices de azul.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego ─────────────────────────────────────────────
+  function rondaParConfuso(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Azul marino oscuro (#005A8D) y naranja claro (#E69F00) acompañados de símbolos ● y ▲',
+        describir: 'Dos bloques con distinta claridad y símbolos distintos.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#fff" stroke="#222"/><rect x="18" y="20" width="92" height="50" fill="#005a8d"/><text x="64" y="50" text-anchor="middle" font-family="${SANS}" font-size="12" font-weight="900" fill="#fff">● Serie A</text><rect x="130" y="20" width="92" height="50" fill="#e69f00" stroke="#222"/><text x="176" y="50" text-anchor="middle" font-family="${SANS}" font-size="12" font-weight="900" fill="#222">▲ Serie B</text></svg>`,
+      },
+      {
+        texto: 'Rojo medio (#D43F2F) y verde medio (#2CA048) de igual claridad sin iconos ni etiquetas',
+        describir: 'Dos bloques rojo y verde de igual claridad.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#fff" stroke="#222"/><rect x="18" y="20" width="92" height="50" fill="#d43f2f"/><rect x="130" y="20" width="92" height="50" fill="#2ca048"/></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas dos parejas se distingue sin pérdida de información en deuteranopía, protanopía y escala de grises?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La pareja azul oscuro / naranja claro de la paleta Okabe-Ito evita el eje de confusión rojo-verde, separa las luminancias y añade símbolos redundantes.',
+      repaso: 'Paleta universal y redundancia',
+    };
+  }
+
+  function rondaUmbralNoTextual(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Al menos 3:1 respecto a la superficie adyacente (WCAG 1.4.11)',
+        es: true,
+      },
+      {
+        texto: 'Al menos 1,2:1 siempre que el borde sea de color gris frío',
+        es: false,
+      },
+      {
+        texto: 'Exactamente 21:1 en todos los bordes decorativos',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué razón mínima de contraste exige WCAG 2.2 (criterio 1.4.11) para los bordes de controles de formulario, iconos informativos y barras de un gráfico?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El criterio 1.4.11 (Contraste no textual, nivel AA) establece un mínimo de 3:1 para los componentes activos de interfaz y los elementos gráficos necesarios para comprender el contenido.',
+      repaso: 'WCAG 1.4.11 · Contraste no textual (3:1)',
+    };
+  }
+
+  function rondaUmbralTexto(): Ronda {
+    const ops = barajar([
+      {
+        texto: '4,5:1 para texto normal y 3:1 para texto grande',
+        es: true,
+      },
+      {
+        texto: '2:1 para texto normal y 1,5:1 para titulares',
+        es: false,
+      },
+      {
+        texto: '10:1 para cualquier tamaño de letra',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuáles son los umbrales mínimos del nivel AA (WCAG 1.4.3) para texto de lectura normal y para texto grande?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En el nivel AA, el texto normal requiere al menos 4,5:1 de contraste de luminancia, mientras que el texto grande (≥ 24 px o ≥ 18,66 px en negrita) requiere al menos 3:1.',
+      repaso: 'WCAG 1.4.3 · Contraste mínimo de texto',
+    };
+  }
+
+  function rondaProtanopia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Además de confundirse con el verde, los rojos puros pierden luminancia y se ven mucho más oscuros',
+        es: true,
+      },
+      {
+        texto: 'Todos los colores se ven el doble de brillantes que en visión estándar',
+        es: false,
+      },
+      {
+        texto: 'Solo se confunden el azul marino y el negro',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué particularidad importante tiene la protanopía cuando se escribe texto rojo sobre un fondo negro o muy oscuro?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En la protanopía faltan los conos sensibles a las ondas largas (rojas), por lo que el extremo rojo del espectro se percibe muy oscurecido y un texto rojo sobre fondo negro puede volverse casi invisible.',
+      repaso: 'Oscurecimiento del rojo en protanopía',
+    };
+  }
+
+  function rondaAjusteDicromia(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Estas dos barras representan dos candidatos vistos bajo deuteranopía. Como tienen la misma claridad, lucen idénticas. Oscurece la primera barra hasta alcanzar al menos 3:1 de contraste entre ambas.',
+      control: {
+        etiqueta: 'Claridad de la barra A',
+        min: 15,
+        max: 65,
+        paso: 5,
+        valor: 60,
+        unidad: '%',
+      },
+      pintar: (esc, v) => {
+        const cA = rgbAHex([Math.round(v * 2.2), Math.round(v * 2.0), Math.round(v * 0.8)]);
+        const cB = rgbAHex([148, 134, 48]);
+        const r = razonContraste(cA, cB);
+        esc.innerHTML = `<svg viewBox="0 0 360 120" role="img" aria-label="Dos barras bajo deuteranopía con razón ${n(r, 1)} a 1.">
+          <rect width="360" height="120" fill="#ffffff" stroke="#222" stroke-width="1.2" />
+          <text x="20" y="28" font-family="${SANS}" font-size="10" font-weight="900" fill="#222">RAZÓN ENTRE BARRA A Y BARRA B: ${n(r, 1)}:1</text>
+          <rect x="20" y="42" width="220" height="26" fill="${cA}" stroke="#222" />
+          <text x="250" y="59" font-family="${SANS}" font-size="10.5" font-weight="700" fill="#222">Opción A (58 %)</text>
+          <rect x="20" y="76" width="160" height="26" fill="${cB}" stroke="#222" />
+          <text x="190" y="93" font-family="${SANS}" font-size="10.5" font-weight="700" fill="#222">Opción B (42 %)</text>
+        </svg>`;
+      },
+      cumple: (v) => {
+        const cA = rgbAHex([Math.round(v * 2.2), Math.round(v * 2.0), Math.round(v * 0.8)]);
+        const cB = rgbAHex([148, 134, 48]);
+        return razonContraste(cA, cB) >= 3.0;
+      },
+      falta: (v) => {
+        const cA = rgbAHex([Math.round(v * 2.2), Math.round(v * 2.0), Math.round(v * 0.8)]);
+        const cB = rgbAHex([148, 134, 48]);
+        return `Con claridad al ${v} %, la razón entre las barras es ${n(razonContraste(cA, cB), 1)}:1. Baja más el control para oscurecer la barra A.`;
+      },
+      porque: 'Separar la luminancia de las categorías garantiza que cualquier persona distinga las barras incluso cuando los tonos convergen.',
+      repaso: 'Separación por luminancia en dicromía',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        rondaParConfuso(),
+        rondaUmbralNoTextual(),
+        rondaUmbralTexto(),
+        rondaProtanopia(),
+        rondaAjusteDicromia(),
+      ]),
+    );
+  }
+</script>

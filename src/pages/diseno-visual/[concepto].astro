@@ -11,6 +11,7 @@ import {
   rutaConcepto,
   rutaTerritorio,
   territorioPorId,
+  vecinosEnRuta,
 } from '../../lib/diseno-visual/relaciones';
 
 export async function getStaticPaths() {
@@ -25,6 +26,7 @@ const d = entrada.data;
 const territorio = territorioPorId(d.territorio);
 const relaciones = resolverRelaciones(entrada, todas);
 const vecinos = itemsDe(territorio, todas);
+const pasoRuta = vecinosEnRuta(entrada.id, todas);
 ---
 
 <DisenoVisual
@@ -43,14 +45,15 @@ const vecinos = itemsDe(territorio, todas);
     <h1>{d.titulo}</h1>
     <p class="dv-pregunta">{d.pregunta}</p>
     <ul class="dv-modos" aria-label="Modos de exploración de esta entrada">
-      {d.modos.map((m) => <li>{nombreModo[m]}</li>)}
+      {d.modos.map((m) => (
+        <li><a href={`${BASE}?modo=${m}#todos`}>{nombreModo[m]}</a></li>
+      ))}
     </ul>
   </header>
 
-  <nav class="dv-recorrido" aria-label="Pasos de esta entrada">
-    <p>Si es tu primera vez, sigue las seis etapas en orden. Si ya conoces el tema, pasa directamente a «Pruébalo» o «Ponte a prueba».</p>
+  <nav class="dv-recorrido" aria-label="Pasos de esta entrada" data-recorrido>
     <ol>
-      {PASOS.map((p) => <li><a href={`#${p.id}`}><span>{p.corto}</span></a></li>)}
+      {PASOS.map((p) => <li><a href={`#${p.id}`} data-paso-link={p.id}><span>{p.corto}</span></a></li>)}
     </ol>
   </nav>
 
@@ -91,6 +94,43 @@ const vecinos = itemsDe(territorio, todas);
     </section>
   )}
 
+  {pasoRuta && (
+    <nav class="dv-ruta-nav" aria-labelledby="ruta-nav-titulo">
+      <div class="dv-ruta-nav-cab">
+        <h2 id="ruta-nav-titulo">Ruta para empezar</h2>
+        <span class="dv-ruta-nav-pos">Paso {pasoRuta.indice} de {pasoRuta.total}</span>
+      </div>
+      <div class="dv-ruta-nav-links">
+        {pasoRuta.anterior ? (
+          <a class="dv-ruta-nav-card es-anterior" href={rutaConcepto(pasoRuta.anterior.slug)}>
+            <span class="dv-ruta-nav-dir"><span aria-hidden="true">←</span> Anterior · paso {pasoRuta.indice - 1}</span>
+            <strong class="dv-ruta-nav-nombre">{pasoRuta.anterior.entrada.data.titulo}</strong>
+            <span class="dv-ruta-nav-porque">{pasoRuta.anterior.porque}</span>
+          </a>
+        ) : (
+          <a class="dv-ruta-nav-card es-anterior" href={BASE}>
+            <span class="dv-ruta-nav-dir"><span aria-hidden="true">←</span> Inicio del recorrido</span>
+            <strong class="dv-ruta-nav-nombre">Índice de Diseño visual</strong>
+            <span class="dv-ruta-nav-porque">Explora el cartel interactivo, la ruta completa y los seis territorios.</span>
+          </a>
+        )}
+        {pasoRuta.siguiente ? (
+          <a class="dv-ruta-nav-card es-siguiente" href={rutaConcepto(pasoRuta.siguiente.slug)}>
+            <span class="dv-ruta-nav-dir">Siguiente en la ruta · paso {pasoRuta.indice + 1} <span aria-hidden="true">→</span></span>
+            <strong class="dv-ruta-nav-nombre">{pasoRuta.siguiente.entrada.data.titulo}</strong>
+            <span class="dv-ruta-nav-porque">{pasoRuta.siguiente.porque}</span>
+          </a>
+        ) : (
+          <a class="dv-ruta-nav-card es-siguiente" href={`${BASE}#todos`}>
+            <span class="dv-ruta-nav-dir">Ruta completada <span aria-hidden="true">→</span></span>
+            <strong class="dv-ruta-nav-nombre">Todos los territorios</strong>
+            <span class="dv-ruta-nav-porque">Terminaste los siete pasos iniciales. Continúa por cualquiera de los seis territorios.</span>
+          </a>
+        )}
+      </div>
+    </nav>
+  )}
+
   <nav class="dv-vecinos" aria-labelledby="vecinos-titulo">
     <h2 id="vecinos-titulo">{territorio.nombre}</h2>
     <ul>
@@ -106,4 +146,39 @@ const vecinos = itemsDe(territorio, todas);
       <li><a href={BASE}>Todos los territorios</a></li>
     </ul>
   </nav>
+
+  <script>
+    const nav = document.querySelector<HTMLElement>('[data-recorrido]');
+    if (nav) {
+      const links = new Map<string, HTMLAnchorElement>();
+      for (const a of nav.querySelectorAll<HTMLAnchorElement>('[data-paso-link]')) {
+        const id = a.dataset.pasoLink;
+        if (id) links.set(id, a);
+      }
+      const secciones = [...document.querySelectorAll<HTMLElement>('.dv-paso[id]')];
+      const marcar = (idActivo: string) => {
+        for (const [id, a] of links) {
+          const es = id === idActivo;
+          a.classList.toggle('es-actual', es);
+          if (es) a.setAttribute('aria-current', 'step');
+          else a.removeAttribute('aria-current');
+        }
+      };
+      if (secciones.length > 0) {
+        marcar(secciones[0].id);
+        const obs = new IntersectionObserver(
+          (entradas) => {
+            const visibles = entradas
+              .filter((e) => e.isIntersecting)
+              .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+            if (visibles.length > 0) {
+              marcar((visibles[0].target as HTMLElement).id);
+            }
+          },
+          { rootMargin: '-18% 0px -65% 0px', threshold: 0 },
+        );
+        for (const s of secciones) obs.observe(s);
+      }
+    }
+  </script>
 </DisenoVisual>

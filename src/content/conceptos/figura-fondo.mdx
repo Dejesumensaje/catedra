@@ -1,0 +1,171 @@
+---
+titulo: Figura y fondo
+territorio: percepcion
+pregunta: ¿Cómo decide el ojo qué parte de la pantalla es el objeto que mira y qué parte es la superficie que continúa detrás?
+resumen: "Toda composición divide el campo visual en dos planos: la figura (que tiene forma, borde propio y avanza hacia quien mira) y el fondo (que parece extenderse por detrás). Cuando ambos pesan lo mismo, la percepción oscila."
+modos: [comparacion, provocacion]
+orden: 12
+relaciones:
+  - concepto: espacio-negativo
+    porQue: "El fondo no es papel sobrante: su contorno exterior sostiene y define la silueta de la figura."
+  - concepto: cierre
+    porQue: En cuanto el ojo cierra un perímetro aunque esté incompleto, su interior salta hacia adelante como figura.
+  - concepto: contraste
+    porQue: Sin una diferencia clara de luminancia o textura en la frontera, la figura se aplana y se funde con el soporte.
+  - concepto: ambiguedad
+    porQue: Igualar el área y el peso del positivo y del negativo crea imágenes biestables donde dos lecturas se turnan.
+  - concepto: gestalt
+    porQue: La segregación entre figura y fondo es el primer paso sobre el que operan las demás leyes de organización perceptual.
+fuentes:
+  - autor: Edgar Rubin
+    obra: "Synsoplevede Figurer: Studier i psykologisk Analyse [Figuras visualmente percibidas]. Gyldendalske Boghandel (ed. alemana de 1921: Visuell wahrgenommene Figuren)"
+    anio: 1915
+    nota: Formulación original de la distinción figura-fondo, la asignación unilateral de bordes (border ownership) y las condiciones que hacen que una región se vea como figura (rodeada, menor área, convexidad, simetría).
+  - autor: Mary A. Peterson
+    obra: "Object recognition processes can and do operate before figure–ground organization. Current Directions in Psychological Science, 3(4), 105–111"
+    anio: 1994
+    url: https://doi.org/10.1111/1467-8721.ep10770552
+    nota: Demostración de que la familiaridad y la memoria de formas también intervienen antes de que se fije qué es figura y qué es fondo.
+  - autor: Rudolf Arnheim
+    obra: "Art and Visual Perception: A Psychology of the Creative Eye. University of California Press"
+    anio: 1974
+    nota: Análisis de las pistas gráficas de superposición, convexidad, textura y contraste tonal en la separación de planos.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import FiguraFondoExp from '../../components/diseno-visual/experiencias/FiguraFondoExp.astro';
+
+<Paso id="idea" titular="Un solo borde para dos zonas, pero casi nunca se reparte">
+
+<FiguraFondoExp paso="idea" />
+
+<p class="dv-frase">El borde entre dos zonas casi nunca se reparte: pertenece a la figura, no al fondo.</p>
+
+<div class="dv-texto">
+
+Cada vez que dibujas una mancha sobre una hoja en blanco, aparecen dos regiones separadas por una misma frontera física. Sin embargo, tu sistema visual no las trata como iguales: a una de las dos le adjudica el borde, le atribuye solidez de «cosa» y la trae hacia adelante (**la figura**); a la otra la deja sin forma propia y la interpreta como una superficie continua que pasa por detrás (**el fondo**).
+
+Controlar esa decisión perceptual permite dos operaciones opuestas: dar una estabilidad absoluta a las capas de una interfaz, o provocar una oscilación magnética en un cartel o un símbolo.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Figura</dt>
+    <dd>La región del campo visual que reclama el contorno como propio, parece tener carácter de objeto sólido y se percibe más cerca de quien mira.</dd>
+    <dt>Fondo</dt>
+    <dd>La superficie circundante que carece de forma aparente en el borde común y parece extenderse sin interrupción por detrás de la figura.</dd>
+    <dt>Pertenencia del borde</dt>
+    <dd>La asignación unilateral (*border ownership*) por la cual una frontera compartida modela solo a uno de los dos lados a la vez.</dd>
+    <dt>Reversibilidad</dt>
+    <dd>La alternancia perceptual que ocurre cuando ambas zonas tienen fuerzas equivalentes y se turnan el papel de figura y fondo.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Capas fundidas en el mismo plano frente a planos bien separados">
+
+<div class="dv-texto">
+
+Al abrir un cuadro de diálogo sobre una tabla de datos, la primera versión coloca el recuadro en el centro sin empujar la página al fondo; la segunda establece qué capa avanza y cuál retrocede.
+
+</div>
+
+<FiguraFondoExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión sin separación de planos, la ventana emergente comparte el mismo blanco, el mismo contraste tipográfico y el mismo grosor de línea que la tabla trasera: el ojo no sabe dónde empieza el diálogo. En la versión resuelta, un velo atenúa la página inferior y un borde firme con contorno desplazado consolida el diálogo como figura en primer plano.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Las cuatro variables que deciden qué avanza y qué retrocede">
+
+<FiguraFondoExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para dominar la relación entre figura y fondo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>En interfaces operativas, haz que una capa gane por goleada</h3>
+      <p>Cuando superpongas un menú desplegable, una notificación o un diálogo modal, atenúa el contraste del plano inferior y refuerza el borde de la pieza activa. Si ambas capas tienen el mismo peso, se funden.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Protege las letras cuando el fondo tenga formas propias</h3>
+      <p>Una fotografía llena de detalles o una trama geométrica no es un «fondo» obediente: contiene bordes que compiten con los trazos de la tipografía. Interpón una cartela lisa o busca una zona despejada de la imagen antes de apoyar el texto.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>En símbolos y carteles, diseña el hueco con el mismo cuidado que la mancha</h3>
+      <p>Si vas a calar un icono en negativo o buscar un juego figura-fondo en un cartel, dale a los espacios internos anchura y convexidad suficientes para que el ojo los reconozca sin que se empasten.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<FiguraFondoExp paso="errores" />
+
+<div class="dv-texto">
+
+### Figura y fondo en piezas reales
+
+</div>
+
+<FiguraFondoExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Identifica qué región domina y a quién pertenece el borde">
+
+<FiguraFondoExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Rubin, la asignación unilateral de bordes y el papel de la memoria">
+
+<Seccion titulo="Las leyes de Edgar Rubin (1915)">
+
+En su tesis doctoral publicada en Copenhague en 1915 (*Synsoplevede Figurer*), el psicólogo danés Edgar Rubin demostró que la distinción entre figura y fondo no depende solo de que haya un objeto real frente a nosotros: ocurre incluso ante manchas abstractas de papel recortado.
+
+A través de pruebas sistemáticas, Rubin identificó las condiciones geométricas que inclinan al sistema visual a elegir una región como figura:
+
+- **Rodeo (inclusión):** si una región rodea por completo a otra, la rodeada tiende a verse como figura y la envolvente como fondo que continúa por detrás.
+- **Área relativa menor:** a igualdad de condiciones, las regiones más pequeñas se perciben como figuras sobre las más extensas.
+- **Convexidad:** los contornos que se abomban hacia afuera (*convexos*) se imponen sobre los contornos que parecen mordidos hacia adentro (*cóncavos*).
+- **Simetría y orientación:** las zonas simétricas respecto a un eje vertical u horizontal se consolidan como figuras con más facilidad que las zonas oblicuas o irregulares.
+
+</Seccion>
+
+<Seccion titulo="Por qué un borde solo puede dar forma a un lado a la vez">
+
+El hallazgo más profundo de Rubin —confirmado décadas más tarde por la neurofisiología en el área visual V2 (Zhou, Friedman y von der Heydt, 2000)— es la **asignación unilateral del contorno** (*border ownership*).
+
+Ante una mancha negra circular sobre papel blanco, el círculo negro tiene forma redonda, pero el papel blanco *no se percibe como una lámina con un agujero redondo en el medio*: se percibe como un plano entero y continuo que pasa por debajo del círculo. El borde pertenece solo al lado de la figura; el lado del fondo queda «sin borde» (*shapeless*) en esa frontera. Por eso, en las figuras reversibles como la copa de Rubin o las litografías de M. C. Escher, cada vez que el borde cambia de dueño toda la escena se reorganiza.
+
+</Seccion>
+
+<Seccion titulo="Antes o después de reconocer: la aportación de Mary Peterson">
+
+Durante buena parte del siglo XX se creyó que el cerebro primero separaba la figura del fondo usando las reglas geométricas de Rubin y solo después consultaba la memoria para saber qué objeto estaba mirando.
+
+En la década de 1990, la investigadora Mary A. Peterson demostró que el proceso también funciona en sentido inverso: si uno de los lados de un borde ambiguo perfila una silueta muy familiar (un rostro, una mano, una letra del alfabeto en su orientación normal), los mecanismos de reconocimiento de objetos se activan en milisegundos e inclinan la balanza para que ese lado gane la condición de figura, incluso cuando tiene mayor área o menor convexidad.
+
+</Seccion>
+
+</Paso>

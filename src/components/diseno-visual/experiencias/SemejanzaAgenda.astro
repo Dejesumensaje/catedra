@@ -14,6 +14,15 @@ const lab = 'sem-agenda';
   consigna="Tres talleres y cinco charlas tienen la misma apariencia. Quieres que las personas puedan distinguir los talleres antes de leer cada título. Prueba las opciones de «Qué comparten los talleres» y observa qué sucede cuando comparten un rasgo que las charlas no tienen."
   comparar={false}
 >
+  <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Agenda con ocho eventos de apariencia idéntica.">
+    <rect width="360" height="150" fill="#fbfbf9" />
+    {[0, 1, 2, 3].map((i) => (
+      <g>
+        <circle cx="30" cy={26 + i * 30} r="5" fill="#222" />
+        <rect x="46" y={22 + i * 30} width="120" height="8" fill="#222" />
+      </g>
+    ))}
+  </svg>
   <Opciones
     lab={lab}
     variable="marca"

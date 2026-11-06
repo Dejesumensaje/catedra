@@ -1,0 +1,845 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'armonia';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Observa qué ocurre cuando tres colores empatan en área y saturación.',
+    hacer: 'En «Reparto de áreas» elige «Igualado 33 / 33 / 33» y sube «Saturación de las superficies grandes» por encima de 75 %.',
+    pista: 'Selecciona la primera opción de reparto y mueve el deslizador de saturación a la derecha.',
+    preparar: { relacion: 'triada' },
+    logro: 'Aunque los tres ángulos provienen de una tríada geométrica exacta en el círculo cromático, al ocupar el mismo espacio con máxima saturación compiten entre sí y dan un aspecto estridente.',
+  },
+  {
+    titulo: 'Desatura las superficies amplias.',
+    hacer: 'Baja «Saturación de las superficies grandes» por debajo de 20 %.',
+    pista: 'Arrastra el deslizador de saturación hacia la izquierda.',
+    logro: 'Al calmar los fondos, dejan de pelear con los elementos interactivos y toda la composición gana cohesión sin cambiar un solo grado del círculo cromático.',
+  },
+  {
+    titulo: 'Aplica una jerarquía desigual de superficies.',
+    hacer: 'En «Reparto de áreas», selecciona «Dominante 70 / 20 / 10».',
+    pista: 'Elige la segunda opción del control «Reparto de áreas».',
+    logro: 'El 70 % construye una atmósfera serena, el 20 % agrupa bloques secundarios y el 10 % reserva la máxima saturación para el acento principal.',
+  },
+  {
+    titulo: 'Compara acuerdos tonales.',
+    hacer: 'Cambia «Relación de tonos» a «Complementaria» o «Análoga».',
+    pista: 'Prueba distintas opciones en el primer control.',
+    logro: 'Una paleta análoga transmite continuidad y calma porque sus tonos son vecinos; una complementaria introduce tensión controlada en el 10 % del acento.',
+  },
+  {
+    titulo: 'Tiñe los grises con el tono dominante.',
+    hacer: 'Abre «Más controles» y activa «Teñir neutros con el tono base».',
+    pista: 'Despliega los controles avanzados y marca la casilla.',
+    abrir: true,
+    logro: 'Un gris con un 6 % a 10 % de saturación del tono principal se siente parte de la misma familia cromática en vez de parecer un parche frío.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Dos tarjetas hechas con los mismos tres tonos del círculo cromático: a la izquierda ocupan 33 % cada uno al 100 % de saturación; a la derecha usan proporción 70 / 20 / 10 con variaciones de claridad y saturación.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <g transform="translate(24, 16)">
+        <rect width="264" height="148" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+        <rect x="0" y="0" width="88" height="148" fill="#1e64f0" />
+        <rect x="88" y="0" width="88" height="148" fill="#f02850" />
+        <rect x="176" y="0" width="88" height="148" fill="#f0b41e" />
+        <rect width="264" height="148" fill="none" stroke="#222222" stroke-width="1.5" />
+        <rect x="16" y="16" width="232" height="24" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="132" y="32" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill="#222222">33 % / 33 % / 33 % · SATURACIÓN 100 %</text>
+        <rect x="16" y="102" width="232" height="30" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="132" y="121" text-anchor="middle" font-family={SERIF} font-size="11.5" fill="#222222">Tres tonos puros empatados en área</text>
+      </g>
+
+      <g transform="translate(312, 16)">
+        <rect width="264" height="148" fill="#eef1f6" stroke="#222222" stroke-width="1.5" />
+        <rect x="16" y="16" width="232" height="24" fill="#162a4a" />
+        <text x="26" y="32" font-family={SANS} font-size="10" font-weight="900" fill="#f4f6fa">70 % DOMINANTE · 20 % APOYO · 10 % ACENTO</text>
+        <rect x="16" y="52" width="144" height="80" fill="#d9e1ee" stroke="#162a4a" stroke-width="1" />
+        <text x="26" y="76" font-family={SANS} font-size="13" font-weight="900" fill="#162a4a">Anuario del museo</text>
+        <text x="26" y="96" font-family={SERIF} font-size="11.5" fill="#162a4a">Superficie clara teñida</text>
+        <text x="26" y="114" font-family={SERIF} font-size="11.5" fill="#162a4a">con el mismo tono azul.</text>
+        <rect x="172" y="92" width="76" height="40" fill="#d92b4b" stroke="#222222" stroke-width="1.5" />
+        <text x="210" y="116" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">VISITAR</text>
+        <circle cx="210" cy="68" r="10" fill="#f0b41e" stroke="#222222" stroke-width="1.2" />
+      </g>
+    </svg>
+    <p>Ambas tarjetas usan exactamente los mismos tres ángulos del círculo cromático (azul 220°, carmesí 348° y ámbar 43°). ¿Por qué la primera parece un juguete estridente y la segunda una publicación cohesiva?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque la armonía no depende solo de qué ángulos elijas en una rueda de color, sino de cómo repartes su <strong>área</strong>, su <strong>claridad</strong> y su <strong>saturación</strong>. En la derecha, el azul se desatura e ilumina para formar el 70 % del fondo, se oscurece al 20 % para los bloques y los textos, y los tonos intensos se reservan para el 10 % de acento.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Paleta arcoíris sin tono dominante"
+      notas={[
+        { ...pct(180, 44), titulo: 'Seis tonos puros compitiendo', texto: 'Cabecera, tarjetas y barras usan morado, verde, naranja, cian, amarillo y rojo sin jerarquía ni relación familiar.', zona: zona(16, 16, 328, 118) },
+        { ...pct(112, 198), titulo: 'Escala de datos desordenada', texto: 'El gráfico usa un arcoíris donde no se percibe qué barra vale más ni cuáles forman una secuencia continua.', zona: zona(20, 144, 210, 116) },
+        { ...pct(294, 206), titulo: 'Gris frío desconectado', texto: 'El panel lateral usa un gris puro (#cccccc) que choca con los colores saturados que lo rodean.', zona: zona(236, 144, 108, 116) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Informe anual con seis colores saturados distintos en tarjetas y barras sin un tono dominante.">
+        <rect width={W} height={H} fill="#f0f0f0" />
+        <rect x="18" y="18" width="324" height="38" fill="#7b2cbf" />
+        <text x="30" y="42" font-family={SANS} font-size="13" font-weight="900" fill="#ffffff">MEMORIA ANUAL DE BIBLIOTECAS 2026</text>
+
+        <rect x="18" y="66" width="102" height="62" fill="#00b4d8" stroke="#222222" stroke-width="1" />
+        <text x="28" y="88" font-family={SANS} font-size="9.5" font-weight="700" fill="#222222">PRÉSTAMOS</text>
+        <text x="28" y="112" font-family={SANS} font-size="17" font-weight="900" fill="#222222">84.200</text>
+
+        <rect x="129" y="66" width="102" height="62" fill="#38b000" stroke="#222222" stroke-width="1" />
+        <text x="139" y="88" font-family={SANS} font-size="9.5" font-weight="700" fill="#ffffff">LECTORES</text>
+        <text x="139" y="112" font-family={SANS} font-size="17" font-weight="900" fill="#ffffff">19.400</text>
+
+        <rect x="240" y="66" width="102" height="62" fill="#ff6d00" stroke="#222222" stroke-width="1" />
+        <text x="250" y="88" font-family={SANS} font-size="9.5" font-weight="700" fill="#222222">SEDES</text>
+        <text x="250" y="112" font-family={SANS} font-size="17" font-weight="900" fill="#222222">14</text>
+
+        <rect x="18" y="140" width="212" height="122" fill="#ffffff" stroke="#222222" stroke-width="1" />
+        <text x="30" y="160" font-family={SANS} font-size="10" font-weight="900" fill="#222222">CONSULTAS POR TRIMESTRE</text>
+        <rect x="34" y="206" width="34" height="40" fill="#ffbe0b" />
+        <rect x="80" y="190" width="34" height="56" fill="#fb5607" />
+        <rect x="126" y="178" width="34" height="68" fill="#ff006e" />
+        <rect x="172" y="168" width="34" height="78" fill="#3a86ff" />
+
+        <rect x="240" y="140" width="102" height="122" fill="#cccccc" stroke="#222222" stroke-width="1" />
+        <text x="252" y="164" font-family={SANS} font-size="10" font-weight="900" fill="#222222">DESTACADO</text>
+        <text x="252" y="186" font-family={SERIF} font-size="11" fill="#222222">Apertura de</text>
+        <text x="252" y="202" font-family={SERIF} font-size="11" fill="#222222">dos salas</text>
+        <text x="252" y="218" font-family={SERIF} font-size="11" fill="#222222">infantiles.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Un tono dominante, neutros teñidos y un acento"
+      notas={[
+        { ...pct(180, 44), titulo: 'Familia tonal unificada', texto: 'La cabecera y las tarjetas usan un solo tono azul pizarra en tres niveles de claridad y baja saturación.', zona: zona(16, 16, 328, 118) },
+        { ...pct(118, 204), titulo: 'Progresión secuencial clara', texto: 'Las cuatro barras crecen en oscuridad dentro del mismo tono: quien mira entiende la progresión de un vistazo.', zona: zona(20, 144, 210, 116) },
+        { ...pct(292, 204), titulo: 'Acento complementario en el 10 %', texto: 'El único toque cálido (terracota/ámbar) se reserva para la tarjeta destacada y el hito del cuarto trimestre.', zona: zona(236, 144, 108, 116) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="El mismo informe anual construido con variaciones de claridad de un azul pizarra dominante, fondo crema cálido y un único acento ámbar.">
+        <rect width={W} height={H} fill="#f4f2ec" />
+        <rect x="18" y="18" width="324" height="38" fill="#18324c" />
+        <text x="30" y="42" font-family={SANS} font-size="13" font-weight="900" fill="#f4f2ec">MEMORIA ANUAL DE BIBLIOTECAS 2026</text>
+
+        <rect x="18" y="66" width="102" height="62" fill="#e5ebf1" stroke="#18324c" stroke-width="1" />
+        <text x="28" y="88" font-family={SANS} font-size="9.5" font-weight="700" fill="#465a6e">PRÉSTAMOS</text>
+        <text x="28" y="112" font-family={SANS} font-size="17" font-weight="900" fill="#18324c">84.200</text>
+
+        <rect x="129" y="66" width="102" height="62" fill="#e5ebf1" stroke="#18324c" stroke-width="1" />
+        <text x="139" y="88" font-family={SANS} font-size="9.5" font-weight="700" fill="#465a6e">LECTORES</text>
+        <text x="139" y="112" font-family={SANS} font-size="17" font-weight="900" fill="#18324c">19.400</text>
+
+        <rect x="240" y="66" width="102" height="62" fill="#e5ebf1" stroke="#18324c" stroke-width="1" />
+        <text x="250" y="88" font-family={SANS} font-size="9.5" font-weight="700" fill="#465a6e">SEDES</text>
+        <text x="250" y="112" font-family={SANS} font-size="17" font-weight="900" fill="#18324c">14</text>
+
+        <rect x="18" y="140" width="212" height="122" fill="#ffffff" stroke="#18324c" stroke-width="1" />
+        <text x="30" y="160" font-family={SANS} font-size="10" font-weight="900" fill="#18324c">CONSULTAS POR TRIMESTRE</text>
+        <rect x="34" y="206" width="34" height="40" fill="#c7d5e4" />
+        <rect x="80" y="190" width="34" height="56" fill="#8ea9c4" />
+        <rect x="126" y="178" width="34" height="68" fill="#4b7299" />
+        <rect x="172" y="168" width="34" height="78" fill="#18324c" />
+
+        <rect x="240" y="140" width="102" height="122" fill="#f7e6d0" stroke="#9e3d16" stroke-width="1.5" />
+        <rect x="252" y="152" width="72" height="16" fill="#9e3d16" />
+        <text x="288" y="163" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill="#ffffff">HITO 2026</text>
+        <text x="252" y="188" font-family={SERIF} font-size="11.5" fill="#222222">Apertura de</text>
+        <text x="252" y="204" font-family={SERIF} font-size="11.5" fill="#222222">dos salas</text>
+        <text x="252" y="220" font-family={SERIF} font-size="11.5" fill="#222222">infantiles.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · Generador y analizador de armonías"
+    consigna="Elige una relación de tonos sobre el círculo cromático y controla la saturación de los fondos y la proporción de las superficies. Comprueba por qué una paleta armónica depende tanto del reparto de áreas como de los ángulos elegidos."
+    nota="Usa «Fijar como A» con reparto 33 / 33 / 33 y alta saturación, y compárala con la misma relación tonal en reparto 70 / 20 / 10 con fondos suaves."
+  >
+    <svg slot="escenario" viewBox="0 0 640 300" role="img" aria-label="Interfaz de prueba con rueda cromática lateral y maqueta editorial con reparto 70 / 20 / 10.">
+      <rect width="640" height="300" fill="#f1f4f8" />
+      <rect x="24" y="24" width="416" height="252" fill="#eaeff5" stroke="#183152" stroke-width="1.5" />
+      <rect x="44" y="44" width="240" height="44" fill="#183152" />
+      <rect x="304" y="188" width="116" height="44" fill="#c94a1a" />
+      <circle cx="540" cy="150" r="68" fill="none" stroke="#222222" stroke-width="2" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba cómo cambia el carácter de la página al girar el tono base manteniendo fijas las proporciones." />
+
+    <Opciones
+      lab={lab}
+      variable="relacion"
+      etiqueta="Relación de tonos"
+      valor="complementaria"
+      opciones={[
+        { valor: 'monocromatica', texto: 'Monocromática' },
+        { valor: 'analoga', texto: 'Análoga' },
+        { valor: 'complementaria', texto: 'Complementaria' },
+        { valor: 'triada', texto: 'Tríada' },
+      ]}
+      ayuda="Define qué ángulos del círculo cromático participan en la paleta."
+    />
+    <Deslizador
+      lab={lab}
+      variable="tonoBase"
+      etiqueta="Tono base"
+      min={0}
+      max={345}
+      paso={15}
+      valor={210}
+      unidad="°"
+      ayuda="Gira el acorde completo alrededor del círculo cromático."
+    />
+    <Deslizador
+      lab={lab}
+      variable="satFondo"
+      etiqueta="Saturación de las superficies grandes"
+      min={5}
+      max={95}
+      paso={5}
+      valor={15}
+      unidad="%"
+      ayuda="Controla qué tan puro o qué tan calmo es el color que cubre el fondo principal."
+    />
+    <Opciones
+      lab={lab}
+      variable="reparto"
+      etiqueta="Reparto de áreas"
+      valor="dominante"
+      opciones={[
+        { valor: 'igualado', texto: 'Igualado 33 / 33 / 33' },
+        { valor: 'dominante', texto: 'Dominante 70 / 20 / 10' },
+      ]}
+      ayuda="Igualado: los tres colores ocupan la misma superficie. Dominante: 70 % fondo, 20 % apoyo, 10 % acento."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="tenido"
+        etiqueta="Teñir neutros con el tono base"
+        valor={true}
+        ayuda="Añade un rastro sutil del tono dominante a los blancos, grises y textos para unificar la atmósfera."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"relacion":"complementaria","tonoBase":210,"satFondo":15,"reparto":"dominante","tenido":true}'>Complementaria equilibrada (70 / 20 / 10)</button>
+      <button type="button" class="dv-boton" data-preset='{"relacion":"triada","tonoBase":210,"satFondo":90,"reparto":"igualado","tenido":false}'>Tríada estridente (33 / 33 / 33 al 90 %)</button>
+      <button type="button" class="dv-boton" data-preset='{"relacion":"analoga","tonoBase":165,"satFondo":15,"reparto":"dominante","tenido":true}'>Análoga serena (bosque y salvia)</button>
+      <button type="button" class="dv-boton" data-preset='{"relacion":"monocromatica","tonoBase":25,"satFondo":20,"reparto":"dominante","tenido":true}'>Monocromática editorial cálida</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1. Sustituye el arcoíris por una escala secuencial coherente"
+      comparar={false}
+      consigna="En este mapa de cinco niveles de lluvia, los cinco tonos inconexos impiden saber de un vistazo qué región tiene más precipitación. Cambia a una escala secuencial ordenada por claridad."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Cinco regiones de mapa coloreadas con tonos arcoíris desordenados.">
+        <rect width="360" height="150" fill="#fbfbf9" />
+        <rect x="20" y="36" width="60" height="72" fill="#ffbe0b" stroke="#222" />
+        <rect x="85" y="36" width="60" height="72" fill="#3a86ff" stroke="#222" />
+        <rect x="150" y="36" width="60" height="72" fill="#38b000" stroke="#222" />
+        <rect x="215" y="36" width="60" height="72" fill="#ff006e" stroke="#222" />
+        <rect x="280" y="36" width="60" height="72" fill="#8338ec" stroke="#222" />
+      </svg>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="escala"
+        etiqueta="Esquema para los 5 niveles"
+        valor="arcoiris"
+        opciones={[
+          { valor: 'arcoiris', texto: 'Cinco tonos arcoíris' },
+          { valor: 'secuencial', texto: 'Escala secuencial de claridad' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2. Baja la saturación del fondo para integrar el acorde"
+      comparar={false}
+      consigna="El verde esmeralda y el coral son complementarios clásicos, pero ambos al 85 % de saturación producen rechazo. Desatura la superficie de fondo."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Tarjeta con fondo verde muy saturado y acento coral.">
+        <rect width="360" height="150" fill="#12b866" />
+        <rect x="24" y="84" width="144" height="38" fill="#df4830" stroke="#222222" stroke-width="1.5" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="sat"
+        etiqueta="Saturación de la superficie de fondo"
+        min={10}
+        max={85}
+        paso={5}
+        valor={85}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3. Tiñe los grises para que pertenezcan a la misma atmósfera"
+      comparar={false}
+      consigna="En una página cálida de tonos terracota, las tarjetas con gris neutro de fábrica (#dfe2e6) parecen postizos metálicos. Añade tinte cálido a los grises."
+    >
+      <svg slot="escenario" viewBox="0 0 360 150" role="img" aria-label="Tarjetas grises sobre fondo cálido.">
+        <rect width="360" height="150" fill="#fbf6ef" />
+        <rect x="20" y="24" width="150" height="102" fill="#dfe3e8" stroke="#222" />
+        <rect x="190" y="24" width="150" height="102" fill="#8c2d19" stroke="#222" />
+      </svg>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="tinte"
+        etiqueta="Tinte cálido en los neutros"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cartografía temática (ColorBrewer): progresión secuencial de tono y valor"
+      notas={[
+        { ...pct(180, 96), titulo: 'Orden visual sin mirar la leyenda', texto: 'Las cinco comarcas avanzan desde marfil claro hasta azul petróleo oscuro; la claridad indica de inmediato la magnitud del dato.', zona: zona(22, 24, 316, 134) },
+        { ...pct(112, 224), titulo: 'Transición suave de tono', texto: 'En lugar de oscurecer un solo azul con negro (que lo volvería sucio), la escala gira levemente del verde agua al azul marino.', zona: zona(22, 174, 210, 84) },
+        { ...pct(290, 224), titulo: 'Contornos neutros consistentes', texto: 'Todas las fronteras comparten un filete claro que evita la mezcla óptica entre regiones vecinas.', zona: zona(236, 174, 102, 84) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Mapa coroplético con escala secuencial de cinco niveles desde marfil verdoso hasta azul petróleo profundo.">
+        <rect width={W} height={H} fill="#f7f5f0" />
+        <g stroke="#ffffff" stroke-width="2">
+          <polygon points="28,34 132,28 148,92 42,108" fill="#edf8b1" />
+          <polygon points="132,28 242,36 226,104 148,92" fill="#c7e9b4" />
+          <polygon points="242,36 332,48 318,122 226,104" fill="#7fcdbb" />
+          <polygon points="42,108 148,92 184,158 58,162" fill="#41b6c4" />
+          <polygon points="148,92 226,104 318,122 292,164 184,158" fill="#1d91c0" />
+          <polygon points="184,158 292,164 268,196 164,192" fill="#0c2c84" />
+        </g>
+        <rect x="24" y="210" width="312" height="48" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+        <text x="36" y="229" font-family={SANS} font-size="9.5" font-weight="900" fill="#222222">ÍNDICE DE HUMEDAD DEL SUELO (ESCALA YlGnBu · BREWER)</text>
+        <rect x="36" y="236" width="42" height="12" fill="#edf8b1" stroke="#222" stroke-width="0.6" />
+        <rect x="78" y="236" width="42" height="12" fill="#c7e9b4" stroke="#222" stroke-width="0.6" />
+        <rect x="120" y="236" width="42" height="12" fill="#7fcdbb" stroke="#222" stroke-width="0.6" />
+        <rect x="162" y="236" width="42" height="12" fill="#1d91c0" stroke="#222" stroke-width="0.6" />
+        <rect x="204" y="236" width="42" height="12" fill="#0c2c84" stroke="#222" stroke-width="0.6" />
+        <text x="256" y="246" font-family={SANS} font-size="9.5" font-weight="700" fill="#444444">10 % → 90 %</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Portada editorial: acorde análogo con contrapunto cálido"
+      notas={[
+        { ...pct(110, 96), titulo: '75 % en verde salvia desaturado', texto: 'El fondo principal envuelve la pieza en un tono vegetal calmo que permite leer con comodidad.', zona: zona(20, 20, 320, 140) },
+        { ...pct(244, 178), titulo: '20 % en verde bosque profundo', texto: 'La banda inferior y los titulares usan el mismo ángulo tonal llevado al extremo oscuro para dar soporte tipográfico.', zona: zona(20, 162, 320, 98) },
+        { ...pct(284, 78), titulo: '5 % en ocre dorado', texto: 'El sello circular aporta el único contraste cálido sin romper la serenidad del conjunto.', zona: zona(242, 42, 82, 82) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portada de libro en verde salvia claro, banda inferior en verde bosque oscuro y sello circular en ocre dorado.">
+        <rect width={W} height={H} fill="#dce3dc" />
+        <rect x="24" y="22" width="312" height="236" fill="#e6ece5" stroke="#182e24" stroke-width="1.5" />
+        <text x="42" y="52" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.4" fill="#182e24">CUADERNOS DE BOTÁNICA · N.º 12</text>
+        <text x="42" y="90" font-family={SERIF} font-size="22" font-weight="700" fill="#182e24">Flora de los</text>
+        <text x="42" y="118" font-family={SERIF} font-size="22" font-weight="700" fill="#182e24">páramos andinos</text>
+        <circle cx="284" cy="82" r="28" fill="#d48c28" stroke="#182e24" stroke-width="1.5" />
+        <text x="284" y="86" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill="#182e24">2.ª ED.</text>
+        <rect x="24" y="166" width="312" height="92" fill="#182e24" />
+        <text x="42" y="198" font-family={SERIF} font-size="13" fill="#e6ece5">Inventario ilustrado de especies de alta montaña</text>
+        <text x="42" y="220" font-family={SANS} font-size="10.5" font-weight="700" fill="#b8c9be">HERBARIO NACIONAL · 2026</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Aplicación de lectura: neutros teñidos para coherencia de sistema"
+      notas={[
+        { ...pct(84, 118), titulo: 'Barra lateral en piedra cálida', texto: 'En vez de usar un gris frío (#e0e0e0), el menú comparte el subtono ocre del lienzo principal.', zona: zona(18, 20, 108, 240) },
+        { ...pct(232, 92), titulo: 'Superficie de lectura marfil', texto: 'El fondo principal reduce el deslumbramiento del blanco puro manteniendo más de 13:1 de contraste con la tinta.', zona: zona(128, 20, 214, 160) },
+        { ...pct(248, 218), titulo: 'Citas y marcadores en la misma gama', texto: 'El resaltado de lectura usa ámbar suave, armónico con el papel y la barra lateral.', zona: zona(128, 184, 214, 76) },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Interfaz de lectura con barra lateral en gris piedra cálido, lienzo marfil y marcador ámbar.">
+        <rect width={W} height={H} fill="#ece7dd" />
+        <rect x="20" y="20" width="98" height="240" fill="#dfd8ca" stroke="#2b2620" stroke-width="1.2" />
+        <text x="32" y="48" font-family={SANS} font-size="9.5" font-weight="900" fill="#2b2620">CAPÍTULOS</text>
+        <rect x="28" y="60" width="82" height="22" fill="#2b2620" />
+        <text x="36" y="75" font-family={SANS} font-size="9.5" font-weight="700" fill="#fbf8f1">01 · El oficio</text>
+        <text x="36" y="102" font-family={SANS} font-size="9.5" font-weight="700" fill="#5c5346">02 · La tinta</text>
+        <text x="36" y="124" font-family={SANS} font-size="9.5" font-weight="700" fill="#5c5346">03 · El papel</text>
+
+        <rect x="118" y="20" width="222" height="240" fill="#fbf8f1" stroke="#2b2620" stroke-width="1.2" />
+        <text x="132" y="56" font-family={SERIF} font-size="16" font-weight="700" fill="#2b2620">1. El oficio de componer</text>
+        <text x="132" y="84" font-family={SERIF} font-size="10.5" fill="#3d362e">Cada página impresa establece un acuerdo</text>
+        <text x="132" y="102" font-family={SERIF} font-size="10.5" fill="#3d362e">silencioso entre el color del soporte y la</text>
+        <text x="132" y="120" font-family={SERIF} font-size="10.5" fill="#3d362e">densidad de la tinta tipográfica.</text>
+
+        <rect x="132" y="188" width="194" height="52" fill="#f3e2be" stroke="#8a5a14" stroke-width="1.2" />
+        <text x="144" y="210" font-family={SANS} font-size="9.5" font-weight="900" fill="#2b2620">NOTA DESTACADA</text>
+        <text x="144" y="228" font-family={SERIF} font-size="10.5" fill="#2b2620">Los neutros teñidos unen las piezas.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre proporción 70 / 20 / 10, saturación de superficies, escalas secuenciales y neutros teñidos."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+  import { hslAHex } from '../../../lib/diseno-visual/contraste';
+
+  const lab = 'armonia';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    relacion: string;
+    tonoBase: number;
+    satFondo: number;
+    reparto: string;
+    tenido: boolean;
+  };
+
+  function angulosDe(relacion: string, base: number): [number, number, number] {
+    const h1 = base % 360;
+    if (relacion === 'monocromatica') return [h1, h1, h1];
+    if (relacion === 'analoga') return [h1, (h1 + 32) % 360, (h1 + 328) % 360];
+    if (relacion === 'triada') return [h1, (h1 + 120) % 360, (h1 + 240) % 360];
+    return [h1, (h1 + 20) % 360, (h1 + 180) % 360];
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 300;
+    const [h1, h2, h3] = angulosDe(e.relacion, e.tonoBase);
+    const esIgualado = e.reparto === 'igualado';
+
+    const sNeutral = e.tenido ? Math.max(10, Math.min(28, e.satFondo)) : 0;
+    const colDominante = esIgualado
+      ? hslAHex(h1, Math.max(45, e.satFondo), 52)
+      : hslAHex(h1, e.satFondo, 92);
+    const colApoyo = esIgualado
+      ? hslAHex(h2, Math.max(45, e.satFondo), 48)
+      : hslAHex(h2, Math.min(55, e.satFondo + 18), 24);
+    const colAcento = hslAHex(h3, 82, e.relacion === 'monocromatica' ? 42 : 48);
+    const colTarjeta = e.tenido ? hslAHex(h1, sNeutral, 97) : '#ffffff';
+    const colTexto = esIgualado && e.satFondo > 50 ? '#ffffff' : hslAHex(h1, e.tenido ? 25 : 0, 16);
+
+    const raiz = svg('svg', {
+      viewBox: `0 0 ${W} ${H}`,
+      width: W,
+      height: H,
+      role: 'img',
+      'aria-label': `Paleta ${e.relacion} con reparto ${e.reparto}.`,
+    });
+
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const mostrarRueda = W >= 500;
+    const anchoPanel = mostrarRueda ? W - 180 : W - 32;
+    const x0 = 16;
+    const y0 = 18;
+    const altoPanel = H - 36;
+
+    if (esIgualado) {
+      const tercio = Math.floor(anchoPanel / 3);
+      raiz.append(svg('rect', { x: x0, y: y0, width: tercio, height: altoPanel, fill: colDominante }));
+      raiz.append(svg('rect', { x: x0 + tercio, y: y0, width: tercio, height: altoPanel, fill: colApoyo }));
+      raiz.append(svg('rect', { x: x0 + tercio * 2, y: y0, width: anchoPanel - tercio * 2, height: altoPanel, fill: colAcento }));
+      raiz.append(svg('rect', { x: x0, y: y0, width: anchoPanel, height: altoPanel, fill: 'none', stroke: '#222222', 'stroke-width': 1.5 }));
+
+      const banda = svg('rect', { x: x0 + 18, y: y0 + 22, width: anchoPanel - 36, height: 64, fill: colTarjeta, stroke: '#222222', 'stroke-width': 1.5 });
+      raiz.append(banda);
+      const t1 = svg('text', { x: x0 + 32, y: y0 + 48, 'font-family': SANS, 'font-size': 15, 'font-weight': 900, fill: '#222222' });
+      t1.textContent = 'Tres áreas iguales (33 % / 33 % / 33 %)';
+      raiz.append(t1);
+      const t2 = svg('text', { x: x0 + 32, y: y0 + 70, 'font-family': SERIF, 'font-size': 12.5, fill: '#444444' });
+      t2.textContent = 'Ningún color actúa como fondo ni como acento exclusivo.';
+      raiz.append(t2);
+    } else {
+      // 70 % fondo dominante, 20 % bloque secundario, 10 % acento
+      raiz.append(svg('rect', { x: x0, y: y0, width: anchoPanel, height: altoPanel, fill: colDominante, stroke: '#222222', 'stroke-width': 1.5 }));
+      raiz.append(svg('rect', { x: x0, y: y0, width: anchoPanel, height: 48, fill: colApoyo }));
+
+      const cab = svg('text', { x: x0 + 18, y: y0 + 30, 'font-family': SANS, 'font-size': 12, 'font-weight': 900, 'letter-spacing': 1, fill: '#ffffff' });
+      cab.textContent = 'REVISTA DE ARQUITECTURA · 20 % APOYO';
+      raiz.append(cab);
+
+      raiz.append(svg('rect', { x: x0 + 18, y: y0 + 68, width: anchoPanel - 36, height: 118, fill: colTarjeta, stroke: '#222222', 'stroke-width': 1.2 }));
+      const tit = svg('text', { x: x0 + 34, y: y0 + 102, 'font-family': SERIF, 'font-size': 20, 'font-weight': 700, fill: colTexto });
+      tit.textContent = 'El espacio compartido';
+      raiz.append(tit);
+      const sub = svg('text', { x: x0 + 34, y: y0 + 128, 'font-family': SERIF, 'font-size': 13, fill: colTexto });
+      sub.textContent = '70 % de superficie en calma sostiene la lectura.';
+      raiz.append(sub);
+      const meta = svg('text', { x: x0 + 34, y: y0 + 152, 'font-family': SANS, 'font-size': 10.5, 'font-weight': 700, fill: '#555555' });
+      meta.textContent = e.tenido ? 'Neutros teñidos con el tono dominante' : 'Neutros puros sin teñir';
+      raiz.append(meta);
+
+      raiz.append(svg('rect', { x: x0 + 18, y: y0 + 202, width: 148, height: 42, fill: colAcento, stroke: '#222222', 'stroke-width': 1.5 }));
+      const btn = svg('text', { x: x0 + 92, y: y0 + 228, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 11.5, 'font-weight': 900, fill: '#ffffff' });
+      btn.textContent = 'LEER EDICIÓN (10 %)';
+      raiz.append(btn);
+    }
+
+    if (mostrarRueda) {
+      const cx = W - 86;
+      const cy = 128;
+      const r = 56;
+      raiz.append(svg('circle', { cx, cy, r, fill: '#ffffff', stroke: '#222222', 'stroke-width': 1.5 }));
+      for (let ang = 0; ang < 360; ang += 30) {
+        const rad = ((ang - 90) * Math.PI) / 180;
+        const px = cx + Math.cos(rad) * (r - 10);
+        const py = cy + Math.sin(rad) * (r - 10);
+        raiz.append(svg('circle', { cx: px, cy: py, r: 5, fill: hslAHex(ang, 75, 50) }));
+      }
+      const pts = [h1, h2, h3].map((ang) => {
+        const rad = ((ang - 90) * Math.PI) / 180;
+        return [cx + Math.cos(rad) * (r - 10), cy + Math.sin(rad) * (r - 10)];
+      });
+      raiz.append(
+        svg('polygon', {
+          points: pts.map(([px, py]) => `${px},${py}`).join(' '),
+          fill: 'none',
+          stroke: '#222222',
+          'stroke-width': 1.8,
+        }),
+      );
+      for (const [px, py] of pts) {
+        raiz.append(svg('circle', { cx: px, cy: py, r: 7, fill: '#eeff41', stroke: '#222222', 'stroke-width': 2 }));
+      }
+      const etqRueda = svg('text', { x: cx, y: cy + r + 24, 'text-anchor': 'middle', 'font-family': SANS, 'font-size': 10, 'font-weight': 700, fill: '#222222' });
+      etqRueda.textContent = `TONO BASE: ${e.tonoBase}°`;
+      raiz.append(etqRueda);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  const nombreRel: Record<string, string> = {
+    monocromatica: 'monocromática (un solo ángulo tonal)',
+    analoga: 'análoga (tonos vecinos a ±32°)',
+    complementaria: 'complementaria (tonos opuestos a 180°)',
+    triada: 'de tríada (tres ángulos a 120°)',
+  };
+
+  function describir(e: E): string {
+    if (e.reparto === 'igualado' && e.satFondo >= 55) {
+      return `Relación ${nombreRel[e.relacion]} con reparto <b class="dv-cifra">33 / 33 / 33 al ${e.satFondo} % de saturación</b>: las tres áreas pelean por el primer plano y ninguna actúa como atmósfera común.`;
+    }
+    if (e.reparto === 'igualado') {
+      return `Relación ${nombreRel[e.relacion]} con áreas iguales (33 / 33 / 33). Aunque la saturación es baja (${e.satFondo} %), el empate de superficie deja la pieza indecisa.`;
+    }
+    if (e.satFondo >= 60) {
+      return `El reparto <b class="dv-cifra">70 / 20 / 10</b> ordena las áreas, pero el fondo al ${e.satFondo} % de saturación sigue restándole fuerza al acento.`;
+    }
+    const notaTenido = e.tenido
+      ? ' Los neutros teñidos refuerzan el parentesco entre tarjetas y fondo.'
+      : ' Activa el teñido de neutros en «Más controles» para integrar aún más las tarjetas.';
+    return `<b class="dv-cifra">Paleta armónica en proporción 70 / 20 / 10</b> (${nombreRel[e.relacion]}): el fondo calmo (${e.satFondo} % de saturación) sostiene el conjunto y el 10 % de acento concentra la energía.${notaTenido}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.reparto === 'igualado' && e.satFondo >= 75,
+      (e) => e.satFondo <= 20,
+      (e) => e.reparto === 'dominante',
+      (e, ini) => e.relacion !== ini.relacion,
+      (e) => e.tenido === true,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { escala: string };
+  const ARCOIRIS = ['#ffbe0b', '#3a86ff', '#38b000', '#ff006e', '#8338ec'];
+  const SECUENCIAL = ['#edf8b1', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494'];
+  function pintarE1(d: HTMLElement, e: E1) {
+    const cols = e.escala === 'secuencial' ? SECUENCIAL : ARCOIRIS;
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Cinco regiones con escala ${e.escala}.">
+      <rect width="360" height="150" fill="#fbfbf9" stroke="#222" stroke-width="1.2" />
+      <text x="20" y="26" font-family="${SANS}" font-size="10" font-weight="900" fill="#222">PRECIPITACIÓN ANUAL POR ZONA (NIVELES 1 A 5)</text>
+      ${cols
+        .map(
+          (c, i) => `
+        <g transform="translate(${20 + i * 66}, 38)">
+          <rect width="56" height="74" fill="${c}" stroke="#222" stroke-width="1.2" />
+          <text x="28" y="92" text-anchor="middle" font-family="${SANS}" font-size="10" font-weight="700" fill="#222">Nivel ${i + 1}</text>
+        </g>`,
+        )
+        .join('')}
+    </svg>`;
+  }
+  function describirE1(e: E1) {
+    if (e.escala === 'arcoiris') {
+      return 'Con <b class="dv-cifra">cinco tonos inconexos</b>, nadie sabe si el verde representa más o menos lluvia que el azul o el fucsia sin consultar la leyenda.';
+    }
+    return '<b class="dv-cifra">Escala secuencial armónica</b>: la progresión continua de claridad y tono ordena los cinco niveles a primera vista.';
+  }
+
+  type E2 = { sat: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const lFondo = Math.round(92 - (e.sat / 85) * 44);
+    const fondo = hslAHex(152, e.sat, lFondo);
+    const txt = lFondo > 65 ? '#142e22' : '#ffffff';
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Tarjeta con fondo verde al ${e.sat} % de saturación.">
+      <rect width="360" height="150" fill="${fondo}" stroke="#222" stroke-width="1.2" />
+      <text x="24" y="46" font-family="${SERIF}" font-size="19" font-weight="700" fill="${txt}">Festival de Jardines</text>
+      <text x="24" y="70" font-family="${SERIF}" font-size="12.5" fill="${txt}">Recorridos guiados por el invernadero histórico</text>
+      <rect x="24" y="90" width="152" height="38" fill="#d9462f" stroke="#222" stroke-width="1.5" />
+      <text x="100" y="113" text-anchor="middle" font-family="${SANS}" font-size="11" font-weight="900" fill="#ffffff">RESERVAR ENTRADA</text>
+    </svg>`;
+  }
+  function describirE2(e: E2) {
+    if (e.sat > 50) return `Al <b class="dv-cifra">${e.sat} % de saturación</b>, el fondo verde compite de frente con el botón coral.`;
+    if (e.sat > 25) return `${e.sat} % de saturación: el fondo empieza a calmarse y el acorde complementario se vuelve habitable.`;
+    return `<b class="dv-cifra">Fondo en verde salvia (${e.sat} %)</b>: la pareja complementaria conserva su riqueza sin estridencia.`;
+  }
+
+  type E3 = { tinte: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const satGris = Math.round((e.tinte / 100) * 28);
+    const tonoGris = e.tinte < 10 ? 210 : 26;
+    const gris = hslAHex(tonoGris, satGris, 88);
+    const borde = hslAHex(24, Math.round((e.tinte / 100) * 35), 28);
+    d.innerHTML = `<svg viewBox="0 0 360 150" role="img" aria-label="Tarjetas con ${e.tinte} % de tinte cálido.">
+      <rect width="360" height="150" fill="#fbf5ec" stroke="#222" stroke-width="1.2" />
+      <rect x="20" y="24" width="152" height="102" fill="${gris}" stroke="${borde}" stroke-width="1.2" />
+      <text x="34" y="54" font-family="${SANS}" font-size="10" font-weight="900" fill="#222">FICHA TÉCNICA</text>
+      <text x="34" y="78" font-family="${SERIF}" font-size="12.5" fill="#222">Cerámica cocida</text>
+      <text x="34" y="98" font-family="${SERIF}" font-size="12" fill="#444">Siglo XVII · Sala 3</text>
+      <rect x="188" y="24" width="152" height="102" fill="#8c2d19" stroke="#222" stroke-width="1.2" />
+      <text x="202" y="54" font-family="${SANS}" font-size="10" font-weight="900" fill="#f7e6d4">COLECCIÓN PRINCIPAL</text>
+      <text x="202" y="80" font-family="${SERIF}" font-size="15" font-weight="700" fill="#ffffff">Alfarería del sur</text>
+    </svg>`;
+  }
+  function describirE3(e: E3) {
+    if (e.tinte < 25) return 'El gris azulado de fábrica parece <b class="dv-cifra">ajeno a la paleta cálida</b> de la página.';
+    if (e.tinte < 60) return 'El neutro empieza a templarse y se acerca al tono terracota.';
+    return '<b class="dv-cifra">Neutro teñido armónico</b>: la tarjeta secundaria es sobria, pero pertenece sin duda a la misma familia.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego ─────────────────────────────────────────────
+  function rondaProporcionAreas(): Ronda {
+    const ops = barajar([
+      {
+        texto: '70 % en superficie desaturada clara, 20 % en tono oscuro de estructura y 10 % en acento saturado',
+        describir: 'Tarjeta con reparto desigual 70 / 20 / 10.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#ebeff5" stroke="#222"/><rect width="240" height="24" fill="#183252"/><rect x="164" y="48" width="60" height="26" fill="#d9462f" stroke="#222"/></svg>`,
+      },
+      {
+        texto: '33 % azul puro, 33 % naranja puro y 33 % verde puro con la misma claridad y saturación',
+        describir: 'Tres franjas saturadas del mismo tamaño.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="80" height="90" fill="#1e64f0"/><rect x="80" width="80" height="90" fill="#ff6d00"/><rect x="160" width="80" height="90" fill="#2eb840"/><rect width="240" height="90" fill="none" stroke="#222"/></svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas dos distribuciones produce una paleta cohesiva y fácil de recorrer?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La armonía requiere asimetría de áreas y de saturación: una superficie dominante tranquila sostiene la pieza y un porcentaje mínimo concentra el color intenso.',
+      repaso: 'Reparto de áreas 70 / 20 / 10',
+    };
+  }
+
+  function rondaEscalaBrewer(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Una escala secuencial que progresa en claridad de marfil claro a azul profundo',
+        describir: 'Cinco bloques que se oscurecen progresivamente.',
+        es: true,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#fbfbf9"/>${SECUENCIAL.map((c, i) => `<rect x="${14 + i * 44}" y="22" width="38" height="46" fill="${c}" stroke="#222"/>`).join('')}</svg>`,
+      },
+      {
+        texto: 'Una escala arcoíris con amarillo, azul, verde, fucsia y violeta al máximo de saturación',
+        describir: 'Cinco bloques de tonos inconexos.',
+        es: false,
+        svgStr: `<svg viewBox="0 0 240 90"><rect width="240" height="90" fill="#fbfbf9"/>${ARCOIRIS.map((c, i) => `<rect x="${14 + i * 44}" y="22" width="38" height="46" fill="${c}" stroke="#222"/>`).join('')}</svg>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Quieres representar una magnitud continua de menor a mayor (de 0 % a 100 %). ¿Qué paleta comunica el orden de forma armónica e inmediata?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.svgStr; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como demostró Cynthia Brewer (1994), el ojo percibe orden en las variaciones continuas de claridad y saturación, pero no percibe un orden natural entre tonos del arcoíris.',
+      repaso: 'Escalas secuenciales frente a arcoíris',
+    };
+  }
+
+  function rondaNeutrosTenidos(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Añadir entre 5 % y 15 % de saturación del tono dominante a los blancos, grises y negros',
+        es: true,
+      },
+      {
+        texto: 'Sustituir todos los grises por colores primarios al 100 % de saturación',
+        es: false,
+      },
+      {
+        texto: 'Usar siempre gris matemático puro (#808080) sin importar si la paleta es cálida o fría',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué técnica sencilla hace que los fondos neutros y las tarjetas parezcan pertenecer a la misma familia que el color principal?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Teñir sutilmente los neutros con el ángulo del tono dominante elimina la frialdad metálica de los grises puros y une toda la superficie.',
+      repaso: 'Neutros teñidos',
+    };
+  }
+
+  function rondaEsquemaDivergente(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un esquema divergente: un neutro claro en el cero central y dos tonos que se oscurecen hacia cada extremo',
+        es: true,
+      },
+      {
+        texto: 'Un esquema cualitativo de ocho tonos saturados de igual claridad',
+        es: false,
+      },
+      {
+        texto: 'Un único color plano sin variaciones de claridad',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Necesitas mostrar anomalías de temperatura respecto al promedio histórico (de −5 °C a +5 °C, pasando por 0 °C). ¿Qué familia de paleta corresponde?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando los datos tienen un punto medio crítico (como el cero o el promedio) y se alejan en dos direcciones opuestas, una paleta divergente hace visible tanto el centro neutro como la intensidad hacia ambos polos.',
+      repaso: 'Paletas divergentes (Brewer)',
+    };
+  }
+
+  function rondaAjusteArmonia(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta interfaz tiene un fondo azul tan saturado que ahoga a las tarjetas y al botón de acento. Reduce la saturación del fondo hasta que la composición respire en calma.',
+      control: {
+        etiqueta: 'Saturación del fondo principal',
+        min: 8,
+        max: 90,
+        paso: 2,
+        valor: 86,
+        unidad: '%',
+      },
+      pintar: (esc, v) => {
+        const l = Math.round(93 - (v / 90) * 42);
+        const fondo = hslAHex(212, v, l);
+        const txt = l > 65 ? '#162b46' : '#ffffff';
+        esc.innerHTML = `<svg viewBox="0 0 360 125" role="img" aria-label="Maqueta con fondo al ${v} % de saturación.">
+          <rect width="360" height="125" fill="${fondo}" stroke="#222" stroke-width="1.5" />
+          <rect x="18" y="18" width="200" height="88" fill="#ffffff" stroke="#162b46" stroke-width="1.2" />
+          <text x="30" y="46" font-family="${SANS}" font-size="13" font-weight="900" fill="#162b46">Catálogo de otoño</text>
+          <text x="30" y="68" font-family="${SERIF}" font-size="12" fill="#334760">Superficie principal al ${v} %</text>
+          <rect x="234" y="64" width="108" height="42" fill="#d9462f" stroke="#222" stroke-width="1.5" />
+          <text x="288" y="89" text-anchor="middle" font-family="${SANS}" font-size="10.5" font-weight="900" fill="#ffffff">EXPLORAR</text>
+          <text x="234" y="42" font-family="${SANS}" font-size="10" font-weight="700" fill="${txt}">ACENTO 10 %</text>
+        </svg>`;
+      },
+      cumple: (v) => v <= 26,
+      falta: (v) => `Con ${v} % de saturación, el fondo sigue compitiendo con el acento. Bájalo por debajo de 26 %.`,
+      porque: 'Las superficies extensas funcionan mejor con baja saturación y alta claridad (o muy baja claridad en modo oscuro), dejando la pureza cromática para los acentos pequeños.',
+      repaso: 'Saturación de superficies grandes',
+    };
+  }
+
+  const rootJuego = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (rootJuego) {
+    jugar(rootJuego, () =>
+      barajar([
+        rondaProporcionAreas(),
+        rondaEscalaBrewer(),
+        rondaNeutrosTenidos(),
+        rondaEsquemaDivergente(),
+        rondaAjusteArmonia(),
+      ]),
+    );
+  }
+</script>

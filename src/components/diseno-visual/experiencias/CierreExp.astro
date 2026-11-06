@@ -1,0 +1,903 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'cierre';
+
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Observa un contorno subjetivo de Kanizsa.',
+    hacer: 'En «Figura», elige «Triángulo (Kanizsa)» y mantén «Desvío de los inductores» en 0°.',
+    pista: 'Selecciona la primera opción de «Figura».',
+    preparar: { figura: 'kanizsa', porcentaje: 55, desvio: 0, pistas: false },
+    logro: 'No hay ningún triángulo dibujado en el centro, pero ves tres bordes blancos nítidos que parecen incluso más claros que el papel de fondo.',
+  },
+  {
+    titulo: 'Desalinea los inductores para romper la ilusión.',
+    hacer: 'Sube «Desvío de los inductores» por encima de 40°.',
+    pista: 'Arrastra el tercer control hacia la derecha.',
+    preparar: { figura: 'kanizsa' },
+    logro: 'En cuanto las bocas de los tres discos dejan de apuntar entre sí, el triángulo blanco desaparece de golpe y solo quedan tres discos mordidos.',
+  },
+  {
+    titulo: 'Comprueba cuánto trazo puedes ahorrar en un icono.',
+    hacer: 'En «Figura», selecciona «Icono por esquinas», pon «Desvío» en 0° y baja «Porcentaje de contorno visible» a 35 %.',
+    pista: 'Elige la tercera figura y reduce el primer deslizador a 35 %.',
+    preparar: { figura: 'icono', desvio: 0, porcentaje: 35 },
+    logro: 'Con apenas un tercio del perímetro dibujado, el ojo sigue viendo la tarjeta completa porque conservaste los cuatro vértices donde cambia la dirección.',
+  },
+  {
+    titulo: 'Cruza el umbral de colapso.',
+    hacer: 'Baja «Porcentaje de contorno visible» a 10 %.',
+    pista: 'Lleva el primer deslizador hasta el extremo izquierdo.',
+    preparar: { figura: 'icono', desvio: 0 },
+    logro: 'Por debajo del 15 %, las pistas restantes ya no bastan para disparar el cierre: la figura se desarma en trazos sueltos.',
+  },
+  {
+    titulo: 'Inspecciona la línea que pone tu cerebro.',
+    hacer: 'Abre «Más controles», activa «Mostrar contorno completado por el ojo» y sube el porcentaje a 40 %.',
+    pista: 'Enciende el interruptor en «Más controles».',
+    preparar: { figura: 'letra', porcentaje: 40, desvio: 0, pistas: true },
+    abrir: true,
+    logro: 'El trazo punteado marca exactamente la frontera ilusoria que el sistema visual construye gratis a partir de los fragmentos.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="A la izquierda, el triángulo de Kanizsa: tres discos negros con una muesca de 60 grados enfrentados hacen aparecer un triángulo blanco; a la derecha, los mismos tres discos girados hacia afuera.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        <text x="155" y="22" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>A · BOCAS ENFRENTADAS (KANIZSA, 1976)</text>
+        <text x="445" y="22" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>B · LOS MISMOS 3 DISCOS GIRADOS</text>
+        <line x1="300" y1="18" x2="300" y2="164" stroke={REGLA} stroke-width="1.5" stroke-dasharray="4 4" />
+
+        {/* Izquierda: 3 discos completos y encima un triángulo del exacto mismo color del fondo (#fbfbf9) sin borde */}
+        <circle cx="155" cy="54" r="24" fill={T} />
+        <circle cx="105" cy="140" r="24" fill={T} />
+        <circle cx="205" cy="140" r="24" fill={T} />
+        <polygon points="155,54 105,140 205,140" fill="#fbfbf9" />
+
+        {/* Derecha: los mismos 3 discos con la muesca apuntando hacia afuera */}
+        <g transform="rotate(180 445 54)">
+          <circle cx="445" cy="54" r="24" fill={T} />
+          <polygon points="445,54 415,106 475,106" fill="#fbfbf9" />
+        </g>
+        <g transform="rotate(180 395 140)">
+          <circle cx="395" cy="140" r="24" fill={T} />
+          <polygon points="395,140 445,54 495,140" fill="#fbfbf9" />
+        </g>
+        <g transform="rotate(180 495 140)">
+          <circle cx="495" cy="140" r="24" fill={T} />
+          <polygon points="495,140 445,54 395,140" fill="#fbfbf9" />
+        </g>
+      </svg>
+    </div>
+    <p>En el lado A no hay ninguna línea dibujada entre los tres discos ni el centro tiene un blanco más claro que el fondo. ¿Por qué ves un triángulo blanco nítido en A y ninguno en B?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque para tu sistema visual sería demasiada casualidad que tres discos tuvieran muescas perfectamente alineadas entre sí. Prefiere una explicación más simple: hay un triángulo blanco opaco posado *encima* de tres discos completos. Al inferir esa superficie, tu corteza visual dibuja los bordes que faltan. En B, al girar las muescas hacia afuera, desaparece la alineación y el cierre no se activa.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Todo cerrado literalmente con cajas, filetes y trazos redundantes"
+      notas={[
+        {
+          ...pct(332, 62),
+          titulo: 'Icono ahogado en detalles internos',
+          texto: 'El símbolo de cámara dibuja cada botón, anillo y marco cerrado: a tamaño pequeño los trazos se empastan.',
+          zona: zona(20, 26, 98, 78),
+        },
+        {
+          ...pct(332, 146),
+          titulo: 'Rejilla enjaulada por los cuatro lados',
+          texto: 'Encerrar cada celda de datos con líneas verticales y horizontales pesadas satura la tabla sin mejorar la lectura.',
+          zona: zona(20, 112, 320, 88),
+        },
+        {
+          ...pct(332, 232),
+          titulo: 'Carrusel que parece terminar en seco',
+          texto: 'Al mostrar dos tarjetas completas cerradas dentro de un marco, nada indica que existen más tarjetas a la derecha.',
+          zona: zona(20, 206, 320, 58),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Composición saturada con un icono lleno de líneas cerradas, una tabla enjaulada con bordes gruesos y un carrusel estático.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="24" y="28" width="84" height="66" fill="#f5f5f2" stroke={T} stroke-width="2.2" />
+        <rect x="36" y="42" width="60" height="42" fill="#ffffff" stroke={T} stroke-width="2" />
+        <rect x="48" y="34" width="24" height="8" fill={T} />
+        <circle cx="66" cy="63" r="14" fill="none" stroke={T} stroke-width="2" />
+        <circle cx="66" cy="63" r="8" fill="none" stroke={T} stroke-width="1.8" />
+        <circle cx="66" cy="63" r="3" fill={T} />
+        <rect x="82" y="46" width="8" height="6" fill={T} />
+        <text x="122" y="56" font-family={SANS} font-size="12" font-weight="900" fill={T}>Exceso de contorno</text>
+        <text x="122" y="74" font-family={SANS} font-size="10.5" fill={TXT}>Nada queda sugerido: cada borde</text>
+        <text x="122" y="88" font-family={SANS} font-size="10.5" fill={TXT}>se dibuja de esquina a esquina.</text>
+
+        <rect x="24" y="114" width="312" height="78" fill="#ffffff" stroke={T} stroke-width="2.2" />
+        <line x1="24" y1="140" x2="336" y2="140" stroke={T} stroke-width="2" />
+        <line x1="24" y1="166" x2="336" y2="166" stroke={T} stroke-width="2" />
+        <line x1="128" y1="114" x2="128" y2="192" stroke={T} stroke-width="2" />
+        <line x1="232" y1="114" x2="232" y2="192" stroke={T} stroke-width="2" />
+        <text x="76" y="131" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill={T}>SALA A</text>
+        <text x="180" y="131" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill={T}>SALA B</text>
+        <text x="284" y="131" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" fill={T}>SALA C</text>
+        <text x="76" y="157" text-anchor="middle" font-family={SANS} font-size="10.5" fill={T}>10:00</text>
+        <text x="180" y="157" text-anchor="middle" font-family={SANS} font-size="10.5" fill={T}>11:30</text>
+        <text x="284" y="157" text-anchor="middle" font-family={SANS} font-size="10.5" fill={T}>16:00</text>
+        <text x="76" y="183" text-anchor="middle" font-family={SANS} font-size="10.5" fill={T}>Libre</text>
+        <text x="180" y="183" text-anchor="middle" font-family={SANS} font-size="10.5" fill={T}>Lleno</text>
+        <text x="284" y="183" text-anchor="middle" font-family={SANS} font-size="10.5" fill={T}>Libre</text>
+
+        <rect x="24" y="210" width="150" height="46" fill="#f5f5f2" stroke={T} stroke-width="1.8" />
+        <text x="99" y="237" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Capítulo 01</text>
+        <rect x="186" y="210" width="150" height="46" fill="#f5f5f2" stroke={T} stroke-width="1.8" />
+        <text x="261" y="237" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Capítulo 02</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Trazos abiertos que el ojo cierra con la mitad de tinta"
+      notas={[
+        {
+          ...pct(332, 62),
+          titulo: 'Síntesis por esquinas y arco abierto',
+          texto: 'Cuatro escuadras de encuadre y un arco bastan para reconocer el visor fotográfico al instante y con mucha más limpieza.',
+          zona: zona(20, 26, 98, 78),
+        },
+        {
+          ...pct(332, 146),
+          titulo: 'Columnas cerradas por alineación, no por rejas',
+          texto: 'Sin líneas verticales, las cabeceras y las filas cierran perceptualmente cada columna con la mitad de trazos.',
+          zona: zona(20, 112, 320, 88),
+        },
+        {
+          ...pct(332, 232),
+          titulo: 'Tarjeta incompleta que invita a desplazar',
+          texto: 'Al mostrar solo el arranque del «Capítulo 03», el cierre perceptual nos hace completar la tarjeta oculta fuera del margen.',
+          zona: zona(20, 206, 320, 58),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Versión limpia: icono de visor abierto por esquinas, tabla sin líneas verticales y carrusel con una tercera tarjeta asomando por el borde.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <path d="M 36 52 L 36 38 L 50 38 M 82 38 L 96 38 L 96 52 M 96 72 L 96 86 L 82 86 M 50 86 L 36 86 L 36 72" fill="none" stroke={T} stroke-width="2.4" />
+        <path d="M 55 55 A 14 14 0 1 1 53 68" fill="none" stroke={T} stroke-width="2.4" stroke-linecap="round" />
+        <text x="122" y="56" font-family={SANS} font-size="12" font-weight="900" fill={T}>Economía por cierre</text>
+        <text x="122" y="74" font-family={SANS} font-size="10.5" fill={TXT}>Los vértices y el arco bastan;</text>
+        <text x="122" y="88" font-family={SANS} font-size="10.5" fill={TXT}>el ojo completa el resto gratis.</text>
+
+        <line x1="24" y1="138" x2="336" y2="138" stroke={T} stroke-width="1.6" />
+        <line x1="24" y1="166" x2="336" y2="166" stroke={REGLA} stroke-width="1" />
+        <text x="24" y="130" font-family={SANS} font-size="10" font-weight="900" fill={G}>SALA A</text>
+        <text x="150" y="130" font-family={SANS} font-size="10" font-weight="900" fill={G}>SALA B</text>
+        <text x="276" y="130" font-family={SANS} font-size="10" font-weight="900" fill={G}>SALA C</text>
+        <text x="24" y="156" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>10:00</text>
+        <text x="150" y="156" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>11:30</text>
+        <text x="276" y="156" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>16:00</text>
+        <text x="24" y="182" font-family={SANS} font-size="11" fill={TXT}>Libre</text>
+        <text x="150" y="182" font-family={SANS} font-size="11" fill={TXT}>Completo</text>
+        <text x="276" y="182" font-family={SANS} font-size="11" fill={TXT}>Libre</text>
+
+        <rect x="24" y="210" width="122" height="46" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <text x="85" y="237" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Capítulo 01</text>
+        <rect x="156" y="210" width="122" height="46" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <text x="217" y="237" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Capítulo 02</text>
+        <rect x="288" y="210" width="52" height="46" fill={AMARILLO} stroke={T} stroke-width="1.6" />
+        <text x="298" y="237" font-family={SANS} font-size="11" font-weight="900" fill={T}>Cap…</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · umbral de cierre y contornos subjetivos"
+    consigna="Elige entre tres figuras clásicas (el triángulo de Kanizsa, una letra estarcida o un icono abierto por esquinas). Reduce el porcentaje de contorno visible o desvía los inductores para comprobar cuánta información puedes restar antes de que el ojo deje de cerrar la forma."
+    nota="Fija como A la figura al 85 % de contorno y compárala con B bajando al 35 % (conservando las esquinas)."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Triángulo subjetivo de Kanizsa formado por tres discos negros con muescas alineadas.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <circle cx="320" cy="86" r="42" fill={T} />
+      <circle cx="232" cy="236" r="42" fill={T} />
+      <circle cx="408" cy="236" r="42" fill={T} />
+      <polygon points="320,86 232,236 408,236" fill="#fbfbf9" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba las tres figuras y busca en cada una el porcentaje mínimo donde todavía reconoces la forma sin dudar." />
+
+    <Opciones
+      lab={lab}
+      variable="figura"
+      etiqueta="Figura"
+      valor="kanizsa"
+      opciones={[
+        { valor: 'kanizsa', texto: 'Triángulo (Kanizsa)' },
+        { valor: 'letra', texto: 'Letra estarcida (A)' },
+        { valor: 'icono', texto: 'Icono por esquinas' },
+      ]}
+      ayuda="Alterna entre un contorno ilusorio por oclusión, un glifo tipográfico fragmentado y un marco abierto."
+    />
+    <Deslizador
+      lab={lab}
+      variable="porcentaje"
+      etiqueta="Porcentaje de contorno visible"
+      min={10}
+      max={100}
+      paso={5}
+      valor={55}
+      unidad="%"
+      ayuda="Proporción del perímetro o de los inductores que se dibuja realmente con tinta."
+    />
+    <Deslizador
+      lab={lab}
+      variable="desvio"
+      etiqueta="Desvío de los inductores"
+      min={0}
+      max={60}
+      paso={5}
+      valor={0}
+      unidad="°"
+      ayuda="0°: las piezas apuntan exactamente entre sí. Al girarlas, se rompe la alineación de los bordes."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="pistas"
+        etiqueta="Mostrar contorno completado por el ojo"
+        ayuda="Superpone en rojo punteado el tramo invisible que el sistema visual está reconstruyendo."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"figura":"kanizsa","porcentaje":65,"desvio":0,"pistas":false}'>Triángulo de Kanizsa nítido</button>
+      <button type="button" class="dv-boton" data-preset='{"figura":"kanizsa","porcentaje":65,"desvio":50,"pistas":false}'>Inductores desalineados (desaparece)</button>
+      <button type="button" class="dv-boton" data-preset='{"figura":"icono","porcentaje":35,"desvio":0,"pistas":true}'>Icono al 35 % cerrado por sus vértices</button>
+      <button type="button" class="dv-boton" data-preset='{"figura":"letra","porcentaje":45,"desvio":0,"pistas":false}'>Letra «A» estarcida sin travesaño</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Conserva las esquinas al abrir un contorno"
+      comparar={false}
+      consigna="Ambos iconos dibujan exactamente el 40 % del perímetro, pero el primero borró las esquinas y dejó solo los tramos rectos. Cambia qué parte del trazo se conserva."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Geometría con el 40 % del perímetro</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="partes"
+        etiqueta="Fragmentos que se conservan"
+        valor="lados"
+        opciones={[
+          { valor: 'lados', texto: 'Solo los lados rectos (sin esquinas)' },
+          { valor: 'vertices', texto: 'Los vértices (esquinas)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Abre la tabla eliminando las rejas verticales"
+      comparar={false}
+      consigna="Una tabla con todas sus celdas encerradas parece una hoja de cálculo rígida. Quita las líneas verticales y deja que la alineación cierre cada columna."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Tabla de tarifas</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="sintesis"
+        etiqueta="Ahorro de líneas redundantes"
+        min={0}
+        max={100}
+        paso={50}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Asoma la siguiente pieza para activar el cierre"
+      comparar={false}
+      consigna="Ajusta cuánto porcentaje de la tercera tarjeta asoma por el borde derecho del carrusel para que quien mira reconstruya mentalmente el resto de la pieza."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Recorte en carrusel móvil</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="asomo"
+        etiqueta="Porcentaje visible de la tarjeta siguiente"
+        min={0}
+        max={45}
+        paso={5}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Monograma por sustracción: el fondo blanco completa el volumen animal"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Cráneo superior sin línea dibujada',
+          texto: 'En la tradición del célebre oso panda de WWF, las dos orejas negras bastan para que el ojo trace la curva blanca de la cabeza.',
+          zona: zona(98, 28, 164, 78),
+        },
+        {
+          ...pct(330, 142),
+          titulo: 'Lomo cerrado por los inductores laterales',
+          texto: 'Los hombros y las patas definen el contorno exterior; el papel sin tinta actúa como cuerpo sólido.',
+          zona: zona(92, 92, 176, 118),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Máxima legibilidad al reducir escala',
+          texto: 'Como no depende de líneas finas que puedan perderse al imprimir en pequeño, las manchas sólidas resisten cualquier tamaño.',
+          zona: zona(74, 214, 212, 46),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Símbolo gráfico de un oso construido únicamente con seis manchas negras desconectadas; el ojo cierra la cabeza y el cuerpo en el blanco del papel.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="64" y="18" width="232" height="244" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        {/* Orejas */}
+        <circle cx="136" cy="58" r="18" fill={T} />
+        <circle cx="224" cy="58" r="18" fill={T} />
+        {/* Hombros y brazos que inducen el cuello blanco */}
+        <path d="M 110 120 C 106 168, 128 192, 154 190 L 154 148 C 142 146, 138 120, 130 108 Z" fill={T} />
+        <path d="M 250 120 C 254 168, 232 192, 206 190 L 206 148 C 218 146, 222 120, 230 108 Z" fill={T} />
+        {/* Ojos y hocico */}
+        <ellipse cx="156" cy="96" rx="11" ry="14" transform="rotate(-18 156 96)" fill={T} />
+        <ellipse cx="204" cy="96" rx="11" ry="14" transform="rotate(18 204 96)" fill={T} />
+        <ellipse cx="180" cy="116" rx="8" ry="5" fill={T} />
+        <text x="180" y="236" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" letter-spacing="1.4" fill={T}>RESERVA NATURAL DEL NORTE</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Tipografía estarcida (stencil): puentes abiertos que el lector une al leer"
+      notas={[
+        {
+          ...pct(330, 62),
+          titulo: 'Interrupciones limpias en los cruces',
+          texto: 'En la letra estarcida industrial o editorial, las astas se cortan antes de tocarse, pero la continuidad y el cierre reconstruyen cada glifo.',
+          zona: zona(26, 42, 308, 92),
+        },
+        {
+          ...pct(330, 148),
+          titulo: 'Vértices y terminales preservados',
+          texto: 'Los cortes se sitúan en mitad del tramo o junto a la unión, nunca destruyendo el ángulo exterior que identifica la letra.',
+          zona: zona(34, 52, 292, 76),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Identidad sin perder velocidad de lectura',
+          texto: 'En titulares grandes, los huecos blancos aligeran la mancha negra y dan carácter técnico a la cabecera.',
+          zona: zona(26, 152, 308, 96),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Rótulo tipográfico estarcido con la palabra ARCHIVO donde las letras tienen cortes blancos que el ojo une automáticamente.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="20" y="24" width="320" height="232" fill="#fbfbf9" stroke={T} stroke-width="1.8" />
+        <text x="38" y="54" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>SEÑALÉTICA DE DEPÓSITO · SECCIÓN 04</text>
+        <text x="180" y="128" text-anchor="middle" font-family={SANS} font-size="56" font-weight="900" letter-spacing="4" fill={T}>ARCHIVO</text>
+        {/* Puentes blancos de estarcido que interrumpen las astas */}
+        {[64, 112, 160, 206, 252, 296].map((x) => (
+          <rect x={x} y="74" width="5" height="62" fill="#fbfbf9" />
+        ))}
+        <rect x="38" y="162" width="284" height="36" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="52" y="185" font-family={SANS} font-size="12" font-weight="900" fill={T}>CARTOTECA HISTÓRICA · 1890–1975</text>
+        <text x="38" y="226" font-family={SERIF} font-size="10.5" fill={TXT}>Los puentes vacíos no impiden reconocer cada letra.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Indicador de progreso circular: cuatro arcos bastan para ver el anillo entero"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Círculo implícito sin riel gris de fondo',
+          texto: 'Cuatro segmentos curvos separados por brechas iguales hacen emerger la circunferencia completa.',
+          zona: zona(98, 36, 164, 164),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Estado claro en el tramo pendiente',
+          texto: 'Tres tramos gruesos en tinta y uno punteado bastan para leer «3 de 4 pasos completados» sin dibujar cajas adicionales.',
+          zona: zona(160, 36, 102, 102),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Cifra central en el espacio interior cerrado',
+          texto: 'El anillo subjetivo encierra el dato «75 %» como una región común virtual.',
+          zona: zona(132, 82, 96, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Anillo de progreso dividido en cuatro arcos separados que el ojo cierra como un círculo completo alrededor del texto 75 %.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <circle cx="180" cy="118" r="64" fill="none" stroke={T} stroke-width="10" stroke-dasharray="84 16.5" stroke-dashoffset="42" />
+        <circle cx="180" cy="118" r="64" fill="none" stroke="#fbfbf9" stroke-width="12" stroke-dasharray="0 301.5 84 100" stroke-dashoffset="42" />
+        <circle cx="180" cy="118" r="64" fill="none" stroke={G} stroke-width="3" stroke-dasharray="4 6" />
+        <text x="180" y="124" text-anchor="middle" font-family={SANS} font-size="28" font-weight="900" fill={T}>75 %</text>
+        <text x="180" y="142" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>PASO 3 DE 4</text>
+        <text x="180" y="232" text-anchor="middle" font-family={SANS} font-size="11.5" font-weight="700" fill={T}>Verificación de archivos completada</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre contornos subjetivos de Kanizsa, síntesis de iconos por vértices y el umbral mínimo de cierre."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const SEC = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  type E = {
+    figura: string;
+    porcentaje: number;
+    desvio: number;
+    pistas: boolean;
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 320;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    const k = e.porcentaje / 100;
+    const cx = W / 2;
+    const cy = H * 0.48;
+
+    raiz.setAttribute(
+      'aria-label',
+      `Figura ${e.figura} con ${e.porcentaje} % de contorno visible y desvío de ${e.desvio} grados.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    if (e.figura === 'kanizsa') {
+      const R = 88;
+      const rDisco = 14 + k * 34;
+      const verts = [
+        { x: cx, y: cy - R * 0.85 },
+        { x: cx - R, y: cy + R * 0.72 },
+        { x: cx + R, y: cy + R * 0.72 },
+      ];
+
+      for (const v of verts) {
+        const g = svg('g', { transform: `rotate(${e.desvio} ${v.x.toFixed(1)} ${v.y.toFixed(1)})` });
+        g.append(svg('circle', { cx: v.x, cy: v.y, r: rDisco, fill: TINTA }));
+        // La muesca triangular blanca que apunta al centro cuando desvio === 0
+        g.append(
+          svg('polygon', {
+            points: `${verts[0].x},${verts[0].y} ${verts[1].x},${verts[1].y} ${verts[2].x},${verts[2].y}`,
+            fill: '#fbfbf9',
+          }),
+        );
+        raiz.append(g);
+      }
+
+      if (e.pistas) {
+        raiz.append(
+          svg('polygon', {
+            points: `${verts[0].x},${verts[0].y} ${verts[1].x},${verts[1].y} ${verts[2].x},${verts[2].y}`,
+            fill: 'none',
+            stroke: COTA,
+            'stroke-width': 2,
+            'stroke-dasharray': '5 4',
+          }),
+        );
+      }
+    } else if (e.figura === 'letra') {
+      // Letra A estarcida compuesta por 3 bloques cuyos largos dependen de k
+      const hAsta = 40 + k * 120;
+      const gIzq = svg('g', { transform: `translate(${cx - 34} ${cy}) rotate(${18 + e.desvio})` });
+      gIzq.append(svg('rect', { x: -11, y: -hAsta / 2, width: 22, height: hAsta, fill: TINTA }));
+      raiz.append(gIzq);
+
+      const gDer = svg('g', { transform: `translate(${cx + 34} ${cy}) rotate(${-18 - e.desvio})` });
+      gDer.append(svg('rect', { x: -11, y: -hAsta / 2, width: 22, height: hAsta, fill: TINTA }));
+      raiz.append(gDer);
+
+      if (e.porcentaje >= 65) {
+        const wTrav = (k - 0.5) * 90;
+        raiz.append(svg('rect', { x: cx - wTrav / 2, y: cy + 16, width: wTrav, height: 16, fill: TINTA }));
+      }
+
+      if (e.pistas) {
+        raiz.append(
+          svg('polygon', {
+            points: `${cx},${cy - 82} ${cx - 64},${cy + 78} ${cx + 64},${cy + 78}`,
+            fill: 'none',
+            stroke: COTA,
+            'stroke-width': 2,
+            'stroke-dasharray': '5 4',
+          }),
+        );
+      }
+    } else {
+      // Icono de tarjeta / sobre cerrado por sus 4 esquinas y solapa
+      const bw = 180;
+      const bh = 124;
+      const x0 = cx - bw / 2;
+      const y0 = cy - bh / 2;
+      const brazo = Math.max(6, k * (bh / 2));
+      const brazoH = Math.max(8, k * (bw / 2));
+
+      const esquinas = [
+        [x0, y0, 1, 1],
+        [x0 + bw, y0, -1, 1],
+        [x0 + bw, y0 + bh, -1, -1],
+        [x0, y0 + bh, 1, -1],
+      ];
+
+      for (const [ex, ey, sx, sy] of esquinas) {
+        const g = svg('g', { transform: `rotate(${e.desvio * sx * sy} ${ex} ${ey})` });
+        g.append(
+          svg('path', {
+            d: `M ${ex} ${ey + sy * brazo} L ${ex} ${ey} L ${ex + sx * brazoH} ${ey}`,
+            fill: 'none',
+            stroke: TINTA,
+            'stroke-width': 4,
+            'stroke-linecap': 'square',
+          }),
+        );
+        raiz.append(g);
+      }
+
+      // Vértice central de la solapa del sobre
+      const solapaL = Math.max(8, k * 84);
+      const gSol = svg('g', { transform: `rotate(${e.desvio} ${cx} ${cy + 8})` });
+      gSol.append(
+        svg('path', {
+          d: `M ${cx - solapaL} ${cy + 8 - solapaL * 0.62} L ${cx} ${cy + 8} L ${cx + solapaL} ${cy + 8 - solapaL * 0.62}`,
+          fill: 'none',
+          stroke: TINTA,
+          'stroke-width': 4,
+          'stroke-linecap': 'round',
+        }),
+      );
+      raiz.append(gSol);
+
+      if (e.pistas) {
+        raiz.append(
+          svg('rect', {
+            x: x0,
+            y: y0,
+            width: bw,
+            height: bh,
+            fill: 'none',
+            stroke: COTA,
+            'stroke-width': 2,
+            'stroke-dasharray': '5 4',
+          }),
+        );
+      }
+    }
+
+    const cerrado = e.porcentaje >= 30 && e.desvio <= 15;
+    const pie = svg('text', {
+      x: W / 2,
+      y: H - 14,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 700,
+      fill: cerrado ? TINTA : COTA,
+    });
+    pie.textContent = cerrado
+      ? `CIERRE ACTIVO · EL OJO RELLENA EL ${100 - e.porcentaje} % FALTANTE`
+      : e.desvio > 15
+        ? `INDUCTORES DESALINEADOS (${e.desvio}°) · EL CONTORNO SUBJETIVO DESAPARECE`
+        : `TRAZO INSUFICIENTE (${e.porcentaje} %) · POR DEBAJO DEL UMBRAL DE RECONOCIMIENTO`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const ahorro = 100 - e.porcentaje;
+    if (e.desvio > 20) {
+      return `Con un desvío de <b class="dv-cifra">${e.desvio}°</b>, los bordes de las piezas dejan de ser colineales. Aunque esté dibujado el ${e.porcentaje} % del trazo, <b class="dv-cifra">el cierre se rompe</b> y solo vemos fragmentos sueltos.`;
+    }
+    if (e.porcentaje < 25) {
+      return `Al <b class="dv-cifra">${e.porcentaje} %</b> de contorno visible hemos cruzado el umbral inferior: las pistas son tan cortas que el sistema visual ya no puede inferir la figura con seguridad.`;
+    }
+    if (e.porcentaje <= 60) {
+      return `Punto óptimo de economía gráfica: dibujas solo el <b class="dv-cifra">${e.porcentaje} %</b> y ahorras el <b class="dv-cifra">${ahorro} % de la tinta</b>. Como las esquinas y vértices están alineados, el ojo completa el resto sin esfuerzo.`;
+    }
+    return `Con el <b class="dv-cifra">${e.porcentaje} %</b> dibujado la figura es casi literal. Prueba a bajar el porcentaje hacia el 40 % para comprobar cuánto trazo puedes ahorrar.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="cierre"]')) {
+    guiar<E>(raiz, [
+      (e) => e.figura === 'kanizsa' && e.desvio === 0,
+      (e) => e.figura === 'kanizsa' && e.desvio >= 40,
+      (e) => e.figura === 'icono' && e.desvio === 0 && e.porcentaje <= 40 && e.porcentaje >= 25,
+      (e) => e.porcentaje <= 10,
+      (e) => e.pistas && e.porcentaje >= 30 && e.desvio === 0,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { partes: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    if (e.partes === 'lados') {
+      d.innerHTML = `
+        <div style="padding:14px 16px;text-align:center;">
+          <svg viewBox="0 0 240 100" style="width:100%;max-width:240px;height:auto;background:#fbfbf9;border:1px solid #e5e5e5;">
+            <line x1="90" y1="20" x2="150" y2="20" stroke="#222" stroke-width="3.5" />
+            <line x1="90" y1="80" x2="150" y2="80" stroke="#222" stroke-width="3.5" />
+            <line x1="56" y1="36" x2="56" y2="64" stroke="#222" stroke-width="3.5" />
+            <line x1="184" y1="36" x2="184" y2="64" stroke="#222" stroke-width="3.5" />
+          </svg>
+        </div>`;
+    } else {
+      d.innerHTML = `
+        <div style="padding:14px 16px;text-align:center;">
+          <svg viewBox="0 0 240 100" style="width:100%;max-width:240px;height:auto;background:#fbfbf9;border:1px solid #e5e5e5;">
+            <path d="M 56 42 L 56 20 L 84 20 M 156 20 L 184 20 L 184 42 M 184 58 L 184 80 L 156 80 M 84 80 L 56 80 L 56 58" fill="none" stroke="#222" stroke-width="3.5" />
+          </svg>
+        </div>`;
+    }
+  }
+  function describirE1(e: E1) {
+    if (e.partes === 'lados') return 'Sin las esquinas, los cuatro segmentos parecen <b class="dv-cifra">cuatro rayas flotando</b>; cuesta ver el rectángulo.';
+    return '<b class="dv-cifra">Con la misma longitud de tinta</b>, conservar los cuatro vértices cierra el rectángulo al instante.';
+  }
+
+  type E2 = { sintesis: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const vert = e.sintesis < 50 ? 'border-left:2px solid #222;border-right:2px solid #222;' : '';
+    const outer = e.sintesis < 100 ? 'border:2px solid #222;' : 'border-top:2px solid #222;border-bottom:2px solid #222;';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;font-size:12px;">
+        <div style="${outer}">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;border-bottom:1.5px solid #222;font-weight:700;background:${e.sintesis === 0 ? '#eee' : 'transparent'};">
+            <span style="padding:6px 8px;">Tramo</span>
+            <span style="padding:6px 8px;${vert}">Sencillo</span>
+            <span style="padding:6px 8px;">Abono</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;border-bottom:1px solid #e5e5e5;">
+            <span style="padding:6px 8px;">Zona 1 · Centro</span>
+            <span style="padding:6px 8px;${vert}">1,80 €</span>
+            <span style="padding:6px 8px;">14,00 €</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;">
+            <span style="padding:6px 8px;">Zona 2 · Área</span>
+            <span style="padding:6px 8px;${vert}">2,40 €</span>
+            <span style="padding:6px 8px;">19,50 €</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.sintesis === 0) return 'Tabla enjaulada: <b class="dv-cifra">10 líneas gruesas</b> compiten con las seis cifras.';
+    if (e.sintesis === 50) return 'Sin barrotes verticales, las columnas se siguen cerrando gracias a la alineación.';
+    return '<b class="dv-cifra">Cierre limpio</b>: tres filetes horizontales bastan para sostener toda la estructura.';
+  }
+
+  type E3 = { asomo: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const w3 = Math.round((e.asomo / 100) * 120);
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};">
+        <div style="display:flex;gap:8px;align-items:stretch;border-right:3px solid #222;padding-right:2px;overflow:hidden;">
+          <div style="flex:1;padding:10px;border:1.5px solid #222;background:#fff;font-size:12px;font-weight:700;"> Viernes · 18:00</div>
+          <div style="flex:1;padding:10px;border:1.5px solid #222;background:#fff;font-size:12px;font-weight:700;">Sábado · 11:00</div>
+          ${w3 > 0 ? `<div style="width:${w3}px;overflow:hidden;white-space:nowrap;padding:10px 6px;border:1.5px solid #222;border-right:none;background:${AMARILLO};font-size:12px;font-weight:900;">Domingo · 17:00</div>` : ''}
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.asomo === 0) return 'Al 0 %, las dos tarjetas llenan el marco y <b class="dv-cifra">parece que no hay sesión el domingo</b>.';
+    if (e.asomo < 20) return `Con ${e.asomo} % apenas se ve una franja estrecha que puede parecer un error de margen.`;
+    return `<b class="dv-cifra">${e.asomo} % visible</b>: el ojo cierra la tarjeta truncada y entiende de inmediato que puede deslizar.`;
+  }
+
+  for (const [id, p, desc] of [
+    ['cierre-e1', pintarE1, describirE1],
+    ['cierre-e2', pintarE2, describirE2],
+    ['cierre-e3', pintarE3, describirE3],
+  ] as const) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p as never, describir: desc as never });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────────
+  function rKanizsa(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El sistema visual infiere una superficie blanca oclusora encima de los discos y construye un contorno subjetivo',
+        es: true,
+      },
+      {
+        texto: 'El monitor aumenta automáticamente el brillo de los píxeles centrales',
+        es: false,
+      },
+      {
+        texto: 'Los discos tienen una línea gris impresa entre ellos que no se ve de lejos',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En el triángulo de Gaetano Kanizsa (1976), ¿por qué vemos un triángulo blanco con bordes nítidos aunque el papel esté completamente vacío en el centro?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Kanizsa demostró que cuando varios inductores presentan cortes alineados, el sistema visual completa los bordes faltantes (contornos subjetivos o ilusorios) como si una figura tapara a las demás.',
+      repaso: 'Contornos subjetivos de Kanizsa',
+    };
+  }
+
+  function rVertices(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Las esquinas y los vértices, porque indican dónde cambia de dirección la figura',
+        es: true,
+      },
+      {
+        texto: 'Los tramos rectos intermedios, dejando todas las esquinas vacías',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Si quieres dibujar un rectángulo o un icono usando solo el 40 % de su contorno, ¿qué partes es indispensable conservar para que el ojo lo cierre sin dudar?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Los vértices y terminaciones concentran la información geométrica de un polígono. Con las cuatro esquinas presentes, el ojo tiende las rectas faltantes entre ellas sin esfuerzo.',
+      repaso: 'Importancia de los vértices en el cierre',
+    };
+  }
+
+  function rCarrusel(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Dejar que asome entre un 25 % y un 40 % de la tarjeta siguiente cortada por el margen',
+        es: true,
+      },
+      {
+        texto: 'Encajar dos tarjetas enteras con márgenes simétricos perfectos a ambos lados',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cómo aprovechan los carruseles móviles el principio de cierre para comunicar sin flechas ni texto que hay más contenido hacia la derecha?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Una tarjeta incompleta en el borde activa la tendencia al cierre: percibimos una pieza entera continuando detrás del marco de la pantalla.',
+      repaso: 'Cierre en carruseles y bordes de pantalla',
+    };
+  }
+
+  function rFamiliaridad(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Falla cuando la figura completa es desconocida o cuando se borran los rasgos que la distinguen de otra forma',
+        es: true,
+      },
+      {
+        texto: 'Nunca falla: cualquier mancha con el 5 % de tinta se reconstruye siempre igual',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál es el límite principal del principio de cierre al simplificar logotipos, letras estarcidas o pictogramas?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El cierre combina señales geométricas con memoria visual: si quien mira no conoce el objeto o si una «R» sin trazo se confunde con una «P», la economía se vuelve ambigüedad.',
+      repaso: 'Límites de reconocimiento en el cierre',
+    };
+  }
+
+  function rAjusteUmbral(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este marco de enfoque tiene solo el 10 % de su contorno y parece cuatro puntos sueltos. Sube el porcentaje de trazo en las esquinas hasta que el rectángulo se cierre con claridad (sin superar el 55 %).',
+      control: {
+        etiqueta: 'Porcentaje de contorno en las esquinas',
+        min: 10,
+        max: 100,
+        paso: 5,
+        valor: 10,
+        unidad: '%',
+      },
+      pintar: (esc, v) => {
+        const k = v / 100;
+        const bh = Math.max(4, k * 42);
+        const bw = Math.max(4, k * 68);
+        esc.innerHTML = `
+          <svg viewBox="0 0 320 116" style="width:100%;height:auto;background:#fbfbf9;border:1px solid #e5e5e5;">
+            <path d="M 88 ${20 + bh} L 88 20 L ${88 + bw} 20" fill="none" stroke="#222" stroke-width="3.5" />
+            <path d="M ${232 - bw} 20 L 232 20 L 232 ${20 + bh}" fill="none" stroke="#222" stroke-width="3.5" />
+            <path d="M 232 ${96 - bh} L 232 96 L ${232 - bw} 96" fill="none" stroke="#222" stroke-width="3.5" />
+            <path d="M ${88 + bw} 96 L 88 96 L 88 ${96 - bh}" fill="none" stroke="#222" stroke-width="3.5" />
+            <text x="160" y="62" text-anchor="middle" font-family="${SANS}" font-size="12" font-weight="700" fill="#444">${v} % del perímetro</text>
+          </svg>`;
+      },
+      cumple: (v) => v >= 30 && v <= 55,
+      falta: (v) => v < 30 ? `Al ${v} % las esquinas aún son demasiado cortas. Súbelo al menos al 30 %.` : `Al ${v} % ya estás dibujando casi toda la caja. Busca un ahorro entre 30 % y 55 %.`,
+      porque: 'Entre el 30 % y el 50 % del perímetro concentrado en los cuatro vértices el rectángulo se percibe completo ahorrando la mitad de la tinta.',
+      repaso: 'Equilibrio entre síntesis y cierre',
+    };
+  }
+
+  const juegoEl = document.querySelector<HTMLElement>('[data-juego="cierre"]');
+  if (juegoEl) {
+    jugar(juegoEl, () =>
+      barajar([rKanizsa(), rVertices(), rCarrusel(), rFamiliaridad(), rAjusteUmbral()]),
+    );
+  }
+</script>

@@ -1,0 +1,166 @@
+---
+titulo: Ancho de línea
+territorio: tipografia
+pregunta: ¿Por qué cansa tanto leer un párrafo que cruza de lado a lado un monitor ancho como uno encerrado en un pasillo estrecho?
+resumen: "El ancho de línea (o medida) se cuenta en caracteres por renglón, no en píxeles fijos. Para lectura continua en una columna, la franja de 45 a 75 caracteres equilibra el ritmo de fijaciones oculares con la precisión al cambiar de línea."
+modos: [laboratorio, diseccion]
+orden: 17
+relaciones:
+  - concepto: interlineado
+    porQue: Cuanto más ancha es la línea de texto, mayor interlineado necesita el ojo para no perderse en el viaje de vuelta al margen izquierdo.
+  - concepto: escalas-tipograficas
+    porQue: "El ancho real de una línea depende del cuerpo elegido en la escala: cambiar el tamaño de la fuente altera cuántos caracteres caben en la misma caja."
+  - concepto: reticulas-y-alineacion
+    porQue: El ancho de las columnas de la retícula define la medida del texto y decide si un formato ancho pide una, dos o tres columnas.
+  - concepto: legibilidad
+    porQue: Mantener la medida entre 45 y 75 caracteres reduce las regresiones oculares y sostiene la lectura fluida en textos extensos.
+fuentes:
+  - autor: Robert Bringhurst
+    obra: "The Elements of Typographic Style (4th ed.). Hartley & Marks"
+    anio: 2012
+    nota: "§2.1.2: define la franja de 45 a 75 caracteres (con 66 como ideal) para una columna de texto corrido, y de 40 a 50 caracteres para composiciones en varias columnas."
+  - autor: Mary C. Dyson
+    obra: "How physical text layout affects reading from screen. Behaviour & Information Technology, 23(6), 377–393"
+    anio: 2004
+    url: https://doi.org/10.1080/01449290410001715714
+    nota: Revisión de estudios empíricos sobre lectura en pantalla que compara velocidad de escaneo, precisión del salto de línea y comodidad percibida según el número de caracteres por renglón.
+  - autor: Josef Müller-Brockmann
+    obra: "Grid systems in graphic design / Rastersysteme für die visuelle Gestaltung. Arthur Niggli"
+    anio: 1981
+    nota: Relación entre el ancho de columna de la retícula, el cuerpo tipográfico y la fatiga ocular en lectura prolongada.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import AnchoLineaExp from '../../components/diseno-visual/experiencias/AnchoLineaExp.astro';
+
+<Paso id="idea" titular="Ni un pasillo entrecortado ni un renglón que cruza todo el monitor">
+
+<AnchoLineaExp paso="idea" />
+
+<p class="dv-frase">El ancho de una columna no se mide en centímetros ni en píxeles: se mide en letras por renglón.</p>
+
+<div class="dv-texto">
+
+Cuando leemos no deslizamos la vista de forma continua como una cámara panorámica: avanzamos mediante pequeños saltos llamados *movimientos sacádicos* y breves pausas de unos 200 milisegundos llamadas *fijaciones*. Al llegar al final de un renglón, el ojo realiza un viaje diagonal largo —el barrido de retorno— para enganchar el comienzo de la línea siguiente.
+
+Si la línea es demasiado estrecha, las frases se parten cada tres palabras y el ojo vive saltando de renglón sin alcanzar un ritmo estable. Si la línea es demasiado larga, el punto de inicio del renglón siguiente queda tan lejos que la vista suele aterrizar en la línea equivocada. Por eso en tipografía el ancho de columna (llamado *medida*) se cuenta en caracteres por línea —incluyendo letras y espacios— y encuentra su zona más cómoda entre **45 y 75 caracteres**.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Medida (measure)</dt>
+    <dd>La longitud de un renglón de texto contada en caracteres (letras, signos y espacios), en lugar de su ancho físico aislado en milímetros o píxeles.</dd>
+    <dt>Fijación y movimiento sacádico</dt>
+    <dd>Cada pausa breve en la que el ojo captura entre siete y nueve letras, seguida del salto rápido hacia el grupo de letras siguiente.</dd>
+    <dt>Rango de 45 a 75 caracteres</dt>
+    <dd>La franja de medida recomendada por Robert Bringhurst para lectura continua en una sola columna, con 60 a 66 caracteres como punto medio ideal.</dd>
+    <dt>Ríos de blanco</dt>
+    <dd>Las grietas verticales de espacio vacío que aparecen entre las palabras cuando se justifica a ambos lados una columna demasiado estrecha.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="El ancho de la pantalla no tiene por qué ser el ancho del párrafo">
+
+<div class="dv-texto">
+
+En la primera vista de esta documentación técnica, los párrafos ocupan el 100 % de los 1280 px del monitor (~140 caracteres por línea); en la segunda, la columna de prosa se acota a `65ch` y el margen libre aloja el índice de la página.
+
+</div>
+
+<AnchoLineaExp paso="miralo" />
+
+<div class="dv-texto">
+
+Limitar el ancho del párrafo no significa encerrar toda la interfaz en un tubo estrecho: las tablas comparativas, los diagramas y el índice lateral pueden aprovechar los 1280 px de la ventana mientras la prosa conserva los ~65 caracteres que facilitan la lectura.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Una misma caja cambia de medida cuando cambia la letra">
+
+<AnchoLineaExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas prácticas para fijar el ancho de tus columnas">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Define el ancho máximo del párrafo en caracteres, no en porcentaje de pantalla</h3>
+      <p>En lugar de dejar que un bloque de texto herede el 100 % de su contenedor, asígnale un tope propio como <code>max-width: 65ch</code>. Así se adaptará en pantallas móviles y detendrá su crecimiento en monitores grandes justo donde la lectura es más cómoda.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Recuerda que cambiar el cuerpo de la fuente cambia la medida</h3>
+      <p>Una columna fija de 500 px aloja unos 64 caracteres con una letra de 16 px, pero apenas unos 42 caracteres si subes el cuerpo a 24 px para un sumario o una introducción. Ajusta el ancho de la caja cada vez que escales el tamaño del texto.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Nunca justifiques a ambos lados una columna estrecha</h3>
+      <p>Por debajo de 40 a 45 caracteres por renglón, caben tan pocas palabras en cada línea que la justificación estira los espacios entre ellas y abre ríos de blanco. En columnas angostas, notas al margen y teléfonos móviles, alinea el texto a la izquierda.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<AnchoLineaExp paso="errores" />
+
+<div class="dv-texto">
+
+### El ancho de línea en piezas reales
+
+</div>
+
+<AnchoLineaExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu ojo para medir columnas">
+
+<AnchoLineaExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Evidencia en pantalla, unidades tipográficas y excepciones">
+
+<Seccion titulo="Qué encontró Mary C. Dyson al medir la lectura en pantalla">
+
+En su revisión experimental *How physical text layout affects reading from screen* (2004), la investigadora Mary C. Dyson analizó decenas de pruebas de lectura en monitores y descubrió una tensión interesante entre velocidad bruta y comodidad percibida.
+
+Cuando los participantes debían escanear un texto a toda velocidad buscando un dato aislado, las líneas largas (de 80 a 100 caracteres) permitían avanzar rápido porque reducían la cantidad total de saltos de línea. Sin embargo, cuando se evaluaba la **lectura comprensiva continua** y la preferencia de quienes leían, las columnas de **55 a 70 caracteres** obtenían las mejores valoraciones de comodidad y menor fatiga: en ellas el barrido de retorno fallaba mucho menos al pasar de un renglón al siguiente.
+
+</Seccion>
+
+<Seccion titulo="Por qué la unidad ch de CSS piensa como un tipógrafo">
+
+En CSS, la unidad `1ch` equivale exactamente al ancho de avance del carácter `0` (`U+0030`) de la fuente y el tamaño que estén activos en ese elemento. En la mayoría de las tipografías proporcionales de texto, el ancho promedio de las letras minúsculas y los espacios es ligeramente menor que el del cero, de modo que una regla como `max-width: 65ch` produce renglones de entre 62 y 72 caracteres reales.
+
+La ventaja frente a fijar `max-width: 600px` es directa: si quien lee amplía el tamaño de letra de su navegador de 16 px a 20 px, un contenedor medido en `ch` se ensancha en proporción al nuevo cuerpo y conserva intacta la cantidad de palabras por renglón.
+
+</Seccion>
+
+<Seccion titulo="Cuándo funcionan las medidas fuera del rango de 45 a 75 caracteres">
+
+El rango de 45 a 75 caracteres rige para **una columna única de texto corrido**, pero existen contextos donde otra medida es la decisión correcta:
+
+- **Páginas de varias columnas (40 a 50 caracteres):** como señala Robert Bringhurst en *The Elements of Typographic Style* (2012), cuando dos o tres columnas conviven una al lado de la otra, conviene acortar un poco el renglón para que la vista no cruce por accidente la calle que las separa.
+- **Pies de foto, notas al margen y celdas de tabla (25 a 38 caracteres):** al tratarse de textos de consulta de dos a cinco líneas, una medida breve resulta limpia siempre que vaya alineada a la izquierda (en bandera) y con un [interlineado](/diseno-visual/interlineado) ligeramente más ceñido.
+- **Titulares y sumarios breves:** un título de dos líneas en cuerpo grande puede medir apenas 18 o 25 caracteres por renglón; como no exige lectura prolongada, prima el corte semántico de las palabras sobre la cantidad de letras.
+
+</Seccion>
+
+</Paso>

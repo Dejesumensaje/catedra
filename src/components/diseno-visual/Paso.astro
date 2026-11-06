@@ -21,8 +21,14 @@ const paso = PASOS[i];
   <header class="dv-paso-cab">
     <span class="dv-paso-num" aria-hidden="true">{i + 1}</span>
     <h2 id={`paso-${paso.id}`}>{paso.titulo}</h2>
-    {titular && <h3 class="dv-paso-titular">{titular}</h3>}
-    {(proposito || !titular) && <p>{proposito ?? paso.proposito}</p>}
+    {titular ? (
+      <>
+        <p class="dv-paso-titular">{titular}</p>
+        {proposito && <p>{proposito}</p>}
+      </>
+    ) : (
+      <p>{proposito ?? paso.proposito}</p>
+    )}
   </header>
   <slot />
 </section>

@@ -1,0 +1,173 @@
+---
+titulo: Variantes
+territorio: sistemas
+pregunta: ¿Cuándo una diferencia necesita convertirse en una versión oficial del componente y cuándo estás multiplicando opciones que nadie sabe elegir?
+resumen: "Las variantes son las versiones controladas de un mismo componente para responder a cambios de jerarquía (primario, secundario, discreto), de estado (normal, foco, deshabilitado, alerta) o de densidad (compacto, amplio), manteniendo intacta su identidad de familia."
+modos: [laboratorio, comparacion]
+orden: 32
+relaciones:
+  - concepto: componentes
+    porQue: Las variantes comparten la estructura interna del mismo componente mientras ajustan su jerarquía, su densidad o su estado.
+  - concepto: sistemas-y-excepciones
+    porQue: Cuando una excepción puntual se repite en varias pantallas con el mismo propósito, deja de ser una excepción y se formaliza como variante.
+  - concepto: tokens
+    porQue: Cambiar de una variante primaria a una secundaria consiste en reasignar qué tokens de fondo, borde y texto consume la pieza.
+  - concepto: jerarquia
+    porQue: El eje principal de variación de botones, avisos y tarjetas sirve para establecer qué elemento manda y cuál acompaña en un grupo.
+  - concepto: semejanza
+    porQue: Las variantes mantienen constantes la tipografía, las proporciones y el ritmo para que el ojo las reconozca como hermanas de una misma familia.
+fuentes:
+  - autor: Nathan Curtis
+    obra: "Modular Web Design: Creating Reusable Components for User Experience Design and Documentation. New Riders"
+    anio: 2009
+    nota: Dimensiones de variación de un componente (jerarquía visual, tamaño, estado, tema) y matrices de combinación.
+  - autor: Alla Kholmatova
+    obra: "Design Systems: A practical guide to creating design languages for digital products. Smashing Media"
+    anio: 2017
+    nota: "Reglas para controlar la explosión combinatoria de variantes: cuándo crear una variante, cuándo crear un componente nuevo y cuándo basta una excepción puntual."
+  - autor: Karl Gerstner
+    obra: "Programme entwerfen / Designing Programmes. Arthur Niggli"
+    anio: 1964
+    nota: La matriz morfológica como herramienta para generar y acotar variaciones válidas a partir de parámetros ortogonales.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import VariantesExp from '../../components/diseno-visual/experiencias/VariantesExp.astro';
+
+<Paso id="idea" titular="Misma sangre, distinto trabajo en la página">
+
+<VariantesExp paso="idea" />
+
+<p class="dv-frase">Cada variante nueva debe responder a una pregunta distinta; si dos variantes sirven para lo mismo, sobra una.</p>
+
+<div class="dv-texto">
+
+Si en una página hay tres acciones posibles —por ejemplo, «Guardar y publicar», «Guardar borrador» y «Descartar»—, no puedes pintarlas igual porque obligarías a leer con miedo cada etiqueta antes de hacer clic. Pero tampoco quieres dibujar tres piezas inconexas que parezcan sacadas de tres sitios distintos.
+
+Las *variantes* resuelven esa tensión: mantienen fijos los rasgos que identifican al [componente](/diseno-visual/componentes) como parte de una familia (su tipografía, su altura, su proporción de margen interno) y modifican de manera controlada un eje concreto —como el peso visual, el tamaño o el estado— para que cada versión cumpla un rol inequívoco.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Variante</dt>
+    <dd>Cada una de las versiones oficiales de un mismo componente, diseñada para responder a un nivel de jerarquía, un tamaño o un estado específico.</dd>
+    <dt>Eje de variación</dt>
+    <dd>Cada dimensión independiente en la que puede cambiar el componente: jerarquía (fuerte, normal, discreta), densidad (compacto, estándar, amplio) o estado (reposo, foco, inhabilitado).</dd>
+    <dt>Identidad de familia</dt>
+    <dd>El conjunto de rasgos constantes (familia tipográfica, radio de esquina, alineación) que permite reconocer varias variantes como hermanas.</dd>
+    <dt>Explosión combinatoria</dt>
+    <dd>Lo que ocurre al multiplicar demasiadas opciones en varios ejes a la vez (`8 × 4 × 4 = 128`), volviendo inmanejable el sistema.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Nueve estilos indecisos frente a una matriz clara de familia">
+
+<div class="dv-texto">
+
+En estos dos catálogos de botones, el primero fue acumulando versiones «a pedido» sin dar de baja las anteriores; el segundo cruza tres niveles de jerarquía con dos densidades.
+
+</div>
+
+<VariantesExp paso="miralo" />
+
+<div class="dv-texto">
+
+Cuando un sistema tiene «Primario», «Semiprimario», «Énfasis A» y «Secundario B», nadie sabe cuál elegir al armar una pantalla nueva y el lector tampoco distingue qué botón es más importante. En la matriz de la derecha hay solo tres escalones de jerarquía con saltos rotundos entre sí: si una acción no es la principal (`Fuerte`), pasa a `Normal`; si es una salida secundaria, pasa a `Discreta`.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Cruza los tres ejes de una matriz morfológica de variantes">
+
+<VariantesExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas para gobernar las variantes sin inflar el sistema">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Exige que cada variante tenga una regla de uso en una frase</h3>
+      <p>Antes de añadir una variante nueva al catálogo, escribe cuándo debe elegirse. Si no puedes explicar en una línea qué problema resuelve que no resuelvan ya la primaria o la secundaria, no crees la variante.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Haz que el salto entre variantes vecinas sea franco</h3>
+      <p>Dos variantes del mismo eje no pueden diferenciarse por diez puntos de gris o por un píxel de grosor. Cambia de lleno a contorno, o de contorno a texto subrayado, para que la diferencia se perciba sin dudar.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Diseña el eje de estados para todas las variantes</h3>
+      <p>Una variante no está terminada cuando se ve bien quieta: necesita mostrar con claridad qué ocurre al pasar el cursor, al recibir el foco del teclado (`Tab`) y cuando la acción está inhabilitada.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<VariantesExp paso="errores" />
+
+<div class="dv-texto">
+
+### Las variantes en piezas reales
+
+</div>
+
+<VariantesExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu criterio sobre variantes, excepciones y matrices">
+
+<VariantesExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="La matriz de Gerstner, el ciclo de vida de una variante y cómo podar combinaciones">
+
+<Seccion titulo="La caja morfológica de Karl Gerstner y Nathan Curtis">
+
+En *Designing Programmes* (1964), Karl Gerstner propuso construir sistemas gráficos mediante una **caja morfológica**: una tabla donde cada fila representa un parámetro independiente (peso, proporción, color, densidad) y cada columna enumera los valores permitidos. Cualquier pieza de la familia nace cruzando una coordenada de cada eje.
+
+Cuarenta y cinco años después, Nathan Curtis aplicó la misma matriz a los componentes digitales en *Modular Web Design* (2009). Al separar los ejes en dimensiones ortogonales —**jerarquía**, **tamaño/densidad** y **estado**—, el equipo deja de diseñar botones sueltos y pasa a diseñar un espacio coordenado donde cada combinación tiene un lugar predecible.
+
+</Seccion>
+
+<Seccion titulo="El camino de vida: de excepción a variante y a componente nuevo">
+
+¿Cómo saber si una diferencia debe ser una excepción puntual, una variante o un componente aparte? Alla Kholmatova (2017) describe una progresión clara:
+
+1. **Excepción única:** una pieza rompe una regla en un solo lugar por una razón irrepetible (por ejemplo, el cartel inaugural del semestre). No se añade al catálogo general.
+2. **Variante del componente:** la misma necesidad aparece en tres o más pantallas y conserva la misma estructura interna (por ejemplo, una versión compacta de la tarjeta para listados laterales). Se formaliza como variante oficial.
+3. **Componente nuevo:** la pieza necesita otra estructura HTML, otros datos obligatorios u otro comportamiento interactivo. Forzarla como «variante» del componente anterior solo produciría un híbrido frágil.
+
+</Seccion>
+
+<Seccion titulo="Cómo podar la explosión combinatoria">
+
+El peligro de toda matriz morfológica es la multiplicación: si defines `5` jerarquías, `4` tamaños, `5` estados y `2` temas, obtienes `5 × 4 × 5 × 2 = 200` piezas que diseñar, programar y verificar en contraste y accesibilidad.
+
+Los sistemas más sólidos controlan esa multiplicación de dos maneras: manteniendo cada eje en el mínimo indispensable (tres jerarquías y dos o tres tamaños suelen bastar) y declarando **combinaciones prohibidas o innecesarias** (por ejemplo, si la variante de alerta crítica solo existe en tamaño estándar, no hace falta construirla en tamaño miniatura ni gigante).
+
+</Seccion>
+
+<Seccion titulo="Nada comunica solo por color en las variantes de estado">
+
+**Una variante de estado o de jerarquía no puede depender solo del matiz cromático.** En las tarjetas de sesión de este sitio, la diferencia entre una sesión `programada`, una `dictada` y una `con-memoria` no se confía solo al amarillo señal (`#eeff41`): cada variante cambia también el grosor de su borde y lleva escrita su etiqueta de estado en texto explícito. Así la jerarquía se mantiene intacta en blanco y negro, en lectores de pantalla y para cualquier persona con baja visión.
+
+</Seccion>
+
+</Paso>

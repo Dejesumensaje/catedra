@@ -1,0 +1,173 @@
+---
+titulo: Ritmo tipográfico
+territorio: tipografia
+pregunta: ¿Qué hace que una página larga invite a seguir leyendo mientras otra con el mismo texto parece un muro interminable?
+resumen: "El ritmo tipográfico nace de la repetición regular de intervalos verticales (el pulso del interlineado y los márgenes de párrafo) combinada con variaciones controladas (intertítulos, citas, listas y pausas) que marcan el compás de la lectura."
+modos: [diseccion, comparacion]
+orden: 18
+relaciones:
+  - concepto: interlineado
+    porQue: El interlineado del cuerpo principal define el pulso constante sobre el que se miden todas las pausas verticales de la página.
+  - concepto: escalas-tipograficas
+    porQue: Los tamaños de títulos, intertítulos y notas introducen los acentos que articulan el compás sin romper la unidad del conjunto.
+  - concepto: proximidad
+    porQue: El ritmo vertical agrupa lo que va junto (un intertítulo con su párrafo) y separa con pausas claras los bloques distintos.
+  - concepto: reticulas-y-alineacion
+    porQue: Una rejilla de líneas de base sincroniza el ritmo vertical de varias columnas para que sus renglones calcen a la misma altura.
+  - concepto: sistemas-y-excepciones
+    porQue: Una cita en bloque o un sumario destacado funciona como excepción expresiva porque interrumpe una cadencia regular previa.
+fuentes:
+  - autor: Emil Ruder
+    obra: "Typographie: Ein Gestaltungslehrbuch. Arthur Niggli"
+    anio: 1967
+    nota: "Capítulo sobre ritmo tipográfico: distinción entre repetición mecánica uniforme y ritmo vivo basado en la alternancia de llenos, vacíos y acentos."
+  - autor: Robert Bringhurst
+    obra: "The Elements of Typographic Style (4th ed.). Hartley & Marks"
+    anio: 2012
+    nota: "Capítulo 2 («Rhythm & Proportion»): el renglón base como módulo vertical y el uso de múltiplos enteros para los espacios de títulos, listas y citas."
+  - autor: Jost Hochuli
+    obra: "Detail in Typography. Hyphen Press"
+    anio: 2008
+    nota: Articulación entre el ritmo microtipográfico (astas y blancos internos de la palabra) y el ritmo macrotipográfico de los bloques en la página.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import RitmoExp from '../../components/diseno-visual/experiencias/RitmoExp.astro';
+
+<Paso id="idea" titular="Un pulso constante abajo y pausas medidas arriba">
+
+<RitmoExp paso="idea" />
+
+<p class="dv-frase">La regularidad sostiene la lectura; la variación impide que el ojo se duerma.</p>
+
+<div class="dv-texto">
+
+Si colocas treinta renglones idénticos uno debajo del otro sin una sola pausa, obtienes orden, pero no ritmo: la página se percibe como un muro gris donde cuesta saber por dónde entrar o cuánto falta para terminar una idea. Si, por el contrario, separas cada bloque con un margen distinto elegido a ojo —aquí 11 px, más abajo 23 px, luego 7 px—, la mirada tropieza en cada salto.
+
+El *ritmo tipográfico* combina ambas fuerzas. Parte de un **pulso constante** (la altura del renglón del texto base) y construye sobre él un **compás articulado** donde párrafos, intertítulos, listas y citas introducen cambios de textura usando múltiplos enteros de esa misma unidad.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Pulso base (rejilla de línea base)</dt>
+    <dd>La repetición constante del renglón del texto principal (por ejemplo, cada 20 px o 24 px), que actúa como unidad de medida vertical de toda la página.</dd>
+    <dt>Compás (múltiplos de espacio)</dt>
+    <dd>La regla por la cual los espacios antes y después de párrafos, títulos o citas equivalen a 1, 2 o 3 renglones base en lugar de medidas arbitrarias.</dd>
+    <dt>Pausa</dt>
+    <dd>El intervalo en blanco —un renglón libre, una sangría o un cambio de bloque— que indica que terminó una idea y comienza otra.</dd>
+    <dt>Monotonía frente a arritmia</dt>
+    <dd>Los dos extremos que apagan el ritmo: la repetición sin variaciones (muro continuo) y la variación caótica sin una unidad compartida.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Señales duplicadas frente a dos columnas en sincronía">
+
+<div class="dv-texto">
+
+En la primera doble página de este ensayo se mezclan sangrías y huecos dobles con márgenes improvisados; en la segunda, cada bloque respeta un pulso base de 16 px.
+
+</div>
+
+<RitmoExp paso="miralo" />
+
+<div class="dv-texto">
+
+Observa el centro del pliego en la segunda versión: aunque la columna izquierda incluye un intertítulo y la derecha una cita en cursiva, los renglones de ambas columnas vuelven a encontrarse a la misma altura.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Armar el pulso y las pausas de una doble columna">
+
+<RitmoExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para darle ritmo a un texto largo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Toma el renglón de tu párrafo como unidad de medida vertical</h3>
+      <p>Si tu cuerpo de texto mide 16 px con un interlineado de 1,5, tu unidad base es de <strong>24 px</strong> (o su submúltiplo de 8 px). Usa múltiplos de esa cifra (8 px, 16 px, 24 px, 48 px) para definir todos los márgenes de párrafos, listas, citas e intertítulos.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Elige sangría o espacio vertical entre párrafos, nunca los dos a la vez</h3>
+      <p>Tanto la sangría de primera línea (típica del libro impreso) como el salto vertical en blanco (habitual en pantalla) sirven para señalar dónde empieza un párrafo nuevo. Aplicarlos juntos duplica el mensaje y abre huecos escalonados en el margen izquierdo.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Reparte el espacio de los intertítulos de forma asimétrica dentro del múltiplo</h3>
+      <p>Si reservas dos renglones (48 px) para el espacio de un subtítulo, no pongas 24 px arriba y 24 px abajo: dale 32 px arriba y 16 px abajo. Así la suma total conserva la rejilla y el subtítulo queda unido al párrafo que introduce.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<RitmoExp paso="errores" />
+
+<div class="dv-texto">
+
+### El ritmo tipográfico en piezas reales
+
+</div>
+
+<RitmoExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta dónde hay compás y dónde se rompe la rejilla">
+
+<RitmoExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Dos escalas del ritmo, música modular y escalas de espaciado">
+
+<Seccion titulo="Del ritmo dentro de la palabra al ritmo de la página entera">
+
+En *Detail in Typography* (2008), el tipógrafo suizo Jost Hochuli explica que la lectura descansa sobre dos ritmos simultáneos que operan a escalas distintas:
+
+- **El ritmo microtipográfico (horizontal):** nace de la alternancia regular entre los trazos negros verticales de las letras (las astas de la *n*, la *m*, la *u* o la *i*) y los espacios blancos internos y externos que las separan. Cuando una fuente está bien espaciada, las palabras forman una textura uniforme sin manchas oscuras ni huecos sueltos.
+- **El ritmo macrotipográfico (vertical):** surge de cómo se suceden los renglones, los párrafos, los títulos y los blancos en la superficie de la página. Si el primero sostiene cada fijación ocular, el segundo organiza las pausas del texto completo.
+
+</Seccion>
+
+<Seccion titulo="Repetición mecánica frente a ritmo vivo en Emil Ruder">
+
+En su manual *Typographie* (1967), Emil Ruder dedicó un capítulo central a distinguir la simple **repetición** (una reja donde cada barra y cada intervalo son idénticos de principio a fin) del **ritmo**.
+
+Para Ruder, el ritmo vivo exige una ley numérica de fondo, pero cobra fuerza cuando alterna densidades: un párrafo compacto seguido de una pausa limpia, un intertítulo en negrita que condensa el peso o una cita con margen más ancho que cambia la velocidad de lectura. La norma evita el caos; la variación evita el cansancio.
+
+</Seccion>
+
+<Seccion titulo="Cómo trasladar la rejilla de líneas de base a una escala de espaciado digital">
+
+En el diseño impreso tradicional todas las páginas comparten un formato fijo, por lo que atar cada línea a una rejilla estricta (*baseline grid*) de principio a fin resulta directo. En interfaces digitales, donde conviven imágenes fluidas, tarjetas y cajas con bordes, Robert Bringhurst (2012) inspira un enfoque modular adaptado a CSS:
+
+Si el cuerpo de lectura mide `16 px` con `line-height: 1.5` (`24 px`), basta con adoptar un **submódulo de 8 px** (o de `4 px` para ajustes finos) como escala de [tokens](/diseno-visual/tokens) verticales:
+
+- `8 px` (`0,5 renglones`): separación entre un subtítulo corto y su párrafo o entre ítems de una lista compacta.
+- `16 px` (`0,66 renglones`): separación estándar entre párrafos consecutivos en pantalla.
+- `24 px` (`1 renglón`): pausa antes de una lista, una tabla o una cita en bloque.
+- `48 px` (`2 renglones`): separación antes de abrir una sección principal nueva.
+
+De ese modo, aunque un componente intermedio no sea texto puro, su altura total y sus márgenes siguen hablando en el mismo compás que los párrafos.
+
+</Seccion>
+
+</Paso>

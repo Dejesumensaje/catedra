@@ -1,0 +1,858 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'interlineado';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Ahoga el párrafo para ver cómo chocan los trazos.',
+    hacer: 'Baja «Interlineado del párrafo» a 1,0 o menos.',
+    pista: 'Arrastra el primer deslizador hacia la izquierda.',
+    preparar: { lhParrafo: 1.5, lhTitular: 1.1, ancho: 60, guias: true },
+    logro: 'Con interlineado 1,0 las descendentes de un renglón («p», «g», «q») casi rozan las ascendentes del siguiente («b», «d», «l»). El espacio entre palabras supera al espacio entre líneas y el ojo cae en vertical.',
+  },
+  {
+    titulo: 'Desmembra el bloque por exceso.',
+    hacer: 'Sube «Interlineado del párrafo» por encima de 2,1.',
+    pista: 'Mueve el primer deslizador hasta el extremo derecho.',
+    logro: 'Por encima de 2,0 los renglones pierden cohesión de bloque: dejan de verse como un párrafo unido y parecen frases sueltas flotando en la página.',
+  },
+  {
+    titulo: 'Ajusta el titular multilínea.',
+    hacer: 'Lleva «Interlineado del párrafo» a 1,5 y baja «Interlineado del titular» a 1,05.',
+    pista: 'Equilibra el párrafo en 1,5 y aprieta el titular hacia 1,05.',
+    logro: 'Los titulares grandes tienen espacios internos mucho mayores que el cuerpo de texto; por eso necesitan un interlineado más ceñido (1,0 a 1,15) para no partirse en dos.',
+  },
+  {
+    titulo: 'Observa cómo influye el ancho de la columna.',
+    hacer: 'Sube «Ancho del bloque» por encima de 85 caracteres y activa «Mostrar líneas de base y barrido de retorno».',
+    pista: 'Ensancha la columna al máximo con las guías encendidas.',
+    preparar: { lhParrafo: 1.35, lhTitular: 1.08, guias: true },
+    logro: 'Cuanto más largo es el viaje de vuelta del ojo (la flecha roja diagonal), más plana se vuelve la pendiente y mayor interlineado hace falta para no releer la misma línea.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Tres bloques con el mismo párrafo compuestos a interlineado 1,0, 1,5 y 2,3, mostrando la flecha del barrido de retorno ocular.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+
+        {/* 1. Apretado 1,0 */}
+        <rect x="16" y="16" width="178" height="148" fill="#ffffff" stroke="#d8d8d4" stroke-width="1.2" />
+        <text x="26" y="34" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>1,0 · APRETADO</text>
+        <text font-family={SERIF} font-size="12.5" fill={T}>
+          <tspan x="26" y="62">El ojo recorre la línea</tspan>
+          <tspan x="26" y="74.5">y salta rápido al inicio</tspan>
+          <tspan x="26" y="87">del renglón siguiente</tspan>
+          <tspan x="26" y="99.5">para continuar el hilo</tspan>
+          <tspan x="26" y="112">sin perder el lugar.</tspan>
+        </text>
+        <line x1="154" y1="62" x2="28" y2="74.5" stroke={ROJO} stroke-width="1.2" stroke-dasharray="3 2" />
+        <text x="26" y="146" font-family={SANS} font-size="10" fill={G}>Las líneas se pegan entre sí.</text>
+
+        {/* 2. Equilibrado 1,5 */}
+        <rect x="211" y="16" width="178" height="148" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <rect x="221" y="22" width="106" height="16" fill={AMARILLO} />
+        <text x="226" y="33" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>1,5 · EQUILIBRADO</text>
+        <text font-family={SERIF} font-size="12.5" fill={T}>
+          <tspan x="221" y="60">El ojo recorre la línea</tspan>
+          <tspan x="221" y="79">y salta rápido al inicio</tspan>
+          <tspan x="221" y="98">del renglón siguiente</tspan>
+          <tspan x="221" y="117">para continuar el hilo</tspan>
+          <tspan x="221" y="136">sin perder el lugar.</tspan>
+        </text>
+        <line x1="349" y1="60" x2="225" y2="79" stroke={ROJO} stroke-width="1.4" />
+        <polygon points="223,79 230,74 229,81" fill={ROJO} />
+        <text x="221" y="154" font-family={SANS} font-size="10" font-weight="700" fill={T}>Barrido de retorno limpio</text>
+
+        {/* 3. Desmembrado 2,3 */}
+        <rect x="406" y="16" width="178" height="148" fill="#ffffff" stroke="#d8d8d4" stroke-width="1.2" />
+        <text x="416" y="34" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>2,3 · DESMEMBRADO</text>
+        <text font-family={SERIF} font-size="12.5" fill={T}>
+          <tspan x="416" y="58">El ojo recorre la línea</tspan>
+          <tspan x="416" y="87">y salta rápido al inicio</tspan>
+          <tspan x="416" y="116">del renglón siguiente</tspan>
+          <tspan x="416" y="145">para continuar el hilo</tspan>
+        </text>
+      </svg>
+    </div>
+    <p>Al terminar cada renglón la mirada hace un salto diagonal de derecha a izquierda llamado «barrido de retorno». ¿Qué falla en los dos extremos?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En <strong>1,0</strong> los renglones están más cerca entre sí que las palabras vecinas: al volver hacia la izquierda es muy fácil repetir la misma línea o saltar una. En <strong>2,3</strong> la distancia vertical es tan grande que el párrafo se rompe en tiras aisladas. En torno a <strong>1,45–1,6</strong> los renglones forman un tejido continuo con un carril blanco claro por donde el ojo regresa sin tropiezos.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Un único interlineado aplicado a ciegas a toda la tarjeta"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Titular desmembrado (1,55)',
+          texto: 'Al heredar el interlineado de 1,55 pensado para el párrafo, el titular de 22 px se separa en tres renglones sueltos.',
+          zona: zona(18, 18, 324, 96),
+        },
+        {
+          ...pct(330, 148),
+          titulo: 'Titular más lejos de sí mismo que del párrafo',
+          texto: 'El hueco entre las líneas del propio título compite con el margen que lo separa del cuerpo.',
+          zona: zona(18, 110, 324, 42),
+        },
+        {
+          ...pct(330, 218),
+          titulo: 'Párrafo ancho y apretado (1,18)',
+          texto: 'Abajo los seis renglones largos van tan ceñidos que cuesta volver al margen izquierdo sin equivocarse de línea.',
+          zona: zona(18, 156, 324, 106),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tarjeta con titular de tres líneas demasiado separado y párrafo de seis líneas demasiado apretado.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text font-family={SERIF} font-size="21" font-weight="700" fill={T}>
+          <tspan x="24" y="42">Los talleres de imprenta</tspan>
+          <tspan x="24" y="75">recuperan el grabado</tspan>
+          <tspan x="24" y="108">en linóleo y madera</tspan>
+        </text>
+        <line x1="24" y1="128" x2="336" y2="128" stroke="#e5e5e5" />
+        <text font-family={SERIF} font-size="13" fill="#444444">
+          <tspan x="24" y="156">Doce imprentas artesanales abrieron sus puertas</tspan>
+          <tspan x="24" y="171">este trimestre para enseñar composición manual,</tspan>
+          <tspan x="24" y="186">entintado con rodillo y ajuste de presión en</tspan>
+          <tspan x="24" y="201">prensas planas del siglo veinte. Cada sesión</tspan>
+          <tspan x="24" y="216">combina el estudio de especímenes históricos con</tspan>
+          <tspan x="24" y="231">la impresión de un cartel colectivo a dos tintas.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Interlineado ceñido en el titular (1,08) y holgado en el párrafo (1,55)"
+      notas={[
+        {
+          ...pct(330, 52),
+          titulo: 'Titular cohesionado a 1,08',
+          texto: 'Como la letra grande ya incluye bastante blanco arriba y abajo, apretar el interlineado une los tres renglones en un solo bloque.',
+          zona: zona(18, 18, 324, 78),
+        },
+        {
+          ...pct(330, 114),
+          titulo: 'Pausa clara antes del cuerpo',
+          texto: 'El espacio entre el titular y el párrafo supera con holgura al espacio interno de ambos bloques.',
+          zona: zona(18, 96, 324, 34),
+        },
+        {
+          ...pct(330, 204),
+          titulo: 'Párrafo respirable a 1,55',
+          texto: 'El texto de lectura en 13 px gana carriles horizontales claros que guían el barrido de retorno de línea a línea.',
+          zona: zona(18, 132, 324, 134),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma tarjeta con el titular unido en 1,08 y el párrafo cómodo en 1,55.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text font-family={SERIF} font-size="21" font-weight="700" fill={T}>
+          <tspan x="24" y="42">Los talleres de imprenta</tspan>
+          <tspan x="24" y="65">recuperan el grabado</tspan>
+          <tspan x="24" y="88">en linóleo y madera</tspan>
+        </text>
+        <line x1="24" y1="112" x2="336" y2="112" stroke="#e5e5e5" />
+        <text font-family={SERIF} font-size="13" fill="#444444">
+          <tspan x="24" y="142">Doce imprentas artesanales abrieron sus puertas</tspan>
+          <tspan x="24" y="162">este trimestre para enseñar composición manual,</tspan>
+          <tspan x="24" y="182">entintado con rodillo y ajuste de presión en</tspan>
+          <tspan x="24" y="202">prensas planas del siglo veinte. Cada sesión</tspan>
+          <tspan x="24" y="222">combina el estudio de especímenes históricos con</tspan>
+          <tspan x="24" y="242">la impresión de un cartel colectivo a dos tintas.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · interlineado, medida y barrido de retorno"
+    consigna="Ajusta por separado el interlineado del titular y el del párrafo, y cambia el ancho del bloque. Activa las líneas de base para ver el ángulo del viaje de vuelta del ojo desde el final de un renglón hasta el inicio del siguiente."
+    nota="Fija una columna estrecha como A y ensánchala en B para comprobar cuánto interlineado adicional pide una línea larga."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Laboratorio de interlineado con líneas de base y flecha de barrido de retorno.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <rect x="40" y="20" width="560" height="280" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="68" y="68" font-family={SERIF} font-size="24" font-weight="700" fill={T}>El espacio entre renglones guía el viaje de vuelta del ojo</text>
+      <text x="68" y="132" font-family={SERIF} font-size="15" fill="#444444">Cuando el blanco vertical entre dos líneas supera claramente al espacio entre palabras, la vista recorre cada renglón de izquierda a derecha sin caer al de abajo.</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba el modo en mayúsculas dentro de «Más controles» para ver cómo cambia el espacio vertical." />
+
+    <Deslizador
+      lab={lab}
+      variable="lhParrafo"
+      etiqueta="Interlineado del párrafo"
+      min={0.95}
+      max={2.3}
+      paso={0.05}
+      valor={1.5}
+      ayuda="Para lectura continua suele funcionar entre 1,4 y 1,65 según el ancho de línea."
+    />
+    <Deslizador
+      lab={lab}
+      variable="lhTitular"
+      etiqueta="Interlineado del titular"
+      min={0.85}
+      max={1.75}
+      paso={0.05}
+      valor={1.1}
+      ayuda="Los títulos grandes piden valores ceñidos (1,0 a 1,18) para no desmembrarse."
+    />
+    <Deslizador
+      lab={lab}
+      variable="ancho"
+      etiqueta="Ancho del bloque"
+      min={30}
+      max={90}
+      paso={5}
+      valor={60}
+      unidad="ch"
+      ayuda="A mayor ancho de columna, mayor interlineado necesita el ojo al regresar."
+    />
+    <Interruptor
+      lab={lab}
+      variable="guias"
+      etiqueta="Mostrar líneas de base y barrido de retorno"
+      valor={true}
+      ayuda="Dibuja las líneas donde se apoyan las letras y la diagonal de retorno ocular."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="cajaTit"
+        etiqueta="Caja del titular"
+        valor="mixta"
+        opciones={[
+          { valor: 'mixta', texto: 'Minúsculas (con descendentes)' },
+          { valor: 'mayus', texto: 'TODO MAYÚSCULAS (sin descendentes)' },
+        ]}
+        ayuda="Un titular en mayúsculas no tiene descendentes (p, g, j) y admite un interlineado aún menor."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"lhParrafo":1.5,"lhTitular":1.08,"ancho":60,"guias":true,"cajaTit":"mixta"}'>Ajuste equilibrado (1,08 y 1,5)</button>
+      <button type="button" class="dv-boton" data-preset='{"lhParrafo":1.0,"lhTitular":1.5,"ancho":65,"guias":true,"cajaTit":"mixta"}'>Invertido: título suelto y párrafo ahogado</button>
+      <button type="button" class="dv-boton" data-preset='{"lhParrafo":1.2,"lhTitular":1.1,"ancho":90,"guias":true,"cajaTit":"mixta"}'>Columna muy ancha con poco interlineado</button>
+      <button type="button" class="dv-boton" data-preset='{"lhParrafo":1.55,"lhTitular":0.95,"ancho":55,"guias":true,"cajaTit":"mayus"}'>Titular en mayúsculas ceñido (0,95)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Aprieta el interlineado de un titular grande"
+      comparar={false}
+      consigna="Este titular de tres líneas heredó el line-height: 1.55 del documento y parece tres frases sueltas. Reduce su interlineado hasta que forme un bloque compacto."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:'PT Serif',Georgia,serif;color:#222222;">
+        <p style="margin:0;font-size:22px;font-weight:700;line-height:1.55;">Cartografías del agua en la cordillera central</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="lh"
+        etiqueta="Interlineado del titular"
+        min={0.9}
+        max={1.6}
+        paso={0.05}
+        valor={1.55}
+        ayuda="Entre 1,02 y 1,15 las líneas del título se unen sin que choquen los acentos."
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Aumenta el interlineado cuando la columna es ancha"
+      comparar={false}
+      consigna="En este bloque ancho, un interlineado de 1,15 hace que la vista se pierda al volver al inicio de cada línea. Abre el interlineado hasta que los carriles horizontales sean claros."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:'PT Serif',Georgia,serif;font-size:13.5px;color:#222222;">
+        <p style="margin:0;line-height:1.15;">Los estudios de Miles Tinker demostraron que longitud de línea e interlineado forman un sistema acoplado.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="lhCol"
+        etiqueta="Interlineado de la columna ancha"
+        min={1.1}
+        max={1.9}
+        paso={0.05}
+        valor={1.15}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Separa menos dentro del ítem que entre ítems de una lista"
+      comparar={false}
+      consigna="Cuando los puntos de una lista ocupan dos renglones y tienen el mismo espacio adentro que afuera, no se sabe dónde empieza cada punto. Ciñe el interlineado interno de cada ítem."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#222222;">
+        <p style="margin:0;">• Entregar el cuaderno de bocetos con fechas verificadas.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="lhItem"
+        etiqueta="Interlineado interno de cada punto"
+        min={1.15}
+        max={1.9}
+        paso={0.05}
+        valor={1.85}
+        ayuda="Debe ser claramente menor que el margen entre un punto y el siguiente."
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Portadilla de revista: contraste extremo de interlineado"
+      notas={[
+        {
+          ...pct(320, 64),
+          titulo: 'Titular en mayúsculas a 0,96',
+          texto: 'Al no tener trazos descendentes, las tres líneas en mayúsculas pueden acercarse por debajo de 1,0 y actuar como un bloque arquitectónico.',
+          zona: zona(18, 20, 324, 86),
+        },
+        {
+          ...pct(320, 142),
+          titulo: 'Sumario intermedio a 1,32',
+          texto: 'La entradilla de 15 px usa un interlineado moderado que hace de puente entre el impacto del título y la prosa.',
+          zona: zona(18, 112, 324, 58),
+        },
+        {
+          ...pct(320, 224),
+          titulo: 'Cuerpo de lectura a 1,55',
+          texto: 'El texto corrido abre el blanco entre líneas para sostener la lectura reposada.',
+          zona: zona(18, 178, 324, 82),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portadilla editorial con titular en mayúsculas a 0,96, sumario a 1,32 y cuerpo a 1,55.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text font-family={SANS} font-size="25" font-weight="900" letter-spacing="-0.4" fill={T}>
+          <tspan x="24" y="42">ARQUITECTURA</tspan>
+          <tspan x="24" y="66">DEL SILENCIO</tspan>
+          <tspan x="24" y="90">EN LA MONTAÑA</tspan>
+        </text>
+        <text font-family={SERIF} font-style="italic" font-size="14" fill={T}>
+          <tspan x="24" y="128">Tres refugios construidos con piedra seca y madera</tspan>
+          <tspan x="24" y="147">local en los páramos andinos.</tspan>
+        </text>
+        <line x1="24" y1="166" x2="336" y2="166" stroke="#e5e5e5" />
+        <text font-family={SERIF} font-size="12.5" fill="#444444">
+          <tspan x="24" y="192">A tres mil cuatrocientos metros de altitud el viento</tspan>
+          <tspan x="24" y="212">obliga a bajar las cubiertas y a enterrar media</tspan>
+          <tspan x="24" y="232">estructura en la ladera. Los muros de sesenta</tspan>
+          <tspan x="24" y="252">centímetros conservan el calor del día.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Lista de dos renglones por punto: cohesión interna frente a externa"
+      notas={[
+        {
+          ...pct(320, 64),
+          titulo: 'Interlineado interno ceñido (1,28)',
+          texto: 'Los dos renglones de un mismo paso están cerca entre sí para leerse como una sola idea.',
+          zona: zona(18, 36, 324, 52),
+        },
+        {
+          ...pct(320, 102),
+          titulo: 'Separación mayor entre ítems (16 px)',
+          texto: 'El espacio en blanco entre el paso 01 y el paso 02 duplica el espacio interno entre renglones.',
+          zona: zona(18, 86, 324, 24),
+        },
+        {
+          ...pct(320, 198),
+          titulo: 'Sangría francesa que despeja el marcador',
+          texto: 'El segundo renglón se alinea con la primera letra del texto y no debajo del número, reforzando la unidad del bloque.',
+          zona: zona(18, 112, 324, 144),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Lista numerada de tres pasos donde cada paso ocupa dos renglones unidos y se separa claramente del siguiente.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="34" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>PROTOCOLO DE LABORATORIO</text>
+
+        <rect x="24" y="50" width="22" height="18" fill={AMARILLO} />
+        <text x="35" y="63" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>01</text>
+        <text font-family={SANS} font-size="12.5" fill={T}>
+          <tspan x="56" y="62" font-weight="700">Calibrar la balanza analítica</tspan>
+          <tspan x="56" y="79" fill="#444444">Verificar el nivel de burbuja antes de pesar.</tspan>
+        </text>
+
+        <rect x="24" y="114" width="22" height="18" fill="#f0f0ec" />
+        <text x="35" y="127" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>02</text>
+        <text font-family={SANS} font-size="12.5" fill={T}>
+          <tspan x="56" y="126" font-weight="700">Tamizar la muestra seca</tspan>
+          <tspan x="56" y="143" fill="#444444">Separar las fracciones con malla de 0,5 mm.</tspan>
+        </text>
+
+        <rect x="24" y="178" width="22" height="18" fill="#f0f0ec" />
+        <text x="35" y="191" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>03</text>
+        <text font-family={SANS} font-size="12.5" fill={T}>
+          <tspan x="56" y="190" font-weight="700">Registrar la humedad residual</tspan>
+          <tspan x="56" y="207" fill="#444444">Anotar tres lecturas consecutivas en la bitácora.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Ensayo largo en pantalla: la regla de Hochuli en acción"
+      notas={[
+        {
+          ...pct(320, 68),
+          titulo: 'Blanco entre líneas > blanco entre palabras',
+          texto: 'La distancia vertical entre líneas de base (24 px para un cuerpo de 15 px) supera siempre el espacio horizontal entre palabra y palabra.',
+          zona: zona(18, 24, 324, 92),
+        },
+        {
+          ...pct(320, 154),
+          titulo: 'Espacio libre para acentos y descendentes',
+          texto: 'Las tildes de las mayúsculas («É», «Á») nunca chocan con la cola de la «p», la «q» o la «g» del renglón superior.',
+          zona: zona(18, 120, 324, 68),
+        },
+        {
+          ...pct(320, 228),
+          titulo: 'Pausa entre párrafos proporcional al renglón',
+          texto: 'El salto al segundo párrafo equivale a medio renglón adicional, manteniendo el pulso vertical.',
+          zona: zona(18, 192, 324, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Columna de ensayo con líneas de base marcadas suavemente mostrando carriles horizontales limpios.">
+        <rect width={W} height={H} fill="#ffffff" />
+        {[52, 74, 96, 118, 140, 184, 206, 228, 250].map((y) => (
+          <line x1="24" y1={y} x2="336" y2={y} stroke="#f0f0ec" stroke-width="1" />
+        ))}
+        <text font-family={SERIF} font-size="13.5" fill={T}>
+          <tspan x="24" y="52">Un párrafo funciona cuando las palabras de una</tspan>
+          <tspan x="24" y="74">misma línea se perciben más cercanas entre sí</tspan>
+          <tspan x="24" y="96">que respecto a las palabras del renglón superior</tspan>
+          <tspan x="24" y="118">o inferior. Esa diferencia construye el carril</tspan>
+          <tspan x="24" y="140">horizontal por donde avanza la mirada.</tspan>
+
+          <tspan x="24" y="184">Si el interlineado se reduce demasiado, los ojos</tspan>
+          <tspan x="24" y="206">tropiezan con las letras vecinas de abajo; si se</tspan>
+          <tspan x="24" y="228">abre en exceso, la página pierde su tejido.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre barrido de retorno, interlineado en titulares frente a párrafos, listas multilínea y relación con el ancho de columna."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const ROJO = '#b3261e';
+  const AMARILLO = '#eeff41';
+
+  type E = {
+    lhParrafo: number;
+    lhTitular: number;
+    ancho: number;
+    guias: boolean;
+    cajaTit: string;
+  };
+
+  const LINEAS_PARRAFO = [
+    'Cuando terminas de leer un renglón, la vista debe viajar en diagonal',
+    'hacia el margen izquierdo del renglón siguiente. Ese salto rápido se',
+    'llama barrido de retorno y necesita un carril blanco bien definido',
+    'para no repetir la misma línea ni saltar por accidente dos renglones.',
+  ];
+
+  function evaluarRetorno(e: E) {
+    const lhIdealMin = 1.28 + ((e.ancho - 30) / 60) * 0.25;
+    const lhIdealMax = 1.65 + ((e.ancho - 30) / 60) * 0.2;
+    const estadoParrafo =
+      e.lhParrafo < lhIdealMin ? 'apretado' : e.lhParrafo > lhIdealMax ? 'desmembrado' : 'seguro';
+    const estadoTitular =
+      e.lhTitular > 1.32 ? 'suelto' : e.lhTitular < 0.92 && e.cajaTit === 'mixta' ? 'choca' : 'unido';
+    return { lhIdealMin, lhIdealMax, estadoParrafo, estadoTitular };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 300);
+    const H = 330;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute('aria-label', `Simulador de interlineado con titular a ${n(e.lhTitular, 2)} y párrafo a ${n(e.lhParrafo, 2)}.`);
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padMax = W - 36;
+    const factorAncho = (e.ancho - 30) / 60;
+    const colW = Math.round(Math.min(padMax, Math.max(220, 230 + factorAncho * (padMax - 230))));
+    const x0 = Math.round((W - colW) / 2);
+
+    raiz.append(svg('rect', { x: x0, y: 16, width: colW, height: H - 32, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.5 }));
+
+    const padIn = 22;
+    const xTxt = x0 + padIn;
+    const fsTit = W < 460 ? 18 : 22;
+    const stepTit = Math.round(fsTit * (e.lhTitular + 0.14));
+    const yTit1 = 56;
+    const yTit2 = yTit1 + stepTit;
+
+    const titL1 = e.cajaTit === 'mayus' ? 'EL ESPACIO ENTRE LÍNEAS' : 'El espacio entre líneas guía';
+    const titL2 = e.cajaTit === 'mayus' ? 'GUÍA EL RETORNO DEL OJO' : 'el viaje de vuelta del ojo';
+
+    if (e.guias) {
+      raiz.append(svg('line', { x1: xTxt, y1: yTit1, x2: x0 + colW - padIn, y2: yTit1, stroke: '#d8d8d4', 'stroke-dasharray': '3 2' }));
+      raiz.append(svg('line', { x1: xTxt, y1: yTit2, x2: x0 + colW - padIn, y2: yTit2, stroke: '#d8d8d4', 'stroke-dasharray': '3 2' }));
+    }
+
+    const t1 = svg('text', { x: xTxt, y: yTit1, 'font-family': SERIF, 'font-size': fsTit, 'font-weight': 700, fill: TINTA });
+    t1.textContent = titL1;
+    const t2 = svg('text', { x: xTxt, y: yTit2, 'font-family': SERIF, 'font-size': fsTit, 'font-weight': 700, fill: TINTA });
+    t2.textContent = titL2;
+    raiz.append(t1, t2);
+
+    const fsP = W < 460 ? 12.5 : 14;
+    const stepP = fsP * e.lhParrafo;
+    const yP0 = yTit2 + 38;
+
+    LINEAS_PARRAFO.forEach((linea, i) => {
+      const y = yP0 + i * stepP;
+      if (y > H - 30) return;
+
+      if (e.guias) {
+        raiz.append(svg('line', { x1: xTxt, y1: y, x2: x0 + colW - padIn, y2: y, stroke: '#e8e8e2' }));
+        if (i === 0) {
+          const yNext = yP0 + stepP;
+          const xFin = Math.min(x0 + colW - padIn - 12, xTxt + colW * 0.78);
+          raiz.append(svg('line', { x1: xFin, y1: y - 3, x2: xTxt + 6, y2: yNext - 4, stroke: ROJO, 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }));
+          raiz.append(svg('circle', { cx: xFin, cy: y - 3, r: 3, fill: ROJO }));
+          raiz.append(svg('circle', { cx: xTxt + 6, cy: yNext - 4, r: 3, fill: AMARILLO, stroke: ROJO, 'stroke-width': 1.2 }));
+        }
+      }
+
+      const recorte = Math.max(26, Math.round((e.ancho / 80) * linea.length));
+      const pTxt = svg('text', {
+        x: xTxt,
+        y,
+        'font-family': SERIF,
+        'font-size': fsP,
+        fill: TEXTO,
+      });
+      pTxt.textContent = linea.slice(0, recorte);
+      raiz.append(pTxt);
+    });
+
+    // Pie de métricas
+    const pie = svg('text', {
+      x: xTxt,
+      y: H - 26,
+      'font-family': SANS,
+      'font-size': 10.5,
+      'font-weight': 700,
+      fill: GRIS,
+    });
+    pie.textContent = `Titular: ${n(e.lhTitular, 2)} (${Math.round(stepTit)} px) · Párrafo: ${n(e.lhParrafo, 2)} (${n(stepP, 1)} px) · Medida: ~${e.ancho} ch`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { lhIdealMin, estadoParrafo, estadoTitular } = evaluarRetorno(e);
+    if (estadoTitular === 'suelto') {
+      return `El titular tiene un interlineado de <b class="dv-cifra">${n(e.lhTitular, 2)}</b>: las dos líneas grandes se separan demasiado y dejan de verse como una unidad. Bájalo hacia 1,05–1,15.`;
+    }
+    if (estadoTitular === 'choca') {
+      return `A <b class="dv-cifra">${n(e.lhTitular, 2)}</b> con minúsculas, las descendentes de la primera línea del titular invaden la segunda.`;
+    }
+    if (estadoParrafo === 'apretado') {
+      return `Para un ancho de <b class="dv-cifra">${e.ancho} caracteres</b>, un interlineado de <b class="dv-cifra">${n(e.lhParrafo, 2)}</b> es demasiado estrecho (pide al menos ${n(lhIdealMin, 2)}). La diagonal de retorno es tan tendida que el ojo puede releer la misma línea.`;
+    }
+    if (estadoParrafo === 'desmembrado') {
+      return `Con <b class="dv-cifra">${n(e.lhParrafo, 2)}</b> de interlineado, el párrafo pierde su tejido vertical y cada renglón flota por separado.`;
+    }
+    return `Relación equilibrada: titular cohesionado a <b class="dv-cifra">${n(e.lhTitular, 2)}</b> y párrafo cómodo a <b class="dv-cifra">${n(e.lhParrafo, 2)}</b> para una columna de ${e.ancho} caracteres.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="interlineado"]')) {
+    guiar<E>(raiz, [
+      (e) => e.lhParrafo <= 1.0,
+      (e) => e.lhParrafo >= 2.1,
+      (e) => e.lhParrafo >= 1.4 && e.lhParrafo <= 1.65 && e.lhTitular <= 1.15,
+      (e) => e.ancho >= 85 && e.guias,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────
+  type E1 = { lh: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};color:#222222;">
+        <p style="margin:0 0 10px;font-size:22px;font-weight:700;line-height:${e.lh};">Cartografías del agua en la cordillera central</p>
+        <p style="margin:0;font-family:${SANS};font-size:12px;color:#6f6f6f;">Exposición abierta hasta noviembre · Sala Norte</p>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.lh > 1.3) return `Con <b class="dv-cifra">${n(e.lh, 2)}</b>, las líneas del título parecen renglones independientes.`;
+    if (e.lh < 0.98) return `Con <b class="dv-cifra">${n(e.lh, 2)}</b>, los trazos inferiores rozan las letras de abajo.`;
+    return `<b class="dv-cifra">Interlineado ${n(e.lh, 2)}</b>: el titular se compacta y actúa como un único bloque visual.`;
+  }
+
+  type E2 = { lhCol: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};font-size:13.5px;line-height:${e.lhCol};color:#222222;">
+        <p style="margin:0;">Los estudios experimentales de Miles Tinker demostraron que el ancho de columna y el interlineado forman un sistema acoplado: cuanto más ancho es el renglón, mayor distancia vertical necesita la vista para regresar con precisión al comienzo de la línea siguiente.</p>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.lhCol < 1.38) return `A <b class="dv-cifra">${n(e.lhCol, 2)}</b>, una columna ancha se convierte en un muro apretado donde cuesta cambiar de renglón.`;
+    if (e.lhCol > 1.78) return `A <b class="dv-cifra">${n(e.lhCol, 2)}</b>, los renglones empiezan a separarse en exceso.`;
+    return `<b class="dv-cifra">Interlineado ${n(e.lhCol, 2)}</b>: el espacio entre líneas guía el regreso del ojo de lado a lado.`;
+  }
+
+  type E3 = { lhItem: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};font-size:13px;color:#222222;">
+        <ul style="margin:0;padding-left:18px;display:grid;gap:12px;">
+          <li style="line-height:${e.lhItem};">Entregar el cuaderno de bocetos con las fechas verificadas por el equipo.</li>
+          <li style="line-height:${e.lhItem};">Adjuntar las pruebas de impresión en papel de algodón de 180 gramos.</li>
+        </ul>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.lhItem > 1.55) return `Con interlineado interno de <b class="dv-cifra">${n(e.lhItem, 2)}</b>, los dos renglones de un mismo punto están tan separados como un punto del siguiente.`;
+    return `<b class="dv-cifra">Interlineado interno ${n(e.lhItem, 2)}</b>: cada punto de dos líneas se agrupa consigo mismo y se separa claramente del siguiente.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['interlineado-e1', pintarE1 as never, describirE1 as never],
+    ['interlineado-e2', pintarE2 as never, describirE2 as never],
+    ['interlineado-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────
+  function rReglaHochuli(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El espacio entre renglones (1,5) es claramente mayor que el espacio entre palabras',
+        describir: 'Párrafo con carriles horizontales claros y cómodos.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SERIF};font-size:12.5px;line-height:1.52;color:#222;text-align:left;">
+          El blanco entre líneas debe superar siempre al blanco entre palabras para sostener el movimiento horizontal de la lectura.
+        </div>`,
+      },
+      {
+        texto: 'El interlineado es tan estrecho (0,95) que las palabras de arriba y abajo están más cerca que las vecinas',
+        describir: 'Párrafo con líneas pegadas verticalmente.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SERIF};font-size:12.5px;line-height:0.95;word-spacing:4px;color:#222;text-align:left;">
+          El blanco entre líneas debe superar siempre al blanco entre palabras para sostener el movimiento horizontal de la lectura.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según la regla microtipográfica de Jost Hochuli, ¿cuál de los dos párrafos asegura que el ojo avance en horizontal sin caer en vertical?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Por proximidad perceptual, si el espacio entre palabras supera al espacio entre renglones, la vista agrupa en vertical en lugar de seguir el renglón.',
+      repaso: 'Espacio entre líneas frente a espacio entre palabras',
+    };
+  }
+
+  function rTitularMultilinea(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Titular con interlineado ceñido (1,08) que une sus dos renglones en un solo bloque',
+        describir: 'Titular grande compacto y cohesionado.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;text-align:left;">
+          <div style="font-family:${SERIF};font-size:18px;font-weight:700;line-height:1.08;color:#222;margin-bottom:8px;">Atlas de las semillas nativas del Cauca</div>
+          <div style="font-family:${SANS};font-size:11px;color:#6f6f6f;">Publicación del Jardín Botánico</div>
+        </div>`,
+      },
+      {
+        texto: 'Titular con el mismo interlineado abierto (1,65) del cuerpo de texto',
+        describir: 'Titular grande cuyas dos líneas quedan muy separadas entre sí.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;text-align:left;">
+          <div style="font-family:${SERIF};font-size:18px;font-weight:700;line-height:1.65;color:#222;margin-bottom:4px;">Atlas de las semillas nativas del Cauca</div>
+          <div style="font-family:${SANS};font-size:11px;color:#6f6f6f;">Publicación del Jardín Botánico</div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Cuando un título grande ocupa dos o tres líneas, ¿qué interlineado necesita en comparación con el párrafo?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Al escalar la letra a 24 o 36 px también se multiplica el espacio vacío interno de la caja tipográfica; por eso los titulares piden interlineados menores (1,0 a 1,15).',
+      repaso: 'Interlineado en titulares grandes',
+    };
+  }
+
+  function rListasMultilinea(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Interlineado interno de 1,25 dentro de cada punto y margen de 12 px entre un punto y otro',
+        describir: 'Lista donde cada ítem de dos líneas se ve unido y separado del siguiente.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:11.5px;color:#222;text-align:left;">
+          <div style="line-height:1.25;margin-bottom:10px;">• Lavar los pinceles con jabón neutro al terminar la sesión.</div>
+          <div style="line-height:1.25;">• Cerrar los envases de tinta para evitar el secado.</div>
+        </div>`,
+      },
+      {
+        texto: 'El mismo espacio vertical entre los renglones de un mismo punto que entre puntos distintos',
+        describir: 'Lista donde todos los renglones equidistan y cuesta ver cuántos puntos hay.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:11.5px;line-height:1.75;color:#222;text-align:left;">
+          <div>• Lavar los pinceles con jabón neutro al terminar la sesión.</div>
+          <div>• Cerrar los envases de tinta para evitar el secado.</div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En una lista cuyos elementos ocupan dos renglones, ¿cómo debe relacionarse el interlineado con el espacio entre puntos?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La distancia interna dentro de un mismo ítem debe ser siempre menor que la distancia externa que lo separa del ítem siguiente.',
+      repaso: 'Interlineado en listas',
+    };
+  }
+
+  function rMayusculas(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Porque las mayúsculas no tienen trazos descendentes (como p, g, q, j) que bajen hacia la línea siguiente',
+        describir: 'Cartel en mayúsculas con interlineado compacto de 0,98 sin colisiones.',
+        es: true,
+        html: `<div style="padding:12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:16px;font-weight:900;line-height:0.98;color:#222;text-align:left;">
+          FERIA DEL LIBRO<br/>UNIVERSITARIO
+        </div>`,
+      },
+      {
+        texto: 'Porque las letras mayúsculas son más pequeñas que las minúsculas',
+        describir: 'Explicación falsa sobre el tamaño de las mayúsculas.',
+        es: false,
+        html: `<div style="padding:12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:16px;font-weight:900;line-height:1.55;color:#222;text-align:left;">
+          FERIA DEL LIBRO<br/>UNIVERSITARIO
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Por qué un titular corto compuesto íntegramente en MAYÚSCULAS admite un interlineado cercano a 0,95–1,05 sin que las letras choquen?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En caja alta todas las letras se apoyan sobre la línea de base y dejan vacía la franja inferior reservada a las descendentes (salvo la Q y las tildes superiores).',
+      repaso: 'Interlineado en caja alta',
+    };
+  }
+
+  function rAjusteTitular(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El párrafo ya tiene un interlineado cómodo de 1,55, pero el titular de tres líneas está demasiado suelto (1,60). Ajusta el interlineado del titular para compactarlo sin que se pisen sus letras.',
+      control: {
+        etiqueta: 'Interlineado del titular',
+        min: 0.85,
+        max: 1.65,
+        paso: 0.05,
+        valor: 1.6,
+        unidad: '',
+      },
+      pintar: (c, v) => {
+        c.innerHTML = `<div style="padding:14px 16px;background:#fff;border:1px solid #dcdcdc;text-align:left;color:#222;">
+          <div style="font-family:${SERIF};font-size:21px;font-weight:700;line-height:${v};margin-bottom:10px;">Crónicas del ferrocarril de Antioquia en el siglo veinte</div>
+          <div style="font-family:${SERIF};font-size:13px;line-height:1.55;color:#444;">El archivo reúne planos de estaciones, boletos impresos en tipografía móvil y libretas de maquinistas entre 1914 y 1962.</div>
+        </div>`;
+      },
+      cumple: (v) => v >= 1.02 && v <= 1.18,
+      falta: (v) => v > 1.18 ? `Con ${n(v, 2)}, las líneas del titular siguen demasiado separadas. Bájalo hacia 1,10.` : `Con ${n(v, 2)}, las descendentes empiezan a chocar con los acentos de abajo. Súbelo por encima de 1,02.`,
+      porque: 'Entre 1,02 y 1,18 el titular grande se agrupa como una sola unidad visual y contrasta limpiamente con el ritmo de 1,55 del párrafo.',
+      repaso: 'Contraste de interlineado entre título y cuerpo',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="interlineado"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rReglaHochuli(),
+        rTitularMultilinea(),
+        rListasMultilinea(),
+        rMayusculas(),
+        rAjusteTitular(),
+      ]),
+    );
+  }
+</script>

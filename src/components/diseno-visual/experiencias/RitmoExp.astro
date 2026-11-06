@@ -1,0 +1,1237 @@
+---
+// Ritmo tipográfico: todos los pasos en un componente multi-modo.
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'ritmo-tipografico';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Observa un muro continuo sin pausas.',
+    hacer: 'En «Frecuencia de intertítulos y pausas», selecciona «Muro continuo» y en «Separación entre párrafos» elige «Sangría de primera línea».',
+    pista: 'Elige la primera opción en ambos controles.',
+    preparar: { unidad: 20, rejilla: true },
+    logro: 'Aunque las líneas de base están perfectamente alineadas, veinte renglones seguidos sin una sola pausa ni cambio de textura forman un bloque gris compacto que intimida antes de empezar a leer.',
+  },
+  {
+    titulo: 'Cae en la doble señal de párrafo.',
+    hacer: 'En «Separación entre párrafos», selecciona «Ambas a la vez (redundante)».',
+    pista: 'Elige la tercera opción del control «Separación entre párrafos».',
+    logro: 'Sumar sangría de primera línea y además un hueco vertical grande entre párrafos duplica la misma señal: la esquina superior izquierda de cada bloque parece mordida y el flujo vertical tropieza.',
+  },
+  {
+    titulo: 'Introduce variaciones con compás.',
+    hacer: 'Cambia «Separación entre párrafos» a «Espacio vertical (1 u)» y en «Frecuencia de intertítulos y pausas» elige «Compás articulado».',
+    pista: 'Selecciona la segunda opción de separación y la tercera de frecuencia.',
+    logro: 'Un intertítulo y una cita destacada dividen la página en tramos abarcables. El lector distingue de un vistazo dónde empieza cada idea y dónde puede tomar aliento.',
+  },
+  {
+    titulo: 'Rompe y recupera la rejilla de líneas de base.',
+    hacer: 'Desactiva «Alinear a la rejilla de líneas de base» y luego vuelve a activarlo.',
+    pista: 'Usa el interruptor de la rejilla o abre «Más controles» para ver la mancha rítmica.',
+    logro: 'Cuando los márgenes del intertítulo usan medidas arbitrarias (como 11 px y 7 px), la columna derecha queda desfasada respecto a la izquierda. Al usar múltiplos exactos de la unidad base (20 px), ambos lados vuelven a encajar en el mismo pulso.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres columnas vistas a distancia: un muro gris monótono sin pausas, una columna arrítmica con huecos azarosos y una columna con pulso base y variaciones articuladas.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      {/* 1. Monotonía (muro gris) */}
+      <g transform="translate(22, 14)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={G}>1 · MONOTONÍA (MURO GRIS)</text>
+        <rect x="0" y="20" width="164" height="130" fill="#ffffff" stroke="#d8d8d4" />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          <rect x="14" y={30 + i * 9} width={i === 11 ? 96 : 136} height="4.2" fill="#444444" />
+        ))}
+        <text x="0" y="162" font-family={SANS} font-size="9.5" fill={G}>Sin pausas ni puntos de entrada</text>
+      </g>
+
+      {/* 2. Arritmia (saltos azarosos) */}
+      <g transform="translate(218, 14)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={ROJO}>2 · ARRITMIA (SALTOS AZAROSOS)</text>
+        <rect x="0" y="20" width="164" height="130" fill="#ffffff" stroke="#d8d8d4" />
+        <rect x="14" y="28" width="90" height="6" fill={T} />
+        <rect x="14" y="38" width="136" height="4" fill="#444444" />
+        <rect x="14" y="45" width="128" height="4" fill="#444444" />
+        <text x="154" y="59" text-anchor="end" font-family={SANS} font-size="8" font-weight="700" fill={ROJO}>19 px</text>
+        <rect x="28" y="64" width="122" height="4" fill="#444444" />
+        <rect x="14" y="71" width="110" height="4" fill="#444444" />
+        <text x="154" y="80" text-anchor="end" font-family={SANS} font-size="8" font-weight="700" fill={ROJO}>7 px</text>
+        <rect x="14" y="83" width="76" height="7" fill={T} />
+        <text x="154" y="102" text-anchor="end" font-family={SANS} font-size="8" font-weight="700" fill={ROJO}>23 px</text>
+        <rect x="28" y="109" width="122" height="4" fill="#444444" />
+        <rect x="14" y="116" width="134" height="4" fill="#444444" />
+        <rect x="14" y="123" width="84" height="4" fill="#444444" />
+        <text x="0" y="162" font-family={SANS} font-size="9.5" fill={ROJO}>Cada hueco mide algo distinto</text>
+      </g>
+
+      {/* 3. Ritmo vivo (pulso + compás) */}
+      <g transform="translate(414, 14)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={T}>3 · RITMO VIVO (PULSO + COMPÁS)</text>
+        <rect x="0" y="20" width="164" height="130" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+          <line x1="2" y1={30 + i * 11} x2="162" y2={30 + i * 11} stroke="#ecece6" stroke-width="1" />
+        ))}
+        <rect x="14" y="25" width="96" height="6" fill={T} />
+        <rect x="14" y="37" width="134" height="4" fill="#444444" />
+        <rect x="14" y="48" width="128" height="4" fill="#444444" />
+        <rect x="14" y="59" width="102" height="4" fill="#444444" />
+        {/* Pausa de 1 u + cita */}
+        <rect x="14" y="76" width="3" height="19" fill={T} />
+        <rect x="22" y="76" width="118" height="19" fill={AMARILLO} opacity="0.55" />
+        <rect x="26" y="81" width="106" height="3.8" fill={T} />
+        <rect x="26" y="90" width="84" height="3.8" fill={T} />
+        {/* Intertítulo + párrafo */}
+        <rect x="14" y="113" width="78" height="5.5" fill={T} />
+        <rect x="14" y="125" width="134" height="4" fill="#444444" />
+        <rect x="14" y="136" width="114" height="4" fill="#444444" />
+        <text x="0" y="162" font-family={SANS} font-size="9.5" fill={G}>Múltiplos exactos de la línea base</text>
+      </g>
+    </svg>
+    <p>Entrecierra los ojos para ver las tres páginas como manchas grises y blancas. ¿Cuál de las tres te invita a entrar y te deja respirar mientras avanzas?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>La tercera. La primera repite el mismo renglón sin descanso: tiene regularidad, pero carece de pausas y de acentos. La segunda varía los elementos, pero usa separaciones improvisadas que hacen tropezar la vista. El ritmo tipográfico aparece cuando una unidad base constante (el renglón) sostiene variaciones medidas (párrafos, intertítulos, citas y listas) cuyos espacios son múltiplos enteros de ese pulso.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Doble señal de párrafo y columnas desincronizadas"
+      notas={[
+        {
+          ...pct(104, 86),
+          titulo: 'Sangría + hueco vertical a la vez',
+          texto: 'Usar sangría de primera línea y además un salto de línea en blanco repite dos veces la misma señal («nuevo párrafo») y rompe el borde izquierdo.',
+          zona: zona(18, 56, 152, 76),
+        },
+        {
+          ...pct(104, 174),
+          titulo: 'Márgenes que no son múltiplos',
+          texto: 'El intertítulo añade 13 px arriba y 9 px abajo sobre un renglón de 16 px: a partir de ahí ningún renglón vuelve a coincidir con la rejilla.',
+          zona: zona(18, 138, 152, 58),
+        },
+        {
+          ...pct(268, 210),
+          titulo: 'Columnas desfasadas',
+          texto: 'Los renglones de la columna derecha quedan a media altura respecto a los de la izquierda, generando un escalón constante en la doble página.',
+          zona: zona(174, 62, 168, 192),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Doble columna con sangrías sumadas a espacios verticales grandes y líneas de base desfasadas entre izquierda y derecha.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="14" y="14" width="332" height="252" fill="#fbfbf9" stroke="#d6d6d2" />
+        <text x="24" y="32" font-family={SANS} font-size="8.5" font-weight="700" fill={ROJO}>SANGRÍA + SALTO DOBLE · COLUMNAS FUERA DE REJILLA</text>
+
+        {/* Líneas guía horizontales */}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          <line x1="20" y1={54 + i * 16} x2="340" y2={54 + i * 16} stroke="#ecece6" stroke-width="1" />
+        ))}
+
+        {/* Columna izquierda */}
+        <text x="42" y="54" font-family={SERIF} font-size="8.5" fill={T}>La primera línea lleva sangría</text>
+        <text x="24" y="70" font-family={SERIF} font-size="8.5" fill={T}>profunda y al terminar deja un</text>
+        <text x="24" y="86" font-family={SERIF} font-size="8.5" fill={T}>hueco enorme antes del bloque.</text>
+
+        <rect x="24" y="90" width="144" height="14" fill={ROJO} opacity="0.14" />
+        <text x="42" y="114" font-family={SERIF} font-size="8.5" fill={T}>Aquí vuelve a sangrar después</text>
+        <text x="24" y="130" font-family={SERIF} font-size="8.5" fill={T}>del salto en blanco redundante.</text>
+
+        <text x="24" y="157" font-family={SANS} font-size="10" font-weight="900" fill={T}>Subtítulo fuera de compás</text>
+        <text x="42" y="177" font-family={SERIF} font-size="8.5" fill={T}>A partir de este punto ningún</text>
+        <text x="24" y="193" font-family={SERIF} font-size="8.5" fill={T}>renglón pisa sobre la línea</text>
+        <text x="24" y="209" font-family={SERIF} font-size="8.5" fill={T}>base original de la página.</text>
+
+        {/* Columna derecha desfasada */}
+        <line x1="180" y1="44" x2="180" y2="248" stroke="#dcdcd4" />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+          <g>
+            <text x="192" y={61 + i * 18.5} font-family={SERIF} font-size="8.5" fill={T}>
+              {[
+                'En la columna vecina los bloques',
+                'usan otro interlineado y márgenes',
+                'distintos: ninguna línea coincide',
+                'horizontalmente con la izquierda.',
+                '   El ojo percibe ese desnivel',
+                'como ruido en el centro del pliego',
+                'aunque el lector no sepa explicar',
+                'de dónde proviene la incomodidad',
+                'al pasar de una columna a otra',
+                'durante la lectura del ensayo.',
+              ][i]}
+            </text>
+            <line x1="175" y1={61 + i * 18.5} x2="186" y2={61 + i * 18.5} stroke={ROJO} stroke-width="1.2" />
+          </g>
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Rejilla de línea base compartida y pausas en múltiplos exactos"
+      notas={[
+        {
+          ...pct(98, 92),
+          titulo: 'Una sola señal por párrafo',
+          texto: 'Los párrafos se separan con exactamente 1 unidad base (16 px) de espacio vertical y mantienen su margen izquierdo limpio, sin sangría.',
+          zona: zona(20, 44, 152, 86),
+        },
+        {
+          ...pct(98, 174),
+          titulo: 'Intertítulo en múltiplo (2 u)',
+          texto: 'El bloque del subtítulo más sus márgenes superior e inferior suma exactamente dos renglones base (32 px), por lo que el texto siguiente vuelve a pisar la rejilla.',
+          zona: zona(20, 134, 152, 56),
+        },
+        {
+          ...pct(264, 198),
+          titulo: 'Columnas casadas al milímetro',
+          texto: 'Incluso después de una cita destacada en la columna derecha, las líneas de base de ambas columnas coinciden de principio a fin.',
+          zona: zona(176, 44, 164, 206),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Doble columna sincronizada sobre una rejilla de 16 píxeles donde párrafos, intertítulos y citas encajan en múltiplos exactos.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="14" y="14" width="332" height="252" fill="#fbfbf9" stroke={T} stroke-width="1.4" />
+        <text x="24" y="32" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>PULSO BASE: 16 PX · ESPACIOS EN MÚLTIPLOS ENTEROS (1 U, 2 U)</text>
+
+        {/* Líneas guía horizontales cada 16 px */}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+          <line x1="20" y1={54 + i * 16} x2="340" y2={54 + i * 16} stroke="#e6e6de" stroke-width="1" />
+        ))}
+
+        {/* Columna izquierda */}
+        {[
+          { y: 54, t: 'Cada renglón descansa sobre la' },
+          { y: 70, t: 'misma rejilla de 16 píxeles de' },
+          { y: 86, t: 'principio a fin del artículo.' },
+          // salto de 1 u (y=102 vacío)
+          { y: 118, t: 'Entre un párrafo y el siguiente' },
+          { y: 134, t: 'basta un renglón en blanco.' },
+        ].map((r) => (
+          <text x="24" y={r.y} font-family={SERIF} font-size="8.5" fill={T}>{r.t}</text>
+        ))}
+
+        {/* Intertítulo que ocupa exactamente 2 unidades (y=150 libre arriba, título en y=166) */}
+        <rect x="24" y="152" width="144" height="16" fill={AMARILLO} opacity="0.45" />
+        <text x="24" y="166" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>1. El compás del bloque</text>
+
+        {[
+          { y: 182, t: 'Después del subtítulo, la prosa' },
+          { y: 198, t: 'retoma exactamente el mismo' },
+          { y: 214, t: 'escalón horizontal que llevaba' },
+          { y: 230, t: 'antes de la pausa temática.' },
+        ].map((r) => (
+          <text x="24" y={r.y} font-family={SERIF} font-size="8.5" fill={T}>{r.t}</text>
+        ))}
+
+        <line x1="180" y1="44" x2="180" y2="242" stroke="#dcdcd4" />
+
+        {/* Columna derecha casada */}
+        {[
+          { y: 54, t: 'En la columna derecha los tres' },
+          { y: 70, t: 'primeros renglones espejan a' },
+          { y: 86, t: 'los de la columna izquierda.' },
+        ].map((r) => (
+          <text x="192" y={r.y} font-family={SERIF} font-size="8.5" fill={T}>{r.t}</text>
+        ))}
+
+        {/* Cita que ocupa 3 unidades exactas (de y=102 a y=150) */}
+        <line x1="192" y1="106" x2="192" y2="138" stroke={T} stroke-width="2" />
+        <text x="200" y="118" font-family={SERIF} font-style="italic" font-size="8.5" fill={T}>«El espacio vertical se mide en</text>
+        <text x="200" y="134" font-family={SERIF} font-style="italic" font-size="8.5" fill={T}>renglones, no en milímetros.»</text>
+
+        {[
+          { y: 166, t: 'Al salir de la cita, los cuatro' },
+          { y: 182, t: 'renglones finales vuelven a' },
+          { y: 198, t: 'alinearse al milímetro con los' },
+          { y: 214, t: 'de la columna vecina en la' },
+          { y: 230, t: 'misma línea de base.' },
+        ].map((r) => (
+          <text x="192" y={r.y} font-family={SERIF} font-size="8.5" fill={T}>{r.t}</text>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · pulso base, pausas y sincronía entre columnas"
+    consigna="Configura el pulso vertical de una doble columna editorial. Prueba cómo cambian la lectura al elegir sangría o espacio entre párrafos, al introducir intertítulos y citas, y al activar o desactivar el ajuste a la rejilla de líneas de base."
+    nota="Activa «Ver como mancha rítmica» en «Más controles» para abstraer las palabras y evaluar solo la alternancia entre llenos y vacíos."
+  >
+    <svg slot="escenario" viewBox="0 0 640 310" role="img" aria-label="Doble columna sobre rejilla de líneas de base con párrafos, intertítulo y cita sincronizados.">
+      <rect width="640" height="310" fill="#fbfbf9" />
+      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+        <line x1="28" y1={48 + i * 20} x2="612" y2={48 + i * 20} stroke="#e5e5dd" stroke-width="1" />
+      ))}
+      <text x="36" y="28" font-family={SANS} font-size="11" font-weight="700" fill="#222222">UNIDAD BASE: 20 PX · COMPÁS ARTICULADO · COLUMNAS EN SINCRONÍA</text>
+      <rect x="36" y="54" width="260" height="52" fill="#222222" opacity="0.12" />
+      <rect x="36" y="126" width="180" height="16" fill="#eeff41" />
+      <rect x="36" y="154" width="260" height="72" fill="#222222" opacity="0.12" />
+      <rect x="340" y="54" width="260" height="52" fill="#222222" opacity="0.12" />
+      <rect x="340" y="126" width="260" height="36" fill="#eeff41" opacity="0.45" />
+      <rect x="340" y="174" width="260" height="52" fill="#222222" opacity="0.12" />
+    </svg>
+
+    <Guia
+      slot="guia"
+      pasos={pasos}
+      final="Guía completada. Activa «Ver como mancha rítmica» en «Más controles» y compara cómo respira la página con cada combinación."
+    />
+
+    <Deslizador
+      lab={lab}
+      variable="unidad"
+      etiqueta="Unidad base vertical"
+      min={16}
+      max={24}
+      paso={2}
+      valor={20}
+      unidad="px"
+      ayuda="Altura del renglón base que sirve como módulo para todos los espacios verticales."
+    />
+    <Opciones
+      lab={lab}
+      variable="separacion"
+      etiqueta="Separación entre párrafos"
+      valor="espacio"
+      opciones={[
+        { valor: 'sangria', texto: 'Sangría de primera línea' },
+        { valor: 'espacio', texto: 'Espacio vertical (1 u)' },
+        { valor: 'ambas', texto: 'Ambas a la vez (redundante)' },
+      ]}
+      ayuda="Elige una sola señal para indicar dónde empieza el párrafo siguiente."
+    />
+    <Opciones
+      lab={lab}
+      variable="frecuencia"
+      etiqueta="Frecuencia de intertítulos y pausas"
+      valor="articulado"
+      opciones={[
+        { valor: 'muro', texto: 'Muro continuo' },
+        { valor: 'pausado', texto: 'Solo párrafos' },
+        { valor: 'articulado', texto: 'Compás articulado' },
+      ]}
+      ayuda="Añade intertítulos y citas destacadas para articular el recorrido de lectura."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="rejilla"
+        etiqueta="Alinear a la rejilla de líneas de base"
+        valor={true}
+        ayuda="Cuando está activo, todos los espacios antes y después de títulos o citas usan múltiplos enteros de la unidad base."
+      />
+      <Interruptor
+        lab={lab}
+        variable="mancha"
+        etiqueta="Ver como mancha rítmica"
+        valor={false}
+        ayuda="Sustituye las letras por barras para evaluar de un vistazo la proporción entre llenos y vacíos."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"unidad":20,"separacion":"espacio","frecuencia":"articulado","rejilla":true,"mancha":false}'>Compás articulado en rejilla</button>
+      <button type="button" class="dv-boton" data-preset='{"unidad":18,"separacion":"sangria","frecuencia":"muro","rejilla":true,"mancha":false}'>Muro continuo sin pausas</button>
+      <button type="button" class="dv-boton" data-preset='{"unidad":20,"separacion":"ambas","frecuencia":"articulado","rejilla":false,"mancha":false}'>Doble señal y fuera de rejilla</button>
+      <button type="button" class="dv-boton" data-preset='{"unidad":20,"separacion":"espacio","frecuencia":"articulado","rejilla":true,"mancha":true}'>Vista de mancha rítmica</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Elige sangría o espacio entre párrafos, no ambos"
+      comparar={false}
+      consigna="Este ensayo aplica una sangría profunda de 2 em y además un margen inferior de 20 px entre párrafos. Elige una sola convención para limpiar el contorno izquierdo del bloque."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SERIF};font-size:13px;color:#222;`}>
+        <p style="margin:0;">Marcar el inicio de párrafo con sangría y espacio vertical a la vez es redundante.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="metodo"
+        etiqueta="Cómo marcar el cambio de párrafo"
+        valor="ambos"
+        opciones={[
+          { valor: 'ambos', texto: 'Sangría + espacio grande (redundante)' },
+          { valor: 'sangria', texto: 'Solo sangría (sin espacio vertical)' },
+          { valor: 'espacio', texto: 'Solo espacio vertical (sin sangría)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Articula un muro de texto con pausas e intertítulos"
+      comparar={false}
+      consigna="Un bloque corrido sin ninguna división oculta su estructura interna. Introduce pausas de párrafo e intertítulos para que quien lee pueda orientarse."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SERIF};font-size:13px;color:#222;`}>
+        <p style="margin:0;">Un texto largo sin pausas visibles parece mucho más difícil de leer de lo que realmente es.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="nivel"
+        etiqueta="Articulación del bloque"
+        valor="muro"
+        opciones={[
+          { valor: 'muro', texto: 'Un solo bloque continuo' },
+          { valor: 'parrafos', texto: 'Dividido en párrafos' },
+          { valor: 'intertitulos', texto: 'Párrafos + intertítulo + lista' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Sincroniza el margen del intertítulo con la línea base"
+      comparar={false}
+      consigna="El renglón base mide 20 px, pero el intertítulo suma un alto total de 29 px y deja desfasada su columna respecto a la vecina. Ajusta el bloque del intertítulo a un múltiplo exacto de 20 px (40 px = 2 renglones)."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};font-size:13px;color:#222;`}>
+        <p style="margin:0;">Cuando un subtítulo ocupa múltiplos exactos del renglón base, las dos columnas vuelven a coincidir.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="altoSub"
+        etiqueta="Espacio total reservado al intertítulo"
+        min={24}
+        max={48}
+        paso={1}
+        valor={29}
+        unidad="px"
+        ayuda="El renglón base mide 20 px. Lleva el valor a 40 px (2 × 20 px) para casar ambas columnas."
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Ensayo literario: cadencia continua con sangría y cita en bloque"
+      notas={[
+        {
+          ...pct(176, 86),
+          titulo: 'Primer párrafo sin sangría',
+          texto: 'El párrafo que abre la sección o sigue a un título no necesita sangría porque su inicio ya es evidente; la sangría empieza en el segundo párrafo.',
+          zona: zona(34, 48, 286, 52),
+        },
+        {
+          ...pct(176, 152),
+          titulo: 'Pausa de 1 renglón antes y después de la cita',
+          texto: 'La cita en bloque se separa con exactamente un renglón en blanco arriba y abajo, cambiando la textura sin romper la rejilla.',
+          zona: zona(48, 122, 260, 56),
+        },
+        {
+          ...pct(176, 224),
+          titulo: 'Sangría de 1 em en texto seguido',
+          texto: 'En lectura inmersiva impresa, una sangría discreta de 1 em permite mantener las líneas juntas sin abrir huecos horizontales en cada párrafo.',
+          zona: zona(34, 184, 286, 66),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página de ensayo con primer párrafo al ras, cita centrada separada por un renglón exacto y párrafo siguiente con sangría de un cuadratín.">
+        <rect width={W} height={H} fill="#f5f2eb" />
+        <rect x="28" y="16" width="304" height="248" fill="#fffdf9" stroke="#dcd6c8" />
+        <text x="48" y="42" font-family={SANS} font-size="9.5" font-weight="900" letter-spacing="0.06em" fill={T}>II. LA PAUSA COMO MEDIDA</text>
+
+        {[
+          { x: 48, y: 62, t: 'En la música escrita el silencio tiene la misma precisión' },
+          { x: 48, y: 77, t: 'matemática que la nota. Una blanca o una negra de pausa' },
+          { x: 48, y: 92, t: 'no interrumpen el compás: lo hacen audible.' },
+          { x: 62, y: 107, t: 'En la página impresa ocurre otro tanto cuando el ojo' },
+          { x: 48, y: 122, t: 'recorre varios bloques de distinta densidad.' },
+        ].map((r) => (
+          <text x={r.x} y={r.y} font-family={SERIF} font-size="8.8" fill={T}>{r.t}</text>
+        ))}
+
+        {/* Cita separada por 1 renglón (y=137 vacío) */}
+        <line x1="62" y1="143" x2="62" y2="171" stroke={T} stroke-width="1.8" />
+        <text x="72" y="152" font-family={SERIF} font-style="italic" font-size="8.6" fill="#444444">«El ritmo tipográfico no consiste en repetir siempre lo</text>
+        <text x="72" y="167" font-family={SERIF} font-style="italic" font-size="8.6" fill="#444444">mismo, sino en alternar tensión y reposo con medida.»</text>
+
+        {/* Párrafo tras cita (y=182 vacío) */}
+        {[
+          { x: 48, y: 197, t: 'Tras la cita, el texto principal retoma el ancho normal' },
+          { x: 48, y: 212, t: 'de la caja. Como la pausa superior e inferior miden un' },
+          { x: 48, y: 227, t: 'renglón exacto, la rejilla continúa intacta hasta el pie.' },
+        ].map((r) => (
+          <text x={r.x} y={r.y} font-family={SERIF} font-size="8.8" fill={T}>{r.t}</text>
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Receta técnica paso a paso: compás modular de consulta rápida"
+      notas={[
+        {
+          ...pct(92, 118),
+          titulo: 'Columna fija de ingredientes',
+          texto: 'Los ingredientes usan un pulso corto de una línea por ítem con filetes finos que guían el barrido horizontal.',
+          zona: zona(20, 56, 114, 178),
+        },
+        {
+          ...pct(244, 102),
+          titulo: 'Pasos numerados con pausa constante',
+          texto: 'Cada paso se separa del siguiente por 16 px exactos (el doble de los 8 px que separan su título del cuerpo).',
+          zona: zona(146, 56, 194, 118),
+        },
+        {
+          ...pct(244, 214),
+          titulo: 'Acento final de tiempo y temperatura',
+          texto: 'La nota de horneado cierra la secuencia con un recuadro que cambia la densidad y señala el final del proceso.',
+          zona: zona(146, 184, 194, 58),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ficha de receta dividida en lista modular de ingredientes a la izquierda y tres pasos numerados con espaciado regular a la derecha.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="16" y="16" width="328" height="248" fill="#fbfbf9" stroke="#dcdcd6" />
+        <text x="28" y="38" font-family={SANS} font-size="12" font-weight="900" fill={T}>Pan de centeno y semillas · Escala 8 / 16 / 24 px</text>
+        <line x1="28" y1="46" x2="332" y2="46" stroke={T} stroke-width="1.5" />
+
+        {/* Columna izquierda: ingredientes */}
+        <text x="28" y="64" font-family={SANS} font-size="8" font-weight="700" letter-spacing="0.08em" fill={G}>INGREDIENTES</text>
+        {[
+          ['Harina centeno', '320 g'],
+          ['Agua tibia', '260 ml'],
+          ['Masa madre', '90 g'],
+          ['Semillas lino', '40 g'],
+          ['Sal marina', '8 g'],
+        ].map(([ing, cant], i) => (
+          <g>
+            <text x="28" y={84 + i * 24} font-family={SANS} font-size="8.5" fill={T}>{ing}</text>
+            <text x="128" y={84 + i * 24} text-anchor="end" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>{cant}</text>
+            <line x1="28" y1={91 + i * 24} x2="128" y2={91 + i * 24} stroke="#e5e5e0" />
+          </g>
+        ))}
+
+        {/* Columna derecha: pasos */}
+        <line x1="142" y1="54" x2="142" y2="246" stroke="#e2e2dc" />
+        <text x="154" y="64" font-family={SANS} font-size="8" font-weight="700" letter-spacing="0.08em" fill={G}>PREPARACIÓN</text>
+
+        <text x="154" y="84" font-family={SANS} font-size="9" font-weight="900" fill={T}>01 · Autólisis (30 min)</text>
+        <text x="154" y="98" font-family={SERIF} font-size="8.5" fill="#444444">Mezcla la harina con el agua hasta</text>
+        <text x="154" y="110" font-family={SERIF} font-size="8.5" fill="#444444">que no queden restos secos.</text>
+
+        <text x="154" y="134" font-family={SANS} font-size="9" font-weight="900" fill={T}>02 · Fermentación en bloque (3 h)</text>
+        <text x="154" y="148" font-family={SERIF} font-size="8.5" fill="#444444">Incorpora la masa madre, la sal y</text>
+        <text x="154" y="160" font-family={SERIF} font-size="8.5" fill="#444444">las semillas hidratadas.</text>
+
+        <rect x="154" y="186" width="176" height="48" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="164" y="203" font-family={SANS} font-size="8" font-weight="900" fill={T}>03 · HORNEADO EN MOLDE</text>
+        <text x="164" y="218" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>45 min a 230 °C con vapor</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Crónica periodística: alternancia de sumario, prosa e intertítulo"
+      notas={[
+        {
+          ...pct(180, 56),
+          titulo: 'Sumario de entrada con tempo lento',
+          texto: 'Un sumario inicial en cuerpo mayor y 3 renglones introduce el tema a un ritmo más pausado antes de pasar al cuerpo de lectura.',
+          zona: zona(22, 32, 316, 48),
+        },
+        {
+          ...pct(98, 156),
+          titulo: 'Pulso estable en el cuerpo',
+          texto: 'La prosa avanza con renglones regulares que sostienen la narración sin sobresaltos.',
+          zona: zona(22, 86, 152, 162),
+        },
+        {
+          ...pct(262, 136),
+          titulo: 'Destacado que abre ventana de blanco',
+          texto: 'En la segunda columna un sumario destacado rompe la grisura a media altura y ofrece un segundo punto de entrada al lector que hojea.',
+          zona: zona(186, 88, 152, 76),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Crónica periodística con sumario ancho arriba, columna de texto continuo a la izquierda y cita destacada que oxigena la columna derecha.">
+        <rect width={W} height={H} fill="#f8f7f3" />
+        <text x="24" y="28" font-family={SANS} font-size="8" font-weight="700" letter-spacing="0.1em" fill={G}>REPORTAJE · ARQUITECTURA ESCOLAR</text>
+        <text x="24" y="48" font-family={SERIF} font-size="13.5" font-weight="700" fill={T}>Aulas abiertas al patio y a la brisa del valle</text>
+        <text x="24" y="64" font-family={SERIF} font-size="7.4" fill="#444444">Tres escuelas rurales sustituyen el corredor cerrado por galerías ventiladas que bajan 5 °C.</text>
+        <line x1="24" y1="74" x2="336" y2="74" stroke={T} stroke-width="1.2" />
+
+        {[
+          'A las once de la mañana el sol',
+          'cae a plomo sobre la cubierta de',
+          'barro cocido, pero bajo el alero',
+          'de tres metros corre una brisa',
+          'constante que cruza las celosías',
+          'de ladrillo perforado.',
+          '   Los pupitres se organizan en',
+          'semicírculo frente al jardín de',
+          'lluvia donde decanta el agua de',
+          'los tejados durante octubre.',
+        ].map((l, i) => (
+          <text x="24" y={92 + i * 15} font-family={SERIF} font-size="8.6" fill={T}>{l}</text>
+        ))}
+
+        <line x1="180" y1="82" x2="180" y2="246" stroke="#dcdcd4" />
+
+        <line x1="192" y1="90" x2="334" y2="90" stroke={T} stroke-width="2" />
+        <text x="192" y="108" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>«La sombra ventilada</text>
+        <text x="192" y="122" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>reemplazó a seis aires</text>
+        <text x="192" y="136" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>acondicionados.»</text>
+        <line x1="192" y1="146" x2="334" y2="146" stroke={T} stroke-width="1" />
+
+        {[
+          'El diseño recupera la proporción',
+          'de los antiguos secaderos de café',
+          'de la vereda: zócalo firme de',
+          'piedra, estructura liviana de',
+          'guadua inmunizada y lucernarios',
+          'orientados hacia el norte.',
+        ].map((l, i) => (
+          <text x="192" y={167 + i * 15} font-family={SERIF} font-size="8.6" fill={T}>{l}</text>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre pulso vertical, sangría frente a espacio entre párrafos, pausas de articulación y sincronía de líneas de base."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const lab = 'ritmo-tipografico';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const TINTA = '#222222';
+  const SEC = '#6f6f6f';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+
+  // ── 1. Instrumento principal: ritmo-tipografico ─────────────────
+  type E = {
+    unidad: number;
+    separacion: string;
+    frecuencia: string;
+    rejilla: boolean;
+    mancha: boolean;
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 300);
+    const u = e.unidad;
+    const top = 46;
+    const totalLineas = 12;
+    const H = top + totalLineas * u + 26;
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Doble columna con unidad base de ${u} píxeles, separación ${e.separacion}, frecuencia ${e.frecuencia} y rejilla ${e.rejilla ? 'activa' : 'inactiva'}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 500 ? 16 : 28;
+    const gap = W < 500 ? 16 : 28;
+    const colW = (W - padX * 2 - gap) / 2;
+    const x1 = padX;
+    const x2 = padX + colW + gap;
+
+    const okRitmo = e.separacion !== 'ambas' && e.frecuencia !== 'muro' && e.rejilla;
+    const etq = svg('text', {
+      x: padX,
+      y: 24,
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 700,
+      fill: okRitmo ? TINTA : COTA,
+    });
+    etq.textContent = `PULSO BASE: ${u} PX · ${
+      e.rejilla ? 'ALINEADO A REJILLA' : 'FUERA DE REJILLA (DESFASE ENTRE COLUMNAS)'
+    }`;
+    raiz.append(etq);
+
+    // Marco y líneas de la rejilla base
+    raiz.append(
+      svg('rect', {
+        x: padX - 8,
+        y: top - 10,
+        width: W - (padX - 8) * 2,
+        height: totalLineas * u + 20,
+        fill: '#ffffff',
+        stroke: okRitmo ? TINTA : '#d4d4ce',
+        'stroke-width': 1.4,
+      }),
+    );
+
+    for (let i = 0; i <= totalLineas; i++) {
+      const y = top + i * u;
+      raiz.append(
+        svg('line', {
+          x1: padX - 6,
+          y1: y,
+          x2: W - padX + 6,
+          y2: y,
+          stroke: e.rejilla ? '#e6e6de' : '#f1f1ec',
+          'stroke-width': 1,
+        }),
+      );
+    }
+
+    const fs = Math.max(9.5, Math.min(12.5, u * 0.56));
+    const usaSangria = e.separacion === 'sangria' || e.separacion === 'ambas';
+    const usaHueco = e.separacion === 'espacio' || e.separacion === 'ambas';
+
+    function dibujarLinea(x: number, y: number, texto: string, opts?: { sangria?: boolean; titulo?: boolean; cita?: boolean; desfase?: boolean }) {
+      const dx = opts?.sangria ? 18 : opts?.cita ? 12 : 0;
+      const wMax = colW - dx - 6;
+      if (opts?.cita) {
+        raiz.append(svg('line', { x1: x + 2, y1: y - fs, x2: x + 2, y2: y + 3, stroke: TINTA, 'stroke-width': 2.2 }));
+      }
+      if (e.mancha) {
+        const frac = opts?.titulo ? 0.62 : Math.min(0.96, texto.length / 36);
+        raiz.append(
+          svg('rect', {
+            x: x + dx,
+            y: y - fs * 0.78,
+            width: Math.max(36, wMax * frac),
+            height: opts?.titulo ? fs * 0.95 : fs * 0.62,
+            fill: opts?.titulo ? TINTA : opts?.cita ? '#555555' : '#3a3a3a',
+            opacity: opts?.cita ? 0.75 : 0.9,
+          }),
+        );
+      } else {
+        const t = svg('text', {
+          x: x + dx,
+          y,
+          'font-family': opts?.titulo ? SANS : SERIF,
+          'font-size': opts?.titulo ? fs * 1.06 : fs,
+          'font-weight': opts?.titulo ? 900 : 400,
+          'font-style': opts?.cita ? 'italic' : 'normal',
+          fill: opts?.desfase ? COTA : TINTA,
+        });
+        t.textContent = texto;
+        raiz.append(t);
+      }
+    }
+
+    // Construir renglones de la columna 1
+    if (e.frecuencia === 'muro') {
+      const frases = [
+        'Cuando todos los renglones se suceden',
+        'sin pausas ni cambios de jerarquía,',
+        'la columna se convierte en un muro',
+        'compacto donde cuesta orientarse.',
+        'La vista recorre línea tras línea',
+        'sin encontrar un solo punto de apoyo',
+        'para descansar o retomar la lectura',
+        'si alguien interrumpe un momento.',
+        'Aunque la línea base sea regular,',
+        'la repetición sin variaciones termina',
+        'adormeciendo la atención del lector.',
+      ];
+      frases.forEach((f, i) => {
+        const y = top + (i + 1) * u;
+        dibujarLinea(x1, y, f, { sangria: usaSangria && (i === 4 || i === 8) });
+      });
+    } else if (e.frecuencia === 'pausado') {
+      const p1 = ['El pulso regular de la línea base', 'sostiene el recorrido horizontal', 'de cada párrafo con estabilidad.'];
+      const p2 = ['Al cambiar de idea, una pausa', 'clara —sangría o un renglón libre—', 'marca el inicio del bloque nuevo.'];
+      const p3 = ['Sin embargo, en textos extensos', 'hace falta además algún acento', 'que articule las secciones.'];
+      let cursor = top + u;
+      p1.forEach((f) => {
+        dibujarLinea(x1, cursor, f);
+        cursor += u;
+      });
+      if (usaHueco) cursor += e.rejilla ? u : u * 0.65;
+      if (e.separacion === 'ambas') {
+        raiz.append(svg('rect', { x: x1, y: cursor - u + 3, width: colW, height: u - 4, fill: COTA, opacity: 0.14 }));
+      }
+      p2.forEach((f, idx) => {
+        dibujarLinea(x1, cursor, f, { sangria: usaSangria && idx === 0, desfase: !e.rejilla });
+        cursor += u;
+      });
+      if (usaHueco) cursor += e.rejilla ? u : u * 0.65;
+      p3.forEach((f, idx) => {
+        if (cursor <= top + totalLineas * u) {
+          dibujarLinea(x1, cursor, f, { sangria: usaSangria && idx === 0, desfase: !e.rejilla });
+          cursor += u;
+        }
+      });
+    } else {
+      // articulado
+      const p1 = ['El pulso regular del renglón base', 'sostiene la lectura línea a línea', 'como el compás en una partitura.'];
+      let cursor = top + u;
+      p1.forEach((f) => {
+        dibujarLinea(x1, cursor, f);
+        cursor += u;
+      });
+      if (usaHueco) cursor += e.rejilla ? u : u * 0.6;
+      const p2 = ['Cada párrafo añade una respiración', 'medida sin romper la columna.'];
+      p2.forEach((f, idx) => {
+        dibujarLinea(x1, cursor, f, { sangria: usaSangria && idx === 0, desfase: !e.rejilla });
+        cursor += u;
+      });
+      // Intertítulo: en rejilla ocupa exactamente 2u (1u de espacio arriba + 1u de línea)
+      cursor += e.rejilla ? u : u * 0.45;
+      raiz.append(
+        svg('rect', {
+          x: x1,
+          y: cursor - fs * 0.85,
+          width: Math.min(colW, 180),
+          height: fs * 1.15,
+          fill: AMARILLO,
+          opacity: 0.55,
+        }),
+      );
+      dibujarLinea(x1, cursor, '1. Variación dentro del orden', { titulo: true, desfase: !e.rejilla });
+      cursor += e.rejilla ? u : u * 0.75;
+      const p3 = ['Después del subtítulo, el cuerpo', 'vuelve a pisar la línea de base', 'en sincronía con la otra columna.'];
+      p3.forEach((f, idx) => {
+        if (cursor <= top + totalLineas * u) {
+          dibujarLinea(x1, cursor, f, { sangria: usaSangria && idx === 0, desfase: !e.rejilla });
+          cursor += u;
+        }
+      });
+    }
+
+    // Columna 2 (para comprobar sincronía horizontal con la columna 1)
+    let c2 = top + u;
+    const der1 = ['En la segunda columna los renglones', 'comparten el mismo pulso vertical', 'para evitar escalones en el centro.'];
+    der1.forEach((f) => {
+      dibujarLinea(x2, c2, f);
+      c2 += u;
+    });
+
+    if (e.frecuencia === 'articulado') {
+      c2 += e.rejilla ? u : u * 0.55;
+      const cita = ['«La regularidad sostiene la vista;', 'la variación despierta el interés.»'];
+      cita.forEach((f) => {
+        dibujarLinea(x2, c2, f, { cita: true, desfase: !e.rejilla });
+        c2 += u;
+      });
+      c2 += e.rejilla ? u : u * 0.65;
+    } else if (usaHueco && e.frecuencia !== 'muro') {
+      c2 += e.rejilla ? u : u * 0.65;
+    }
+
+    const der2 = [
+      'Al retomar el texto normal, las',
+      'líneas de base de ambas columnas',
+      'coinciden de lado a lado cuando',
+      'los blancos usan múltiplos exactos',
+      'de la unidad base del documento.',
+    ];
+    der2.forEach((f, idx) => {
+      if (c2 <= top + totalLineas * u) {
+        dibujarLinea(x2, c2, f, { sangria: usaSangria && idx === 0 && e.frecuencia !== 'muro', desfase: !e.rejilla });
+        c2 += u;
+      }
+    });
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    if (e.separacion === 'ambas') {
+      return `Estás aplicando <b class="dv-cifra">sangría y espacio vertical a la vez</b>. Ambas señales dicen «nuevo párrafo»: usarlas juntas muerde la esquina del bloque y entorpece el ritmo.`;
+    }
+    if (!e.rejilla) {
+      return `Con la rejilla desactivada, los espacios de títulos y citas usan fracciones sueltas en vez de múltiplos de <b class="dv-cifra">${e.unidad} px</b>: las dos columnas pierden la alineación horizontal.`;
+    }
+    if (e.frecuencia === 'muro') {
+      return `Pulso constante de <b class="dv-cifra">${e.unidad} px</b>, pero en <b class="dv-cifra">muro continuo</b>: hay repetición mecánica sin pausas ni jerarquía que articulen la página.`;
+    }
+    if (e.frecuencia === 'pausado') {
+      const modoSep = e.separacion === 'sangria' ? 'sangría de primera línea' : `un renglón completo (${e.unidad} px)`;
+      return `Párrafos separados mediante <b class="dv-cifra">${modoSep}</b> sobre una rejilla de ${e.unidad} px. Añade «Compás articulado» para ver cómo entran en juego los intertítulos y las citas.`;
+    }
+    return `Ritmo vivo y sincronizado: todos los bloques, intertítulos y citas suman múltiplos exactos de <b class="dv-cifra">${e.unidad} px</b> y las dos columnas encajan en la misma línea de base.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.frecuencia === 'muro' && e.separacion === 'sangria',
+      (e) => e.separacion === 'ambas',
+      (e) => e.separacion === 'espacio' && e.frecuencia === 'articulado',
+      (e) => !e.rejilla,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── 2. Especímenes de error ────────────────────────────────────
+  type E1 = { metodo: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const indent = e.metodo === 'ambos' || e.metodo === 'sangria' ? '2em' : '0';
+    const mb = e.metodo === 'ambos' ? '18px' : e.metodo === 'espacio' ? '12px' : '0';
+    const borde = e.metodo === 'ambos' ? COTA : '#222';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};font-size:13px;line-height:1.5;color:#222;border-left:3px solid ${borde};">
+        <p style="margin:0 0 ${mb};">El primer párrafo introduce la tesis general sin sangría porque abre la sección y su punto de partida ya está claro.</p>
+        <p style="margin:0 0 ${mb};text-indent:${indent};">El segundo párrafo desarrolla el argumento. Solo necesita una señal —o sangría o espacio vertical— para distinguirse del anterior.</p>
+        <p style="margin:0;text-indent:${indent};">El tercer párrafo cierra la demostración manteniendo el mismo pulso que eligió el diseñador.</p>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.metodo === 'ambos') {
+      return '<b class="dv-cifra">Señal duplicada</b>: sumar sangría de 2 em y además 18 px de hueco vertical abre escalones vacíos en cada párrafo.';
+    }
+    if (e.metodo === 'sangria') {
+      return '<b class="dv-cifra">Tradición editorial impresa</b>: la sangría sola mantiene la mancha compacta y continua sin perder la división de párrafos.';
+    }
+    return '<b class="dv-cifra">Convención de pantalla</b>: un espacio vertical medido separa los bloques manteniendo limpio el eje izquierdo.';
+  }
+
+  type E2 = { nivel: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    if (e.nivel === 'muro') {
+      d.innerHTML = `
+        <div style="padding:16px 18px;font-family:${SERIF};font-size:12.5px;line-height:1.48;color:#222;">
+          <p style="margin:0;">Las cubiertas vegetales retienen hasta el sesenta por ciento del agua de lluvia y amortiguan el calor urbano durante el verano. Para instalarlas sobre una losa existente conviene verificar primero la carga estructural disponible, colocar una membrana impermeable continua con raíces bloqueadas, extender una capa drenante liviana de arcilla expandida y elegir especies crasas de bajo riego que resistan tanto la insolación directa como las semanas secas sin mantenimiento mecánico.</p>
+        </div>`;
+      return;
+    }
+    if (e.nivel === 'parrafos') {
+      d.innerHTML = `
+        <div style="padding:16px 18px;font-family:${SERIF};font-size:12.5px;line-height:1.48;color:#222;">
+          <p style="margin:0 0 10px;">Las cubiertas vegetales retienen hasta el sesenta por ciento del agua de lluvia y amortiguan el calor urbano durante el verano.</p>
+          <p style="margin:0;">Para instalarlas sobre una losa existente conviene verificar primero la carga estructural disponible, colocar una membrana impermeable continua, extender una capa drenante liviana y elegir especies de bajo riego.</p>
+        </div>`;
+      return;
+    }
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};font-size:12.5px;line-height:1.48;color:#222;">
+        <p style="margin:0 0 10px;">Las cubiertas vegetales retienen hasta el 60 % del agua de lluvia y amortiguan el calor urbano durante el verano.</p>
+        <p style="margin:0 0 6px;font-family:${SANS};font-size:11px;font-weight:900;letter-spacing:0.04em;color:#222;">REQUISITOS DE INSTALACIÓN</p>
+        <ul style="margin:0;padding-left:18px;">
+          <li>Verificar la carga estructural de la losa.</li>
+          <li>Colocar membrana impermeable y capa drenante liviana.</li>
+          <li>Sembrar especies crasas resistentes a la sequía.</li>
+        </ul>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.nivel === 'muro') return 'El texto entero se funde en <b class="dv-cifra">un único bloque denso</b> que oculta la enumeración técnica.';
+    if (e.nivel === 'parrafos') return 'Separar los dos párrafos da una primera pausa, aunque los tres pasos técnicos siguen escondidos dentro de una oración larga.';
+    return '<b class="dv-cifra">Ritmo articulado</b>: el párrafo presenta la idea, el intertítulo anuncia el cambio y la lista ordena los tres requisitos.';
+  }
+
+  type E3 = { altoSub: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const casado = e.altoSub === 40;
+    const desfase = e.altoSub - 40;
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};font-size:12.5px;color:#222;background:repeating-linear-gradient(to bottom, #ffffff 0, #ffffff 19px, #ecece4 19px, #ecece4 20px);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="height:20px;line-height:20px;">Primera línea sobre la rejilla de 20 px.</div>
+            <div style="height:${e.altoSub}px;display:flex;align-items:flex-end;font-family:${SANS};font-size:11px;font-weight:900;color:${casado ? '#222' : COTA};">
+              Subtítulo (${e.altoSub} px totales)
+            </div>
+            <div style="height:20px;line-height:20px;color:${casado ? '#222' : COTA};">Renglón posterior al subtítulo.</div>
+            <div style="height:20px;line-height:20px;color:${casado ? '#222' : COTA};">Cierre de la primera columna.</div>
+          </div>
+          <div>
+            <div style="height:20px;line-height:20px;">Primera línea de la columna vecina.</div>
+            <div style="height:20px;line-height:20px;">Segunda línea continua en 20 px.</div>
+            <div style="height:20px;line-height:20px;">Tercera línea continua en 20 px.</div>
+            <div style="height:20px;line-height:20px;font-weight:${casado ? '700' : '400'};">Renglón que debe empatar →</div>
+            <div style="height:20px;line-height:20px;">Cierre de la segunda columna.</div>
+          </div>
+        </div>
+      </div>`;
+    void desfase;
+  }
+  function describirE3(e: E3) {
+    const diff = e.altoSub - 40;
+    if (diff === 0) {
+      return '<b class="dv-cifra">40 px (2 × 20 px)</b>: el subtítulo ocupa exactamente dos renglones base y las dos columnas vuelven a pisar la misma línea.';
+    }
+    return `Con <b class="dv-cifra">${e.altoSub} px</b> hay un desfase de ${Math.abs(diff)} px respecto al múltiplo de 40 px: los renglones de la izquierda quedan desnivelados frente a la derecha.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── 3. Juego de 5 rondas ───────────────────────────────────────
+  function rondaSenalParrafo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Párrafos separados por 1 renglón de espacio vertical, sin sangría',
+        describir: 'Tres párrafos alineados al margen izquierdo con un espacio vertical limpio entre ellos.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:11.5px;line-height:1.45;color:#222;">
+          <p style="margin:0 0 10px;">El primer párrafo establece el pulso de lectura sobre el eje izquierdo.</p>
+          <p style="margin:0;">El segundo párrafo se separa con un salto vertical medido, sin añadir sangría redundante.</p>
+        </div>`,
+      },
+      {
+        texto: 'Párrafos con sangría profunda de 3 em y además un hueco grande entre bloques',
+        describir: 'Párrafos que combinan sangría exagerada y salto en blanco al mismo tiempo.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:11.5px;line-height:1.45;color:#222;">
+          <p style="margin:0 0 18px;text-indent:2.6em;">El primer párrafo sangra su inicio y deja además un hueco enorme debajo.</p>
+          <p style="margin:0;text-indent:2.6em;">El segundo vuelve a sangrar después del hueco, duplicando la misma señal.</p>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de los dos bloques marca el cambio de párrafo con limpieza y sin redundancia?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La sangría de primera línea y el espacio vertical entre párrafos cumplen exactamente la misma función. Elegir una sola mantiene limpio el ritmo vertical.',
+      repaso: 'Sangría frente a espacio vertical',
+    };
+  }
+
+  function rondaMuroVsCompas(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Texto articulado con párrafo introductorio, intertítulo y cita en bloque',
+        describir: 'Columna donde alternan un párrafo, un intertítulo en negrita y una cita con filete lateral.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:11px;line-height:1.4;color:#222;">
+          <p style="margin:0 0 8px;">La alternancia de bloques permite anticipar la estructura del texto antes de leer cada frase.</p>
+          <strong style="display:block;font-family:${SANS};font-size:10px;margin-bottom:4px;">1. PAUSA Y VARIACIÓN</strong>
+          <blockquote style="margin:0;padding-left:8px;border-left:2px solid #222;font-style:italic;color:#444;">«El ritmo nace de combinar orden y contraste.»</blockquote>
+        </div>`,
+      },
+      {
+        texto: 'Veinte renglones corridos del mismo estilo sin un solo punto y aparte ni subtítulo',
+        describir: 'Bloque macizo de texto continuo sin divisiones visibles.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:10.5px;line-height:1.35;color:#222;">
+          Cuando una página entera carece de puntos y aparte, de intertítulos o de listas, toda la superficie tiene la misma densidad gris. Quien intenta consultar un dato no encuentra puertas de entrada ni lugares donde descansar la vista al cambiar de idea.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según Emil Ruder, ¿cuál de las dos composiciones transforma la repetición uniforme en un ritmo vivo?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La simple repetición de líneas iguales produce monotonía; el ritmo aparece cuando ese pulso base se articula con pausas, intertítulos y cambios controlados de densidad.',
+      repaso: 'Repetición frente a ritmo articulado',
+    };
+  }
+
+  function rondaRejillaBase(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El subtítulo más sus márgenes suma 48 px (exactamente 2 renglones de 24 px)',
+        describir: 'Dos columnas cuyos renglones vuelven a coincidir después de un subtítulo de 48 px.',
+        es: true,
+        html: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 19px,#eaeae2 19px,#eaeae2 20px);border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:11px;line-height:20px;color:#222;">
+          <div>
+            <div>Renglón base 1</div>
+            <div style="height:40px;display:flex;align-items:flex-end;font-family:${SANS};font-weight:900;font-size:10.5px;">SUBTÍTULO (2 × 20 PX)</div>
+            <div>Empata con la derecha →</div>
+          </div>
+          <div>
+            <div>Renglón base 1</div>
+            <div>Renglón base 2</div>
+            <div>Renglón base 3</div>
+            <div>← Misma línea de base</div>
+          </div>
+        </div>`,
+      },
+      {
+        texto: 'El subtítulo más sus márgenes suma 31 px sobre un renglón base de 24 px',
+        describir: 'Dos columnas donde el subtítulo deja desnivelados todos los renglones siguientes.',
+        es: false,
+        html: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 19px,#eaeae2 19px,#eaeae2 20px);border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:11px;line-height:20px;color:#222;">
+          <div>
+            <div>Renglón base 1</div>
+            <div style="height:29px;display:flex;align-items:flex-end;font-family:${SANS};font-weight:900;font-size:10.5px;color:${COTA};">SUBTÍTULO (29 PX)</div>
+            <div style="color:${COTA};">Queda desfasado 9 px →</div>
+          </div>
+          <div>
+            <div>Renglón base 1</div>
+            <div>Renglón base 2</div>
+            <div>Renglón base 3</div>
+            <div>← No coincide</div>
+          </div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Tu cuerpo de texto tiene un interlineado base de 24 px. ¿Qué medida para el bloque del intertítulo mantiene casadas dos columnas paralelas?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como explica Bringhurst, cuando el alto del intertítulo sumado a sus espacios superior e inferior equivale a un múltiplo entero del renglón base (2 × 24 = 48 px), el texto posterior retoma la rejilla sin desfase.',
+      repaso: 'Múltiplos enteros del renglón base',
+    };
+  }
+
+  function rondaAsimetriaSubtitulo(): Ronda {
+    const ops = barajar([
+      {
+        texto: '24 px arriba del intertítulo y 8 px debajo (más cerca del párrafo que encabeza)',
+        describir: 'Intertítulo separado del bloque anterior y próximo al párrafo que introduce.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:11px;line-height:1.4;color:#222;">
+          <p style="margin:0 0 18px;">Aquí termina la sección anterior.</p>
+          <strong style="display:block;font-family:${SANS};font-size:10.5px;margin:0 0 4px;">2. NUEVA SECCIÓN (24 PX ARRIBA / 8 PX ABAJO)</strong>
+          <p style="margin:0;">El subtítulo abraza a su propio párrafo y sigue sumando 32 px en total.</p>
+        </div>`,
+      },
+      {
+        texto: '8 px arriba del intertítulo y 24 px debajo (pegado al párrafo que ya terminó)',
+        describir: 'Intertítulo pegado al párrafo anterior y separado del suyo.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:11px;line-height:1.4;color:#222;">
+          <p style="margin:0 0 4px;">Aquí termina la sección anterior.</p>
+          <strong style="display:block;font-family:${SANS};font-size:10.5px;margin:0 0 18px;color:${COTA};">2. NUEVA SECCIÓN (PEGADA ARRIBA)</strong>
+          <p style="margin:0;">El subtítulo queda huérfano y lejos del texto que debía presentar.</p>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Para mantener un múltiplo total de 32 px alrededor de un intertítulo y respetar a la vez la ley de proximidad, ¿cómo repartes el espacio antes y después?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un intertítulo pertenece a la sección que abre: debe llevar más espacio arriba (pausa respecto al bloque anterior) que abajo (unión con su propio párrafo), mientras la suma de ambos conserva el múltiplo de la rejilla.',
+      repaso: 'Compás asimétrico en intertítulos',
+    };
+  }
+
+  function rondaAjusteRejilla(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El renglón base de esta página mide 20 px. Ajusta el espacio total que ocupa la cita destacada hasta que sea un múltiplo exacto (60 px = 3 renglones) y las dos columnas queden alineadas abajo.',
+      control: {
+        etiqueta: 'Altura total del bloque de la cita',
+        min: 44,
+        max: 72,
+        paso: 2,
+        valor: 48,
+        unidad: 'px',
+      },
+      pintar: (c, v) => {
+        const ok = v === 60;
+        c.innerHTML = `
+          <div style="padding:14px;background:repeating-linear-gradient(to bottom,#ffffff 0,#ffffff 19px,#eaeae2 19px,#eaeae2 20px);border:1.5px solid ${ok ? TINTA : COTA};text-align:left;font-family:${SERIF};font-size:12px;color:#222;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div>
+                <div style="height:20px;line-height:20px;">Línea 1 (izquierda)</div>
+                <div style="height:${v}px;box-sizing:border-box;border-left:3px solid ${ok ? TINTA : COTA};padding-left:8px;display:flex;align-items:center;background:rgba(238,255,65,0.28);font-style:italic;">
+                  «Cita destacada: ${v} px totales»
+                </div>
+                <div style="height:20px;line-height:20px;font-weight:700;color:${ok ? TINTA : COTA};">Línea posterior a la cita →</div>
+              </div>
+              <div>
+                <div style="height:20px;line-height:20px;">Línea 1 (derecha)</div>
+                <div style="height:20px;line-height:20px;">Línea 2 continua</div>
+                <div style="height:20px;line-height:20px;">Línea 3 continua</div>
+                <div style="height:20px;line-height:20px;">Línea 4 continua</div>
+                <div style="height:20px;line-height:20px;font-weight:700;">← Línea 5 (meta: 60 px)</div>
+              </div>
+            </div>
+          </div>`;
+      },
+      cumple: (v) => v === 60,
+      falta: (v) => `Con ${v} px la línea inferior queda desfasada ${Math.abs(60 - v)} px respecto a la rejilla de 20 px. Lleva el bloque a 60 px.`,
+      porque: 'Con 60 px (exactamente 3 renglones de 20 px), la cita introduce una variación clara sin sacar de compás los párrafos que siguen debajo.',
+      repaso: 'Sincronización a la rejilla de líneas de base',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaSenalParrafo(),
+        rondaMuroVsCompas(),
+        rondaRejillaBase(),
+        rondaAsimetriaSubtitulo(),
+        rondaAjusteRejilla(),
+      ]),
+    );
+  }
+</script>

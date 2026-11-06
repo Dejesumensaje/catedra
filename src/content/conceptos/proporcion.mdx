@@ -1,0 +1,182 @@
+---
+titulo: Proporción
+territorio: composicion
+pregunta: ¿Por qué una página dividida exactamente por la mitad suele verse indecisa, mientras una relación desigual organiza el espacio con claridad?
+resumen: "La proporción es la relación numérica y visual entre el ancho y el alto de un formato, o entre las partes en que se divide una superficie. Las particiones francamente desiguales (2:3, 1:2, 3:5) definen qué zona domina y cuál acompaña."
+modos: [laboratorio, diseccion]
+orden: 25
+relaciones:
+  - concepto: reticulas-y-alineacion
+    porQue: El número de columnas de una retícula determina en qué proporciones puede partirse el plano (mitades, tercios, cuartos o quintos).
+  - concepto: escalas-tipograficas
+    porQue: Una escala tipográfica aplica en los cuerpos de letra el mismo principio de razones matemáticas constantes que la proporción aplica en el espacio.
+  - concepto: equilibrio
+    porQue: Dividir la página en partes desiguales exige compensar el peso visual de la zona dominante con el contrapeso de la zona menor.
+  - concepto: enfasis
+    porQue: Asignar dos tercios o tres cuartos de la superficie a un bloque le otorga dominancia inmediata frente al resto de la composición.
+  - concepto: asimetria
+    porQue: Las particiones proporcionales como 2:3 o 3:5 desplazan el eje fuera del centro geométrico y activan el equilibrio asimétrico.
+fuentes:
+  - autor: Jan Tschichold
+    obra: "Ausgewählte Aufsätze über Fragen der Gestalt des Buches und der Typographie (ed. inglesa: The Form of the Book: Essays on the Morality of Good Design, Lund Humphries, 1991)"
+    anio: 1975
+    nota: Estudio histórico de las proporciones de página irracionales y racionales (1:√2 de la norma DIN, 2:3, 3:4, 5:8) y los cánones de división de márgenes de Villard de Honnecourt y Van de Graaf.
+  - autor: Josef Müller-Brockmann
+    obra: "Grid systems in graphic design / Rastersysteme für die visuelle Gestaltung. Arthur Niggli"
+    anio: 1981
+    nota: Relaciones proporcionales en la división modular del plano y en los formatos de imagen.
+  - autor: Le Corbusier
+    obra: "Le Modulor: Essai sur une mesure harmonique à l'échelle humaine applicable universellement à l'architecture et à la mécanique. Éditions de l'Architecture d'Aujourd'hui"
+    anio: 1950
+    nota: Sistema de proporciones modulares y series de medidas relacionadas para evitar subdivisiones arbitrarias.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ProporcionExp from '../../components/diseno-visual/experiencias/ProporcionExp.astro';
+
+<Paso id="idea" titular="Partes iguales empatan; partes desiguales conversan">
+
+<ProporcionExp paso="idea" />
+
+<p class="dv-frase">Dividir en partes iguales crea un empate; dividir con una razón clara crea una relación.</p>
+
+<div class="dv-texto">
+
+Al repartir un cartel o una pantalla entre dos bloques —por ejemplo, una fotografía y un texto—, el impulso más común suele ser partir el espacio por la mitad: `50 %` para cada lado. El resultado rara vez funciona bien, porque ninguna de las dos mitades tiene permiso para mandar ni para acompañar.
+
+La *proporción* es la relación cuantitativa y perceptiva entre dos medidas: entre el ancho y el alto de un formato exterior, o entre las partes interiores en que subdivides ese formato. Cuando eliges una razón desigual —como `2:1` (dos tercios frente a un tercio) o `5:3` (en torno a `62 %` frente a `38 %`)—, la superficie deja de competir consigo misma y establece un orden de lectura claro.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco palabras para explorarla</h3>
+  <dl>
+    <dt>Razón (ratio)</dt>
+    <dd>Comparación matemática entre dos magnitudes expresada como cociente, por ejemplo `2:3` o `5:8`.</dd>
+    <dt>Formato</dt>
+    <dd>La proporción exterior del soporte completo (página, cartel o ventana) definida por la relación entre su ancho y su alto.</dd>
+    <dt>Partición</dt>
+    <dd>La división interna del área útil en zonas de distinto tamaño para alojar imagen, texto o navegación.</dd>
+    <dt>Zona tibia</dt>
+    <dd>El intervalo cercano a la igualdad (como `48 % / 52 %` o un marco de `1:1,06`) donde la diferencia no parece decidida, sino un empate mal medido.</dd>
+    <dt>Norma DIN (1:√2)</dt>
+    <dd>Proporción aproximada `1:1,414` (serie ISO A4, A3, A5) cuya propiedad única es conservar su misma razón al doblarse por la mitad.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Medidas indecisas frente a una partición en tercios">
+
+<div class="dv-texto">
+
+En la versión izquierda de esta ficha de arquitectura, las medidas caen cerca de la mitad sin decidirse; en la derecha, una relación `2:1` y unos márgenes progresivos ordenan los mismos elementos.
+
+</div>
+
+<ProporcionExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión de la izquierda nada está roto de forma escandalosa, pero todo vacila: las dos columnas miden `48 %` y `52 %`, la foto es un cuadrado deformado (`1:1,06`) y el pie se queda sin espacio de apoyo. En la de la derecha, dar dos tercios a la imagen en formato `3:2` y un tercio a los datos despeja la indecisión.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Formatos, razones y la zona tibia de la mitad">
+
+<ProporcionExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para elegir proporciones con intención">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Sal de la zona entre 45 % y 55 %</h3>
+      <p>Si dos zonas no van a ser simétricas, aléjalas del centro con decisión. Prueba particiones en tercios (<code>67 % / 33 %</code>), en quintos (<code>60 % / 40 %</code>) o en cuartos (<code>75 % / 25 %</code>) para que la vista reconozca cuál es el bloque principal.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Haz que los recortes sean francos</h3>
+      <p>Un recuadro de <code>1:1,05</code> no se lee como un rectángulo sutil, sino como un cuadrado que salió torcido. Si quieres estabilidad estática, usa un cuadrado exacto (<code>1:1</code>); si buscas dirección horizontal o vertical, salta al menos a <code>4:5</code>, <code>4:3</code> o <code>3:2</code>.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Reserva más espacio en el pie que en la cabeza</h3>
+      <p>Por efecto de la gravedad óptica, una caja centrada en el punto medio vertical parece colgar hacia abajo. Dar al margen inferior entre un <code>40 %</code> y un <code>100 %</code> más de altura que al margen superior sostiene la composición sobre el plano.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<ProporcionExp paso="errores" />
+
+<div class="dv-texto">
+
+### La proporción en piezas reales
+
+</div>
+
+<ProporcionExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta empates visuales, formatos y razones">
+
+<ProporcionExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Razones enteras, el mito áureo y la adaptación a pantallas">
+
+<Seccion titulo="Razones racionales e irracionales: la lección de Tschichold">
+
+En sus ensayos recopilados en *The Form of the Book* (1975/1991), Jan Tschichold estudió las proporciones de los manuscritos medievales y los incunables europeos. Demostró que los talleres históricos no dependían de instrumentos de cálculo complejos, sino de trazados geométricos con regla y compás o de razones enteras sencillas que cualquier artesano podía reproducir: `2:3` (`1:1,5`), `3:4` (`1:1,333`) y `5:8` (`1:1,6`).
+
+Junto a esas razones racionales conviven las proporciones irracionales nacidas de la geometría básica: la diagonal del cuadrado (`1:√2`, aproximada a `1:1,414`, adoptada en 1922 por el ingeniero Walter Porstmann para la norma DIN 476), el pentágono (`1:1,538`) y la sección áurea (`1:1,618`).
+
+</Seccion>
+
+<Seccion titulo="Mitos y realidades sobre la sección áurea">
+
+La razón áurea (`1:1,618`, donde la parte menor es a la mayor como la mayor es al todo) suele presentarse en divulgación como una fórmula mágica de belleza universal. Tschichold y Josef Müller-Brockmann advirtieron contra ese fetichismo: en la práctica editorial y de interfaces, las fracciones enteras simples como `2:3` (`60 % / 40 %`), `5:8` (`62,5 % / 37,5 %`) o `1:2` (`66,7 % / 33,3 %`) producen una armonía igual de rigurosa y tienen la ventaja de encajar con exactitud en una [retícula](/diseno-visual/reticulas-y-alineacion) de 5, 8 o 12 columnas.
+
+El valor real de una proporción no está en alcanzar el tercer decimal de `1,618`, sino en dos decisiones perceptivas mucho más concretas: **evitar subdivisiones arbitrarias que cambian sin criterio en cada bloque** y **huir de las diferencias tibias cercanas al `50 %`**.
+
+</Seccion>
+
+<Seccion titulo="El canon de márgenes y por qué el texto necesita un zócalo">
+
+Los diagramas medievales reconstruidos por Villard de Honnecourt y J. A. van de Graaf dividen el pliego abierto mediante diagonales para obtener una caja de texto cuya proporción repite la de la página y cuyos márgenes guardan la progresión `2 : 3 : 4 : 6` (lomo, cabeza, corte exterior y pie).
+
+Esa progresión resuelve tres problemas funcionales y perceptivos a la vez:
+
+- **En el centro del pliego (`2 + 2 = 4`):** al abrir el libro, los dos márgenes interiores se suman y forman una calle blanca idéntica en ancho al margen exterior (`4`).
+- **En los bordes laterales y el pie (`4` y `6`):** deja espacio libre para que las manos sostengan el libro sin tapar los renglones.
+- **En el eje vertical (`3` arriba, `6` abajo):** compensa la caída óptica y eleva el bloque hacia la mitad superior de la hoja.
+
+</Seccion>
+
+<Seccion titulo="Cuando el formato cambia: del papel fijo a la ventana fluida">
+
+En un cartel impreso o en un libro, el formato exterior es fijo y todas las subdivisiones pueden derivarse de sus diagonales. En una pantalla, el navegador o el teléfono cambian de proporción según el dispositivo y la orientación: de `16:9` apaisado en un monitor a `9:19,5` vertical en un móvil.
+
+En diseño digital, trabajar con proporciones significa dos cosas:
+
+- **Mantener razones claras mientras caben dos o más columnas** (por ejemplo, `1:3` entre navegación y contenido en escritorio, o `5:3` entre imagen y ficha).
+- **Cambiar de eje cuando el ancho se estrecha:** en una pantalla móvil estrecha, dos columnas en proporción `2:1` se volverían ilegibles; la misma relación pasa entonces al eje vertical (por ejemplo, una imagen en proporción `3:2` o `4:3` que ocupa el tercio superior de la vista seguida del bloque de lectura).
+
+</Seccion>
+
+</Paso>

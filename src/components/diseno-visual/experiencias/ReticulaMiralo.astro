@@ -70,7 +70,7 @@ type Pieza = typeof bien;
         <rect x={p.titulo.x} y={p.titulo.y} width={p.titulo.w} height="20" fill={T} />
         <rect x={p.imagen.x} y={p.imagen.y} width={p.imagen.w} height={p.imagen.h} fill="#4a4a4a" />
         <circle cx={p.imagen.x + p.imagen.w * 0.65} cy={p.imagen.y + 46} r="22" fill="#fff" />
-        <text x={p.dato.x} y={p.dato.y + 32} font-family={SANS} font-weight="900" font-size="36" fill={T}>73%</text>
+        <text x={p.dato.x} y={p.dato.y + 30} font-family={SANS} font-weight="900" font-size="30" fill={T}>73 %</text>
         {lineas(p.dato.x, p.dato.y + 46, p.dato.w, 3).map((l) => <rect x={l.x} y={l.y} width={l.w} height="4" fill={G} />)}
         {lineas(p.pie.x, p.pie.y, p.pie.w, 1).map((l) => <rect x={l.x} y={l.y} width={p.pie.w} height="3" fill={G} />)}
         {lineas(p.texto1.x, p.texto1.y, p.texto1.w, 5).map((l) => <rect x={l.x} y={l.y} width={l.w} height="4" fill={G} />)}

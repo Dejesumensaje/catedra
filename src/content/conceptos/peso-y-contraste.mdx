@@ -1,0 +1,167 @@
+---
+titulo: Peso y contraste
+territorio: tipografia
+pregunta: ¿Por qué una negrita que se ve rotunda en un título se empasta en un texto pequeño, y por qué una letra fina desaparece sobre fondo oscuro?
+resumen: "El peso tipográfico (el grosor de las astas respecto a su altura) y el contraste del trazo (la diferencia entre trazos gruesos y finos) determinan la mancha gris del texto y su resistencia al cambiar de tamaño o de fondo."
+modos: [laboratorio, diseccion]
+orden: 15
+relaciones:
+  - concepto: familias-tipograficas
+    porQue: Cada familia distribuye el peso y la modulación del trazo según la lógica de la herramienta con que fue concebida.
+  - concepto: jerarquia
+    porQue: El cambio franco de peso es una de las señales más limpias para separar niveles sin alterar el tamaño de la fuente.
+  - concepto: legibilidad
+    porQue: Un peso excesivo cierra los espacios internos de las letras y un contraste extremo rompe los trazos finos en cuerpos pequeños.
+  - concepto: contraste
+    porQue: La polaridad entre figura clara y fondo oscuro altera por irradiación el grosor aparente de cada carácter.
+  - concepto: enfasis
+    porQue: Una palabra en negrita dentro de un párrafo crea un punto de anclaje inmediato por diferencia de densidad tonal.
+fuentes:
+  - autor: Gerrit Noordzij
+    obra: "The Stroke: Theory of Writing. Hyphen Press"
+    anio: 2005
+    nota: Definición formal del espacio blanco interno frente al negro del trazo, y del contraste como relación entre trazos gruesos y finos.
+  - autor: Walter Tracy
+    obra: "Letters of Credit: A View of Type Design. Gordon Fraser"
+    anio: 1986
+    nota: Análisis del peso tipográfico, el «color tipográfico» (densidad media de la página) y la resistencia de los trazos finos en distintos cuerpos.
+  - autor: Sofie Beier y otros
+    obra: "Reading Letters: Designing for Legibility. BIS Publishers"
+    anio: 2012
+    nota: Evidencia sobre el efecto de irradiación en fondos oscuros y el cierre de contrapunzones en pesos extremos.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import PesoContrasteExp from '../../components/diseno-visual/experiencias/PesoContrasteExp.astro';
+
+<Paso id="idea" titular="El grosor de una letra depende de su hueco interno y de la luz que la rodea">
+
+<PesoContrasteExp paso="idea" />
+
+<p class="dv-frase">El grosor de una letra no es fijo: cambia con el tamaño al que la miras y con la luz del fondo.</p>
+
+<div class="dv-texto">
+
+Solemos pensar que elegir `font-weight: 700` o elegir una fuente con trazos finos elegantes produce el mismo resultado a cualquier escala. En la práctica, el ojo no lee por separado la tinta negra del trazo: lee el equilibrio entre el trazo y el **contrapunzón** (el espacio blanco encerrado dentro de la *e*, la *a*, la *o* o la *b*).
+
+Cuando una letra se reduce a 11 px, un peso demasiado grueso invade ese hueco interno hasta convertir la palabra en una mancha cerrada, mientras que una fuente de alto contraste entre astas gruesas y finas pierde sus travesaños delgados. Si además inviertes los colores y pones texto blanco sobre fondo negro, la luz de las letras se expande en la retina y engrosa cada trazo.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco palabras para explorarlo</h3>
+  <dl>
+    <dt>Peso (weight)</dt>
+    <dd>El grosor de los trazos de una letra en relación con su altura, graduado en una escala de 100 (Thin) a 900 (Black).</dd>
+    <dt>Contraste del trazo</dt>
+    <dd>La diferencia de grosor entre las astas principales (casi siempre verticales) y los trazos secundarios o filetes (horizontales y enlaces) dentro de una misma letra.</dd>
+    <dt>Contrapunzón (espacio interno)</dt>
+    <dd>El hueco blanco encerrado dentro de un signo (como el ojo de la <em>e</em> o el anillo de la <em>o</em>) que permite distinguir una letra de otra.</dd>
+    <dt>Color tipográfico (mancha)</dt>
+    <dd>La densidad tonal media —más clara o más oscura— que proyecta un bloque de texto visto a cierta distancia.</dd>
+    <dt>Irradiación</dt>
+    <dd>Fenómeno óptico por el cual una forma luminosa sobre fondo oscuro parece extenderse y verse más gruesa que la misma forma en negro sobre fondo claro.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Timidez y empaste frente a salto franco y compensación óptica">
+
+<div class="dv-texto">
+
+En estas dos fichas de instrucciones para cuarto oscuro, la parte superior busca destacar el tiempo de agitación dentro del párrafo y la parte inferior advierte una precaución sobre fondo negro.
+
+</div>
+
+<PesoContrasteExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión izquierda ocurren dos errores opuestos: arriba, el paso de peso 400 a 500 es tan tímido que no destaca el tiempo clave; abajo, el texto pequeño en peso 900 sobre negro sufre irradiación y sus letras se empastan. La versión derecha salta con decisión de 400 a 700 en positivo y rebaja el peso en negativo para preservar el espacio interno de las letras.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Simulador de peso, contrapunzón e irradiación">
+
+<PesoContrasteExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones prácticas al elegir pesos">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Salta al menos dos escalones cuando destaques dentro de un párrafo</h3>
+      <p>Si el cuerpo de lectura está en Regular (400), usa Bold (700) o Semibold franco (600) para el énfasis interno. El peso Medium (500) sirve para ajustar el tono de un menú o de un botón completo, pero al lado de un 400 del mismo tamaño parece un accidente.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Aligera o espacia el texto cuando pases a fondo oscuro</h3>
+      <p>Al invertir un diseño a modo oscuro o a un cartel en negativo, un texto que en negro sobre blanco se veía firme puede verse hinchado y pesado en blanco sobre negro. Bajar medio escalón de peso o abrir un poco el espaciado (<code>letter-spacing</code>) devuelve la nitidez.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Evita los extremos de la escala en cuerpos menores de 12 px</h3>
+      <p>Por debajo de 12 px, los pesos 100–200 se desvanecen contra el fondo y los pesos 800–900 cierran el ojo de las minúsculas. En notas al pie, etiquetas y tablas pequeñas, quédate entre 400 y 700 en fuentes de contraste bajo o medio.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<PesoContrasteExp paso="errores" />
+
+<div class="dv-texto">
+
+### El peso y el contraste en piezas reales
+
+</div>
+
+<PesoContrasteExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta empastes, saltos tímidos y efectos de irradiación">
+
+<PesoContrasteExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="El «color» de la página, la irradiación de Helmholtz y los tamaños ópticos">
+
+<Seccion titulo="Qué llaman los tipógrafos «color de la página»">
+
+En la jerga tipográfica, la expresión *color de la página* (o *color tipográfico*) no se refiere al rojo ni al azul, sino al tono gris medio que percibimos al entrecerrar los ojos frente a un bloque impreso. Como explica Walter Tracy en *Letters of Credit* (1986), ese tono depende de la proporción entre la tinta negra de las astas y el papel blanco que queda dentro de los contrapunzones y entre los renglones.
+
+Un párrafo bien compuesto mantiene una mancha uniforme; cuando aparecen ríos blancos entre palabras o cuando un peso mal elegido forma grumos oscuros, el «color» de la página se vuelve irregular y fatiga la lectura.
+
+</Seccion>
+
+<Seccion titulo="La irradiación de Helmholtz en pantallas y señalética">
+
+En el siglo XIX, Hermann von Helmholtz describió por qué un cuadrado blanco sobre fondo negro parece más grande que un cuadrado negro idéntico sobre fondo blanco: debido a la dispersión de la luz en los medios oculares y a la respuesta de los fotorreceptores, las zonas claras desbordan sus límites hacia las zonas oscuras.
+
+En tipografía digital y en señalética retroiluminada (estaciones de metro, tableros de automóvil, interfaces en modo oscuro), este fenómeno actúa sobre el grosor de las letras. Una letra blanca sobre fondo negro irradia hacia afuera —engrosando las astas— y hacia adentro —estrechando los contrapunzones—. Por eso las tipografías diseñadas para señalización nocturna o lectura en negativo dibujan formas un poco más delgadas y abiertas que sus equivalentes para impresión sobre papel blanco (Beier, 2012).
+
+</Seccion>
+
+<Seccion titulo="Tamaños ópticos: por qué el plomo no escalaba en proporción fija">
+
+Durante cuatro siglos de imprenta en plomo, un punzonista nunca reducía ni ampliaba a escala fija el mismo dibujo para fabricar el cuerpo de 6 puntos y el de 48 puntos. Al tallar el cuerpo pequeño engrosaba los trazos finos, reducía el contraste, ensanchaba las letras y abría los contrapunzones; al tallar el cuerpo grande de exhibición afinaba los remates y estrechaba el espaciado.
+
+Con la llegada de las fuentes digitales escalables en los años ochenta se impuso la costumbre de escalar un único contorno vectorial a cualquier tamaño. Hoy, las fuentes variables con eje de **tamaño óptico** (`font-optical-sizing: auto` / eje `opsz`) recuperan aquella sabiduría del oficio: adaptan el peso de los trazos finos y la apertura interna según el cuerpo en píxeles al que se muestra el texto.
+
+</Seccion>
+
+</Paso>

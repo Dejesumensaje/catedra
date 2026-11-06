@@ -1,0 +1,885 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'espacio-negativo';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Ahoga la composición quitando el espacio exterior.',
+    hacer: 'Lleva «Espacio macro (márgenes y pausas)» por debajo de 10 px.',
+    pista: 'Mueve el primer deslizador hacia la izquierda.',
+    preparar: { macro: 32, micro: 14, distribucion: 'abierta', invertir: false },
+    logro: 'Cuando los bloques tocan los bordes de la tarjeta y no quedan pausas entre secciones, la vista no encuentra por dónde entrar ni dónde descansar.',
+  },
+  {
+    titulo: 'Abre el espacio macro para aislar el foco.',
+    hacer: 'Sube «Espacio macro (márgenes y pausas)» a 36 px o más.',
+    pista: 'Arrastra el primer deslizador hacia la derecha.',
+    logro: 'El margen amplio enmarca toda la composición y el campo despejado empuja la mirada directamente hacia el titular y la acción principal.',
+  },
+  {
+    titulo: 'Observa qué ocurre cuando el espacio queda atrapado en el centro.',
+    hacer: 'En «Distribución del espacio vacío», selecciona «Atrapado en el centro».',
+    pista: 'Elige la segunda opción en el selector de distribución.',
+    logro: 'Aunque la cantidad total de superficie libre sea parecida, encerrar un hueco muerto entre cuatro bloques pegados a las esquinas fragmenta la lectura.',
+  },
+  {
+    titulo: 'Pinta de negro el vacío para ver su forma real.',
+    hacer: 'Abre «Más controles», vuelve a «Abierto hacia los bordes» y activa «Invertir: pintar de negro el espacio vacío».',
+    abrir: true,
+    preparar: { macro: 34, micro: 14, distribucion: 'atrapada', invertir: false },
+    logro: 'Al invertir figura y fondo, el espacio negativo aparece como una escultura sólida. Cuando está bien diseñado, forma bloques limpios y continuos en lugar de callejones residuales.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="Dos vistas de la letra E y un signo contiguo: a la izquierda solo se miran las barras negras; a la derecha se colorean en amarillo las contraformas internas y la flecha que nace en el espacio entre las dos letras.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+
+        <!-- Izquierda: solo lo impreso -->
+        <g transform="translate(36, 18)">
+          <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={G}>LO QUE SUELE MIRARSE · LA TINTA IMPRESA</text>
+          <rect x="0" y="20" width="240" height="126" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <!-- Letra E geométrica -->
+          <path d="M52,38 H120 V56 H74 V74 H114 V92 H74 V110 H120 V128 H52 Z" fill={T} />
+          <!-- Letra x geométrica pegada para formar flecha interior -->
+          <polygon points="120,56 142,56 160,80 178,56 200,56 172,92 200,128 178,128 160,104 142,128 120,128 148,92" fill={T} />
+        </g>
+
+        <!-- Derecha: el espacio negativo resaltado -->
+        <g transform="translate(324, 18)">
+          <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={T}>LO QUE LO SOSTIENE · EL ESPACIO NEGATIVO</text>
+          <rect x="0" y="20" width="240" height="126" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <!-- Contraformas de la E en amarillo -->
+          <rect x="74" y="56" width="46" height="18" fill={AMARILLO} stroke={ROJO} stroke-width="1.2" />
+          <rect x="74" y="92" width="46" height="18" fill={AMARILLO} stroke={ROJO} stroke-width="1.2" />
+          <!-- Flecha en el espacio negativo entre E y x -->
+          <polygon points="120,74 120,110 148,92" fill={AMARILLO} stroke={ROJO} stroke-width="1.5" />
+          <rect x="114" y="74" width="10" height="18" fill={AMARILLO} />
+          <!-- Tinta atenuada para que protagonice el hueco -->
+          <path d="M52,38 H120 V56 H74 V74 H114 V92 H74 V110 H120 V128 H52 Z" fill={T} />
+          <polygon points="120,56 142,56 160,80 178,56 200,56 172,92 200,128 178,128 160,104 142,128 120,128 148,92" fill={T} />
+          <!-- Re-pintar la flecha encima con borde claro -->
+          <polygon points="74,92 120,92 120,74 148,92 120,110 120,92" fill={AMARILLO} stroke={ROJO} stroke-width="1.5" />
+          <text x="120" y="141" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>CONTRAFORMA Y FLECHA OCULTA</text>
+        </g>
+      </svg>
+    </div>
+    <p>A la izquierda ves dos letras negras. A la derecha las letras son idénticas, pero aparece una flecha apuntando hacia la derecha. ¿De dónde salió esa flecha?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Siempre estuvo ahí: es la forma exacta del *espacio negativo* encerrado entre las astas inferiores de la «E» y el costado izquierdo de la «x» (el célebre hallazgo de Lindon Leader en 1994 para el logotipo de FedEx). Si le quitas el blanco interior a una «E», deja de ser una «E» y se convierte en un ladrillo negro: la forma impresa solo existe gracias a la forma del vacío que la atraviesa y la rodea.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Horror vacui: cada rincón libre rellenado por miedo al vacío"
+      notas={[
+        {
+          ...pct(180, 38),
+          titulo: 'Márgenes devorados (4 px)',
+          texto: 'Los bloques rozan el filo exterior del marco. La falta de margen produce sensación de encierro.',
+          zona: zona(8, 8, 344, 52),
+        },
+        {
+          ...pct(288, 128),
+          titulo: 'Huecos rellenados con sellos y cajas',
+          texto: 'Donde quedaba una pausa natural se insertaron pastillas de «¡Nuevo!», recuadros y filetes gruesos.',
+          zona: zona(198, 66, 152, 134),
+        },
+        {
+          ...pct(112, 232),
+          titulo: 'Sin separación entre grupos',
+          texto: 'El espacio entre una sección y otra mide lo mismo que el espacio entre dos renglones del mismo párrafo.',
+          zona: zona(12, 186, 336, 84),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página cultural saturada sin márgenes donde cada hueco fue rellenado con cajas, filetes y sellos.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="6" y="6" width="348" height="268" fill="#fbfbf9" stroke={T} stroke-width="2" />
+        <rect x="12" y="12" width="336" height="36" fill={T} />
+        <text x="20" y="34" font-family={SANS} font-size="12" font-weight="900" fill={AMARILLO}>CENTRO CULTURAL · AGENDA COMPLETA · ENTRADA</text>
+        <rect x="12" y="52" width="182" height="62" fill="#e9e9e2" stroke={T} stroke-width="1.5" />
+        <text x="20" y="72" font-family={SERIF} font-size="15" font-weight="700" fill={T}>Ciclo de cine mudo</text>
+        <text x="20" y="90" font-family={SANS} font-size="10" font-weight="700" fill={TXT}>Jueves a domingo · 19:00 h</text>
+        <text x="20" y="106" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>¡RESERVA OBLIGATORIA AQUÍ!</text>
+        <rect x="198" y="52" width="150" height="62" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="273" y="78" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>¡NUEVO BOLETÍN!</text>
+        <text x="273" y="96" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>SUSCRÍBETE GRATIS</text>
+        <rect x="12" y="118" width="182" height="66" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="20" y="138" font-family={SANS} font-size="11" font-weight="900" fill={T}>TALLER DE GRABADO</text>
+        <rect x="20" y="146" width="160" height="5" fill={TXT} />
+        <rect x="20" y="156" width="154" height="5" fill={TXT} />
+        <rect x="20" y="166" width="140" height="5" fill={TXT} />
+        <rect x="198" y="118" width="150" height="66" fill="#e9e9e2" stroke={T} stroke-width="1.5" />
+        <text x="206" y="138" font-family={SANS} font-size="10.5" font-weight="900" fill={ROJO}>AVISO DE CAFETERÍA</text>
+        <rect x="206" y="146" width="130" height="5" fill={TXT} />
+        <rect x="206" y="156" width="124" height="5" fill={TXT} />
+        <rect x="12" y="188" width="336" height="80" fill={T} />
+        <text x="22" y="212" font-family={SANS} font-size="12" font-weight="900" fill="#ffffff">DESCARGA EL PROGRAMA EN PDF · SÍGUENOS EN REDES</text>
+        <rect x="22" y="224" width="148" height="32" fill={AMARILLO} />
+        <text x="96" y="244" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>RESERVAR ENTRADAS</text>
+        <rect x="180" y="224" width="156" height="32" fill={ROJO} />
+        <text x="258" y="244" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill="#ffffff">VER MAPA DE SALAS</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="El 45 % de la superficie queda libre para dirigir la mirada"
+      notas={[
+        {
+          ...pct(278, 92),
+          titulo: 'Campo abierto que conduce al foco',
+          texto: 'La mitad superior derecha permanece despejada. Ese silencio visual hace que el título del ciclo domine sin necesitar un cuerpo descomunal.',
+          zona: zona(204, 34, 132, 128),
+        },
+        {
+          ...pct(180, 26),
+          titulo: 'Espacio macro (márgenes de 28 px)',
+          texto: 'El perímetro blanco separa el contenido del borde del soporte y agrupa todo el cartel como una unidad.',
+          zona: zona(18, 16, 324, 32),
+        },
+        {
+          ...pct(118, 178),
+          titulo: 'Pausa clara antes de la acción',
+          texto: 'Una franja de espacio vertical separa el texto descriptivo del botón de reserva, evitando amontonar filetes.',
+          zona: zona(34, 152, 220, 44),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma página cultural con márgenes amplios, espacio negativo abierto a la derecha y jerarquía serena.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="16" width="324" height="248" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <text x="42" y="48" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1.4" fill={G}>CENTRO CULTURAL · JUEVES A DOMINGO · 19:00 H</text>
+        <text x="42" y="92" font-family={SERIF} font-size="26" font-weight="700" fill={T}>Ciclo de cine mudo</text>
+        <text x="42" y="120" font-family={SERIF} font-size="13.5" fill={TXT}>Cuatro proyecciones restauradas con música</text>
+        <text x="42" y="138" font-family={SERIF} font-size="13.5" fill={TXT}>en vivo en el patio central.</text>
+        <!-- Botón aislado con espacio alrededor -->
+        <rect x="42" y="182" width="142" height="34" fill={T} />
+        <text x="113" y="203" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={AMARILLO}>RESERVAR ENTRADA →</text>
+        <!-- Nota secundaria discreta al pie -->
+        <line x1="42" y1="232" x2="318" y2="232" stroke="#e5e5de" stroke-width="1" />
+        <text x="42" y="248" font-family={SANS} font-size="9.5" fill={G}>También esta semana: Taller de grabado · Boletín mensual</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · espacio macro, espacio micro e inversión figura-fondo"
+    consigna="Ajusta por separado el espacio macro (márgenes y pausas entre secciones) y el espacio micro (interlineado y separación interna). Luego cambia la distribución o activa la inversión en «Más controles» para ver la forma exacta del vacío."
+    nota="Fija una configuración con espacio atrapado en el centro como A y compárala con el espacio abierto hacia los bordes como B activando «Invertir: pintar de negro el espacio vacío»."
+  >
+    <svg slot="escenario" viewBox="0 0 640 340" role="img" aria-label="Composición editorial con márgenes amplios y tarjetas separadas con claridad.">
+      <rect width="640" height="340" fill="#fbfbf9" />
+      <rect x="80" y="24" width="480" height="292" fill="#ffffff" stroke={T} stroke-width="1.8" />
+      <rect x="116" y="60" width="240" height="22" fill={T} />
+      <rect x="116" y="94" width="180" height="8" fill={TXT} />
+      <rect x="116" y="138" width="190" height="120" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      <rect x="326" y="138" width="190" height="120" fill="#f3f3ee" stroke={T} stroke-width="1.2" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Usa el modo invertido cada vez que quieras comprobar si las manchas de vacío de tu página tienen una geometría limpia." />
+
+    <Deslizador
+      lab={lab}
+      variable="macro"
+      etiqueta="Espacio macro (márgenes y pausas)"
+      min={4}
+      max={52}
+      paso={2}
+      valor={32}
+      unidad="px"
+      ayuda="Márgenes perimetrales y separación entre la cabecera y el bloque de tarjetas."
+    />
+    <Deslizador
+      lab={lab}
+      variable="micro"
+      etiqueta="Espacio micro (entre tarjetas y líneas)"
+      min={2}
+      max={28}
+      paso={2}
+      valor={14}
+      unidad="px"
+      ayuda="Medianil entre las tarjetas y separación interna entre renglones."
+    />
+    <Opciones
+      lab={lab}
+      variable="distribucion"
+      etiqueta="Distribución del espacio vacío"
+      valor="abierta"
+      opciones={[
+        { valor: 'abierta', texto: 'Abierto hacia los bordes' },
+        { valor: 'atrapada', texto: 'Atrapado en el centro' },
+      ]}
+      ayuda="Compara agrupar el contenido liberando el perímetro frente a empujar las piezas a las esquinas dejando un pozo vacío en medio."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="invertir"
+        etiqueta="Invertir: pintar de negro el espacio vacío"
+        activo={false}
+        ayuda="Convierte el espacio negativo en bloques oscuros sólidos para evaluar su forma como si fuera una figura."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"macro":36,"micro":14,"distribucion":"abierta","invertir":false}'>Jerarquía limpia (macro > micro)</button>
+      <button type="button" class="dv-boton" data-preset='{"macro":6,"micro":4,"distribucion":"abierta","invertir":false}'>Horror vacui (todo apretado)</button>
+      <button type="button" class="dv-boton" data-preset='{"macro":32,"micro":14,"distribucion":"atrapada","invertir":true}'>Espacio atrapado visto en negativo</button>
+      <button type="button" class="dv-boton" data-preset='{"macro":10,"micro":26,"distribucion":"abierta","invertir":false}'>Inversión confusa (micro > macro)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Liberar el «espacio atrapado» entre cuatro cajas"
+      comparar={false}
+      consigna="Cuatro bloques se pegaron a las cuatro esquinas de la página dejando una laguna blanca encerrada en la mitad. Acerca los bloques entre sí para que el espacio negativo salga hacia los márgenes."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Hueco blanco encerrado en el centro</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="apertura"
+        etiqueta="Agrupación central y salida del espacio al margen"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Dejar margen perimetral dentro de una tarjeta"
+      comparar={false}
+      consigna="El título, el texto y el botón casi tocan el borde de la tarjeta. Aumenta el espacio interior perimetral para que el borde enmarque el contenido en vez de estrangularlo."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Texto pegado al borde de la caja</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="pad"
+        etiqueta="Espacio interior de la tarjeta"
+        min={2}
+        max={28}
+        paso={2}
+        valor={2}
+        unidad="px"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Hacer que el espacio exterior supere al interior"
+      comparar={false}
+      consigna="Aquí el espacio micro (entre el título y su propio párrafo) es mayor que el espacio macro (el margen exterior de la hoja). Reduce la distancia interna para que título y párrafo se lean juntos."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Espacio interno mayor que el margen exterior</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="relacion"
+        etiqueta="Equilibrio macro / micro"
+        min={0}
+        max={100}
+        paso={10}
+        valor={10}
+        unidad="%"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cartel de exposición (tradición de Emil Ruder y Kenya Hara)"
+      notas={[
+        {
+          ...pct(180, 96),
+          titulo: 'El vacío como protagonista plástico',
+          texto: 'Dos tercios de la hoja están sin imprimir. Esa extensión continua de papel hace que la pequeña franja inferior tenga una presencia rotunda.',
+          zona: zona(28, 22, 304, 146),
+        },
+        {
+          ...pct(98, 212),
+          titulo: 'Bloque tipográfico concentrado',
+          texto: 'Al agrupar toda la información en la franja baja, el blanco no se rompe en pedazos pequeños.',
+          zona: zona(34, 178, 168, 68),
+        },
+        {
+          ...pct(288, 212),
+          titulo: 'Punto focal por aislamiento',
+          texto: 'Un único cuadrado negro rodeado de blanco atrae la mirada sin competir con ningún adorno.',
+          zona: zona(264, 184, 52, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel minimalista donde los dos tercios superiores son papel en blanco continuo y la información se concentra en la base.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="24" y="18" width="312" height="244" fill="#ffffff" stroke={T} stroke-width="1.8" />
+        <!-- Gran superficie blanca activa -->
+        <line x1="42" y1="172" x2="318" y2="172" stroke={T} stroke-width="1.5" />
+        <text x="42" y="198" font-family={SANS} font-size="18" font-weight="900" letter-spacing="-0.5" fill={T}>kunsthalle basel</text>
+        <text x="42" y="216" font-family={SANS} font-size="10" font-weight="700" fill={TXT}>12. mai – 18. juni · täglich 10–17 uhr</text>
+        <text x="42" y="232" font-family={SANS} font-size="9.5" fill={G}>steinenberg 7</text>
+        <rect x="278" y="190" width="38" height="38" fill={T} />
+        <rect x="288" y="200" width="18" height="18" fill={AMARILLO} />
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Interfaz de lectura larga: márgenes laterales como escudo"
+      notas={[
+        {
+          ...pct(54, 140),
+          titulo: 'Márgenes laterales generosos',
+          texto: 'Las dos franjas vacías a izquierda y derecha aíslan la columna de texto y mantienen el ancho de línea en una medida cómoda (~60 caracteres).',
+          zona: zona(20, 44, 68, 204),
+        },
+        {
+          ...pct(180, 128),
+          titulo: 'Espacio micro constante',
+          texto: 'El interlineado abierto entre renglones y la pausa entre párrafos guían el ojo sin necesidad de cajas ni filetes.',
+          zona: zona(92, 62, 176, 176),
+        },
+        {
+          ...pct(306, 140),
+          titulo: 'Ausencia de barras laterales',
+          texto: 'Renunciar a llenar el margen derecho con widgets o anuncios protege la atención sostenida.',
+          zona: zona(272, 44, 68, 204),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Vista de lectura editorial con amplios márgenes blancos a ambos lados y una columna central limpia.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="20" width="324" height="240" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <line x1="18" y1="44" x2="342" y2="44" stroke="#e5e5de" stroke-width="1" />
+        <text x="96" y="36" font-family={SANS} font-size="9" font-weight="700" fill={G}>ENSAYO · 8 MIN DE LECTURA</text>
+        <!-- Márgenes laterales marcados sutilmente -->
+        <rect x="20" y="45" width="70" height="213" fill="#fafaf6" />
+        <rect x="270" y="45" width="70" height="213" fill="#fafaf6" />
+        <!-- Columna central -->
+        <text x="98" y="76" font-family={SERIF} font-size="18" font-weight="700" fill={T}>El intervalo que habla</text>
+        {[0, 1, 2, 3].map((i) => (
+          <rect x="98" y={94 + i * 12} width={i === 3 ? 118 : 162} height="4.5" fill={TXT} />
+        ))}
+        <rect x="98" y="152" width="162" height="22" fill={AMARILLO} />
+        <text x="104" y="167" font-family={SERIF} font-size="11" font-style="italic" fill={T}>«Sin pausa no existe el ritmo.»</text>
+        {[0, 1, 2, 3].map((i) => (
+          <rect x="98" y={188 + i * 12} width={i === 3 ? 132 : 162} height="4.5" fill={TXT} />
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Monograma editorial: contraforma que dibuja una segunda figura"
+      notas={[
+        {
+          ...pct(180, 138),
+          titulo: 'Pluma nacida del espacio blanco',
+          texto: 'El plumín central no está dibujado con líneas propias: surge del recorte blanco entre las dos columnas negras de la letra «H».',
+          zona: zona(142, 68, 76, 140),
+        },
+        {
+          ...pct(112, 138),
+          titulo: 'Ahorro de trazos',
+          texto: 'Una sola forma resuelve letra e icono a la vez, evitando poner un símbolo al lado de una inicial.',
+          zona: zona(92, 54, 176, 172),
+        },
+        {
+          ...pct(268, 62),
+          titulo: 'Respiro exterior amplio',
+          texto: 'El margen despejado alrededor del símbolo permite que el cierre perceptual ocurra al instante.',
+          zona: zona(34, 28, 292, 42),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Monograma de una editorial donde las dos barras negras verticales encierran un espacio negativo con la silueta exacta de una pluma.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="24" y="20" width="312" height="240" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <!-- Bloque negro exterior del monograma -->
+        <rect x="108" y="54" width="144" height="156" fill={T} />
+        <!-- Contraforma superior e inferior que configuran una H y un plumín -->
+        <polygon points="152,54 208,54 208,96 180,128 152,96" fill={AMARILLO} />
+        <circle cx="180" cy="96" r="5" fill={T} />
+        <line x1="180" y1="54" x2="180" y2="91" stroke={T} stroke-width="2.5" />
+        <rect x="152" y="150" width="56" height="60" fill="#ffffff" />
+        <text x="180" y="236" text-anchor="middle" font-family={SANS} font-size="10" font-weight="900" letter-spacing="2" fill={T}>HISTORIA &amp; LETRAS</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre espacio atrapado, espacio macro y micro, contraformas y miedo al vacío. Cambian cada vez que juegas."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    macro: number;
+    micro: number;
+    distribucion: string;
+    invertir: boolean;
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = W < 480 ? 320 : 350;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+
+    const padExt = W < 480 ? 20 : 56;
+    const cw = W - padExt * 2;
+    const ch = H - 52;
+    const cx = padExt;
+    const cy = 18;
+
+    // Color del espacio vacío y color de los bloques según el interruptor «invertir»
+    const colorVacio = e.invertir ? TINTA : '#ffffff';
+    const colorBloque = e.invertir ? '#ffffff' : '#f3f3ee';
+    const colorFoco = e.invertir ? AMARILLO : AMARILLO;
+    const colorTrazo = e.invertir ? '#ffffff' : TINTA;
+
+    raiz.setAttribute(
+      'aria-label',
+      `Página con espacio macro de ${e.macro} px, espacio micro de ${e.micro} px y distribución ${e.distribucion}${e.invertir ? ' (vista invertida)' : ''}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    // Superficie de la página (toda esta área es el espacio negativo base)
+    raiz.append(svg('rect', { x: cx, y: cy, width: cw, height: ch, fill: colorVacio, stroke: TINTA, 'stroke-width': 1.8 }));
+
+    const m = e.macro;
+    const gap = e.micro;
+
+    if (e.distribucion === 'abierta') {
+      // Contenido agrupado con margen perimetral m y campo libre a la derecha de la cabecera
+      const ix = cx + m;
+      const iy = cy + m;
+      const iw = Math.max(120, cw - m * 2);
+      const ih = Math.max(100, ch - m * 2);
+
+      // Bloque cabecera (ocupa el 58 % izquierdo, dejando un gran campo de espacio negativo a la derecha)
+      const headW = Math.round(iw * 0.58);
+      const headH = Math.min(72, Math.max(44, Math.round(ih * 0.28)));
+      raiz.append(svg('rect', { x: ix, y: iy, width: headW, height: headH, fill: colorFoco, stroke: TINTA, 'stroke-width': 1.5 }));
+      raiz.append(svg('rect', { x: ix + 10, y: iy + 10, width: headW * 0.72, height: 10, fill: TINTA }));
+      raiz.append(svg('rect', { x: ix + 10, y: iy + 24 + Math.min(8, gap * 0.3), width: headW * 0.52, height: 6, fill: TEXTO }));
+
+      // Pausa macro entre cabecera y tarjetas
+      const pausaV = Math.max(6, Math.round(m * 0.75));
+      const cardsY = iy + headH + pausaV;
+      const cardsH = Math.max(48, ih - headH - pausaV);
+      const cardW = Math.max(40, Math.round((iw - gap * 2) / 3));
+
+      for (let i = 0; i < 3; i++) {
+        const kx = ix + i * (cardW + gap);
+        raiz.append(svg('rect', { x: kx, y: cardsY, width: cardW, height: cardsH, fill: colorBloque, stroke: TINTA, 'stroke-width': 1.3 }));
+        const lineGap = Math.max(6, Math.round(gap * 0.65));
+        raiz.append(svg('rect', { x: kx + 10, y: cardsY + 12, width: Math.max(16, cardW - 20) * 0.7, height: 8, fill: TINTA }));
+        for (let l = 0; l < 3; l++) {
+          const ly = cardsY + 26 + l * lineGap;
+          if (ly + 5 < cardsY + cardsH - 8) {
+            raiz.append(svg('rect', { x: kx + 10, y: ly, width: Math.max(14, cardW - 20) * (l === 2 ? 0.6 : 0.9), height: 4.5, fill: TEXTO }));
+          }
+        }
+      }
+    } else {
+      // Distribución «atrapada»: los 4 bloques se empujan a las esquinas dejando una laguna encerrada en el medio
+      const borde = 8;
+      const huecoCentral = Math.max(24, m * 1.6);
+      const bw = Math.max(50, Math.round((cw - borde * 2 - huecoCentral) / 2));
+      const bh = Math.max(42, Math.round((ch - borde * 2 - huecoCentral * 0.75) / 2));
+
+      const posiciones = [
+        [cx + borde, cy + borde, true],
+        [cx + cw - borde - bw, cy + borde, false],
+        [cx + borde, cy + ch - borde - bh, false],
+        [cx + cw - borde - bw, cy + ch - borde - bh, false],
+      ] as const;
+
+      for (const [bx, by, esPrincipal] of posiciones) {
+        raiz.append(
+          svg('rect', {
+            x: bx,
+            y: by,
+            width: bw,
+            height: bh,
+            fill: esPrincipal ? colorFoco : colorBloque,
+            stroke: TINTA,
+            'stroke-width': 1.4,
+          }),
+        );
+        raiz.append(svg('rect', { x: bx + 10, y: by + 12, width: bw * 0.65, height: 8, fill: TINTA }));
+        raiz.append(svg('rect', { x: bx + 10, y: by + 26, width: bw * 0.8, height: 4.5, fill: TEXTO }));
+        raiz.append(svg('rect', { x: bx + 10, y: by + 35, width: bw * 0.55, height: 4.5, fill: TEXTO }));
+      }
+
+      // Marcar el pozo atrapado en el centro
+      const hx = cx + borde + bw + 4;
+      const hy = cy + borde + bh * 0.4;
+      const hw = Math.max(20, cw - (borde + bw) * 2 - 8);
+      const hh = Math.max(20, ch - borde * 2 - bh * 0.8);
+      raiz.append(
+        svg('rect', {
+          x: hx,
+          y: hy,
+          width: hw,
+          height: hh,
+          fill: 'none',
+          stroke: e.invertir ? AMARILLO : COTA,
+          'stroke-width': 1.5,
+          'stroke-dasharray': '4 3',
+        }),
+      );
+      const etq = svg('text', {
+        x: cx + cw / 2,
+        y: cy + ch / 2 + 4,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 900,
+        fill: e.invertir ? AMARILLO : COTA,
+      });
+      etq.textContent = 'ESPACIO ATRAPADO';
+      raiz.append(etq);
+    }
+
+    const relacionOk = e.macro >= e.micro * 1.5 && e.distribucion === 'abierta' && e.macro >= 20;
+    const pie = svg('text', {
+      x: W / 2,
+      y: H - 10,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 11.5,
+      'font-weight': 700,
+      fill: relacionOk ? TINTA : COTA,
+    });
+    pie.textContent =
+      e.distribucion === 'atrapada'
+        ? 'DIAGNÓSTICO · Pozo central atrapado entre los bloques'
+        : e.macro < 12
+          ? `DIAGNÓSTICO · Sin margen perimetral (${e.macro} px)`
+          : e.macro < e.micro
+            ? `DIAGNÓSTICO · El espacio micro (${e.micro} px) supera al macro (${e.macro} px)`
+            : `DIAGNÓSTICO · Espacio macro (${e.macro} px) > micro (${e.micro} px) · Perímetro libre`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const modoTxt = e.invertir
+      ? ' En el <b>modo invertido</b> las zonas negras revelan la silueta real del espacio vacío.'
+      : '';
+
+    if (e.distribucion === 'atrapada') {
+      return `El espacio vacío ha quedado <b class="dv-cifra">encerrado en el centro</b> mientras las cuatro tarjetas se pegan a los bordes exteriores. Ese hueco residual separa todo de todo y rompe la unidad de la página.${modoTxt}`;
+    }
+    if (e.macro < 12) {
+      return `Con apenas <b class="dv-cifra">${e.macro} px de espacio macro</b>, el contenido choca contra el marco y pierde el respiro perimetral.${modoTxt}`;
+    }
+    if (e.macro < e.micro) {
+      return `El espacio micro (<b class="dv-cifra">${e.micro} px</b>) es mayor que el espacio macro (<b class="dv-cifra">${e.macro} px</b>): las tarjetas se separan más entre sí que del borde exterior y se pierde el agrupamiento.${modoTxt}`;
+    }
+    return `Equilibrio limpio entre <b class="dv-cifra">${e.macro} px de espacio macro</b> y <b class="dv-cifra">${e.micro} px de espacio micro</b>: el perímetro enmarca el conjunto y el campo libre superior derecho dirige la vista al titular.${modoTxt}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="espacio-negativo"]')) {
+    guiar<E>(raiz, [
+      (e) => e.macro <= 10,
+      (e) => e.macro >= 36 && e.distribucion === 'abierta',
+      (e) => e.distribucion === 'atrapada',
+      (e) => e.invertir === true && e.distribucion === 'abierta',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ─────────────────────────────────────────
+  type E1 = { apertura: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const k = e.apertura / 100;
+    const padExt = Math.round(4 + k * 22);
+    const gapInt = Math.round(38 - k * 28);
+    const bien = e.apertura >= 70;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;">
+        <div style="background:#fff;border:1.5px solid #222;padding:${padExt}px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:${gapInt}px;">
+            <div style="background:${bien ? AMARILLO : '#f3f3ee'};border:1.2px solid #222;padding:8px;font-size:11px;font-weight:700;">01 · Sala Norte</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:11px;font-weight:700;">02 · Sala Sur</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:11px;font-weight:700;">03 · Archivo</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:11px;font-weight:700;">04 · Patio</div>
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.apertura < 35) return 'Las cuatro cajas se pegan a las esquinas y <b class="dv-cifra">encierran un hueco muerto</b> en la mitad.';
+    if (e.apertura < 70) return 'El hueco central se reduce a medida que el espacio sale hacia el margen exterior.';
+    return '<b class="dv-cifra">Espacio liberado hacia los bordes</b>: las cuatro fichas forman un grupo claro rodeado de un margen continuo.';
+  }
+
+  type E2 = { pad: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const bien = e.pad >= 16;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};color:#222;">
+        <div style="background:${bien ? '#ffffff' : '#f3ecea'};border:1.8px solid ${bien ? '#222' : COTA};padding:${e.pad}px;">
+          <p style="margin:0 0 4px;font-size:10px;font-weight:700;color:#555555;">CONVOCATORIA ABIERTA</p>
+          <p style="margin:0 0 8px;font-family:${SERIF};font-size:15px;font-weight:700;color:#222;">Becas de investigación tipográfica</p>
+          <span style="display:inline-block;background:#222;color:${AMARILLO};padding:4px 8px;font-size:10.5px;font-weight:700;">Bases completas →</span>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.pad < 8) return `Con <b class="dv-cifra">${e.pad} px</b> de margen interior, las letras rozan el borde y cuesta leerlas.`;
+    if (e.pad < 16) return `${e.pad} px: empieza a despegarse del filete, pero aún se siente apretado.`;
+    return `<b class="dv-cifra">${e.pad} px de espacio interior</b>: el borde envuelve el contenido con holgura.`;
+  }
+
+  type E3 = { relacion: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const k = e.relacion / 100;
+    const margenExt = Math.round(6 + k * 20);
+    const saltoInt = Math.round(32 - k * 24);
+    const bien = e.relacion >= 65;
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SERIF};color:#222;">
+        <div style="background:#fff;border:1.5px solid #222;padding:${margenExt}px;">
+          <p style="margin:0 0 ${saltoInt}px;font-family:${SANS};font-size:13px;font-weight:900;color:${bien ? '#222' : COTA};">Horario de biblioteca</p>
+          <p style="margin:0;font-size:12.5px;color:#444;line-height:1.45;">Lunes a viernes de 8:00 a 20:00 h. Sábados hasta el mediodía.</p>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.relacion < 40) return 'El título está más cerca del borde superior que de su propio párrafo: <b class="dv-cifra">se rompe la unidad</b>.';
+    if (e.relacion < 65) return 'Las distancias interior y exterior son casi iguales.';
+    return '<b class="dv-cifra">Espacio macro mayor que el micro</b>: el título se une a su párrafo y el margen exterior abraza el conjunto.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['espacio-negativo-e1', pintarE1 as never, describirE1 as never],
+    ['espacio-negativo-e2', pintarE2 as never, describirE2 as never],
+    ['espacio-negativo-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p, describir: desc });
+    }
+  }
+
+  // ── Juego de 5 rondas ────────────────────────────────────────────
+  function rondaEspacioAtrapado(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Las cuatro tarjetas se agrupan en el centro con un medianil de 12 px y liberan el espacio hacia los márgenes exteriores',
+        describir: 'Cuatro tarjetas agrupadas rodeadas de un margen exterior amplio.',
+        es: true,
+        html: `<div style="padding:18px;background:#fff;border:1.5px solid #222;font-family:${SANS};">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:${AMARILLO};border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">A</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">B</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">C</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">D</div>
+          </div>
+        </div>`,
+      },
+      {
+        texto: 'Las cuatro tarjetas se pegan a las cuatro esquinas de la hoja dejando un gran hueco blanco encerrado en el centro',
+        describir: 'Cuatro tarjetas en las esquinas con un hueco vacío en el centro.',
+        es: false,
+        html: `<div style="padding:4px;background:#fff;border:1.5px solid #222;font-family:${SANS};">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;">
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">A</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">B</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">C</div>
+            <div style="background:#f3f3ee;border:1.2px solid #222;padding:8px;font-size:10px;font-weight:700;">D</div>
+          </div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Ambas composiciones tienen exactamente el mismo porcentaje de superficie libre. ¿Cuál evita el error del «espacio atrapado»?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como enseñaron Tschichold y Ruder, el espacio vacío debe fluir hacia los bordes exteriores para enmarcar el conjunto, en lugar de quedar encerrado como un pozo muerto en mitad de la página.',
+      repaso: 'Evitar el espacio atrapado',
+    };
+  }
+
+  function rondaMacroMicro(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Espacio micro (regula la legibilidad inmediata dentro del bloque)',
+        es: true,
+      },
+      {
+        texto: 'Espacio macro (separa grandes zonas de la arquitectura de la página)',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cómo se denomina el espacio que actúa entre las letras de una palabra, entre líneas de un párrafo y dentro de las contraformas de cada signo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El espacio micro opera a escala tipográfica (interletraje, contraformas e interlineado) y determina la legibilidad; el espacio macro opera en los márgenes y entre grandes bloques.',
+      repaso: 'Espacio micro frente a espacio macro',
+    };
+  }
+
+  function rondaColorEspacio(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Falso: «espacio en blanco» o «espacio negativo» nombra la superficie libre de elementos, sea blanca, crema, negra o de color',
+        es: true,
+      },
+      {
+        texto: 'Verdadero: solo existe espacio negativo cuando el fondo tiene el valor hexadecimal #ffffff',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En un cartel impreso sobre papel negro o en una interfaz en modo oscuro, ¿sigue existiendo el «espacio en blanco» (espacio negativo)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El término procede del blanco del papel en imprenta, pero designa funcionalmente cualquier zona despejada que actúa como fondo, pausa o intervalo entre figuras.',
+      repaso: 'Naturaleza del espacio negativo',
+    };
+  }
+
+  function rondaHorrorVacui(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Dejar el campo libre alrededor de la llamada a la acción para que el aislamiento dirija la mirada hacia ella',
+        es: true,
+      },
+      {
+        texto: 'Rellenar el espacio libre con iconos decorativos, sellos y marcos para aprovechar toda la pantalla',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al terminar de maquetar una portada ves que queda un 40 % de la superficie despejada junto al botón principal. ¿Qué decisión aprovecha mejor el espacio negativo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El espacio despejado no es papel desperdiciado: es el silencio visual que permite que el mensaje principal se lea en el primer segundo.',
+      repaso: 'Superar el horror vacui',
+    };
+  }
+
+  function rondaAjusteMargen(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta tarjeta tiene 14 px de separación entre sus líneas internas, pero solo 2 px de margen respecto al borde exterior. Aumenta el margen perimetral hasta que supere con claridad al espacio interno (al menos 22 px).',
+      control: {
+        etiqueta: 'Margen perimetral de la tarjeta',
+        min: 2,
+        max: 32,
+        paso: 2,
+        valor: 2,
+        unidad: 'px',
+      },
+      pintar: (c, v) => {
+        const bien = v >= 22;
+        c.innerHTML = `<div style="padding:12px;background:#fbfbf9;display:flex;justify-content:center;font-family:${SANS};">
+          <div style="width:100%;max-width:280px;background:#fff;border:2px solid ${bien ? '#222' : COTA};padding:${v}px;">
+            <p style="margin:0 0 14px;font-size:10px;font-weight:700;color:#6f6f6f;">COLECCIÓN PERMANENTE</p>
+            <p style="margin:0 0 14px;font-family:${SERIF};font-size:16px;font-weight:700;color:#222;">Sala de grabados</p>
+            <span style="display:inline-block;background:${bien ? AMARILLO : '#e9e9e2'};border:1.2px solid #222;padding:4px 8px;font-size:10.5px;font-weight:700;color:#222;">Margen: ${v} px</span>
+          </div>
+        </div>`;
+      },
+      cumple: (v) => v >= 22,
+      falta: (v) => `Con ${v} px de margen perimetral, el espacio exterior sigue siendo menor o demasiado parecido a los 14 px internos. Sube al menos a 22 px.`,
+      porque: 'Para que un contenedor agrupe con limpieza lo que lleva dentro, su margen perimetral (espacio macro local) debe ser mayor que la distancia entre los elementos internos (espacio micro).',
+      repaso: 'Jerarquía de espacios interior y exterior',
+    };
+  }
+
+  const juegoRoot = document.querySelector<HTMLElement>('[data-juego="espacio-negativo"]');
+  if (juegoRoot) {
+    jugar(juegoRoot, () =>
+      barajar([
+        rondaEspacioAtrapado(),
+        rondaMacroMicro(),
+        rondaColorEspacio(),
+        rondaHorrorVacui(),
+        rondaAjusteMargen(),
+      ]),
+    );
+  }
+</script>

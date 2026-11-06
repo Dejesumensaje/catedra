@@ -1,0 +1,165 @@
+---
+titulo: Interlineado
+territorio: tipografia
+pregunta: ¿Cuánto espacio vertical necesitan los renglones para que el ojo vuelva al inicio de la línea siguiente sin perderse ni leer renglones sueltos?
+resumen: "El interlineado es la distancia vertical entre una línea de base y la siguiente. No tiene un valor único: depende del ancho de la columna, del tamaño del texto y de la altura de las minúsculas."
+modos: [laboratorio, diseccion]
+orden: 16
+relaciones:
+  - concepto: ancho-de-linea
+    porQue: Cuanto más ancha es una columna de texto, mayor interlineado necesita la mirada para completar el viaje de retorno sin perderse.
+  - concepto: escalas-tipograficas
+    porQue: Al subir en la escala hacia los titulares grandes, el interlineado relativo debe reducirse para que las líneas no se separen.
+  - concepto: proximidad
+    porQue: Un renglón solo se percibe como unidad horizontal cuando el espacio entre palabras es menor que el espacio entre líneas.
+  - concepto: ritmo-tipografico
+    porQue: El interlineado del cuerpo de texto define la unidad modular sobre la que se calculan todos los márgenes verticales de la página.
+  - concepto: legibilidad
+    porQue: Tanto un interlineado ahogado como uno desmembrado ralentizan las fijaciones oculares y multiplican los saltos erróneos de renglón.
+fuentes:
+  - autor: Miles A. Tinker
+    obra: "Legibility of Print. Iowa State University Press"
+    anio: 1963
+    nota: Estudios experimentales sobre velocidad de lectura y barrido de retorno ocular según el tamaño de letra, el ancho de línea y el interlineado.
+  - autor: Jost Hochuli
+    obra: "Detail in Typography (ed. inglesa de Detailtypografie, 1987). Hyphen Press"
+    anio: 2008
+    nota: "Regla fundamental del párrafo: el blanco entre líneas debe superar visualmente al blanco entre palabras para sostener el recorrido horizontal."
+  - autor: Robert Bringhurst
+    obra: "The Elements of Typographic Style (4th ed.). Hartley & Marks"
+    anio: 2012
+    nota: Proporciones de interlineado para prosa continua frente a titulares multilínea y textos en mayúsculas.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import InterlineadoExp from '../../components/diseno-visual/experiencias/InterlineadoExp.astro';
+
+<Paso id="idea" titular="Un carril blanco para el viaje de vuelta de la mirada">
+
+<InterlineadoExp paso="idea" />
+
+<p class="dv-frase">El espacio entre renglones debe superar al espacio entre palabras; si no, el ojo cae en vertical.</p>
+
+<div class="dv-texto">
+
+Leer no es solo deslizar la vista de izquierda a derecha: al llegar al extremo derecho de cada línea, el ojo debe hacer un movimiento rápido en diagonal hacia atrás —el *barrido de retorno*— para aterrizar con exactitud al principio del renglón siguiente.
+
+El *interlineado* construye el carril blanco que guía ese regreso. Si los renglones van demasiado apretados, las palabras del renglón inferior compiten por cercanía y el lector repite la misma línea o se salta una; si van demasiado separados, el párrafo pierde su condición de bloque y se desarma en frases aisladas.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Línea de base</dt>
+    <dd>La línea imaginaria sobre la que se apoyan los cuerpos de las letras (salvo la cola de las descendentes).</dd>
+    <dt>Interlineado (line-height)</dt>
+    <dd>La distancia vertical medida desde una línea de base hasta la siguiente. En CSS suele expresarse como múltiplo sin unidad del tamaño de la fuente (por ejemplo, <code>1,5</code>).</dd>
+    <dt>Barrido de retorno</dt>
+    <dd>El salto ocular rápido (sacada larga) desde el final de un renglón hasta el comienzo del renglón inferior.</dd>
+    <dt>Ascendentes y descendentes</dt>
+    <dd>Los trazos que sobresalen por encima de las minúsculas (<em>b</em>, <em>d</em>, <em>h</em>, <em>l</em>) o bajan por debajo de la línea de base (<em>g</em>, <em>j</em>, <em>p</em>, <em>q</em>).</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Por qué un titular y un párrafo nunca piden el mismo interlineado">
+
+<div class="dv-texto">
+
+Ambas tarjetas tienen un titular de tres renglones y un párrafo de seis renglones: la primera deja el mismo `line-height` automático en todo el bloque; la segunda ajusta cada nivel según su tamaño.
+
+</div>
+
+<InterlineadoExp paso="miralo" />
+
+<div class="dv-texto">
+
+Uno de los tropiezos más comunes en diseño web es declarar `line-height: 1.5` en el elemento raíz y olvidarse de los encabezados: en cuanto un título de 24 o 32 px pasa a dos o tres líneas, ese `1,5` abre unos huecos enormes que parten el título en pedazos. A la inversa, un párrafo de lectura necesita ese margen de `1,45` a `1,6` para que sus renglones largos no se apelotonen.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Relación entre interlineado, tamaño y ancho de línea">
+
+<InterlineadoExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres reglas prácticas para ajustar el interlineado">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Aprieta el interlineado a medida que sube el tamaño de la fuente</h3>
+      <p>Usa entre <code>1,45</code> y <code>1,65</code> para el cuerpo de lectura (15–18 px), baja a <code>1,2</code>–<code>1,3</code> en subtítulos y sumarios, y ciñe a <code>1,0</code>–<code>1,15</code> los titulares grandes de varias líneas.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Abre el interlineado cuando se ensanche la columna</h3>
+      <p>Una columna estrecha (como un pie de foto de 30 caracteres) se lee bien con <code>1,35</code> porque el ojo apenas viaja para volver al margen izquierdo. En una columna de 65 o 75 caracteres, sube a <code>1,5</code>–<code>1,65</code> para compensar la diagonal más larga.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>En listas y menús, separa menos adentro que afuera</h3>
+      <p>Cuando un punto de una lista o un enlace de navegación ocupa dos renglones, dale un interlineado interno de <code>1,2</code>–<code>1,3</code> y añade un margen externo mayor entre un ítem y el siguiente.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<InterlineadoExp paso="errores" />
+
+<div class="dv-texto">
+
+### El interlineado en piezas reales
+
+</div>
+
+<InterlineadoExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Comprueba tu puntería con el espacio entre renglones">
+
+<InterlineadoExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Zonas de seguridad de Tinker, altura de la equis y textos en mayúsculas">
+
+<Seccion titulo="Las zonas de seguridad de Miles Tinker">
+
+Durante más de tres décadas de trabajo experimental recogidas en *Legibility of Print* (1963), el psicólogo Miles A. Tinker midió los movimientos oculares y la velocidad de lectura de miles de lectores variando a la vez tres factores: tamaño de cuerpo, longitud de línea e interlineado (que en tipografía en plomo se llamaba *regleta* o *leading*, por las tiras de plomo que se insertaban entre los renglones).
+
+Tinker demostró que ninguna de las tres variables puede fijarse por separado: forman una **zona de seguridad conjunta**. Cuando la línea se alarga más allá de cierto umbral sin añadir interlineado, se dispara el número de regresiones oculares al cambiar de renglón porque el ángulo de retorno se vuelve demasiado rasante.
+
+</Seccion>
+
+<Seccion titulo="Por qué importa la altura de la equis de cada familia">
+
+Dos familias tipográficas compuestas al mismo cuerpo de 16 px y con el mismo `line-height: 1.5` (24 px de línea de base a línea de base) no dejan el mismo canal blanco entre renglones.
+
+Como advierten Jost Hochuli (2008) y Robert Bringhurst (2012), una fuente con **altura de la equis pequeña** y ascendentes/descendentes largas ya incluye mucho espacio en blanco arriba y abajo de las vocales minúsculas; por eso se lee con holgura a `1,4`. En cambio, una fuente con **altura de la equis grande** (como la mayoría de las fuentes pensadas para interfaces modernas) llena casi toda la caja vertical y exige subir el interlineado a `1,55` o `1,6` para que los renglones no parezcan apretados.
+
+</Seccion>
+
+<Seccion titulo="El caso especial de los titulares en mayúsculas">
+
+En un texto normal en minúsculas, el interlineado debe dejar espacio para que las descendentes de la línea superior (*p*, *g*, *j*, *q*, *y*) no choquen con las ascendentes y mayúsculas de la línea inferior (*b*, *d*, *l*, *Á*).
+
+Cuando compones un titular breve todo en **mayúsculas** (`text-transform: uppercase`), desaparecen las descendentes por debajo de la línea de base. Eso deja una franja vacía adicional entre renglones que hace que un interlineado normal de `1,2` se vea demasiado abierto. Por eso en cartelería y portadillas los titulares en caja alta suelen componerse con valores entre `0,92` y `1,05`, vigilando solo que las tildes de las vocales acentuadas (*Á*, *É*, *Í*, *Ó*, *Ú*) tengan espacio libre respecto a la línea superior.
+
+</Seccion>
+
+</Paso>

@@ -1,0 +1,1068 @@
+---
+// Legibilidad (reconocimiento de signos vs. fluidez de lectura): todos los pasos en un componente multi-modo.
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'legibilidad';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const MONO = "'Courier New', Courier, monospace";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Compara un párrafo en TODO MAYÚSCULAS frente a minúsculas.',
+    hacer: 'En «Caja del texto», selecciona «TODO MAYÚSCULAS».',
+    pista: 'Elige la segunda opción del control «Caja del texto».',
+    preparar: { tamano: 16, tracking: 0, contraste: 90, desenfoque: 0 },
+    logro: 'Al perder las ascendentes (b, d, h, l) y descendentes (g, p, q, y), todas las palabras se convierten en ladrillos rectangulares del mismo alto. Funcionan bien en una etiqueta de dos palabras, pero ralentizan la lectura de un párrafo largo.',
+  },
+  {
+    titulo: 'Provoca el efecto de aglomeración (crowding).',
+    hacer: 'Vuelve a «Minúsculas (caja baja)» y lleva «Espaciado entre letras (tracking)» a -4 o menos.',
+    pista: 'Mueve el deslizador de espaciado hacia la izquierda.',
+    logro: 'Cuando las letras se pegan entre sí, los trazos vecinos interfieren en la visión periférica: combinaciones como «rn» empiezan a parecer «m» y «cl» se confunde con «d».',
+  },
+  {
+    titulo: 'Pon a prueba la lectura bajo desenfoque o distancia.',
+    hacer: 'Abre «Más controles» y sube «Desenfoque / movimiento» a 2 px o más mientras el espaciado sigue cerrado.',
+    pista: 'Despliega «Más controles» y mueve «Desenfoque / movimiento» hacia la derecha.',
+    abrir: true,
+    logro: 'Con baja agudeza visual —como al mirar un cartel de lejos o el teléfono caminando—, los contrapunzones cerrados y las letras pegadas se funden en una mancha ilegible.',
+  },
+  {
+    titulo: 'Rescata el texto abriendo el espacio y el cuerpo.',
+    hacer: 'Manteniendo el desenfoque activo, sube «Espaciado entre letras (tracking)» a +4 o más y «Tamaño aparente / distancia» a 19 px o más.',
+    pista: 'Aumenta el espaciado entre letras y el tamaño aparente.',
+    abrir: true,
+    logro: 'Separar ligeramente las letras y subir el tamaño devuelve el espacio entre trazos: incluso bajo desenfoque o a distancia, cada signo vuelve a distinguirse de sus vecinos.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Comparación en dos paneles: a la izquierda, signos ambiguos Il1 O0 rn/m frente a formas diferenciadas; a la derecha, un párrafo en mayúsculas compactas frente a caja baja fluida.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      {/* Panel izquierdo: Reconocimiento de signos (legibility) */}
+      <g transform="translate(18, 14)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={T}>1 · RECONOCER CADA SIGNO (LEGIBILITY)</text>
+        <rect x="0" y="20" width="272" height="130" fill="#ffffff" stroke={T} stroke-width="1.4" />
+
+        <text x="14" y="38" font-family={SANS} font-size="8.5" font-weight="700" fill={ROJO}>FORMAS AMBIGUAS Y CERRADAS</text>
+        <text x="14" y="64" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.8" fill={T}>Il1 · O0 · rnm · cld</text>
+        <text x="196" y="60" font-family={SANS} font-size="8.5" fill={ROJO}>¿Es I, l o 1?</text>
+
+        <line x1="14" y1="80" x2="258" y2="80" stroke="#e5e5e0" />
+
+        <text x="14" y="96" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>TRAZOS DIFERENCIADOS Y ABIERTOS</text>
+        <rect x="12" y="104" width="248" height="34" fill={AMARILLO} opacity="0.45" />
+        <text x="18" y="128" font-family={SERIF} font-size="19.5" font-weight="700" letter-spacing="0.8" fill={T}>I l 1 · O 0̸ · r n m · c l d</text>
+
+        <text x="0" y="163" font-family={SANS} font-size="9.5" fill={G}>Vital en placas, códigos, tablas y señalética</text>
+      </g>
+
+      {/* Panel derecho: Fluidez de lectura (readability) */}
+      <g transform="translate(310, 14)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={T}>2 · LEER SIN FATIGA (READABILITY)</text>
+        <rect x="0" y="20" width="272" height="130" fill="#ffffff" stroke={T} stroke-width="1.4" />
+
+        <text x="14" y="38" font-family={SANS} font-size="8.5" font-weight="700" fill={ROJO}>CAJA ALTA COMPACTA (SILUETA RECTANGULAR)</text>
+        <rect x="14" y="45" width="244" height="13" fill="none" stroke={ROJO} stroke-dasharray="2 2" />
+        <text x="16" y="55" font-family={SANS} font-size="9" font-weight="700" fill={T}>LA LECTURA CONTINUA EN MAYÚSCULAS APRETADAS</text>
+        <text x="16" y="68" font-family={SANS} font-size="9" font-weight="700" fill={T}>ELIMINA LAS ASCENDENTES Y CANSA LA VISTA.</text>
+
+        <line x1="14" y1="80" x2="258" y2="80" stroke="#e5e5e0" />
+
+        <text x="14" y="96" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>CAJA BAJA CON ESPACIO Y SILUETA VARIADA</text>
+        <text x="16" y="114" font-family={SERIF} font-size="11.5" fill={T}>La lectura continua en minúsculas conserva</text>
+        <text x="16" y="131" font-family={SERIF} font-size="11.5" fill={T}>los rasgos ascendentes y descendentes.</text>
+
+        <text x="0" y="163" font-family={SANS} font-size="9.5" fill={G}>Vital en artículos, libros y textos extensos</text>
+      </g>
+    </svg>
+    <p>En el primer cuadro se trata de no confundir un carácter con otro en medio segundo; en el segundo, de leer páginas enteras con fluidez. ¿Por qué llamamos «legibilidad» a dos problemas tan distintos?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En inglés la tipografía distingue entre <em>legibility</em> (la claridad con que el diseño de una fuente permite diferenciar una letra de otra, como un <code>1</code> de una <code>l</code>) y <em>readability</em> (la comodidad y fluidez con que se lee un texto compuesto gracias a su tamaño, caja, espaciado, medida e interlineado). En español solemos usar «legibilidad» para ambos, o distinguir entre <strong>reconocimiento de signos</strong> y <strong>lectura fluida</strong>.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Cuando se intercambian las decisiones de señalética y de libro"
+      notas={[
+        {
+          ...pct(180, 56),
+          titulo: 'Señal vial con serifas finas',
+          texto: 'A cincuenta metros de distancia o con faros de noche, los remates delgados y el alto contraste de trazo desaparecen y las letras se parten.',
+          zona: zona(18, 20, 324, 68),
+        },
+        {
+          ...pct(180, 128),
+          titulo: 'Código con glifos homógrafos',
+          texto: 'En «I1lO0B8» sin distinción entre el uno, la ele minúscula y la i mayúscula, quien transcribe la clave se equivoca inevitablemente.',
+          zona: zona(18, 96, 324, 52),
+        },
+        {
+          ...pct(180, 214),
+          titulo: 'Párrafo largo en mayúsculas condensadas',
+          texto: 'Usar una fuente de cartel en caja alta y sin interlineado para un texto de diez líneas convierte el párrafo en una reja agotadora.',
+          zona: zona(18, 156, 324, 108),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tres errores: cartel vial compuesto en tipografía fina de alto contraste, código de acceso ambiguo y párrafo de ensayo en mayúsculas condensadas.">
+        <rect width={W} height={H} fill="#ffffff" />
+
+        {/* 1. Señal vial con Didot/serif fina */}
+        <rect x="20" y="18" width="320" height="62" fill="#1e3a2f" stroke={T} stroke-width="1.5" />
+        <text x="180" y="38" text-anchor="middle" font-family={SANS} font-size="7.5" font-weight="700" fill="#b8d4c8">SEÑAL DE AUTOPISTA EN SERIF DE ALTO CONTRASTE (SE PIERDE DE LEJOS)</text>
+        <text x="180" y="66" text-anchor="middle" font-family={SERIF} font-style="italic" font-size="24" fill="#ffffff">Salida 4 · Aeropuerto</text>
+
+        {/* 2. Código ambiguo */}
+        <rect x="20" y="90" width="320" height="52" fill="#fbfbf9" stroke="#d4d4ce" />
+        <text x="32" y="106" font-family={SANS} font-size="8" font-weight="700" fill={ROJO}>CLAVE TEMPORAL CON SIGNOS INDISTINGUIBLES</text>
+        <text x="32" y="130" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill={T}>Código: Il1-O0O-rn8</text>
+        <text x="220" y="128" font-family={SANS} font-size="8.5" fill={ROJO}>¿Es «Il1» o «11I»?</text>
+
+        {/* 3. Ensayo en mayúsculas apretadas */}
+        <rect x="20" y="152" width="320" height="110" fill="#fbfbf9" stroke="#d4d4ce" />
+        <text x="32" y="168" font-family={SANS} font-size="8" font-weight="700" fill={ROJO}>ENSAYO EXTENSO EN MAYÚSCULAS APRETADAS</text>
+        {[
+          'CUANDO UN PÁRRAFO DE LECTURA PROLONGADA SE COMPONE',
+          'ÍNTEGRAMENTE EN LETRAS MAYÚSCULAS CON ESPACIADO CERRADO',
+          'E INTERLINEADO MÍNIMO, TODAS LAS PALABRAS ADQUIEREN EL',
+          'MISMO CONTORNO RECTANGULAR Y LA VISTA PIERDE LOS PUNTOS',
+          'DE ANCLAJE QUE OFRECEN LAS ASCENDENTES Y DESCENDENTES.',
+          'AL CABO DE DOS PÁGINAS EL LECTOR SIENTE FATIGA VISUAL.',
+        ].map((l, i) => (
+          <text x="32" y={184 + i * 12} font-family={SANS} font-size="8.2" font-weight="700" letter-spacing="-0.3" fill={T}>{l}</text>
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Cada pieza resuelta según su condición real de lectura"
+      notas={[
+        {
+          ...pct(180, 56),
+          titulo: 'Señalética: aberturas amplias y trazo firme',
+          texto: 'Para leerse a distancia y en movimiento, una sin serifas humanista en caja baja con buen espaciado resiste el desenfoque y el resplandor.',
+          zona: zona(18, 20, 324, 68),
+        },
+        {
+          ...pct(180, 128),
+          titulo: 'Código: signos inequívocos y separados',
+          texto: 'El cero barrado (0̸), el uno con patín y el espaciado generoso eliminan cualquier duda al copiar carácter por carácter.',
+          zona: zona(18, 96, 324, 52),
+        },
+        {
+          ...pct(180, 214),
+          titulo: 'Ensayo: ritmo de caja baja y contraste sereno',
+          texto: 'Para leer durante media hora a cuarenta centímetros, la caja baja con interlineado holgado y serifas firmes sostiene el barrido ocular.',
+          zona: zona(18, 156, 324, 108),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Las tres piezas corregidas: señal vial con trazo uniforme y espaciado abierto, código con caracteres diferenciados y párrafo de ensayo en caja baja con espacio.">
+        <rect width={W} height={H} fill="#ffffff" />
+
+        {/* 1. Señal vial clara */}
+        <rect x="20" y="18" width="320" height="62" fill="#1e3a2f" stroke={T} stroke-width="1.5" />
+        <text x="180" y="36" text-anchor="middle" font-family={SANS} font-size="7.5" font-weight="700" fill={AMARILLO}>SEÑAL VIAL · TRAZO UNIFORME, FORMAS ABIERTAS Y BUEN TRACKING</text>
+        <text x="180" y="65" text-anchor="middle" font-family={SANS} font-size="22" font-weight="900" letter-spacing="1.4" fill="#ffffff">Salida 4 · Aeropuerto</text>
+
+        {/* 2. Código inequívoco */}
+        <rect x="20" y="90" width="320" height="52" fill="#fbfbf9" stroke={T} stroke-width="1.4" />
+        <text x="32" y="106" font-family={SANS} font-size="8" font-weight="700" fill={T}>CLAVE TEMPORAL · CERO BARRADO Y GLIFOS DISTINTOS</text>
+        <rect x="32" y="112" width="194" height="22" fill={AMARILLO} opacity="0.45" />
+        <text x="38" y="128" font-family={MONO} font-size="13.5" font-weight="700" letter-spacing="1" fill={T}>I l 1 - O 0̸ - r n 8</text>
+        <text x="236" y="127" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>Sin ambigüedad</text>
+
+        {/* 3. Ensayo en caja baja */}
+        <rect x="20" y="152" width="320" height="110" fill="#fbfbf9" stroke={T} stroke-width="1.4" />
+        <text x="32" y="168" font-family={SANS} font-size="8" font-weight="700" fill={T}>ENSAYO EXTENSO · CAJA BAJA, MEDIDA CÓMODA E INTERLINEADO 1,5</text>
+        {[
+          'En la lectura prolongada, la caja baja ofrece siluetas',
+          'diferenciadas gracias a las ascendentes y descendentes.',
+          'El ojo reconoce palabras completas en pocas fijaciones',
+          'y recorre la página durante horas sin fatiga visual.',
+        ].map((l, i) => (
+          <text x="32" y={188 + i * 16} font-family={SERIF} font-size="9.6" fill={T}>{l}</text>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · reconocimiento de signos y fluidez bajo condiciones reales"
+    consigna="Somete un bloque de lectura y una línea de códigos críticos a distintos tamaños, espaciados entre letras (tracking), cambios de caja, niveles de contraste y desenfoque. Comprueba cuándo fallan primero los signos individuales y cuándo se fatiga el párrafo."
+    nota="Activa el desenfoque en «Más controles» para simular qué ocurre cuando alguien lee desde lejos, sin gafas o caminando con el teléfono en la mano."
+  >
+    <svg slot="escenario" viewBox="0 0 640 300" role="img" aria-label="Simulador de legibilidad con línea de caracteres críticos arriba y párrafo de lectura continua abajo.">
+      <rect width="640" height="300" fill="#fbfbf9" />
+      <rect x="28" y="24" width="584" height="252" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="48" y="52" font-family={SANS} font-size="11" font-weight="700" fill="#222222">RECONOCIMIENTO DE SIGNOS: Il1 · O0 · rn / m · cl / d — FLUIDEZ: ÓPTIMA</text>
+      <text x="48" y="92" font-family={MONO} font-size="20" font-weight="700" fill="#222222">Clave: Il1-O0-rn/m-cl/d · Vuelo B8</text>
+      <text x="48" y="136" font-family={SERIF} font-size="16" fill="#222222">
+        <tspan x="48" dy="0">Reconocer una letra aislada en una señal a cincuenta metros y</tspan>
+        <tspan x="48" dy="25">leer diez páginas seguidas de un ensayo exigen decisiones</tspan>
+        <tspan x="48" dy="25">tipográficas distintas: aberturas francas frente a ritmo estable.</tspan>
+      </text>
+    </svg>
+
+    <Guia
+      slot="guia"
+      pasos={pasos}
+      final="Guía completada. Compara en A/B cómo un espaciado ligeramente abierto (+3 a +5) protege la lectura cuando baja el contraste o aumenta la distancia."
+    />
+
+    <Deslizador
+      lab={lab}
+      variable="tamano"
+      etiqueta="Tamaño aparente / distancia"
+      min={10}
+      max={24}
+      paso={1}
+      valor={16}
+      unidad="px"
+      ayuda="10–12 px equivale a texto muy pequeño o visto de lejos; 16–20 px equivale a distancia cómoda de lectura."
+    />
+    <Deslizador
+      lab={lab}
+      variable="tracking"
+      etiqueta="Espaciado entre letras (tracking)"
+      min={-6}
+      max={12}
+      paso={1}
+      valor={0}
+      ayuda="Valores negativos pegan las letras (aglomeración); valores positivos abren espacio entre signos."
+    />
+    <Opciones
+      lab={lab}
+      variable="caja"
+      etiqueta="Caja del texto"
+      valor="minusculas"
+      opciones={[
+        { valor: 'minusculas', texto: 'Minúsculas (caja baja)' },
+        { valor: 'mayusculas', texto: 'TODO MAYÚSCULAS' },
+      ]}
+      ayuda="Observa cómo cambia el contorno de las palabras (bouma) en el párrafo."
+    />
+
+    <Fragment slot="avanzados">
+      <Deslizador
+        lab={lab}
+        variable="contraste"
+        etiqueta="Contraste con el fondo"
+        min={20}
+        max={100}
+        paso={5}
+        valor={95}
+        unidad="%"
+        ayuda="Baja el contraste para simular pantallas bajo el sol o tinta gris pálida."
+      />
+      <Deslizador
+        lab={lab}
+        variable="desenfoque"
+        etiqueta="Desenfoque / movimiento"
+        min={0}
+        max={3}
+        paso={0.5}
+        valor={0}
+        unidad="px"
+        ayuda="Simula visión de lejos, fatiga ocular o lectura en movimiento."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"tamano":16,"tracking":0,"caja":"minusculas","contraste":95,"desenfoque":0}'>Lectura óptima en calma</button>
+      <button type="button" class="dv-boton" data-preset='{"tamano":14,"tracking":-4,"caja":"mayusculas","contraste":85,"desenfoque":0}'>Párrafo en mayúsculas apretadas</button>
+      <button type="button" class="dv-boton" data-preset='{"tamano":12,"tracking":-5,"caja":"minusculas","contraste":65,"desenfoque":2}'>Aglomeración a distancia (crowding)</button>
+      <button type="button" class="dv-boton" data-preset='{"tamano":19,"tracking":5,"caja":"minusculas","contraste":95,"desenfoque":2}'>Señalética rescatada con espacio y cuerpo</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Reserva las mayúsculas para etiquetas cortas y dales espacio"
+      comparar={false}
+      consigna="Aquí la categoría superior y el párrafo largo están invertidos o mal espaciados. Deja las mayúsculas con un poco de tracking solo en la etiqueta corta y devuelve el párrafo a caja baja."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};font-size:13px;color:#222;`}>
+        <p style="margin:0;">Un párrafo entero en mayúsculas sin espaciado cansa la vista desde la segunda línea.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="estado"
+        etiqueta="Uso de mayúsculas y minúsculas"
+        valor="todo-mayus"
+        opciones={[
+          { valor: 'todo-mayus', texto: 'Párrafo entero en MAYÚSCULAS apretadas' },
+          { valor: 'etiqueta-apretada', texto: 'Párrafo en minúsculas, etiqueta sin tracking' },
+          { valor: 'correcto', texto: 'Etiqueta en mayúsculas con tracking + párrafo en caja baja' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Distingue 0/O e I/l/1 en códigos, placas y contraseñas"
+      comparar={false}
+      consigna="El usuario debe copiar este código de verificación de un solo uso, pero la fuente actual dibuja igual la I mayúscula, la l minúscula y el 1, además del 0 y la O. Cambia a una fuente con signos diferenciados y espaciado claro."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};font-size:13px;color:#222;`}>
+        <p style="margin:0;">En datos alfanuméricos sin contexto de palabra, cada carácter debe identificarse por sí solo.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="fuente"
+        etiqueta="Tipografía del código de verificación"
+        valor="ambigua"
+        opciones={[
+          { valor: 'ambigua', texto: 'Sin serifas geométrica ambigua (Il1O0)' },
+          { valor: 'serif', texto: 'Con patines y espacio moderado' },
+          { valor: 'inequivoca', texto: 'Monoespaciada con cero barrado y tracking' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Compensa la aglomeración en cuerpos pequeños abriendo el tracking"
+      comparar={false}
+      consigna="Esta nota legal de 11 px tiene un espaciado negativo que pega las letras entre sí. Aumenta el espaciado entre caracteres hasta que las sílabas dejen de empastarse."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};font-size:12px;color:#222;`}>
+        <p style="margin:0;">Cuanto más pequeño es el texto, más espacio relativo necesita entre letra y letra.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="espaciado"
+        etiqueta="Espaciado entre letras en cuerpo pequeño"
+        min={-4}
+        max={6}
+        paso={1}
+        valor={-4}
+        unidad="%"
+        ayuda="Lleva el espaciado a un valor positivo (+2 % a +5 %) para evitar que los trazos se junten."
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Señalética aeroportuaria: máxima diferenciación a distancia"
+      notas={[
+        {
+          ...pct(168, 86),
+          titulo: 'Aberturas amplias (c, e, a, s)',
+          texto: 'Inspirada en alfabetos como Frutiger (1975), la boca abierta de la «e» y la «a» impide que se cierren como una «o» cuando se miran a treinta metros.',
+          zona: zona(22, 46, 316, 68),
+        },
+        {
+          ...pct(140, 162),
+          titulo: 'Caja baja para nombres de destino',
+          texto: 'Los nombres («Salidas», «Puertas B12–B28») van en minúsculas con inicial mayúscula porque su silueta ascendente/descendente se reconoce más rápido.',
+          zona: zona(22, 122, 210, 66),
+        },
+        {
+          ...pct(284, 162),
+          titulo: 'Cifras y flechas de trazo franco',
+          texto: 'El código «B12» separa con claridad la letra del número y se apoya en un pictograma direccional de alto contraste.',
+          zona: zona(238, 122, 100, 66),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Panel de señalización aeroportuaria con fondo amarillo y carbón, flechas claras y tipografía sin serifas de aberturas abiertas.">
+        <rect width={W} height={H} fill="#e9e8e2" />
+        <rect x="20" y="34" width="320" height="212" fill="#1d1d1b" stroke={T} stroke-width="2" />
+
+        <rect x="20" y="34" width="320" height="72" fill={AMARILLO} />
+        <text x="36" y="56" font-family={SANS} font-size="9" font-weight="900" letter-spacing="1.4" fill={T}>TERMINAL INTERNACIONAL · NIVEL 2</text>
+        <text x="36" y="88" font-family={SANS} font-size="26" font-weight="900" letter-spacing="0.6" fill={T}>↑ Salidas · Departures</text>
+
+        <text x="36" y="142" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill="#c8c8c0">EMBARQUE / GATES</text>
+        <text x="36" y="172" font-family={SANS} font-size="22" font-weight="700" letter-spacing="0.5" fill="#ffffff">Puertas B12 – B28 →</text>
+
+        <line x1="36" y1="194" x2="324" y2="194" stroke="#444440" />
+        <text x="36" y="222" font-family={SANS} font-size="15" font-weight="700" letter-spacing="0.5" fill={AMARILLO}>← Equipaje · Baggage claim 1–6</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Campo de verificación y número de serie: cero confusión entre glifos"
+      notas={[
+        {
+          ...pct(180, 106),
+          titulo: 'Casillas y espaciado individual',
+          texto: 'Separar cada carácter evita el efecto de aglomeración (crowding) cuando el usuario alterna la vista entre el mensaje y el teclado.',
+          zona: zona(26, 74, 308, 62),
+        },
+        {
+          ...pct(180, 174),
+          titulo: 'Distinción explícita de homógrafos',
+          texto: 'El cero lleva barra diagonal (0̸), el 1 tiene base y visera, y la I mayúscula muestra travesaños superior e inferior.',
+          zona: zona(26, 144, 308, 48),
+        },
+        {
+          ...pct(180, 226),
+          titulo: 'Agrupación en bloques de cuatro',
+          texto: 'En números de serie largos, partir la cadena en grupos de cuatro caracteres reduce los errores de memoria de trabajo.',
+          zona: zona(26, 198, 308, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Pantalla de verificación con código separado en casillas donde se distinguen claramente el cero barrado, el uno, la ele y la i mayúscula.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="18" width="324" height="244" fill="#fbfbf9" stroke="#dcdcd4" />
+        <text x="34" y="42" font-family={SANS} font-size="9" font-weight="700" letter-spacing="0.08em" fill={G}>AUTENTICACIÓN Y REGISTRO DE EQUIPO</text>
+        <text x="34" y="62" font-family={SANS} font-size="13" font-weight="900" fill={T}>Introduce el código de rescate de 6 signos</text>
+
+        {['I', 'l', '1', 'O', '0̸', '8'].map((ch, idx) => {
+          const x = 34 + idx * 49;
+          return (
+            <g>
+              <rect x={x} y="76" width="42" height="50" fill="#ffffff" stroke={T} stroke-width="1.6" />
+              <text x={x + 21} y="109" text-anchor="middle" font-family={MONO} font-size="24" font-weight="700" fill={T}>{ch}</text>
+            </g>
+          );
+        })}
+
+        <rect x="34" y="142" width="292" height="36" fill={AMARILLO} opacity="0.38" />
+        <text x="44" y="158" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>LEYENDA DE GLIFOS DEL SISTEMA:</text>
+        <text x="44" y="171" font-family={SANS} font-size="8.5" fill="#444444">I = i mayúscula · l = ele minúscula · 1 = número uno · O = letra o · 0̸ = cero</text>
+
+        <text x="34" y="204" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>NÚMERO DE SERIE EN BLOQUES DE 4 (FÁCIL ESCANEO):</text>
+        <rect x="34" y="212" width="292" height="32" fill="#ffffff" stroke="#cfcfc8" />
+        <text x="46" y="233" font-family={MONO} font-size="13.5" font-weight="700" letter-spacing="1.5" fill={T}>SN-490̸2 · 781B · 90̸XL</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Capítulo de ensayo impreso: la «copa de cristal» para lectura inmersiva"
+      notas={[
+        {
+          ...pct(180, 96),
+          titulo: 'Proporciones clásicas y altura de equis generosa',
+          texto: 'Las letras no buscan llamar la atención sobre su dibujo individual: se enlazan en palabras de silueta reconocible.',
+          zona: zona(38, 56, 284, 84),
+        },
+        {
+          ...pct(180, 174),
+          titulo: 'Contraste firme sin deslumbrar',
+          texto: 'Tinta carbón (#222222) sobre papel marfil suave evita el deslumbramiento del blanco puro en lecturas de varias horas.',
+          zona: zona(38, 144, 284, 68),
+        },
+        {
+          ...pct(180, 232),
+          titulo: 'Versalitas con tracking para siglas',
+          texto: 'Cuando aparece una sigla o un siglo («SIGLO XX», «UNESCO») dentro del párrafo, se compone en versalitas ligeramente espaciadas para que no forme un manchón oscuro.',
+          zona: zona(38, 214, 284, 38),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página de ensayo compuesta en tipografía serif humanista sobre papel cálido con versalitas integradas en el flujo del párrafo.">
+        <rect width={W} height={H} fill="#f4f0e6" />
+        <rect x="28" y="16" width="304" height="248" fill="#fdfbf5" stroke="#dcd5c5" />
+        <text x="48" y="42" font-family={SANS} font-size="8.5" font-weight="700" letter-spacing="0.1em" fill={G}>LECTURA PROLONGADA · READABILITY</text>
+
+        {[
+          'En su conferencia de 1930 en Londres, Beatrice Warde',
+          'comparó la tipografía de lectura continua con una copa',
+          'de cristal fino: su virtud no consiste en cubrirse de',
+          'adornos tallados que distraigan al invitado, sino en',
+          'dejar ver el color y el cuerpo del vino que contiene.',
+          '   Cuando el tamaño, el contraste, el interlineado y',
+          'la medida trabajan en armonía, el lector deja de notar',
+          'los contornos de cada letra suelta y escucha de corrido',
+          'el pensamiento del autor a lo largo de todo el capítulo.',
+        ].map((l, i) => (
+          <text x="48" y={66 + i * 16.5} font-family={SERIF} font-size="9" fill={T}>{l}</text>
+        ))}
+
+        <rect x="48" y="218" width="264" height="28" fill={AMARILLO} opacity="0.35" />
+        <text x="56" y="236" font-family={SERIF} font-size="9" fill={T}>
+          Edición facsimilar de <tspan font-size="7.8" letter-spacing="1.2" font-weight="700">1955 · SYLVAN PRESS</tspan>
+        </text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre reconocimiento de signos frente a fluidez de lectura, glifos homógrafos, aglomeración (crowding) y uso de mayúsculas."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const lab = 'legibilidad';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const MONO = "'Courier New', Courier, monospace";
+  const TINTA = '#222222';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+
+  // ── 1. Instrumento principal: legibilidad ──────────────────────
+  type E = {
+    tamano: number;
+    tracking: number;
+    caja: string;
+    contraste: number;
+    desenfoque: number;
+  };
+
+  function evaluarIndice(e: E) {
+    let puntosSigno = 100;
+    let puntosFluidez = 100;
+
+    // Tamaño
+    if (e.tamano < 14) {
+      puntosSigno -= (14 - e.tamano) * 9;
+      puntosFluidez -= (14 - e.tamano) * 10;
+    }
+
+    // Tracking
+    if (e.tracking < 0) {
+      puntosSigno -= Math.abs(e.tracking) * 7;
+      puntosFluidez -= Math.abs(e.tracking) * 5;
+    } else if (e.tracking > 6) {
+      puntosFluidez -= (e.tracking - 6) * 4;
+    }
+
+    // Caja
+    if (e.caja === 'mayusculas') {
+      puntosFluidez -= 28;
+      if (e.tracking < 1) puntosSigno -= 10;
+    }
+
+    // Contraste
+    if (e.contraste < 70) {
+      const pen = (70 - e.contraste) * 0.9;
+      puntosSigno -= pen;
+      puntosFluidez -= pen;
+    }
+
+    // Desenfoque compensado o agravado por tamaño y tracking
+    if (e.desenfoque > 0) {
+      const compensacion = (e.tamano >= 18 ? 0.45 : 0) + (e.tracking >= 3 ? 0.35 : e.tracking < 0 ? -0.35 : 0);
+      const impacto = e.desenfoque * 18 * (1 - compensacion);
+      puntosSigno -= impacto;
+      puntosFluidez -= impacto * 0.9;
+    }
+
+    return {
+      signo: Math.max(10, Math.min(100, Math.round(puntosSigno))),
+      fluidez: Math.max(10, Math.min(100, Math.round(puntosFluidez))),
+    };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 300);
+    const H = 296;
+    const { signo, fluidez } = evaluarIndice(e);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Simulador con tamaño ${e.tamano} px, espaciado ${e.tracking}, caja ${e.caja}, contraste ${e.contraste} % y desenfoque ${e.desenfoque} px.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    // Filtro SVG de desenfoque si aplica
+    if (e.desenfoque > 0) {
+      const defs = svg('defs');
+      const filter = svg('filter', { id: 'dv-leg-blur' });
+      filter.append(svg('feGaussianBlur', { stdDeviation: String(e.desenfoque * 0.85) }));
+      defs.append(filter);
+      raiz.append(defs);
+    }
+
+    const padX = W < 500 ? 16 : 26;
+    const ok = signo >= 70 && fluidez >= 70;
+
+    // Barra superior de indicadores
+    const etq = svg('text', {
+      x: padX,
+      y: 23,
+      'font-family': SANS,
+      'font-size': 10.5,
+      'font-weight': 700,
+      fill: ok ? TINTA : COTA,
+    });
+    etq.textContent = `RECONOCIMIENTO DE SIGNOS: ${signo} / 100 · FLUIDEZ DE LECTURA: ${fluidez} / 100`;
+    raiz.append(etq);
+
+    // Contenedor de la muestra
+    raiz.append(
+      svg('rect', {
+        x: padX,
+        y: 34,
+        width: W - padX * 2,
+        height: H - 48,
+        fill: '#ffffff',
+        stroke: ok ? TINTA : COTA,
+        'stroke-width': 1.5,
+      }),
+    );
+
+    // Color del texto según contraste (de #222222 al 100% hasta #c6c6c0 al 20%)
+    const kCon = (e.contraste - 20) / 80;
+    const Canal = Math.round(0xc6 - kCon * (0xc6 - 0x22));
+    const colorTexto = `rgb(${Canal},${Canal},${Canal})`;
+
+    const gMuestra = svg('g');
+    if (e.desenfoque > 0) {
+      gMuestra.setAttribute('filter', 'url(#dv-leg-blur)');
+    }
+
+    const xIn = padX + 18;
+    const lsPx = (e.tracking * 0.45).toFixed(2);
+    const fsCodigo = Math.max(11, Math.round(e.tamano * 1.12));
+    const fsParrafo = Math.max(10, e.tamano);
+    const lh = Math.round(fsParrafo * (e.caja === 'mayusculas' ? 1.32 : 1.48));
+
+    // Bloque 1: Prueba de signos críticos (Legibility)
+    const lbl1 = svg('text', {
+      x: xIn,
+      y: 56,
+      'font-family': SANS,
+      'font-size': 9,
+      'font-weight': 700,
+      'letter-spacing': 0.8,
+      fill: '#6f6f6f',
+    });
+    lbl1.textContent = '1. PRUEBA DE RECONOCIMIENTO DE SIGNOS (PARES HOMÓGRAFOS Y VECINOS)';
+    raiz.append(lbl1);
+
+    const muestraSignos =
+      e.caja === 'mayusculas'
+        ? 'CLAVE: IL1 - O0 - RN/M - CL/D · PUERTA B8'
+        : 'Clave: Il1 - O0 - rn/m - cl/d · Puerta B8';
+
+    const tSignos = svg('text', {
+      x: xIn,
+      y: 84,
+      'font-family': e.tracking <= -2 ? SANS : SERIF,
+      'font-size': fsCodigo,
+      'font-weight': 700,
+      'letter-spacing': lsPx,
+      fill: colorTexto,
+    });
+    tSignos.textContent = muestraSignos;
+    gMuestra.append(tSignos);
+
+    raiz.append(svg('line', { x1: xIn, y1: 100, x2: W - padX - 18, y2: 100, stroke: '#e5e5e0' }));
+
+    // Bloque 2: Prueba de lectura continua (Readability)
+    const lbl2 = svg('text', {
+      x: xIn,
+      y: 118,
+      'font-family': SANS,
+      'font-size': 9,
+      'font-weight': 700,
+      'letter-spacing': 0.8,
+      fill: '#6f6f6f',
+    });
+    lbl2.textContent = '2. PRUEBA DE LECTURA CONTINUA (SILUETA DE PALABRA Y FLUJO)';
+    raiz.append(lbl2);
+
+    const oracionesBase = [
+      'Reconocer una letra aislada en un cartel de autopista y leer',
+      'diez páginas seguidas de un libro ponen a prueba capacidades',
+      'distintas del sistema visual. Cuando las letras se aprietan',
+      'demasiado o pierden sus rasgos ascendentes y descendentes,',
+      'cada fijación ocular exige más esfuerzo y detiene la lectura.',
+    ];
+
+    const maxLineas = e.tamano >= 21 ? 4 : 5;
+    oracionesBase.slice(0, maxLineas).forEach((linea, idx) => {
+      const y = 144 + idx * lh;
+      if (y < H - 22) {
+        const txt = e.caja === 'mayusculas' ? linea.toUpperCase() : linea;
+        const t = svg('text', {
+          x: xIn,
+          y,
+          'font-family': SERIF,
+          'font-size': fsParrafo,
+          'letter-spacing': lsPx,
+          fill: colorTexto,
+        });
+        t.textContent = txt;
+        gMuestra.append(t);
+
+        // Si está en mayúsculas, dibujar el contorno rectangular (bouma plano) en la primera línea
+        if (e.caja === 'mayusculas' && idx === 0) {
+          raiz.append(
+            svg('rect', {
+              x: xIn - 2,
+              y: y - fsParrafo * 0.78,
+              width: Math.min(W - padX * 2 - 36, txt.length * (fsParrafo * 0.62 + e.tracking * 0.4)),
+              height: fsParrafo * 0.82,
+              fill: 'none',
+              stroke: COTA,
+              'stroke-width': 1,
+              'stroke-dasharray': '3 2',
+            }),
+          );
+        }
+      }
+    });
+
+    raiz.append(gMuestra);
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { signo, fluidez } = evaluarIndice(e);
+
+    if (e.desenfoque >= 1.5 && e.tracking < 2 && e.tamano < 18) {
+      return `Bajo desenfoque (${n(e.desenfoque, 1)} px), los trazos cercanos se contaminan entre sí: el reconocimiento cae a <b class="dv-cifra">${signo}/100</b>. Sube el espaciado entre letras (+4 o más) y el tamaño para rescatar las palabras.`;
+    }
+    if (e.tracking <= -3) {
+      return `Con espaciado de <b class="dv-cifra">${e.tracking}</b> aparece el efecto de <b class="dv-cifra">aglomeración (crowding)</b>: «rn» se funde como «m» y «cl» se acerca a «d» (${signo}/100 en reconocimiento).`;
+    }
+    if (e.caja === 'mayusculas') {
+      return `En <b class="dv-cifra">TODO MAYÚSCULAS</b> todas las palabras tienen el mismo contorno rectangular. La fluidez del párrafo cae a <b class="dv-cifra">${fluidez}/100</b> aunque los signos sueltos se vean grandes.`;
+    }
+    if (e.contraste < 55) {
+      return `Con un contraste del <b class="dv-cifra">${e.contraste} %</b> las astas finas y las aberturas internas pierden definición frente al fondo (${signo}/100).`;
+    }
+    return `Equilibrio alto: reconocimiento de signos en <b class="dv-cifra">${signo}/100</b> y fluidez de lectura en <b class="dv-cifra">${fluidez}/100</b>. Los caracteres se distinguen sin esfuerzo y el párrafo conserva su silueta en caja baja.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.caja === 'mayusculas',
+      (e) => e.caja === 'minusculas' && e.tracking <= -4,
+      (e) => e.desenfoque >= 2 && e.tracking <= 0,
+      (e) => e.desenfoque >= 1.5 && e.tracking >= 4 && e.tamano >= 19,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── 2. Especímenes de error ────────────────────────────────────
+  type E1 = { estado: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const todoMayus = e.estado === 'todo-mayus';
+    const etqApretada = e.estado === 'etiqueta-apretada';
+    d.innerHTML = `
+      <div style="padding:16px 18px;color:#222;">
+        <p style="margin:0 0 6px;font-family:${SANS};font-size:10.5px;font-weight:700;letter-spacing:${etqApretada ? '-0.04em' : '0.12em'};color:#6f6f6f;">
+          CRÓNICA DE ARCHIVO · SALA SUR
+        </p>
+        <p style="margin:0;font-family:${SERIF};font-size:13px;line-height:1.5;${todoMayus ? 'text-transform:uppercase;letter-spacing:-0.02em;font-family:' + SANS + ';font-weight:700;font-size:11.5px;' : ''}">
+          Las cartas recuperadas en el puerto describen con detalle las rutas de cabotaje y los instrumentos náuticos que utilizaban los pilotos a mediados del siglo diecinueve.
+        </p>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.estado === 'todo-mayus') {
+      return 'El párrafo entero en <b class="dv-cifra">mayúsculas apretadas</b> convierte cuatro renglones en un bloque rectangular difícil de recorrer.';
+    }
+    if (e.estado === 'etiqueta-apretada') {
+      return 'El párrafo ya respira en minúsculas, pero la etiqueta en mayúsculas con tracking negativo junta las letras («ARCHIVO»).';
+    }
+    return '<b class="dv-cifra">Cada caja en su función</b>: mayúsculas con buen tracking (+0,12 em) en la etiqueta corta y minúsculas fluidas en el párrafo.';
+  }
+
+  type E2 = { fuente: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const ambigua = e.fuente === 'ambigua';
+    const inequivoca = e.fuente === 'inequivoca';
+    const fam = ambigua ? 'Arial, Helvetica, sans-serif' : inequivoca ? MONO : SERIF;
+    const ls = inequivoca ? '0.16em' : ambigua ? '-0.02em' : '0.06em';
+    const muestra = inequivoca ? 'Il1 · O0̸ · B8 · S5' : 'Il1 · O0 · B8 · S5';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <p style="margin:0 0 6px;font-size:10px;font-weight:700;letter-spacing:0.08em;color:#6f6f6f;">CÓDIGO DE ACCESO TEMPORAL</p>
+        <div style="display:inline-block;padding:8px 14px;border:1.5px solid ${ambigua ? COTA : '#222'};background:${inequivoca ? '#fbfbf9' : '#fff'};font-family:${fam};font-size:20px;font-weight:700;letter-spacing:${ls};">
+          ${muestra}
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.fuente === 'ambigua') {
+      return 'En esta fuente sin serifas geométrica <b class="dv-cifra">«I», «l» y «1» son casi idénticos</b> y el cero se confunde con la O.';
+    }
+    if (e.fuente === 'serif') {
+      return 'Los remates ayudan a distinguir la «I» y la «l», aunque el cero y la O mayúscula todavía pueden dudarse fuera de contexto.';
+    }
+    return '<b class="dv-cifra">Reconocimiento inequívoco</b>: caracteres monoespaciados, cero barrado y separación holgada eliminan errores al transcribir.';
+  }
+
+  type E3 = { espaciado: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const ok = e.espaciado >= 2;
+    const ls = (e.espaciado * 0.01).toFixed(3) + 'em';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:${ok ? '#222' : COTA};">NOTA AL PIE EN 11 PX · TRACKING: ${e.espaciado > 0 ? '+' + e.espaciado : e.espaciado} %</p>
+        <p style="margin:0;font-size:11px;line-height:1.45;letter-spacing:${ls};color:#222;">
+          Conservar en lugar fresco y seco. Lote n.º 4108-rn/cl. Verifique la fecha de vencimiento impresa en el envase interior antes de abrir.
+        </p>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.espaciado < 0) {
+      return `Con <b class="dv-cifra">${e.espaciado} %</b> en cuerpo de 11 px, pares como «rn» y «cl» se pegan por aglomeración visual.`;
+    }
+    if (e.espaciado < 2) {
+      return `En <b class="dv-cifra">${e.espaciado} %</b> las letras ya no chocan, pero un cuerpo de 11 px agradece un poco más de espacio.`;
+    }
+    return `<b class="dv-cifra">+${e.espaciado} % de tracking</b>: abrir ligeramente el espaciado compensa el tamaño pequeño y separa cada signo con nitidez.`;
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── 3. Juego de 5 rondas ───────────────────────────────────────
+  function rondaTracy(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Formas abiertas y diferenciadas (c/e/o, I/l/1) con buen espaciado entre signos',
+        describir: 'Señal de salida con tipografía abierta y trazos nítidos.',
+        es: true,
+        html: `<div style="padding:12px;background:#1d1d1b;color:#fff;border:1.5px solid #222;text-align:center;font-family:${SANS};">
+          <span style="display:block;font-size:9px;color:${AMARILLO};letter-spacing:0.12em;font-weight:700;margin-bottom:4px;">SEÑAL A 40 METROS · FORMAS ABIERTAS</span>
+          <strong style="font-size:19px;letter-spacing:0.06em;">↑ Salida 14 · Centro</strong>
+        </div>`,
+      },
+      {
+        texto: 'Fuente decorativa de aberturas muy cerradas y trazos capilares finos',
+        describir: 'Señal con letras finas y apretadas donde las aberturas casi se tocan.',
+        es: false,
+        html: `<div style="padding:12px;background:#1d1d1b;color:#fff;border:1px solid #ccc;text-align:center;font-family:${SERIF};font-style:italic;">
+          <span style="display:block;font-family:${SANS};font-style:normal;font-size:9px;color:#ccc;letter-spacing:0.08em;margin-bottom:4px;">TRAZOS FINOS Y APRETADOS</span>
+          <span style="font-size:19px;letter-spacing:-0.05em;font-weight:300;">↑ Salida 14 · Centro</span>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En términos de Walter Tracy y Sofie Beier, ¿qué diseño prioriza el reconocimiento inmediato de signos (legibility) para un letrero leído de lejos?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'A distancia o con baja agudeza visual, las aberturas cerradas hacen que la «c» y la «e» parezcan una «o». Las aberturas amplias, el trazo firme y un espaciado generoso evitan la confusión.',
+      repaso: 'Reconocimiento de signos (legibility)',
+    };
+  }
+
+  function rondaCodigosHomografos(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Tipografía que distingue I / l / 1 y usa cero barrado (0̸) con casillas separadas',
+        describir: 'Código alfanumérico con glifos inequívocos.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:center;font-family:${MONO};color:#222;">
+          <span style="display:block;font-family:${SANS};font-size:9.5px;font-weight:700;color:#222;margin-bottom:4px;">SIGNOS DIFERENCIADOS</span>
+          <strong style="font-size:17px;letter-spacing:0.18em;">I l 1 - O 0̸ - 8 B</strong>
+        </div>`,
+      },
+      {
+        texto: 'Tipografía geométrica donde I, l y 1 son el mismo palo vertical sin remates',
+        describir: 'Código alfanumérico donde tres signos se ven como tres rayas iguales.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:center;font-family:Arial,sans-serif;color:#222;">
+          <span style="display:block;font-size:9.5px;font-weight:700;color:${COTA};margin-bottom:4px;">TRES RAYAS IDÉNTICAS</span>
+          <strong style="font-size:17px;letter-spacing:-0.02em;">Il1 - O0 - 8B</strong>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En una contraseña temporal o número de serie no hay palabras conocidas que ayuden a adivinar la letra por contexto. ¿Qué opción evita errores de transcripción?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En una palabra normal («lunes») deducimos que la primera letra es una ele por el contexto léxico; en un código («Il10O») cada carácter depende por completo de que su glifo sea inconfundible.',
+      repaso: 'Glifos homógrafos en datos críticos',
+    };
+  }
+
+  function rondaMayusculasFluidez(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Etiqueta breve en mayúsculas espaciadas y párrafo extenso en caja baja',
+        describir: 'Composición que usa mayúsculas solo en el antetítulo y minúsculas en el cuerpo.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;color:#222;">
+          <span style="display:block;font-family:${SANS};font-size:9px;font-weight:700;letter-spacing:0.12em;color:#6f6f6f;margin-bottom:4px;">ENSAYO · CAPÍTULO 3</span>
+          <p style="margin:0;font-family:${SERIF};font-size:12px;line-height:1.45;">La caja baja conserva las ascendentes y descendentes que dan una silueta distintiva a cada grupo de letras durante la lectura continua.</p>
+        </div>`,
+      },
+      {
+        texto: 'Párrafo extenso entero compuesto en TODO MAYÚSCULAS con espaciado cerrado',
+        describir: 'Párrafo de cuatro líneas todo en mayúsculas compactas.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SANS};color:#222;">
+          <p style="margin:0;font-size:10.5px;font-weight:700;line-height:1.3;letter-spacing:-0.02em;">CUANDO UN PÁRRAFO ENTERO SE COMPONE EN MAYÚSCULAS COMPACTAS, TODAS LAS PALABRAS FORMAN RECTÁNGULOS UNIFORMES QUE REDUCEN LA VELOCIDAD DE LECTURA.</p>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de las dos opciones favorece la fluidez de lectura (readability) en un texto de varios párrafos?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las mayúsculas funcionan muy bien en rótulos cortos con un poco de tracking, pero en párrafos largos suprimen las diferencias de altura de las minúsculas y ralentizan las fijaciones oculares.',
+      repaso: 'Caja baja frente a bloque en mayúsculas',
+    };
+  }
+
+  function rondaAglomeracion(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Espaciado ligeramente abierto (+3 %) que preserva el blanco entre astas vecinas',
+        describir: 'Texto de 11 px con espaciado positivo donde rn y cl se distinguen claramente.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SANS};color:#222;">
+          <span style="display:block;font-size:9px;font-weight:700;color:#222;margin-bottom:4px;">11 PX · TRACKING +0,03 EM (SIN AGLOMERACIÓN)</span>
+          <p style="margin:0;font-size:11.5px;letter-spacing:0.03em;line-height:1.45;">Turno moderno en clínica central · Lote rn-42 / cl-18.</p>
+        </div>`,
+      },
+      {
+        texto: 'Espaciado negativo (-6 %) que pega las letras para ahorrar espacio',
+        describir: 'Texto de 11 px con espaciado negativo donde rn parece m.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SANS};color:#222;">
+          <span style="display:block;font-size:9px;font-weight:700;color:${COTA};margin-bottom:4px;">11 PX · TRACKING -0,06 EM (CROWDING)</span>
+          <p style="margin:0;font-size:11.5px;letter-spacing:-0.06em;line-height:1.45;">Turno moderno en clínica central · Lote rn-42 / cl-18.</p>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Debes componer una nota técnica en cuerpo pequeño (11 px). ¿Cómo evitas el fenómeno de aglomeración (crowding) descrito por Sofie Beier?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En cuerpos pequeños o vistos a distancia, los contornos de las letras vecinas compiten en el campo receptivo de la retina. Abrir levemente el tracking evita que «rn» se lea como «m».',
+      repaso: 'Efecto de aglomeración (crowding)',
+    };
+  }
+
+  function rondaAjusteRescate(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este aviso se ve desde cierta distancia (con ligero desenfoque) y su espaciado negativo empasta las letras. Abre el espaciado entre caracteres hasta que los signos se separen con claridad.',
+      control: {
+        etiqueta: 'Espaciado entre letras (tracking)',
+        min: -5,
+        max: 8,
+        paso: 1,
+        valor: -5,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const ok = v >= 3;
+        const ls = (v * 0.012).toFixed(3) + 'em';
+        c.innerHTML = `
+          <div style="padding:14px;background:#fbfbf9;border:1.5px solid ${ok ? TINTA : COTA};text-align:left;font-family:${SANS};color:#222;">
+            <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:${ok ? TINTA : COTA};">
+              TRACKING: ${v > 0 ? '+' + v : v} % ${ok ? '· SIGNOS SEPARADOS CON NITIDEZ' : '· TRAZOS AGLOMERADOS'}
+            </p>
+            <div style="padding:12px 14px;background:#1d1d1b;color:#fff;font-size:17px;font-weight:700;letter-spacing:${ls};filter:blur(0.45px);">
+              Salida 14 · Clínica Norte · Vía rn-80
+            </div>
+          </div>`;
+      },
+      cumple: (v) => v >= 3,
+      falta: (v) => `Con ${v} % de espaciado las letras siguen demasiado juntas bajo baja agudeza. Abre el tracking a +3 % o más.`,
+      porque: 'Al dar un espaciado positivo (+3 % o más), los blancos entre letra y letra impiden que los trazos se fundan cuando la vista lee a distancia o en movimiento.',
+      repaso: 'Espaciado contra la aglomeración',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaTracy(),
+        rondaCodigosHomografos(),
+        rondaMayusculasFluidez(),
+        rondaAglomeracion(),
+        rondaAjusteRescate(),
+      ]),
+    );
+  }
+</script>

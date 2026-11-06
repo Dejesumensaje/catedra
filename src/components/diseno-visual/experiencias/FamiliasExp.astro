@@ -1,0 +1,882 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'familias-tipograficas';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const MONO = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Inspecciona la anatomía en rayos X.',
+    hacer: 'Activa «Línea de altura de la equis» y «Remates y terminales».',
+    pista: 'Marca el interruptor de anatomía.',
+    preparar: { titulares: 'sans', cuerpo: 'serif', cifras: 'mono', rayos: true },
+    logro: 'Las líneas rojas revelan por qué Roboto (sans) y PT Serif tienen una relación de altura de minúsculas compatible aunque sus terminaciones y modulación sean distintas.',
+  },
+  {
+    titulo: 'Prueba una sola familia bien exprimida.',
+    hacer: 'Pon «Titulares y navegación», «Cuerpo de lectura» y «Cifras y código» en «Serif (PT Serif)».',
+    pista: 'Elige «Serif» en los tres controles.',
+    preparar: { titulares: 'serif', cuerpo: 'serif', cifras: 'serif' },
+    logro: 'Con una sola familia consigues unidad inmediata, aunque los datos tabulares pierden la alineación estricta de una fuente monoespaciada.',
+  },
+  {
+    titulo: 'Crea un conflicto por parecido ambiguo.',
+    hacer: 'Elige «Sans alternativa» en «Titulares y navegación» y «Sans (Roboto)» en «Cuerpo de lectura».',
+    pista: 'Selecciona la cuarta opción en titulares y la segunda en cuerpo.',
+    logro: 'Cuando combinas dos fuentes sin remates casi iguales (Roboto y Arial/Helvetica), la diferencia no parece una decisión de diseño sino un descuido.',
+  },
+  {
+    titulo: 'Asigna una familia a cada función.',
+    hacer: 'Pon «Sans (Roboto)» en titulares, «Serif (PT Serif)» en el cuerpo y «Monoespaciada» en las cifras.',
+    pista: 'Reparte los tres roles según su especialidad.',
+    logro: 'Cada voz tipográfica cumple un propósito claro: la sans orienta y etiqueta, la serif sostiene la lectura continua y la monoespaciada alinea las columnas de datos.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="La palabra Hamburgefonstiv mostrada a 44 px en PT Serif y en Roboto con líneas de base, altura de la equis y altura de mayúsculas.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        {/* Líneas guía anatómicas */}
+        <line x1="24" y1="42" x2="576" y2="42" stroke="#6f6f6f" stroke-width="1" stroke-dasharray="3 3" />
+        <line x1="24" y1="68" x2="576" y2="68" stroke={ROJO} stroke-width="1.4" stroke-dasharray="5 3" />
+        <line x1="24" y1="118" x2="576" y2="118" stroke={T} stroke-width="1.5" />
+        <line x1="24" y1="142" x2="576" y2="142" stroke="#6f6f6f" stroke-width="1" stroke-dasharray="3 3" />
+
+        {/* Etiquetas de cotas */}
+        <rect x="24" y="52" width="112" height="15" fill={AMARILLO} />
+        <text x="28" y="63" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>ALTURA DE LA EQUIS (x)</text>
+        <text x="24" y="37" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>MAYÚSCULAS / ASCENDENTES</text>
+        <text x="24" y="132" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>LÍNEA DE BASE</text>
+        <text x="24" y="156" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>DESCENDENTES (g, p)</text>
+
+        {/* Espécimen Serif */}
+        <text x="156" y="118" font-family={SERIF} font-size="44" fill={T}>Hamburge</text>
+        <text x="156" y="160" font-family={SANS} font-size="9" font-weight="700" fill={G}>PT Serif · 44 px (remates y trazo modulado)</text>
+
+        {/* Espécimen Sans */}
+        <text x="380" y="118" font-family={SANS} font-size="44" fill={T}>fonstiv</text>
+        <text x="380" y="160" font-family={SANS} font-size="9" font-weight="700" fill={G}>Roboto · 44 px (sin remates, trazo uniforme)</text>
+      </svg>
+    </div>
+    <p>Ambas mitades están compuestas a 44 px exactos. ¿Qué tienen en común para poder convivir en la misma línea sin que una parezca más pequeña que la otra?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Comparten una <strong>altura de la equis</strong> (la altura de las minúsculas como la <em>o</em>, la <em>n</em> o la <em>e</em>) muy parecida y se apoyan con firmeza en la misma línea de base, mientras se diferencian con franqueza en sus terminaciones (remates frente a corte seco) y en la modulación del trazo.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Dos fuentes casi iguales y una tercera sin función clara"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Parecido ambiguo',
+          texto: 'El título en Helvetica/Arial y el subtítulo en Roboto son dos sans tan parecidas que el cambio parece un fallo al cargar la fuente.',
+          zona: zona(18, 20, 324, 68),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Tercera fuente caprichosa',
+          texto: 'El párrafo mezcla una cursiva pesada con una monoespaciada en medio de la frase sin razón funcional.',
+          zona: zona(18, 94, 324, 88),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Cifras desalineadas',
+          texto: 'Las medidas y fechas de inventario usan cifras proporcionales que bailan en la columna.',
+          zona: zona(18, 190, 324, 72),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartela de museo con tres fuentes que chocan entre sí y cifras desalineadas.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="42" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill={G}>SALA 03 · ARQUEOLOGÍA DEL VALLE</text>
+        <text x="24" y="70" font-family={SANS} font-size="21" font-weight="700" fill={T}>Cuenco ceremonial con inciso</text>
+        <text font-family="Georgia, serif" font-style="italic" font-size="13" fill="#444444">
+          <tspan x="24" y="106">Vasija modelada a mano en arcilla ferruginosa</tspan>
+          <tspan x="24" y="126">con borde geométrico repetido en el labio.</tspan>
+        </text>
+        <text font-family={MONO} font-size="11.5" fill={T}>
+          <tspan x="24" y="156">Hallada en el estrato medio junto a semillas</tspan>
+          <tspan x="24" y="174">carbonizadas de maíz y husos de cerámica.</tspan>
+        </text>
+        <line x1="24" y1="192" x2="336" y2="192" stroke="#e5e5e5" />
+        <text x="24" y="216" font-family="Georgia, serif" font-size="12.5" fill={T}>Diámetro: 11,4 cm · Altura: 8,2 cm</text>
+        <text x="24" y="236" font-family="Arial, sans-serif" font-size="12.5" fill={T}>Inventario: 11104-B · Datación: 410 d. C.</text>
+        <text x="24" y="256" font-family={MONO} font-size="11" fill={G}>Donación Colección Restrepo (1987)</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Cada familia cumple un rol reconocible"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Sans para señalética y navegación',
+          texto: 'Roboto encabeza el número de sala y la categoría con formas abiertas que se leen de pie a dos metros.',
+          zona: zona(18, 20, 324, 58),
+        },
+        {
+          ...pct(330, 134),
+          titulo: 'Serif para la lectura curatorial',
+          texto: 'PT Serif asume el título de la obra y el párrafo explicativo, creando una voz editorial cálida y continua.',
+          zona: zona(18, 82, 324, 96),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Cifras tabulares para la ficha técnica',
+          texto: 'Las dimensiones, el código de inventario y la datación quedan ordenados con precisión técnica.',
+          zona: zona(18, 186, 324, 78),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartela de museo bien resuelta con Roboto para etiquetas y datos técnicos y PT Serif para el título y el comentario.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="10.5" font-weight="700" letter-spacing="1.2" fill={G}>SALA 03 · ARQUEOLOGÍA DEL VALLE</text>
+        <text x="24" y="66" font-family={SERIF} font-size="22" font-weight="700" fill={T}>Cuenco ceremonial con inciso</text>
+        <text font-family={SERIF} font-size="13" fill="#444444">
+          <tspan x="24" y="98">Vasija modelada a mano en arcilla ferruginosa con</tspan>
+          <tspan x="24" y="118">borde geométrico en el labio. Fue hallada en el</tspan>
+          <tspan x="24" y="138">estrato medio junto a semillas de maíz y husos</tspan>
+          <tspan x="24" y="158">de cerámica para hilado doméstico.</tspan>
+        </text>
+        <line x1="24" y1="182" x2="336" y2="182" stroke="#e5e5e5" />
+        <text x="24" y="206" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={G}>DIMENSIONES</text>
+        <text x="150" y="206" font-family={MONO} font-size="11.5" font-weight="700" fill={T}>Ø 11,4 cm · Alt. 08,2 cm</text>
+        <text x="24" y="228" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={G}>DATACIÓN</text>
+        <text x="150" y="228" font-family={MONO} font-size="11.5" font-weight="700" fill={T}>0410 – 0580 d. C.</text>
+        <text x="24" y="250" font-family={SANS} font-size="10" font-weight="700" letter-spacing="0.8" fill={G}>INVENTARIO</text>
+        <text x="150" y="250" font-family={MONO} font-size="11.5" fill="#444444">CAT-11104-B · Col. Restrepo</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · anatomía comparada y reparto de funciones"
+    consigna="Asigna qué familia tipográfica se encarga de los titulares, del cuerpo de lectura y de las cifras. Activa los rayos X anatómicos para comparar la altura de la equis, las aberturas y los remates en la parte superior."
+    nota="Fija la combinación de una sola familia como A y compárala con un dúo Serif + Sans como B."
+  >
+    <svg slot="escenario" viewBox="0 0 640 340" role="img" aria-label="Comparador anatómico y funcional de familias tipográficas.">
+      <rect width="640" height="340" fill="#fbfbf9" />
+      <rect x="32" y="20" width="576" height="106" fill="#ffffff" stroke="#222222" stroke-width="1.2" />
+      <text x="52" y="88" font-family={SERIF} font-size="44" fill={T}>Hamburge</text>
+      <text x="330" y="88" font-family={SANS} font-size="44" fill={T}>fonstiv 01</text>
+      <rect x="32" y="140" width="576" height="180" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <text x="52" y="172" font-family={SANS} font-size="11" font-weight="700" letter-spacing="1.2" fill={G}>OBSERVATORIO METEOROLÓGICO · BOLETÍN DIARIO</text>
+      <text x="52" y="204" font-family={SANS} font-size="22" font-weight="900" fill={T}>Las lluvias de octubre superan el promedio histórico</text>
+      <text x="52" y="236" font-family={SERIF} font-size="14" fill="#444444">Las estaciones del valle registraron precipitaciones continuas durante doce jornadas seguidas, recargando los acuíferos de ladera.</text>
+      <text x="52" y="292" font-family={MONO} font-size="12.5" font-weight="700" fill={T}>EST-01: 142,8 mm  |  EST-02: 098,4 mm  |  EST-03: 111,0 mm</text>
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Activa el ajuste de escala óptica en «Más controles» para ver cómo se equilibran dos fuentes en la misma línea." />
+
+    <Opciones
+      lab={lab}
+      variable="titulares"
+      etiqueta="Titulares y navegación"
+      valor="sans"
+      opciones={[
+        { valor: 'serif', texto: 'Serif (PT Serif)' },
+        { valor: 'sans', texto: 'Sans (Roboto)' },
+        { valor: 'mono', texto: 'Monoespaciada' },
+        { valor: 'sans2', texto: 'Sans alternativa' },
+      ]}
+      ayuda="Define la voz de los encabezados y etiquetas superiores."
+    />
+    <Opciones
+      lab={lab}
+      variable="cuerpo"
+      etiqueta="Cuerpo de lectura"
+      valor="serif"
+      opciones={[
+        { valor: 'serif', texto: 'Serif (PT Serif)' },
+        { valor: 'sans', texto: 'Sans (Roboto)' },
+        { valor: 'mono', texto: 'Monoespaciada' },
+      ]}
+      ayuda="Define la fuente de los párrafos de lectura continua."
+    />
+    <Opciones
+      lab={lab}
+      variable="cifras"
+      etiqueta="Cifras y código"
+      valor="mono"
+      opciones={[
+        { valor: 'mono', texto: 'Monoespaciada' },
+        { valor: 'sans', texto: 'Sans (Roboto)' },
+        { valor: 'serif', texto: 'Serif (PT Serif)' },
+      ]}
+      ayuda="Observa cómo se alinean los números y códigos de las estaciones."
+    />
+    <Interruptor
+      lab={lab}
+      variable="rayos"
+      etiqueta="Línea de altura de la equis y remates"
+      valor={true}
+      ayuda="Muestra las cotas anatómicas sobre el espécimen superior."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="aberturas"
+        etiqueta="Marcar aberturas (a, c, e, s) y glifos I/l/1"
+        valor={false}
+        ayuda="Resalta los espacios de entrada de blanco en las letras cerradas."
+      />
+      <Deslizador
+        lab={lab}
+        variable="escala"
+        etiqueta="Ajuste óptico del cuerpo"
+        min={90}
+        max={115}
+        paso={1}
+        valor={100}
+        unidad="%"
+        ayuda="Compensa las diferencias de altura de la equis entre familias."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"titulares":"sans","cuerpo":"serif","cifras":"mono","rayos":true}'>Reparto clásico (Sans + Serif + Mono)</button>
+      <button type="button" class="dv-boton" data-preset='{"titulares":"serif","cuerpo":"serif","cifras":"serif","rayos":true}'>Una sola familia (todo en Serif)</button>
+      <button type="button" class="dv-boton" data-preset='{"titulares":"sans2","cuerpo":"sans","cifras":"sans","rayos":true}'>Conflicto: dos sans casi idénticas</button>
+      <button type="button" class="dv-boton" data-preset='{"titulares":"mono","cuerpo":"mono","cifras":"mono","rayos":false}'>Todo en monoespaciada</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Evita emparejar dos familias casi idénticas"
+      comparar={false}
+      consigna="El título usa Arial y el párrafo usa Roboto: son tan parecidas que no generan contraste y tan distintas que pierden unidad. Elige una sola familia o un contraste franco entre serif y sans."
+    >
+      <div slot="escenario" style="padding:16px 18px;color:#222222;">
+        <p style="margin:0 0 6px;font-family:Arial,sans-serif;font-size:17px;font-weight:700;">Informe de movilidad ciclista</p>
+        <p style="margin:0;font-family:Roboto,sans-serif;font-size:13px;color:#444444;">El conteo en seis intersecciones muestra un aumento del 18 % en hora punta.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e1`}
+        variable="par"
+        etiqueta="Combinación de familias"
+        valor="ambiguo"
+        opciones={[
+          { valor: 'ambiguo', texto: 'Dos sans parecidas (conflicto)' },
+          { valor: 'unica', texto: 'Una sola familia (unidad)' },
+          { valor: 'contraste', texto: 'Sans + Serif (contraste franco)' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Iguala el tamaño aparente en la misma línea"
+      comparar={false}
+      consigna="Cuando citas código o atajos de teclado dentro de un párrafo en serif, la fuente monoespaciada suele verse más grande a igual puntaje en píxeles. Ajusta su escala relativa hasta que ambas alturas de la equis empaten."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:'PT Serif',Georgia,serif;font-size:15px;color:#222222;">
+        <p style="margin:0;">Para compilar el sitio estático ejecuta <code style="font-size:108%;">npm run build</code> en la terminal.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="escalaMono"
+        etiqueta="Escala relativa del código inline"
+        min={82}
+        max={115}
+        paso={1}
+        valor={110}
+        unidad="%"
+        ayuda="Alrededor de 88 %–92 % la altura de las minúsculas monoespaciadas se equilibra con el texto corrido."
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Usa cifras tabulares en columnas numéricas"
+      comparar={false}
+      consigna="En una tabla de tiempos o precios, las cifras proporcionales (donde el 1 es estrecho y el 8 es ancho) desalinean las comas decimales. Cambia a cifras tabulares o monoespaciadas."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:'PT Serif',Georgia,serif;font-size:14px;color:#222222;">
+        <p style="margin:0;">Tramo 1: 111,10 s · Tramo 2: 888,45 s</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="modoCifra"
+        etiqueta="Tipo de cifras en la columna"
+        valor="proporcional"
+        opciones={[
+          { valor: 'proporcional', texto: 'Proporcionales (desalineadas)' },
+          { valor: 'tabular', texto: 'Tabulares / monoespaciadas' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Este mismo sitio (Cátedra): PT Serif para leer, Roboto para navegar"
+      notas={[
+        {
+          ...pct(320, 48),
+          titulo: 'Roboto en migas de pan, etiquetas y datos',
+          texto: 'Todo elemento de orientación, control interactivo o etiqueta de estado usa Roboto por su claridad en cuerpos pequeños.',
+          zona: zona(18, 18, 324, 52),
+        },
+        {
+          ...pct(320, 128),
+          titulo: 'PT Serif en titulares de lectura y prosa',
+          texto: 'Los argumentos, citas y explicaciones extensas se componen en PT Serif: el cambio de voz separa qué se lee de qué se opera.',
+          zona: zona(18, 76, 324, 106),
+        },
+        {
+          ...pct(320, 228),
+          titulo: 'Escalas acopladas por altura de la equis',
+          texto: 'Ambas fuentes tienen una altura de minúsculas amplia, lo que permite alternarlas sin saltos bruscos de densidad.',
+          zona: zona(18, 190, 324, 70),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Maqueta del sistema tipográfico de Cátedra con Roboto en navegación y controles y PT Serif en lectura.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="36" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>TERRITORIO 02 · TIPOGRAFÍA</text>
+        <line x1="24" y1="48" x2="336" y2="48" stroke="#e5e5e5" />
+        <text x="24" y="84" font-family={SERIF} font-size="24" font-weight="700" fill={T}>Familias tipográficas</text>
+        <text font-family={SERIF} font-size="13" fill="#444444">
+          <tspan x="24" y="114">El sitio emplea dos registros deliberados: PT Serif</tspan>
+          <tspan x="24" y="134">sostiene la lectura pausada de cada concepto y</tspan>
+          <tspan x="24" y="154">Roboto articula la interfaz de los instrumentos.</tspan>
+        </text>
+        <rect x="24" y="186" width="312" height="68" fill="#fbfbf9" stroke={T} stroke-width="1.5" />
+        <text x="38" y="210" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>CONTROL DEL INSTRUMENTO (ROBOTO)</text>
+        <rect x="38" y="222" width="144" height="20" fill={AMARILLO} stroke={T} stroke-width="1.2" />
+        <text x="46" y="236" font-family={SANS} font-size="11" font-weight="700" fill={T}>Fijar como A y comparar</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Diccionario bilingüe: cuatro voces en un solo renglón"
+      notas={[
+        {
+          ...pct(320, 58),
+          titulo: 'Entrada en sans negrita',
+          texto: 'El lema buscado («embarcar») destaca en sans 900 para localizarse rápido al hojear la columna en vertical.',
+          zona: zona(20, 24, 320, 48),
+        },
+        {
+          ...pct(320, 126),
+          titulo: 'Fonética y categoría gramatical',
+          texto: 'La transcripción entre corchetes y la marca «v. tr.» en cursiva separan la información lingüística sin abrir otro renglón.',
+          zona: zona(20, 76, 320, 82),
+        },
+        {
+          ...pct(320, 214),
+          titulo: 'Definición en redonda y ejemplos en cursiva',
+          texto: 'En espacios de alta densidad, el contraste entre redonda y cursiva de una misma familia evita tener que saltar de línea.',
+          zona: zona(20, 164, 320, 92),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Entrada de diccionario donde conviven sans negrita para el lema, serif redonda para la definición y cursiva para los ejemplos.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>DICCIONARIO DE USO · PÁG. 418</text>
+        <line x1="24" y1="48" x2="336" y2="48" stroke={T} stroke-width="1.5" />
+        <text x="24" y="78" font-family={SANS} font-size="18" font-weight="900" fill={T}>jerarquía</text>
+        <text x="112" y="78" font-family={MONO} font-size="12" fill={G}>[xe.ɾaɾˈki.a]</text>
+        <text x="216" y="78" font-family={SERIF} font-style="italic" font-size="13" fill="#444444">s. f.</text>
+        <text font-family={SERIF} font-size="13" fill={T}>
+          <tspan x="24" y="108" font-weight="700">1.</tspan>
+          <tspan x="42" y="108">Gradación de elementos según criterios de</tspan>
+          <tspan x="42" y="128">importancia, urgencia o función dentro de un</tspan>
+          <tspan x="42" y="148">conjunto.</tspan>
+        </text>
+        <text font-family={SERIF} font-style="italic" font-size="12.5" fill="#444444">
+          <tspan x="42" y="172">«La jerarquía de la portada orienta la lectura.»</tspan>
+        </text>
+        <text font-family={SERIF} font-size="13" fill={T}>
+          <tspan x="24" y="204" font-weight="700">2.</tspan>
+          <tspan x="42" y="204" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>TIPOG.</tspan>
+          <tspan x="84" y="204">Sistema de señales visuales que articula</tspan>
+          <tspan x="42" y="224">los niveles de un impreso o pantalla.</tspan>
+        </text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Documentación técnica: prosa explicativa frente a código literal"
+      notas={[
+        {
+          ...pct(320, 62),
+          titulo: 'Prosa en fuente proporcional',
+          texto: 'Las explicaciones usan anchura variable para que las palabras formen bloques compactos y cómodos de leer.',
+          zona: zona(20, 24, 320, 74),
+        },
+        {
+          ...pct(320, 152),
+          titulo: 'Monoespaciada para sintaxis exacta',
+          texto: 'En el bloque de código cada carácter y cada espacio en blanco miden lo mismo, haciendo visibles la sangría y los signos.',
+          zona: zona(20, 106, 320, 96),
+        },
+        {
+          ...pct(320, 236),
+          titulo: 'Distinción clara de glifos homógrafos',
+          texto: 'En identificadores técnicos es crucial que 0 (cero) y O (mayúscula), o 1, l e I, no se confundan jamás.',
+          zona: zona(20, 208, 320, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página de documentación técnica que combina prosa en serif con bloques de código en fuente monoespaciada.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="24" y="38" font-family={SANS} font-size="14" font-weight="700" fill={T}>Configuración de variables tipográficas</text>
+        <text font-family={SERIF} font-size="12.5" fill="#444444">
+          <tspan x="24" y="62">Define las pilas de fuentes en la raíz del documento</tspan>
+          <tspan x="24" y="80">para mantener separada la lectura del código:</tspan>
+        </text>
+        <rect x="24" y="98" width="312" height="96" fill="#fbfbf9" stroke="#d8d8d4" stroke-width="1.2" />
+        <text font-family={MONO} font-size="11.5" fill={T}>
+          <tspan x="36" y="122">:root &#123;</tspan>
+          <tspan x="36" y="142">  --serif: 'PT Serif', Georgia, serif;</tspan>
+          <tspan x="36" y="162">  --sans:  'Roboto', Arial, sans-serif;</tspan>
+          <tspan x="36" y="182">&#125;</tspan>
+        </text>
+        <rect x="24" y="210" width="312" height="44" fill="#f4f4f0" />
+        <text x="36" y="228" font-family={SANS} font-size="10" font-weight="700" fill={G}>PRUEBA DE HOMÓGRAFOS EN CÓDIGO</text>
+        <text x="36" y="246" font-family={MONO} font-size="12.5" font-weight="700" fill={T}>Il1 · O0 · rn / m · &#123; [ ( ) ] &#125;</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre altura de la equis, aberturas, conflicto por parecido ambiguo, cifras tabulares y ajuste de escala óptica."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SANS2 = 'Arial, Helvetica, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const MONO = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const ROJO = '#b3261e';
+  const AMARILLO = '#eeff41';
+
+  type E = {
+    titulares: string;
+    cuerpo: string;
+    cifras: string;
+    rayos: boolean;
+    aberturas: boolean;
+    escala: number;
+  };
+
+  function fam(clave: string): string {
+    if (clave === 'serif') return SERIF;
+    if (clave === 'mono') return MONO;
+    if (clave === 'sans2') return SANS2;
+    return SANS;
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 300);
+    const H = 340;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute('aria-label', 'Laboratorio de familias tipográficas con rayos X anatómicos y vista de artículo.');
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 460 ? 18 : 32;
+    const boxW = W - padX * 2;
+
+    // Caja superior: rayos X anatómicos
+    raiz.append(svg('rect', { x: padX, y: 16, width: boxW, height: 108, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.2 }));
+
+    const yBase = 92;
+    const yEquis = 62;
+    const yCap = 46;
+
+    if (e.rayos) {
+      raiz.append(svg('line', { x1: padX + 10, y1: yCap, x2: padX + boxW - 10, y2: yCap, stroke: GRIS, 'stroke-dasharray': '3 3' }));
+      raiz.append(svg('line', { x1: padX + 10, y1: yEquis, x2: padX + boxW - 10, y2: yEquis, stroke: ROJO, 'stroke-width': 1.4, 'stroke-dasharray': '5 3' }));
+      raiz.append(svg('line', { x1: padX + 10, y1: yBase, x2: padX + boxW - 10, y2: yBase, stroke: TINTA, 'stroke-width': 1.4 }));
+
+      const etqX = svg('text', { x: padX + boxW - 14, y: yEquis - 5, 'text-anchor': 'end', 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: ROJO });
+      etqX.textContent = 'ALTURA x';
+      raiz.append(etqX);
+    }
+
+    if (e.aberturas) {
+      raiz.append(svg('circle', { cx: padX + 82, cy: 76, r: 16, fill: AMARILLO, opacity: 0.75, stroke: ROJO, 'stroke-width': 1.2 }));
+      raiz.append(svg('circle', { cx: padX + (W < 460 ? 210 : 284), cy: 76, r: 16, fill: AMARILLO, opacity: 0.75, stroke: ROJO, 'stroke-width': 1.2 }));
+    }
+
+    const muestraTit = svg('text', {
+      x: padX + 18,
+      y: yBase,
+      'font-family': fam(e.titulares),
+      'font-size': W < 460 ? 32 : 40,
+      'font-weight': 700,
+      fill: TINTA,
+    });
+    muestraTit.textContent = e.aberturas ? 'Haces Il1' : 'Hamburge';
+    raiz.append(muestraTit);
+
+    const fsCuerpoMuestra = Math.round((W < 460 ? 32 : 40) * (e.escala / 100));
+    const muestraCue = svg('text', {
+      x: padX + (W < 460 ? 175 : 244),
+      y: yBase,
+      'font-family': fam(e.cuerpo),
+      'font-size': fsCuerpoMuestra,
+      fill: TEXTO,
+    });
+    muestraCue.textContent = e.aberturas ? 'cesar O0' : 'fonstiv';
+    raiz.append(muestraCue);
+
+    if (e.rayos && (e.titulares === 'serif' || e.cuerpo === 'serif')) {
+      const notaRemate = svg('text', { x: padX + 18, y: 114, 'font-family': SANS, 'font-size': 9.5, 'font-weight': 700, fill: ROJO });
+      notaRemate.textContent = '↑ Remates (serifas) en la línea de base y modulación entre astas gruesas y finas';
+      raiz.append(notaRemate);
+    }
+
+    // Caja inferior: pieza editorial aplicada
+    raiz.append(svg('rect', { x: padX, y: 138, width: boxW, height: 184, fill: '#ffffff', stroke: TINTA, 'stroke-width': 1.5 }));
+
+    const tAnt = svg('text', {
+      x: padX + 20,
+      y: 164,
+      'font-family': fam(e.titulares),
+      'font-size': 10.5,
+      'font-weight': 700,
+      'letter-spacing': 1.1,
+      fill: GRIS,
+    });
+    tAnt.textContent = 'OBSERVATORIO METEOROLÓGICO · BOLETÍN DIARIO';
+    raiz.append(tAnt);
+
+    const tTit = svg('text', {
+      x: padX + 20,
+      y: 194,
+      'font-family': fam(e.titulares),
+      'font-size': W < 460 ? 17 : 21,
+      'font-weight': 700,
+      fill: TINTA,
+    });
+    tTit.textContent = 'Las lluvias de octubre recargan los acuíferos';
+    raiz.append(tTit);
+
+    const fsP = (13.5 * e.escala) / 100;
+    const p1 = svg('text', { x: padX + 20, y: 224, 'font-family': fam(e.cuerpo), 'font-size': fsP, fill: TEXTO });
+    p1.textContent = 'Las estaciones del valle registraron precipitaciones continuas durante doce';
+    raiz.append(p1);
+    const p2 = svg('text', { x: padX + 20, y: 244, 'font-family': fam(e.cuerpo), 'font-size': fsP, fill: TEXTO });
+    p2.textContent = 'jornadas seguidas, estabilizando el caudal de las quebradas de ladera.';
+    raiz.append(p2);
+
+    raiz.append(svg('line', { x1: padX + 20, y1: 262, x2: padX + boxW - 20, y2: 262, stroke: '#e5e5e5' }));
+
+    const f1 = svg('text', { x: padX + 20, y: 284, 'font-family': fam(e.cifras), 'font-size': 12, 'font-weight': 700, fill: TINTA });
+    f1.textContent = 'EST-01 CENTRO:   142,8 mm   (111 % del promedio)';
+    raiz.append(f1);
+    const f2 = svg('text', { x: padX + 20, y: 304, 'font-family': fam(e.cifras), 'font-size': 12, 'font-weight': 700, fill: TINTA });
+    f2.textContent = 'EST-02 LADERA:   088,4 mm   (094 % del promedio)';
+    raiz.append(f2);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    if ((e.titulares === 'sans' && e.cuerpo === 'sans2') || (e.titulares === 'sans2' && e.cuerpo === 'sans')) {
+      return '<b class="dv-cifra">Conflicto por parecido ambiguo</b>: mezclar dos fuentes sin remates casi iguales (Roboto y Arial) no aporta contraste funcional y parece un error.';
+    }
+    if (e.titulares === e.cuerpo && e.cuerpo === e.cifras) {
+      const nom = e.titulares === 'serif' ? 'PT Serif' : e.titulares === 'mono' ? 'Monoespaciada' : 'Roboto';
+      return `<b class="dv-cifra">1 sola familia (${nom})</b> para toda la pieza: garantiza máxima coherencia estructural, aunque exige apoyarse más en el peso y el tamaño.`;
+    }
+    const usaMono = e.cifras === 'mono' ? ' Las cifras monoespaciadas alinean dígito por dígito las dos filas de datos.' : ' Al no usar fuente tabular en las cifras, el «111 %» y el «094 %» no comparten ancho de carácter.';
+    return `Contraste funcional entre <b class="dv-cifra">${e.titulares.toUpperCase()}</b> en titulares y <b class="dv-cifra">${e.cuerpo.toUpperCase()}</b> en lectura continua.${usaMono}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="familias-tipograficas"]')) {
+    guiar<E>(raiz, [
+      (e) => e.rayos,
+      (e) => e.titulares === 'serif' && e.cuerpo === 'serif' && e.cifras === 'serif',
+      (e) => (e.titulares === 'sans2' && e.cuerpo === 'sans') || (e.titulares === 'sans' && e.cuerpo === 'sans2'),
+      (e) => e.titulares === 'sans' && e.cuerpo === 'serif' && e.cifras === 'mono',
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────
+  type E1 = { par: string };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const fTit = e.par === 'ambiguo' ? SANS2 : SANS;
+    const fCue = e.par === 'contraste' ? SERIF : SANS;
+    d.innerHTML = `
+      <div style="padding:16px 18px;color:#222222;">
+        <p style="margin:0 0 6px;font-family:${fTit};font-size:18px;font-weight:700;">Informe de movilidad ciclista</p>
+        <p style="margin:0;font-family:${fCue};font-size:13.5px;line-height:1.45;color:#444444;">El conteo en seis intersecciones muestra un aumento del 18 % en los desplazamientos matutinos.</p>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.par === 'ambiguo') return '<b class="dv-cifra">Dos sans casi iguales</b> (Arial + Roboto): demasiado parecidas para crear contraste y demasiado distintas para ser la misma voz.';
+    if (e.par === 'unica') return '<b class="dv-cifra">Una sola familia</b> (Roboto en ambos niveles): sobria, limpia y sin fricciones.';
+    return '<b class="dv-cifra">Contraste franco</b> (Roboto + PT Serif): los titulares y el párrafo se distinguen al instante por estructura.';
+  }
+
+  type E2 = { escalaMono: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};font-size:15px;line-height:1.55;color:#222222;">
+        <p style="margin:0;">Para verificar los enlaces del proyecto ejecuta <code style="font-family:${MONO};font-size:${e.escalaMono}%;background:#f2f2ee;padding:1px 5px;border:1px solid #d8d8d4;">npm run check</code> antes de publicar la rama.</p>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.escalaMono > 96) return `Al <b class="dv-cifra">${e.escalaMono} %</b>, la fuente monoespaciada parece saltar fuera del renglón porque su altura de la equis es mayor.`;
+    if (e.escalaMono < 85) return `Al <b class="dv-cifra">${e.escalaMono} %</b>, el código queda demasiado pequeño respecto a las minúsculas de PT Serif.`;
+    return `<b class="dv-cifra">${e.escalaMono} %</b>: escala óptica equilibrada. Las minúsculas de ambas familias empatan en altura aparente.`;
+  }
+
+  type E3 = { modoCifra: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const esTab = e.modoCifra === 'tabular';
+    const ff = esTab ? MONO : SERIF;
+    const fvn = esTab ? 'tabular-nums' : 'proportional-nums';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};font-size:13px;color:#222222;">
+        <div style="display:grid;grid-template-columns:1fr auto;gap:4px 16px;max-width:260px;">
+          <span style="color:#444444;">Lote 01 · Café pergamino</span>
+          <span style="font-family:${ff};font-variant-numeric:${fvn};font-weight:700;text-align:right;">$ 111.110</span>
+          <span style="color:#444444;">Lote 02 · Cacao seco</span>
+          <span style="font-family:${ff};font-variant-numeric:${fvn};font-weight:700;text-align:right;">$ 848.950</span>
+          <span style="color:#444444;">Lote 03 · Miel orgánica</span>
+          <span style="font-family:${ff};font-variant-numeric:${fvn};font-weight:700;text-align:right;">$ 101.100</span>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.modoCifra === 'proporcional') return 'Con <b class="dv-cifra">cifras proporcionales</b>, el 1 es mucho más angosto que el 8 y las centenas no coinciden en vertical.';
+    return '<b class="dv-cifra">Cifras tabulares</b>: cada dígito ocupa el mismo cajetín horizontal y las unidades, decenas y miles caen en plomada.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['familias-tipograficas-e1', pintarE1 as never, describirE1 as never],
+    ['familias-tipograficas-e2', pintarE2 as never, describirE2 as never],
+    ['familias-tipograficas-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────
+  function rParecidoAmbiguo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Titular en Sans (Roboto) y cuerpo en Serif (PT Serif): funciones y estructuras claramente diferenciadas',
+        describir: 'Combinación de titular sin remates y cuerpo con remates.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;text-align:left;">
+          <div style="font-family:${SANS};font-size:15px;font-weight:900;color:#222;margin-bottom:4px;">Arquitectura de tierra apisonada</div>
+          <div style="font-family:${SERIF};font-size:12.5px;color:#444;line-height:1.45;">Los muros de tapia regulan la humedad interior de forma pasiva durante todo el año.</div>
+        </div>`,
+      },
+      {
+        texto: 'Titular en Arial y cuerpo en Roboto: dos fuentes sin remates casi indistinguibles',
+        describir: 'Combinación de dos fuentes sans muy similares.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;text-align:left;">
+          <div style="font-family:${SANS2};font-size:15px;font-weight:700;color:#222;margin-bottom:4px;">Arquitectura de tierra apisonada</div>
+          <div style="font-family:${SANS};font-size:12.5px;color:#444;line-height:1.45;">Los muros de tapia regulan la humedad interior de forma pasiva durante todo el año.</div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Al combinar dos familias tipográficas en una misma página, ¿cuál de los dos pares evita el conflicto por parecido ambiguo?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Si usas dos familias, haz que se distingan con franqueza (por ejemplo, sans para títulos y serif para lectura). Dos sans casi iguales parecen un descuido.',
+      repaso: 'Contraste estructural entre familias',
+    };
+  }
+
+  function rCifrasTabulares(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Cifras tabulares / monoespaciadas donde cada dígito ocupa el mismo ancho',
+        describir: 'Columna de importes perfectamente alineados verticalmente.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:${MONO};font-size:12.5px;text-align:right;color:#222;">
+          <div>1.111,10 €</div>
+          <div>8.848,90 €</div>
+          <div>1.011,05 €</div>
+        </div>`,
+      },
+      {
+        texto: 'Cifras proporcionales donde el 1 es estrecho y el 8 es ancho',
+        describir: 'Columna de importes donde el número con unos ocupa mucho menos ancho que el de ochos.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #dcdcdc;font-family:Georgia,serif;font-size:13px;text-align:right;color:#222;">
+          <div style="letter-spacing:-0.5px;">1.111,10 €</div>
+          <div style="letter-spacing:0.6px;">8.848,90 €</div>
+          <div style="letter-spacing:-0.5px;">1.011,05 €</div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de las dos columnas numéricas permite comparar miles y decimales de un vistazo?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las cifras tabulares asignan el mismo cajetín horizontal al 1 y al 8, manteniendo alineados los puntos de mil y las comas decimales.',
+      repaso: 'Cifras tabulares frente a proporcionales',
+    };
+  }
+
+  function rAlturaEquis(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'La fuente con mayor altura de la equis (minúsculas más altas respecto a las mayúsculas)',
+        describir: 'Muestra con minúsculas altas y aberturas amplias.',
+        es: true,
+        html: `<div style="padding:12px;background:#fff;border:1px solid #dcdcdc;font-family:${SANS};font-size:18px;font-weight:700;color:#222;">
+          Lectura en cuerpo pequeño
+        </div>`,
+      },
+      {
+        texto: 'La fuente con altura de la equis reducida y ascendentes muy largas',
+        describir: 'Muestra donde las minúsculas se ven diminutas al mismo tamaño nominal.',
+        es: false,
+        html: `<div style="padding:12px;background:#fff;border:1px solid #dcdcdc;font-family:${SERIF};font-size:13px;color:#222;">
+          Lectura en cuerpo pequeño
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'A igual tamaño en píxeles, ¿qué rasgo anatómico hace que una tipografía tenga un tamaño aparente mayor y resista mejor en etiquetas pequeñas?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como la mayoría de las letras de un texto son minúsculas, la altura de la equis (x-height) determina el tamaño aparente y la claridad de los espacios internos.',
+      repaso: 'Altura de la equis',
+    };
+  }
+
+  function rHomografos(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Fuente que distingue con remates y trazos claros los signos I (i mayúscula), l (ele), 1 (uno) y 0 (cero)',
+        describir: 'Código con caracteres bien diferenciados.',
+        es: true,
+        html: `<div style="padding:12px;background:#fff;border:1px solid #dcdcdc;font-family:${MONO};font-size:15px;font-weight:700;color:#222;letter-spacing:0.08em;">
+          CLAVE: I1l-O08
+        </div>`,
+      },
+      {
+        texto: 'Fuente geométrica donde I, l y 1 son tres palos verticales idénticos',
+        describir: 'Código ambiguo donde I, l y 1 son tres barras iguales.',
+        es: false,
+        html: `<div style="padding:12px;background:#fff;border:1px solid #dcdcdc;font-family:Arial,sans-serif;font-size:15px;color:#222;letter-spacing:0.08em;">
+          CLAVE: III-OOO
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Para mostrar contraseñas temporales, números de serie o matrículas, ¿cuál de las dos familias evita errores de transcripción?',
+      opciones: ops.map((o) => ({ texto: o.texto, describir: o.describir, pintar: (d) => { d.innerHTML = o.html; } })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando no hay contexto de palabra que ayude a adivinar la letra (como en un código alfanumérico), los glifos homógrafos I, l y 1 deben tener formas inequívocas (Beier, 2012).',
+      repaso: 'Glifos homógrafos',
+    };
+  }
+
+  function rAjusteEscalaOptica(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'En esta línea conviven un texto en PT Serif (18 px) y un comando en fuente monoespaciada que se ve desproporcionadamente grande. Ajusta la escala relativa de la fuente monoespaciada hasta igualar su altura de la equis.',
+      control: {
+        etiqueta: 'Escala relativa de la fuente monoespaciada',
+        min: 75,
+        max: 120,
+        paso: 1,
+        valor: 116,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        c.innerHTML = `<div style="padding:16px;background:#fff;border:1px solid #dcdcdc;font-family:${SERIF};font-size:18px;color:#222;text-align:left;">
+          Escribe el comando <code style="font-family:${MONO};font-size:${v}%;background:#f4f4f0;padding:1px 6px;border:1px solid #d8d8d4;">git status</code> para revisar los cambios.
+        </div>`;
+      },
+      cumple: (v) => v >= 86 && v <= 95,
+      falta: (v) => v > 95 ? `Al ${v} %, las minúsculas de «git status» siguen siendo más altas que las de PT Serif. Baja un poco más.` : `Al ${v} %, el comando quedó demasiado pequeño.`,
+      porque: 'Emparejar dos familias en el mismo renglón exige igualar su altura de la equis aparente (alrededor de 88 %–92 %), no su valor nominal en píxeles.',
+      repaso: 'Escala óptica entre familias',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="familias-tipograficas"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rParecidoAmbiguo(),
+        rCifrasTabulares(),
+        rAlturaEquis(),
+        rHomografos(),
+        rAjusteEscalaOptica(),
+      ]),
+    );
+  }
+</script>

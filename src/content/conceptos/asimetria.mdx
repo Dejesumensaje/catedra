@@ -1,0 +1,166 @@
+---
+titulo: Asimetría
+territorio: expresion
+pregunta: ¿Cómo conseguir que una composición sin eje central se vea igual de sólida que una centrada, pero mucho más viva y adaptable?
+resumen: "La simetría equilibra repitiendo lo mismo a ambos lados de un eje central; la asimetría equilibra enfrentando pesos distintos en posiciones distintas. Activa el espacio blanco y se adapta con naturalidad a contenidos de longitud variable."
+modos: [laboratorio, comparacion]
+orden: 34
+relaciones:
+  - concepto: equilibrio
+    porQue: La asimetría no es falta de equilibrio, sino equilibrio dinámico conseguido con pesos desiguales a distancias desiguales del centro.
+  - concepto: reticulas-y-alineacion
+    porQue: Una composición asimétrica se sostiene sobre ejes verticales y horizontales rigurosos que reemplazan al eje central único.
+  - concepto: proporcion
+    porQue: Desplazar el eje principal a un tercio o a dos quintos del formato establece una razón clara entre la zona dominante y la de apoyo.
+  - concepto: espacio-negativo
+    porQue: Mientras la simetría parte el blanco en dos márgenes pasivos iguales, la asimetría lo reúne en un campo activo que participa en el peso total.
+  - concepto: tension
+    porQue: Al sacar los bloques del centro geométrico se generan vectores de tensión dirigida entre las figuras y los bordes del formato.
+fuentes:
+  - autor: Jan Tschichold
+    obra: "Typographische Gestaltung. Benno Schwabe & Co. (ed. inglesa: Asymmetric Typography, Reinhold / Cooper & Beatty, 1967)"
+    anio: 1935
+    nota: El tratado clásico sobre por qué la composición asimétrica es más funcional, expresiva y fiel al contenido variable moderno que el centrado axial tradicional.
+  - autor: Emil Ruder
+    obra: "Typographie: Ein Gestaltungslehrbuch. Arthur Niggli"
+    anio: 1967
+    nota: Comparación sistemática entre composiciones axiales (estáticas y cerradas) y composiciones asimétricas (abiertas, donde el blanco de página participa en el equilibrio).
+  - autor: Rudolf Arnheim
+    obra: "Art and Visual Perception: A Psychology of the Creative Eye. University of California Press"
+    anio: 1974
+    nota: "Principio de la palanca perceptual: cómo elementos de distinto tamaño, color y aislamiento alcanzan el equilibrio a distancias desiguales del centro."
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import AsimetriaExp from '../../components/diseno-visual/experiencias/AsimetriaExp.astro';
+
+<Paso id="idea" titular="Reunir el espacio en vez de partirlo por la mitad">
+
+<AsimetriaExp paso="idea" />
+
+<p class="dv-frase">La simetría descansa sobre un eje fijo; la asimetría mantiene despierta toda la superficie.</p>
+
+<div class="dv-texto">
+
+Cuando empezamos a diseñar, el impulso más común para que una página «se vea ordenada» es centrarlo todo respecto a la mitad del formato. Esa simetría axial ofrece reposo inmediato, pero tiene dos costos altos: divide el espacio libre en dos tiras sobrantes a los lados y obliga a que cada línea de texto empiece en un lugar distinto.
+
+La *asimetría* no consiste en desparramar piezas al azar. Consiste en desplazar el eje principal hacia un lado con una proporción decidida (por ejemplo, a un tercio del ancho), apoyar allí los bloques con un borde de lectura nítido y equilibrar el peso con un acento o un campo de espacio activo en el lado opuesto.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Composición axial (simétrica)</dt>
+    <dd>La organización donde todos los elementos se centran sobre un único eje vertical que divide el formato en dos mitades iguales.</dd>
+    <dt>Equilibrio asimétrico</dt>
+    <dd>La estabilidad lograda al enfrentar elementos de distinto tamaño, contraste o posición sin repetirlos en espejo.</dd>
+    <dt>Eje desplazado</dt>
+    <dd>Una línea vertical fuera del centro geométrico sobre la que se apoyan y alinean varios bloques de la composición.</dd>
+    <dt>Contrapeso espacial</dt>
+    <dd>Un elemento pequeño pero intenso —o una zona amplia de espacio vacío— que compensa desde un costado la masa del bloque principal.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="El problema de centrar párrafos frente a la firmeza de un eje lateral">
+
+<div class="dv-texto">
+
+En la primera versión de esta ficha de seminario, todos los textos se centran sobre el eje del 50 %; en la segunda, la estructura se apoya sobre un eje asimétrico situado a un tercio del ancho (`1:2`).
+
+</div>
+
+<AsimetriaExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión centrada, el párrafo y la lista de datos crean siluetas dentadas a ambos lados: como ningún renglón comparte coordenada de inicio, la vista tiene que buscar dónde empieza cada línea. En la versión asimétrica, la etiqueta y el sello de fecha actúan como contrapeso en el tercio izquierdo mientras todo el cuerpo informativo comparte una plomada vertical continua.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Mueve el eje, alinea los bloques y ajusta el contrapeso">
+
+<AsimetriaExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para construir asimetría sólida">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Desplaza el eje con una proporción franca</h3>
+      <p>Si vas a salir del 50 %, hazlo sin timidez: coloca el eje principal alrededor del 25 %–35 % (o del 65 %–75 %). Un eje al 47 % no se lee como asimetría, sino como un centrado que falló por pocos milímetros.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Desplaza el bloque entero, pero alinea sus renglones a la izquierda</h3>
+      <p>No confundas colocar una columna fuera del centro con centrar el texto dentro de ella. Apoya los titulares, párrafos y tablas sobre el eje compartido para que quien lee tenga siempre una línea vertical clara a la cual volver.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Usa el margen opuesto como contrapeso, no como hueco olvidado</h3>
+      <p>Para que una columna desplazada no parezca caerse hacia una orilla, equilibra el lado opuesto con un elemento breve de alto contraste (un folio, una etiqueta de sección, una nota al margen) o con un campo de espacio vacío bien delimitado.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<AsimetriaExp paso="errores" />
+
+<div class="dv-texto">
+
+### La asimetría en piezas reales
+
+</div>
+
+<AsimetriaExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu ojo para los ejes y los contrapesos">
+
+<AsimetriaExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Tschichold, Ruder y cuándo tiene sentido cada sistema">
+
+<Seccion titulo="Por qué la tipografía moderna rompió con el eje central">
+
+En *Typographische Gestaltung* (1935, publicado en inglés como *Asymmetric Typography*), Jan Tschichold explicó por qué el centrado axial heredado del Renacimiento había entrado en crisis en el siglo XX. En el diseño axial, el impresor empieza con un esquema preconcebido —una silueta de copa o de urna centrada en la hoja— y fuerza el texto a encajar en ese molde, partiendo palabras de modo artificial.
+
+La tipografía asimétrica invierte el proceso: parte de la función y de la longitud real de cada bloque de información. Como en una interfaz, un catálogo o un periódico las piezas nunca miden lo mismo, apoyarlas sobre ejes asimétricos permite que cada dato tome su ancho natural sin romper la unidad del conjunto.
+
+</Seccion>
+
+<Seccion titulo="El espacio blanco como participante activo">
+
+Tres décadas más tarde, Emil Ruder demostró en *Typographie* (1967) que la diferencia más profunda entre simetría y asimetría no está en las letras negras, sino en el papel blanco:
+
+- **En una composición simétrica**, el fondo blanco queda relegado a los bordes exteriores como un marco pasivo que envuelve a la figura central.
+- **En una composición asimétrica**, el espacio en blanco entra hasta el interior de la página, empuja a los bloques tipográficos contra los ejes y adquiere un peso visual equivalente al de las zonas impresas.
+
+</Seccion>
+
+<Seccion titulo="Cuándo sigue teniendo lugar la simetría">
+
+En los años cuarenta, tras haber sido el principal defensor de la asimetría en Europa, el propio Jan Tschichold matizó su postura al diseñar las colecciones de libros de Penguin: advirtió que convertir la asimetría en un dogma único era tan rígido como el academicismo anterior.
+
+La simetría axial sigue siendo pertinente cuando el texto es muy breve, estable y busca un tono de calma ceremoniosa —como la portada de una novela clásica, una invitación formal o una inscripción arquitectónica—. En cambio, en cuanto la pieza debe combinar textos largos, tablas, imágenes de distinto formato o controles interactivos, el equilibrio asimétrico ofrece una claridad y una flexibilidad que el eje central no puede igualar.
+
+</Seccion>
+
+</Paso>

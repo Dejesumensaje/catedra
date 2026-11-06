@@ -1,0 +1,439 @@
+---
+import Juego from '../Juego.astro';
+---
+
+<Juego
+  slug="enfasis"
+  rondas={5}
+  descripcion="Cinco rondas breves sobre competencia visual, aislamiento, búsqueda preatentiva y falso énfasis. Cambian cada vez que juegas."
+/>
+
+<script>
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  function rondaGritoColectivo(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Solo el plan recomendado usa fondo oscuro y botón de alto contraste',
+        describir: 'Tres tarjetas de precios: dos blancas con borde gris y la central con fondo negro y botón amarillo.',
+        es: true,
+        html: `<div class="jg-cards">
+          <div class="jg-c"><span>BÁSICO</span><strong>12 €</strong><span class="jg-btn">Elegir</span></div>
+          <div class="jg-c jg-c-foco"><span>RECOMENDADO</span><strong>24 €</strong><span class="jg-btn-foco">Elegir plan</span></div>
+          <div class="jg-c"><span>EQUIPO</span><strong>48 €</strong><span class="jg-btn">Elegir</span></div>
+        </div>`,
+      },
+      {
+        texto: 'Los tres planes usan fondo oscuro, signos de exclamación y botón amarillo',
+        describir: 'Tres tarjetas de precios idénticas con fondo negro y botones amarillos.',
+        es: false,
+        html: `<div class="jg-cards">
+          <div class="jg-c jg-c-foco"><span>¡OFERTA!</span><strong>12 €</strong><span class="jg-btn-foco">¡Elegir ya!</span></div>
+          <div class="jg-c jg-c-foco"><span>¡POPULAR!</span><strong>24 €</strong><span class="jg-btn-foco">¡Elegir ya!</span></div>
+          <div class="jg-c jg-c-foco"><span>¡PRO!</span><strong>48 €</strong><span class="jg-btn-foco">¡Elegir ya!</span></div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál de las dos tablas de precios existe un punto focal real sobre el plan recomendado?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El énfasis depende del silencio de los vecinos. Cuando las tres tarjetas usan fondo oscuro y botones amarillos, compiten en igualdad de condiciones y el énfasis se anula.',
+      repaso: 'Competencia visual',
+    };
+  }
+
+  function rondaAislamiento(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Ocho puntos agrupados a la izquierda y un punto separado en el espacio vacío',
+        describir: 'Ocho puntos juntos en bloque y un noveno punto aislado a la derecha.',
+        es: true,
+        html: `<div class="jg-aisla">
+          <div class="jg-aisla-bloque">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="jg-aisla-solo"><span></span></div>
+        </div>`,
+      },
+      {
+        texto: 'Nueve puntos repartidos a distancias iguales en una cuadrícula de tres por tres',
+        describir: 'Nueve puntos negros distribuidos uniformemente.',
+        es: false,
+        html: `<div class="jg-aisla jg-aisla-par">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Todos los puntos tienen el mismo tamaño y el mismo color. ¿Dónde aparece un punto focal sin cambiar el estilo de ninguna pieza?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El aislamiento espacial crea énfasis por posición: ocho puntos agrupados forman una masa única y el punto separado rodeado de vacío se convierte en figura dominante.',
+      repaso: 'Énfasis por aislamiento',
+    };
+  }
+
+  function rondaFalsoEnfasis(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Destaca la advertencia sobre el documento faltante y el botón «Adjuntar certificado»',
+        describir: 'Aviso donde el texto principal es la advertencia del certificado y el botón principal es Adjuntar certificado.',
+        es: true,
+        html: `<div class="jg-aviso">
+          <span class="jg-av-meta">Borrador #18 · guardado hace 2 min</span>
+          <strong class="jg-av-foco">Falta adjuntar el certificado firmado antes de enviar</strong>
+          <div class="jg-av-acciones">
+            <span class="jg-btn-sec">Guardar y salir</span>
+            <span class="jg-btn-pri">Adjuntar certificado</span>
+          </div>
+        </div>`,
+      },
+      {
+        texto: 'Destaca el número de borrador y el botón «Cancelar todo»',
+        describir: 'Aviso donde el título más grande es BORRADOR #18 y el botón más llamativo es Cancelar todo.',
+        es: false,
+        html: `<div class="jg-aviso">
+          <strong class="jg-av-foco">BORRADOR #18 · GUARDADO HACE 2 MIN</strong>
+          <span class="jg-av-meta">Falta adjuntar el certificado firmado antes de enviar</span>
+          <div class="jg-av-acciones">
+            <span class="jg-btn-pri">Cancelar todo</span>
+            <span class="jg-btn-sec">Adjuntar certificado</span>
+          </div>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de los dos avisos alinea el peso visual con la urgencia real para quien usa la interfaz?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En la versión equivocada el énfasis recae sobre un metadato rutinario («Borrador #18») y sobre una acción secundaria, mientras la advertencia importante queda en gris pequeño.',
+      repaso: 'Falso énfasis',
+    };
+  }
+
+  function rondaBusquedaPreatentiva(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Un círculo rojo rodeado de catorce círculos grises idénticos',
+        describir: 'Quince círculos: catorce grises y uno rojo en el centro.',
+        es: true,
+        html: `<div class="jg-pre">
+          <i>●</i><i>●</i><i>●</i><i>●</i><i>●</i>
+          <i>●</i><i>●</i><i class="jg-pre-foco">●</i><i>●</i><i>●</i>
+          <i>●</i><i>●</i><i>●</i><i>●</i><i>●</i>
+        </div>`,
+      },
+      {
+        texto: 'Quince figuras que mezclan triángulos, cuadrados y círculos en tres colores distintos',
+        describir: 'Quince figuras variadas en forma y color.',
+        es: false,
+        html: `<div class="jg-pre jg-pre-mixto">
+          <i class="c1">▲</i><i class="c2">■</i><i class="c3">●</i><i class="c1">■</i><i class="c2">▲</i>
+          <i class="c3">■</i><i class="c1">●</i><i class="c2">●</i><i class="c3">▲</i><i class="c1">▲</i>
+          <i class="c2">●</i><i class="c3">■</i><i class="c1">▲</i><i class="c2">■</i><i class="c3">●</i>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál de los dos campos se detecta la anomalía de forma preatentiva (en menos de 200 ms, sin recorrer fila por fila)?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando el entorno es homogéneo (todos círculos grises), una diferencia única de color salta a la vista al instante. Cuando el fondo mezcla formas y colores, la búsqueda se vuelve serial y lenta.',
+      repaso: 'Búsqueda preatentiva',
+    };
+  }
+
+  function rondaSilenciarVecinos(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'La alerta crítica («Servidor caído») no destaca porque las cinco tarjetas de rutina tienen la misma fuerza visual. Baja el peso de las tarjetas vecinas hasta que la alerta domine.',
+      control: {
+        etiqueta: 'Peso visual de las tarjetas de rutina',
+        min: 20,
+        max: 100,
+        paso: 5,
+        valor: 100,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        c.innerHTML = `<div class="jg-silencio" style="--peso:${v / 100}">
+          <div class="jg-sil-vecino"><span>CPU</span><strong>38 %</strong></div>
+          <div class="jg-sil-vecino"><span>RED</span><strong>120 Mb</strong></div>
+          <div class="jg-sil-foco"><span>CRÍTICO</span><strong>Servidor caído</strong></div>
+          <div class="jg-sil-vecino"><span>DISCO</span><strong>54 %</strong></div>
+          <div class="jg-sil-vecino"><span>MEMORIA</span><strong>61 %</strong></div>
+          <div class="jg-sil-vecino"><span>COLA</span><strong>4 tareas</strong></div>
+        </div>`;
+      },
+      cumple: (v) => v <= 55,
+      falta: (v) => `Al ${v} %, las tarjetas normales siguen compitiendo demasiado con la alerta. Baja un poco más su peso.`,
+      porque: 'Al atenuar el peso visual de las métricas rutinarias, siguen siendo legibles para consulta pero ceden el primer plano a la única alerta que requiere acción inmediata.',
+      repaso: 'Silenciar el entorno',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="enfasis"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaGritoColectivo(),
+        rondaAislamiento(),
+        rondaFalsoEnfasis(),
+        rondaBusquedaPreatentiva(),
+        rondaSilenciarVecinos(),
+      ]),
+    );
+  }
+</script>
+
+<style is:global>
+  .jg-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    font-family: var(--sans);
+    width: 100%;
+    padding: 0.35rem;
+  }
+
+  .jg-c {
+    border: 1px solid #d4d4d4;
+    background: #fff;
+    padding: 0.45rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: flex-start;
+  }
+
+  .jg-c span:first-child {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #6f6f6f;
+  }
+
+  .jg-c strong {
+    font-size: 0.95rem;
+    color: #222;
+  }
+
+  .jg-btn {
+    font-size: 0.58rem;
+    border: 1px solid #bbb;
+    padding: 0.12rem 0.35rem;
+    color: #444;
+  }
+
+  .jg-c-foco {
+    background: #222;
+    border-color: #222;
+    color: #fff;
+  }
+
+  .jg-c-foco span:first-child {
+    color: #eeff41;
+  }
+
+  .jg-c-foco strong {
+    color: #fff;
+  }
+
+  .jg-btn-foco {
+    font-size: 0.58rem;
+    font-weight: 700;
+    background: #eeff41;
+    color: #222;
+    padding: 0.14rem 0.38rem;
+  }
+
+  .jg-aisla {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.9rem;
+    background: #fafaf8;
+    border: 1px solid #e0e0dc;
+    min-height: 4.5rem;
+  }
+
+  .jg-aisla span {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: #222;
+    display: inline-block;
+  }
+
+  .jg-aisla-bloque {
+    display: grid;
+    grid-template-columns: repeat(4, 0.65rem);
+    gap: 0.3rem;
+  }
+
+  .jg-aisla-solo {
+    padding-right: 0.8rem;
+  }
+
+  .jg-aisla-par {
+    display: grid;
+    grid-template-columns: repeat(3, 0.65rem);
+    justify-content: space-around;
+    row-gap: 0.55rem;
+  }
+
+  .jg-aviso {
+    font-family: var(--sans);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.55rem 0.65rem;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    text-align: left;
+  }
+
+  .jg-av-meta {
+    font-size: 0.66rem;
+    color: #6f6f6f;
+  }
+
+  .jg-av-foco {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.25;
+  }
+
+  .jg-av-acciones {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.15rem;
+  }
+
+  .jg-btn-sec {
+    font-size: 0.6rem;
+    border: 1px solid #ccc;
+    padding: 0.16rem 0.4rem;
+    color: #555;
+  }
+
+  .jg-btn-pri {
+    font-size: 0.6rem;
+    font-weight: 700;
+    background: #222;
+    color: #eeff41;
+    padding: 0.16rem 0.45rem;
+  }
+
+  .jg-pre {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+    padding: 0.55rem;
+    background: #fafaf8;
+    border: 1px solid #e0e0dc;
+    text-align: center;
+  }
+
+  .jg-pre i {
+    font-style: normal;
+    font-size: 0.9rem;
+    color: #b0b0aa;
+    line-height: 1;
+  }
+
+  .jg-pre i.jg-pre-foco {
+    color: #c83e2b;
+  }
+
+  .jg-pre-mixto i.c1 {
+    color: #2b5c8f;
+  }
+
+  .jg-pre-mixto i.c2 {
+    color: #c83e2b;
+  }
+
+  .jg-pre-mixto i.c3 {
+    color: #3a7d44;
+  }
+
+  .jg-silencio {
+    --peso: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    font-family: var(--sans);
+    padding: 0.75rem;
+  }
+
+  .jg-sil-vecino,
+  .jg-sil-foco {
+    padding: 0.55rem 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .jg-sil-vecino {
+    background: #222;
+    color: #fff;
+    border: 2px solid #222;
+    opacity: var(--peso);
+    transition: opacity 0.12s;
+  }
+
+  .jg-sil-vecino span {
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    color: #ccc;
+  }
+
+  .jg-sil-vecino strong {
+    font-size: 0.92rem;
+  }
+
+  .jg-sil-foco {
+    background: #222;
+    color: #fff;
+    border: 2px solid #222;
+    box-shadow: 4px 4px 0 #eeff41;
+  }
+
+  .jg-sil-foco span {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #eeff41;
+  }
+
+  .jg-sil-foco strong {
+    font-size: 0.92rem;
+    color: #fff;
+  }
+</style>

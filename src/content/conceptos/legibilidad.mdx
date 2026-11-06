@@ -1,0 +1,168 @@
+---
+titulo: Legibilidad
+territorio: tipografia
+pregunta: ¿En qué se diferencia distinguir una letra de otra al instante de poder leer diez páginas seguidas sin cansarse?
+resumen: "En tipografía conviven dos fenómenos que el español suele reunir bajo una sola palabra: reconocer cada signo sin confusión (legibility) y recorrer un texto extenso con fluidez y sin fatiga (readability). Una señal de autopista exige lo primero; un libro exige lo segundo."
+modos: [laboratorio, comparacion]
+orden: 19
+relaciones:
+  - concepto: familias-tipograficas
+    porQue: La altura de la equis, la abertura de los contrapunzones y el dibujo de cada familia determinan qué tan rápido se distinguen sus signos.
+  - concepto: peso-y-contraste
+    porQue: Los trazos extremos (demasiado finos o demasiado negros) y el alto contraste entre astas se cierran o desaparecen en cuerpos pequeños o a distancia.
+  - concepto: interlineado
+    porQue: Incluso la fuente más clara pierde fluidez de lectura si los renglones van tan apretados que las ascendentes chocan con las descendentes.
+  - concepto: ancho-de-linea
+    porQue: La comodidad de lectura prolongada depende de que la columna mantenga entre 45 y 75 caracteres por renglón.
+  - concepto: contraste
+    porQue: El reconocimiento de las formas finas del texto descansa sobre el contraste de luminancia entre la letra y el fondo, no sobre el matiz de color.
+fuentes:
+  - autor: Walter Tracy
+    obra: "Letters of Credit: A View of Type Design. Gordon Fraser"
+    anio: 1986
+    nota: "Capítulo 4 («Legibility and Readability»): distinción clásica entre la claridad perceptiva de los caracteres individuales (legibility) y la comodidad visual en la lectura continua (readability)."
+  - autor: Sofie Beier
+    obra: "Reading Letters: Designing for Legibility. BIS Publishers"
+    anio: 2012
+    nota: Investigación experimental sobre confusión de glifos homógrafos, efecto de aglomeración (crowding), lectura en visión periférica y diseño para baja agudeza visual.
+  - autor: Beatrice Warde
+    obra: "Printing Should Be Invisible («The Crystal Goblet»), en The Crystal Goblet: Sixteen Essays on Typography. Sylvan Press"
+    anio: 1955
+    nota: Conferencia dictada originalmente en 1930 (publicada en 1932) que formula la metáfora de la copa de cristal transparente para la composición de lectura inmersiva.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import LegibilidadExp from '../../components/diseno-visual/experiencias/LegibilidadExp.astro';
+
+<Paso id="idea" titular="Reconocer el signo a distancia frente a leer durante una hora sin cansarse">
+
+<LegibilidadExp paso="idea" />
+
+<p class="dv-frase">No se diseña igual para leer una palabra a cincuenta metros que para leer cincuenta páginas a cuarenta centímetros.</p>
+
+<div class="dv-texto">
+
+En español usamos la palabra *legibilidad* para nombrar dos cualidades que conviene separar cuando diseñamos. La primera es el **reconocimiento de los signos** (lo que la tradición anglosajona llama *legibility*): la facilidad con que el ojo distingue una letra de otra sin confundir una `e` con una `c`, un `0` con una `O` o el par `rn` con una `m`. Depende sobre todo del dibujo de la fuente, de sus espacios internos y de la separación entre caracteres.
+
+La segunda es la **fluidez o lecturabilidad** (*readability*): qué tan cómodo resulta recorrer un texto compuesto durante varios minutos u horas sin perder el hilo ni sentir fatiga. Depende de cómo se organiza el bloque: tamaño aparente, uso de minúsculas frente a mayúsculas, [ancho de línea](/diseno-visual/ancho-de-linea), [interlineado](/diseno-visual/interlineado) y contraste con el fondo.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco palabras para explorarlo</h3>
+  <dl>
+    <dt>Reconocimiento de signos (legibility)</dt>
+    <dd>La claridad con que cada carácter individual se identifica y se diferencia de los demás, decisiva en señalética, códigos, tableros y cuerpos diminutos.</dd>
+    <dt>Lectura fluida (readability)</dt>
+    <dd>La comodidad y continuidad con que se lee un párrafo o un capítulo entero gracias a su composición, ritmo y proporciones.</dd>
+    <dt>Glifos homógrafos</dt>
+    <dd>Caracteres distintos cuyas formas pueden verse casi idénticas en ciertas fuentes, como <code>I</code> (i mayúscula), <code>l</code> (ele minúscula) y <code>1</code> (uno), o <code>0</code> y <code>O</code>.</dd>
+    <dt>Aglomeración (crowding)</dt>
+    <dd>El fenómeno perceptivo por el cual las letras muy juntas se estorban entre sí y funden sus contornos, sobre todo en cuerpos pequeños o lejos del centro de la mirada.</dd>
+    <dt>Bouma (silueta de la palabra)</dt>
+    <dd>El contorno envolvente que forman las letras de una palabra gracias a sus trazos ascendentes y descendentes.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Una señal de autopista, un código de acceso y una página de ensayo">
+
+<div class="dv-texto">
+
+Aplicar las decisiones tipográficas de un libro a un cartel vial —o las de un cartel a un ensayo largo— arruina la lectura en ambos soportes.
+
+</div>
+
+<LegibilidadExp paso="miralo" />
+
+<div class="dv-texto">
+
+Una tipografía excelente para una portada de revista puede ser un desastre en un panel de carretera, y una fuente monoespaciada perfecta para mostrar claves de seguridad fatigaría la vista en una novela de trescientas páginas. La legibilidad siempre se mide frente a una tarea y una condición de lectura concretas.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Simulador de condiciones reales de lectura">
+
+<LegibilidadExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones según lo que la persona tenga que leer">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Comprueba el par «Il1O0» si tu interfaz muestra códigos, placas o cifras</h3>
+      <p>Cuando no hay una palabra conocida que ayude a adivinar la letra por contexto (en contraseñas, códigos de verificación, números de serie o matrículas), elige una fuente que distinga con claridad el uno, la ele minúscula, la i mayúscula y el cero.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>En cuerpos pequeños o textos vistos de lejos, abre un poco el espaciado</h3>
+      <p>Por debajo de 12 px o en carteles leídos a distancia, las letras apretadas sufren aglomeración (<em>crowding</em>). Sumar entre un <code>+2 %</code> y un <code>+5 %</code> de <em>tracking</em> mantiene despejado el blanco entre astas.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Deja los párrafos en minúsculas y acompaña las mayúsculas cortas con tracking</h3>
+      <p>La caja baja sostiene la lectura continua porque combina una altura de la equis clara con ascendentes y descendentes. Reserva las mayúsculas para siglas, botones o etiquetas breves de pocas palabras, añadiendo un ligero espaciado positivo (<code>0,06 em</code> a <code>0,12 em</code>).</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<LegibilidadExp paso="errores" />
+
+<div class="dv-texto">
+
+### La legibilidad en piezas reales
+
+</div>
+
+<LegibilidadExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Distingue reconocimiento de signos y fluidez de lectura">
+
+<LegibilidadExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Walter Tracy, la psicología del reconocimiento de letras y la copa de cristal">
+
+<Seccion titulo="Por qué Walter Tracy separó legibility y readability">
+
+En su libro *Letters of Credit: A View of Type Design* (1986), el diseñador de tipos británico Walter Tracy propuso poner orden en un debate donde impresores e investigadores solían hablar de cosas distintas usando la misma palabra:
+
+- Llamó ***legibility*** a la propiedad visual de los caracteres que permite descifrarlos con rapidez y sin duda incluso cuando aparecen aislados, con poca luz o a gran distancia. Es una cualidad que se juega en el milímetro: qué tan abierta es la boca de una *c* o una *e*, qué tan alta es la minúscula respecto a la mayúscula y qué tan franco es el grosor del trazo.
+- Llamó ***readability*** a la facilidad con que se comprende y se recorre durante largo rato una página de texto continuo. Si alguien dice «este periódico es difícil de leer porque la columna es larguísima y la letra está apretada», el problema no suele estar en el dibujo del alfabeto, sino en su composición (*readability*).
+
+</Seccion>
+
+<Seccion titulo="Cómo reconocemos las palabras: letras en paralelo y efecto de aglomeración">
+
+Durante décadas se creyó que al leer captábamos solo el contorno exterior completo de la palabra (*bouma*) sin mirar sus letras internas. Las investigaciones contemporáneas en psicología de la lectura —sintetizadas por Kevin Larson (2004) y por Sofie Beier en *Reading Letters: Designing for Legibility* (2012)— mostraron un mecanismo más preciso: durante cada fijación ocular reconocemos **en paralelo las letras que componen la palabra**, y el contorno general nos sirve de apoyo adicional en visión periférica.
+
+Eso explica por qué el fenómeno de **aglomeración (*crowding*)** daña tanto la lectura: cuando las letras tienen un *tracking* negativo o aberturas muy cerradas, los trazos de una letra invaden la zona de detección de su vecina. En condiciones de baja agudeza visual, abrir las formas internas (contrapunzones) y dar espacio entre caracteres mejora la velocidad de reconocimiento.
+
+</Seccion>
+
+<Seccion titulo="La copa de cristal de Beatrice Warde y sus matices hoy">
+
+En 1930, la teórica de la tipografía Beatrice Warde pronunció ante el British Typographers' Guild su célebre conferencia *Printing Should Be Invisible*, conocida como el ensayo de **«la copa de cristal»** (*The Crystal Goblet*). Warde planteó una pregunta sencilla: si tienes que elegir entre beber un buen vino en una copa de oro macizo repujada o en una copa de cristal fino y transparente, elegirás el cristal porque deja ver el vino.
+
+Para la lectura inmersiva de una novela, un ensayo o una noticia larga, la metáfora sigue vigente: cuando la tipografía llama la atención sobre sus propios malabares formales en cada renglón, se interpone entre quien escribe y quien lee. Al mismo tiempo, el diseño contemporáneo reconoce que no todo texto es un libro de trescientas páginas: un cartel cultural, una cabecera o una pieza expresiva pueden buscar deliberadamente una voz visible y enfática, siempre que quien diseña sepa cuándo necesita cristal transparente y cuándo necesita carácter.
+
+</Seccion>
+
+</Paso>

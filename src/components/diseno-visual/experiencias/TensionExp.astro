@@ -1,0 +1,1026 @@
+---
+// Tensión visual: relaciones espaciales al borde del cambio (roce / tangencia,
+// ángulos tibios frente a diagonales francas, cercanía al margen).
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'tension';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TX = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Separa las formas con holgura.',
+    hacer: 'Lleva «Distancia entre las dos formas» a 36 px o más.',
+    pista: 'Mueve el primer deslizador hacia la derecha.',
+    preparar: { angulo: 0, borde: 20 },
+    logro: 'Con suficiente espacio entre los dos bloques, el sistema visual los lee como dos figuras independientes y en reposo. No hay conflicto en la frontera.',
+  },
+  {
+    titulo: 'Provoca el pellizco de la casi tangencia.',
+    hacer: 'Ajusta «Distancia entre las dos formas» entre 0 px y 3 px.',
+    pista: 'Acerca el deslizador casi al cero sin superponer las piezas.',
+    logro: 'En esa rendija mínima la tensión se dispara al máximo: el ojo no sabe si las figuras se tocan o se separan y queda imantado en el hueco.',
+  },
+  {
+    titulo: 'Resuelve el roce mediante superposición franca.',
+    hacer: 'Lleva «Distancia entre las dos formas» a -20 px o menos.',
+    pista: 'Arrastra el control hacia la izquierda (valores negativos).',
+    logro: 'Al cruzar con decisión un bloque sobre el otro, la duda desaparece: ahora percibimos una relación clara de delante y detrás.',
+  },
+  {
+    titulo: 'Compara el ángulo tibio con la diagonal decidida.',
+    hacer: 'Pon «Ángulo de la pieza activa» en 2° y luego súbelo por encima de 14°.',
+    pista: 'Observa primero a 2° y después arrastra el control hacia la derecha.',
+    preparar: { distancia: 24, borde: 20 },
+    logro: 'Una inclinación de 2° o 3° parece un cuadro mal colgado que pide enderezarse; a partir de 12°–15° se percibe como un vector diagonal lleno de dirección.',
+  },
+  {
+    titulo: 'Observa la curva de tensión perceptual.',
+    hacer: 'Abre «Más controles» y activa «Mostrar vectores y curva de tensión».',
+    abrir: true,
+    logro: 'La gráfica inferior muestra cómo la tensión alcanza su pico en las zonas ambiguas (distancias de 0 a 4 px y ángulos de 2° a 6°) y vuelve a calmarse cuando la decisión es franca.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres pares de rectángulos negros: el primero separado por 36 px, el segundo superpuesto 24 px y el tercero separado por una rendija mínima de 1,5 px marcada con un círculo amarillo.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <!-- 1. Separados -->
+      <text x="105" y="28" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={G}>1 · SEPARADOS (36 PX)</text>
+      <rect x="35" y="48" width="52" height="76" fill={T} />
+      <rect x="123" y="48" width="52" height="76" fill={T} />
+      <text x="105" y="152" text-anchor="middle" font-family={SANS} font-size="11" fill={TX}>Dos piezas en calma</text>
+
+      <line x1="205" y1="24" x2="205" y2="158" stroke="#e5e5e5" />
+
+      <!-- 2. Superpuestos -->
+      <text x="300" y="28" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={G}>2 · SUPERPUESTOS (-24 PX)</text>
+      <rect x="252" y="44" width="56" height="76" fill={T} />
+      <rect x="284" y="56" width="56" height="76" fill="#ffffff" stroke={T} stroke-width="2.5" />
+      <text x="300" y="152" text-anchor="middle" font-family={SANS} font-size="11" fill={TX}>Una unidad escalonada</text>
+
+      <line x1="395" y1="24" x2="395" y2="158" stroke="#e5e5e5" />
+
+      <!-- 3. Roce / casi tangencia -->
+      <text x="498" y="28" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>3 · RENDIJA (1,5 PX)</text>
+      <circle cx="498" cy="86" r="24" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      <rect x="444.5" y="48" width="52" height="76" fill={T} />
+      <rect x="498.5" y="48" width="52" height="76" fill={T} />
+      <text x="498" y="152" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Pellizco visual (tensión)</text>
+    </svg>
+    <p>En las tres escenas hay exactamente los mismos dos rectángulos. ¿Por qué la tercera pareja incomoda y atrapa el ojo en el centro?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En la primera escena la distancia es amplia y leemos dos objetos sueltos; en la segunda un rectángulo pisa con franqueza al otro y leemos profundidad. En la tercera, la rendija de 1,5 px deja la relación sin resolver: están demasiado cerca para ignorarse y demasiado lejos para fundirse. Esa inestabilidad localizada es la <strong>tensión visual</strong>.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Tangencias accidentales que distraen"
+      notas={[
+        {
+          ...pct(186, 84),
+          titulo: 'Letra pegada al marco de la foto',
+          texto: 'La última letra del título besa el borde del recorte oscuro sin separarse ni cruzarlo. Ese roce fortuito roba la atención.',
+          zona: zona(150, 44, 56, 62),
+        },
+        {
+          ...pct(330, 140),
+          titulo: 'Caja rozando el margen derecho',
+          texto: 'El sello de fecha queda a 1 px del borde del cartel: parece un descuido de corte en vez de una decisión.',
+          zona: zona(242, 118, 116, 44),
+        },
+        {
+          ...pct(176, 224),
+          titulo: 'Botón cosido a la línea divisoria',
+          texto: 'El borde superior del botón toca el filete horizontal y funde dos planos que deberían leerse por separado.',
+          zona: zona(22, 198, 316, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel con varios roces accidentales: el título toca el borde de la imagen, la etiqueta roza el margen exterior y el botón se pega a la línea divisoria.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="18" y="16" width="324" height="248" fill="none" stroke="#d8d8d4" stroke-width="1.5" />
+        <rect x="186" y="36" width="142" height="74" fill={T} />
+        <circle cx="257" cy="73" r="22" fill="none" stroke={AMARILLO} stroke-width="2" />
+        <text x="26" y="54" font-family={SANS} font-size="10" font-weight="700" fill={G}>CICLO DE ARQUITECTURA</text>
+        <text x="24" y="88" font-family={SANS} font-size="30" font-weight="900" fill={T}>FRONTERA</text>
+        <rect x="248" y="122" width="93" height="32" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+        <text x="294" y="142" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>18 DE OCTUBRE</text>
+        <text x="26" y="142" font-family={SERIF} font-size="13" fill={TX}>Tres conferencias sobre el</text>
+        <text x="26" y="160" font-family={SERIF} font-size="13" fill={TX}>límite en el espacio público.</text>
+        <line x1="18" y1="204" x2="342" y2="204" stroke={T} stroke-width="1.5" />
+        <rect x="26" y="205" width="148" height="34" fill={T} />
+        <text x="100" y="226" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">RESERVAR ENTRADA</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Entorno limpio y una única tensión intencional"
+      notas={[
+        {
+          ...pct(212, 92),
+          titulo: 'Foco de tensión deliberado',
+          texto: 'Dos cuñas negras se acercan hasta dejar una chispa de 2 px sobre el círculo amarillo. Toda la energía del cartel se concentra en ese punto.',
+          zona: zona(142, 48, 140, 88),
+        },
+        {
+          ...pct(92, 68),
+          titulo: 'Título con espacio franco',
+          texto: 'El bloque tipográfico guarda una distancia holgada respecto a la figura central; no hay roces accidentales con las letras.',
+          zona: zona(24, 28, 120, 84),
+        },
+        {
+          ...pct(180, 232),
+          titulo: 'Márgenes y pie respirando',
+          texto: 'La línea divisoria, la fecha y el botón mantienen márgenes consistentes para que el único pellizco visual sea el del tema central.',
+          zona: zona(24, 188, 312, 68),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel del ciclo Frontera donde los textos guardan márgenes amplios y el único punto de tensión está en dos bloques negros enfrentados sobre un círculo amarillo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="28" y="42" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>CICLO DE ARQUITECTURA</text>
+        <text x="28" y="74" font-family={SANS} font-size="26" font-weight="900" fill={T}>FRONTERA</text>
+        <text x="28" y="100" font-family={SERIF} font-size="12.5" fill={TX}>El límite en el</text>
+        <text x="28" y="116" font-family={SERIF} font-size="12.5" fill={TX}>espacio público.</text>
+
+        <circle cx="238" cy="92" r="46" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <rect x="172" y="72" width="64.5" height="40" fill={T} />
+        <rect x="239.5" y="72" width="64.5" height="40" fill={T} />
+
+        <line x1="28" y1="184" x2="332" y2="184" stroke="#e5e5e5" stroke-width="1.5" />
+        <text x="28" y="212" font-family={SANS} font-size="12" font-weight="700" fill={T}>18 de octubre · 18:00 h</text>
+        <text x="28" y="230" font-family={SANS} font-size="11" fill={G}>Aula Magna · Facultad de Artes</text>
+        <rect x="210" y="200" width="122" height="34" fill={T} />
+        <text x="271" y="221" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={AMARILLO}>Inscribirse →</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · laboratorio de fuerzas y tangencias"
+    consigna="Controla la distancia entre las dos piezas centrales, el ángulo de inclinación y su cercanía al marco exterior. Observa cómo varía la tensión perceptual entre las zonas de decisión franca y las zonas de roce ambiguo."
+    nota="Fija como A una tangencia de 1 px y compárala con B a -24 px (superposición) o a +36 px (separación). Ambas alternativas disuelven la incomodidad accidental."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Dos bloques geométricos enfrentados a 2 px de distancia con una chispa de tensión en la frontera.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      <rect x="36" y="24" width="568" height="236" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <circle cx="320" cy="142" r="34" fill="#eeff41" stroke="#222222" stroke-width="1.5" />
+      <rect x="178" y="96" width="141" height="92" fill="#222222" />
+      <rect x="321" y="96" width="141" height="92" fill="#222222" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba ahora los botones de «Configuraciones para probar» o combina una diagonal franca con un corte a sangre." />
+
+    <Deslizador
+      lab={lab}
+      variable="distancia"
+      etiqueta="Distancia entre las dos formas"
+      min={-40}
+      max={60}
+      paso={1}
+      valor={2}
+      unidad="px"
+      ayuda="Negativo: se superponen. 0 a 4 px: tangencia o roce tenso. Mayor a 20 px: separación tranquila."
+    />
+    <Deslizador
+      lab={lab}
+      variable="angulo"
+      etiqueta="Ángulo de la pieza activa"
+      min={0}
+      max={35}
+      paso={1}
+      valor={0}
+      unidad="°"
+      ayuda="0°: horizontal estable. 1° a 6°: ángulo tibio (parece torcido). 12° o más: diagonal expresiva."
+    />
+    <Deslizador
+      lab={lab}
+      variable="borde"
+      etiqueta="Distancia al borde del marco"
+      min={-16}
+      max={36}
+      paso={2}
+      valor={24}
+      unidad="px"
+      ayuda="Acercar una forma a 1–3 px del margen crea un roce incómodo; sacarla a -12 px produce un corte a sangre limpio."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="escena"
+        etiqueta="Tipo de encuentro"
+        valor="bloques"
+        opciones={[
+          { valor: 'bloques', texto: 'Dos bloques' },
+          { valor: 'titular', texto: 'Titular y foto' },
+          { valor: 'circulos', texto: 'Dos círculos' },
+        ]}
+        ayuda="Comprueba cómo actúa la misma distancia en figuras abstractas y en una maqueta editorial."
+      />
+      <Interruptor
+        lab={lab}
+        variable="vectores"
+        etiqueta="Mostrar vectores y curva de tensión"
+        activo={true}
+        ayuda="Dibuja los vectores de atracción o repulsión y la gráfica del nivel de tensión actual."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"distancia":2,"angulo":0,"borde":24}'>Roce tenso (2 px)</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":38,"angulo":0,"borde":28}'>Separación en calma (+38 px)</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":-24,"angulo":0,"borde":28}'>Superposición franca (-24 px)</button>
+      <button type="button" class="dv-boton" data-preset='{"distancia":3,"angulo":3,"borde":2}'>Error triple: tangencia + ángulo tibio + borde</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1 · Deshaz una tangencia entre el título y la imagen"
+      comparar={false}
+      consigna="Las letras finales del titular rozan el borde izquierdo de la fotografía. O abres un margen claro entre ambos o haces que el titular pise la imagen con intención."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:18px;font-weight:900;">ENSAYO VISUAL</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="espacio"
+        etiqueta="Distancia del título al borde de la foto"
+        min={-28}
+        max={28}
+        paso={2}
+        valor={0}
+        unidad="px"
+        ayuda="0 px: tangencia incómoda. Negativo: el título entra sobre la foto. Positivo: respira fuera."
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2 · Sal del ángulo tibio que parece un escaneo torcido"
+      comparar={false}
+      consigna="La tarjeta de cita está girada apenas 2°. Ese ángulo no alcanza a verse dinámico y parece un error al pegar la pieza. Enderézala a 0° o dale un giro franco."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:14px;font-weight:700;">«La forma es un diagrama de fuerzas.»</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="giro"
+        etiqueta="Inclinación del bloque"
+        min={0}
+        max={16}
+        paso={1}
+        valor={2}
+        unidad="°"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3 · Evita que el sello bese el borde del formato"
+      comparar={false}
+      consigna="Un círculo informativo quedó a 1 px del marco exterior. Elige si quieres darle un margen interior holgado o cortarlo a sangre con decisión."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-size:13px;font-weight:700;">Edición especial · N.º 12</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="modo"
+        etiqueta="Relación con el borde"
+        valor="roce"
+        opciones={[
+          { valor: 'roce', texto: 'Roce a 1 px' },
+          { valor: 'margen', texto: 'Margen interior (18 px)' },
+          { valor: 'sangre', texto: 'Corte a sangre (-14 px)' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Dispositivo de navegación: las dos puntas del símbolo ↔"
+      notas={[
+        {
+          ...pct(180, 128),
+          titulo: 'Brecha cargada de energía',
+          texto: 'Las dos cabezas de flecha apuntan en sentidos opuestos pero quedan unidas por el asta central, sosteniendo dos conceptos sin que uno anule al otro.',
+          zona: zona(128, 92, 104, 72),
+        },
+        {
+          ...pct(78, 128),
+          titulo: 'Polo izquierdo estable',
+          texto: 'Cada término se asienta con tipografía limpia y márgenes amplios para que toda la tensión recaiga en el cruce central.',
+          zona: zona(20, 96, 104, 64),
+        },
+        {
+          ...pct(180, 224),
+          titulo: 'Pregunta que mantiene abierta la relación',
+          texto: 'El subtítulo no resuelve el empate: formula el dilema que hace productiva la tensión entre ambos polos.',
+          zona: zona(28, 194, 304, 58),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tarjeta de tensión del sitio Cátedra mostrando dos polos enfrentados por el símbolo de doble flecha sobre un acento amarillo.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="18" y="24" width="324" height="232" fill="#ffffff" stroke={T} stroke-width="2" />
+        <text x="34" y="54" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.4" fill={G}>TENSIÓN TRANSVERSAL · 01</text>
+        <rect x="34" y="102" width="96" height="48" fill="#f5f5f2" stroke={T} stroke-width="1.5" />
+        <text x="82" y="131" text-anchor="middle" font-family={SANS} font-size="13" font-weight="900" fill={T}>USABILIDAD</text>
+        <circle cx="180" cy="126" r="24" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="180" y="134" text-anchor="middle" font-family={SANS} font-size="22" font-weight="900" fill={T}>↔</text>
+        <rect x="230" y="102" width="96" height="48" fill="#f5f5f2" stroke={T} stroke-width="1.5" />
+        <text x="278" y="131" text-anchor="middle" font-family={SANS} font-size="13" font-weight="900" fill={T}>EXPERIENCIA</text>
+        <line x1="34" y1="178" x2="326" y2="178" stroke="#e5e5e5" />
+        <text x="34" y="206" font-family={SERIF} font-size="13" font-style="italic" fill={TX}>«¿Cuándo eliminar toda fricción empobrece</text>
+        <text x="34" y="226" font-family={SERIF} font-size="13" font-style="italic" fill={TX}>lo que una persona recuerda e interpreta?»</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Cartel constructivista: diagonal expresiva y vértice activo"
+      notas={[
+        {
+          ...pct(196, 134),
+          titulo: 'Vértice a punto de penetrar el círculo',
+          texto: 'Inspirado en El Lissitzky, la punta aguda de la cuña se aproxima al contorno circular creando un vector direccional inconfundible.',
+          zona: zona(132, 82, 128, 104),
+        },
+        {
+          ...pct(104, 92),
+          titulo: 'Diagonal franca a 24°',
+          texto: 'El ángulo se aparta con total claridad de la horizontal y de la vertical: nadie puede confundirlo con un error de alineación.',
+          zona: zona(26, 46, 160, 96),
+        },
+        {
+          ...pct(264, 232),
+          titulo: 'Anclaje ortogonal de lectura',
+          texto: 'La ficha informativa al pie permanece horizontal para ofrecer un suelo estable que hace aún más dramática la diagonal superior.',
+          zona: zona(24, 210, 312, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Composición constructivista con una gran cuña diagonal que apunta al centro de un círculo sobre un fondo claro.">
+        <rect width={W} height={H} fill="#fbfaf6" />
+        <circle cx="242" cy="126" r="58" fill="#ffffff" stroke={T} stroke-width="3" />
+        <circle cx="242" cy="126" r="42" fill={AMARILLO} />
+        <polygon points="28,52 198,124 88,162" fill={T} />
+        <g transform="rotate(-22 110 74)">
+          <text x="48" y="68" font-family={SANS} font-size="12" font-weight="900" letter-spacing="1.5" fill={T}>VANGUARDIA RUSA</text>
+        </g>
+        <line x1="28" y1="208" x2="332" y2="208" stroke={T} stroke-width="2" />
+        <text x="28" y="232" font-family={SANS} font-size="13" font-weight="900" fill={T}>FORMA Y VECTOR · 1919–1930</text>
+        <text x="28" y="250" font-family={SANS} font-size="11" fill={G}>MUSEO UNIVERSITARIO · SALA NORTE</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Editorial: corte a sangre frente a margen interior amplio"
+      notas={[
+        {
+          ...pct(316, 118),
+          titulo: 'Figura cortada a sangre con decisión',
+          texto: 'El gran número «04» rebasa el borde derecho del pliego en más de 25 px. El cierre visual completa la cifra fuera del marco sin crear una tangencia tímida.',
+          zona: zona(236, 44, 124, 152),
+        },
+        {
+          ...pct(112, 108),
+          titulo: 'Columna de texto protegida por espacio',
+          texto: 'El titular y el párrafo mantienen 32 px de margen izquierdo y una separación limpia respecto al número monumental.',
+          zona: zona(28, 48, 188, 140),
+        },
+        {
+          ...pct(164, 236),
+          titulo: 'Contrapeso en la base',
+          texto: 'El filete inferior conecta ambas zonas sin tocar las letras del texto ni la curva del número.',
+          zona: zona(28, 214, 304, 42),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Portadilla de capítulo donde el número 04 gigante se corta a sangre por el borde derecho mientras el texto respira con amplio margen a la izquierda.">
+        <defs>
+          <clipPath id="clip-portadilla-ten">
+            <rect x="16" y="16" width="328" height="248" />
+          </clipPath>
+        </defs>
+        <rect width={W} height={H} fill="#f2f2ee" />
+        <g clip-path="url(#clip-portadilla-ten)">
+          <rect x="16" y="16" width="328" height="248" fill="#ffffff" stroke={T} stroke-width="1.5" />
+          <text x="228" y="182" font-family={SANS} font-size="148" font-weight="900" letter-spacing="-6" fill={AMARILLO} stroke={T} stroke-width="3">04</text>
+          <text x="42" y="64" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.4" fill={G}>CAPÍTULO CUATRO</text>
+          <text x="42" y="94" font-family={SERIF} font-size="20" font-weight="700" fill={T}>La física del</text>
+          <text x="42" y="122" font-family={SERIF} font-size="20" font-weight="700" fill={T}>plano impreso</text>
+          <text x="42" y="156" font-family={SERIF} font-size="12.5" fill={TX}>Cómo las fuerzas del marco</text>
+          <text x="42" y="174" font-family={SERIF} font-size="12.5" fill={TX}>alteran el peso de cada signo.</text>
+          <line x1="42" y1="224" x2="316" y2="224" stroke={T} stroke-width="1.5" />
+          <text x="42" y="244" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>PÁGINAS 84–112</text>
+        </g>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas para distinguir entre tangencias accidentales, ángulos tibios y tensiones dirigidas con intención."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  type E = {
+    distancia: number;
+    angulo: number;
+    borde: number;
+    escena: string;
+    vectores: boolean;
+  };
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  function indiceTensionDistancia(d: number): number {
+    // Pico entre -2 y +5 px
+    if (d >= -2 && d <= 5) return 95 - Math.abs(d - 1.5) * 8;
+    if (d > 5) return Math.max(8, 80 * Math.exp(-(d - 5) / 14));
+    // Superposición: si apenas pisa (-3 a -8 px) aún hay roce; luego baja
+    if (d >= -10) return 55 + (d + 10) * 4;
+    return Math.max(12, 32 * Math.exp((d + 10) / 18));
+  }
+
+  function indiceTensionAngulo(a: number): number {
+    if (a === 0) return 0;
+    if (a >= 1 && a <= 6) return 45 + (6 - Math.abs(a - 3)) * 8; // ángulo tibio incómodo
+    return Math.min(48, 18 + a * 0.85); // tensión dirigida expresiva
+  }
+
+  function indiceTensionBorde(b: number): number {
+    if (b >= 0 && b <= 4) return 40;
+    if (b > 4 && b < 12) return 20;
+    return 6;
+  }
+
+  function calcularTension(e: E) {
+    const td = indiceTensionDistancia(e.distancia);
+    const ta = indiceTensionAngulo(e.angulo);
+    const tb = indiceTensionBorde(e.borde);
+    const total = Math.min(100, Math.round(td * 0.65 + ta * 0.25 + tb * 0.25));
+    const tangencia = e.distancia >= -3 && e.distancia <= 5;
+    const anguloTibio = e.angulo >= 1 && e.angulo <= 5;
+    const bordeRoce = e.borde >= 0 && e.borde <= 4;
+    return { total, tangencia, anguloTibio, bordeRoce };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = e.vectores ? 340 : 280;
+    const { total, tangencia, anguloTibio, bordeRoce } = calcularTension(e);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Escenario de tensión visual: distancia ${e.distancia} px, ángulo ${e.angulo} grados, margen ${e.borde} px. Índice de tensión ${total} %.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const marcoX = W < 460 ? 18 : 34;
+    const marcoY = 18;
+    const marcoW = W - marcoX * 2;
+    const marcoH = 220;
+
+    const clipId = `clip-ten-${Math.random().toString(36).slice(2, 7)}`;
+    const defs = svg('defs');
+    const clip = svg('clipPath', { id: clipId });
+    clip.append(svg('rect', { x: marcoX, y: marcoY, width: marcoW, height: marcoH }));
+    defs.append(clip);
+    raiz.append(defs);
+
+    raiz.append(
+      svg('rect', {
+        x: marcoX,
+        y: marcoY,
+        width: marcoW,
+        height: marcoH,
+        fill: '#ffffff',
+        stroke: TINTA,
+        'stroke-width': 1.8,
+      }),
+    );
+
+    const gEscena = svg('g', { 'clip-path': `url(#${clipId})` });
+    const cx = marcoX + marcoW / 2;
+    const cy = marcoY + marcoH / 2;
+    const wPieza = Math.min(126, marcoW * 0.28);
+    const hPieza = 88;
+
+    const xIzq = cx - e.distancia / 2 - wPieza;
+    const xDer = cx + e.distancia / 2;
+    // Borde controla cuánto se acerca una ficha lateral al borde superior/derecho
+    const yBase = cy - hPieza / 2;
+
+    if (e.escena === 'circulos') {
+      const r = Math.min(48, wPieza * 0.42);
+      const c1x = cx - e.distancia / 2 - r;
+      const c2x = cx + e.distancia / 2 + r;
+      gEscena.append(svg('circle', { cx: c1x, cy, r, fill: TINTA }));
+      const g2 = svg('g', { transform: `rotate(${-e.angulo} ${c2x} ${cy})` });
+      g2.append(
+        svg('circle', {
+          cx: c2x,
+          cy,
+          r,
+          fill: e.distancia < -4 ? AMARILLO : TINTA,
+          stroke: TINTA,
+          'stroke-width': 2,
+        }),
+      );
+      g2.append(svg('line', { x1: c2x - r + 8, y1: cy, x2: c2x + r - 8, y2: cy, stroke: e.distancia < -4 ? TINTA : AMARILLO, 'stroke-width': 2.5 }));
+      gEscena.append(g2);
+    } else if (e.escena === 'titular') {
+      // Imagen a la derecha y titular a la izquierda
+      gEscena.append(svg('rect', { x: xDer, y: yBase - 8, width: wPieza + 16, height: hPieza + 16, fill: TINTA }));
+      gEscena.append(svg('circle', { cx: xDer + (wPieza + 16) / 2, cy, r: 24, fill: 'none', stroke: AMARILLO, 'stroke-width': 2 }));
+      const gTit = svg('g', { transform: `rotate(${-e.angulo} ${xIzq + wPieza / 2} ${cy})` });
+      gTit.append(
+        svg('rect', {
+          x: xIzq,
+          y: yBase + 12,
+          width: wPieza,
+          height: hPieza - 24,
+          fill: e.distancia < 0 ? AMARILLO : '#ffffff',
+          stroke: TINTA,
+          'stroke-width': 2,
+        }),
+      );
+      const t = svg('text', {
+        x: xIzq + wPieza - 8,
+        y: cy + 6,
+        'text-anchor': 'end',
+        'font-family': SANS,
+        'font-size': 18,
+        'font-weight': 900,
+        fill: TINTA,
+      });
+      t.textContent = 'LÍMITE';
+      gTit.append(t);
+      gEscena.append(gTit);
+    } else {
+      // Dos bloques geométricos
+      gEscena.append(svg('rect', { x: xIzq, y: yBase, width: wPieza, height: hPieza, fill: TINTA }));
+      const gDer = svg('g', { transform: `rotate(${-e.angulo} ${xDer + wPieza / 2} ${cy})` });
+      gDer.append(
+        svg('rect', {
+          x: xDer,
+          y: yBase,
+          width: wPieza,
+          height: hPieza,
+          fill: e.distancia < -2 ? AMARILLO : TINTA,
+          stroke: TINTA,
+          'stroke-width': 2,
+        }),
+      );
+      gEscena.append(gDer);
+    }
+
+    // Sello en esquina para evaluar cercanía al borde
+    const selloW = 86;
+    const selloH = 24;
+    const selloX = marcoX + marcoW - selloW - e.borde;
+    const selloY = marcoY + e.borde;
+    gEscena.append(
+      svg('rect', {
+        x: selloX,
+        y: selloY,
+        width: selloW,
+        height: selloH,
+        fill: bordeRoce ? AMARILLO : '#f3f3ef',
+        stroke: bordeRoce ? COTA : TINTA,
+        'stroke-width': 1.5,
+      }),
+    );
+    const tSello = svg('text', {
+      x: selloX + selloW / 2,
+      y: selloY + 15.5,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 9.5,
+      'font-weight': 700,
+      fill: TINTA,
+    });
+    tSello.textContent = `BORDE: ${e.borde} PX`;
+    gEscena.append(tSello);
+
+    // Marcador de chispa si hay tangencia central
+    if (e.vectores && tangencia) {
+      gEscena.append(
+        svg('circle', {
+          cx,
+          cy,
+          r: 22,
+          fill: AMARILLO,
+          'fill-opacity': 0.85,
+          stroke: COTA,
+          'stroke-width': 2,
+          'stroke-dasharray': '4 2',
+        }),
+      );
+      const tAlerta = svg('text', {
+        x: cx,
+        y: cy - 28,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 900,
+        fill: COTA,
+      });
+      tAlerta.textContent = `ROCE (${e.distancia} PX)`;
+      gEscena.append(tAlerta);
+    }
+
+    if (e.vectores && anguloTibio) {
+      const tAng = svg('text', {
+        x: xDer + wPieza / 2,
+        y: yBase + hPieza + 22,
+        'text-anchor': 'middle',
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: COTA,
+      });
+      tAng.textContent = `ÁNGULO TIBIO (${e.angulo}°)`;
+      gEscena.append(tAng);
+    }
+
+    raiz.append(gEscena);
+
+    // Curva inferior de tensión perceptual
+    if (e.vectores) {
+      const gx = marcoX;
+      const gy = 256;
+      const gw = marcoW;
+      const gh = 56;
+
+      raiz.append(svg('rect', { x: gx, y: gy, width: gw, height: gh, fill: '#ffffff', stroke: '#dcdcd6' }));
+
+      // Construir polilínea de la curva en función de la distancia (-40 a +60)
+      const pts: string[] = [];
+      for (let d = -40; d <= 60; d += 2) {
+        const px = gx + ((d + 40) / 100) * gw;
+        const val = indiceTensionDistancia(d);
+        const py = gy + gh - 8 - (val / 100) * (gh - 20);
+        pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+      }
+      raiz.append(svg('polyline', { points: pts.join(' '), fill: 'none', stroke: TINTA, 'stroke-width': 1.8 }));
+
+      // Posición actual en la curva
+      const actX = gx + ((e.distancia + 40) / 100) * gw;
+      const actY = gy + gh - 8 - (indiceTensionDistancia(e.distancia) / 100) * (gh - 20);
+      raiz.append(svg('line', { x1: actX, y1: gy, x2: actX, y2: gy + gh, stroke: COTA, 'stroke-dasharray': '2 2' }));
+      raiz.append(svg('circle', { cx: actX, cy: actY, r: 5.5, fill: AMARILLO, stroke: TINTA, 'stroke-width': 2 }));
+
+      const lblCurva = svg('text', {
+        x: gx + 8,
+        y: gy + 14,
+        'font-family': SANS,
+        'font-size': 10,
+        'font-weight': 700,
+        fill: GRIS,
+      });
+      lblCurva.textContent = `CURVA DE TENSIÓN ESPACIAL · NIVEL TOTAL: ${total} %`;
+      raiz.append(lblCurva);
+    }
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { total, tangencia, anguloTibio, bordeRoce } = calcularTension(e);
+    const problemas: string[] = [];
+    if (tangencia) problemas.push(`roce entre piezas (<b class="dv-cifra">${e.distancia} px</b>)`);
+    if (anguloTibio) problemas.push(`ángulo tibio (<b class="dv-cifra">${e.angulo}°</b>)`);
+    if (bordeRoce) problemas.push(`roce con el marco (<b class="dv-cifra">${e.borde} px</b>)`);
+
+    if (problemas.length > 0) {
+      return `Tensión por ambigüedad espacial (<b class="dv-cifra">${n(total, 0)} %</b>): hay ${problemas.join(' y ')}. Si no es el foco deliberado de la pieza, separa con holgura o cruza el límite con decisión.`;
+    }
+
+    if (e.distancia <= -14 && e.angulo >= 12) {
+      return `Dinamismo franco (<b class="dv-cifra">${e.distancia} px</b> de superposición y diagonal de <b class="dv-cifra">${e.angulo}°</b>): la composición transmite energía sin parecer un descuido de alineación.`;
+    }
+
+    if (e.distancia <= -10) {
+      return `Superposición decidida (<b class="dv-cifra">${e.distancia} px</b>): una figura pisa claramente a la otra y resuelve el roce en profundidad.`;
+    }
+
+    return `Separación estable (<b class="dv-cifra">+${e.distancia} px</b>): cada bloque conserva su contorno y el espacio intermedio respira sin pellizcos visuales.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="tension"]')) {
+    guiar<E>(raiz, [
+      (e) => e.distancia >= 36,
+      (e) => e.distancia >= 0 && e.distancia <= 3,
+      (e) => e.distancia <= -20,
+      (e) => e.angulo >= 14,
+      (e) => e.vectores === true,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────────────────
+  type E1 = { espacio: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const gap = e.espacio;
+    const roza = gap >= -4 && gap <= 4;
+    d.innerHTML = `
+      <div style="padding:18px;font-family:${SANS};background:#fbfbf9;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <div style="display:flex;align-items:center;position:relative;">
+          <div style="z-index:2;margin-right:${gap}px;background:${gap < -4 ? AMARILLO : 'transparent'};padding:${gap < -4 ? '6px 10px' : '4px 0'};border:${gap < -4 ? '2px solid #222' : 'none'};">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:#6f6f6f;display:block;">EXPOSICIÓN</span>
+            <strong style="font-size:22px;font-weight:900;color:#222;line-height:1;">HORIZONTE</strong>
+          </div>
+          <div style="width:128px;height:78px;background:#222;border:2px solid ${roza ? COTA : '#222'};display:flex;align-items:center;justify-content:center;color:#eeff41;font-size:11px;font-weight:700;">
+            FOTO ARCHIVO
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.espacio >= -4 && e.espacio <= 4) {
+      return `A <b class="dv-cifra">${e.espacio} px</b>, la última letra besa el borde del recorte oscuro y crea una tangencia involuntaria.`;
+    }
+    if (e.espacio < -4) {
+      return `<b class="dv-cifra">Superposición franca (${e.espacio} px)</b>: el titular entra con intención sobre la fotografía.`;
+    }
+    return `<b class="dv-cifra">Separación limpia (+${e.espacio} px)</b>: el título y la imagen respiran cada uno en su plano.`;
+  }
+
+  type E2 = { giro: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const tibio = e.giro >= 1 && e.giro <= 5;
+    d.innerHTML = `
+      <div style="padding:22px 18px;font-family:${SERIF};background:#fbfbf9;display:flex;justify-content:center;">
+        <div style="transform:rotate(${-e.giro}deg);padding:12px 16px;background:${e.giro >= 8 ? AMARILLO : '#fff'};border:2px solid ${tibio ? COTA : '#222'};box-shadow:${e.giro >= 8 ? '6px 6px 0 #222' : 'none'};max-width:280px;">
+          <p style="margin:0;font-size:14px;font-weight:700;color:#222;">«Toda forma visual es un diagrama de fuerzas.»</p>
+          <p style="margin:4px 0 0;font-family:${SANS};font-size:10.5px;color:#6f6f6f;">Rudolf Arnheim · 1974</p>
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.giro === 0) return '<b class="dv-cifra">0° (horizontal estable)</b>: el bloque se alinea con el marco y se lee en calma.';
+    if (e.giro <= 5) return `Con <b class="dv-cifra">${e.giro}°</b> de inclinación no hay dinamismo: parece una tarjeta torcida por descuido.`;
+    return `<b class="dv-cifra">Diagonal decidida (${e.giro}°)</b>: el ángulo se aparta claramente de la horizontal y se percibe como un gesto intencional.`;
+  }
+
+  type E3 = { modo: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const offset = e.modo === 'roce' ? '1px' : e.modo === 'margen' ? '16px' : '-14px';
+    const bordeColor = e.modo === 'roce' ? COTA : '#222';
+    d.innerHTML = `
+      <div style="padding:14px;background:#eaeae4;display:flex;justify-content:center;">
+        <div style="position:relative;width:270px;height:104px;background:#fff;border:2px solid #222;overflow:hidden;padding:14px;font-family:${SANS};">
+          <span style="font-size:10px;font-weight:700;color:#6f6f6f;">REVISTA SEMESTRAL</span>
+          <strong style="display:block;font-size:16px;color:#222;margin-top:4px;">Cuadernos de taller</strong>
+          <div style="position:absolute;top:${offset};right:${offset};width:52px;height:52px;border-radius:50%;background:${AMARILLO};border:2px solid ${bordeColor};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#222;">
+            N.º 12
+          </div>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.modo === 'roce') return 'El círculo queda a <b class="dv-cifra">1 px del marco</b>: pellizca el borde sin decidirse a entrar ni a salir.';
+    if (e.modo === 'margen') return '<b class="dv-cifra">Margen interior franco</b>: el sello queda contenido con holgura dentro de la portada.';
+    return '<b class="dv-cifra">Corte a sangre (-14 px)</b>: el círculo rebasa el borde con decisión y nuestro ojo completa su forma.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['tension-e1', pintarE1 as never, describirE1 as never],
+    ['tension-e2', pintarE2 as never, describirE2 as never],
+    ['tension-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego (5 rondas) ──────────────────────────────────────────────
+  function rondaTangenciaTexto(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El texto guarda 14 px de margen interior respecto al recuadro',
+        describir: 'Etiqueta con texto bien centrado y espacio amplio alrededor.',
+        es: true,
+        html: `<div class="jg-ten-box"><span style="padding:10px 18px;border:2px solid #222;background:#fff;font-weight:800;font-size:14px;color:#222;">ENTRADA LIBRE</span></div>`,
+      },
+      {
+        texto: 'Las letras tocan el borde izquierdo y el borde inferior del recuadro',
+        describir: 'Etiqueta donde las letras rozan las líneas del borde sin margen.',
+        es: false,
+        html: `<div class="jg-ten-box"><span style="padding:1px 2px 0 0;border:2px solid #222;background:#fff;font-weight:800;font-size:14px;color:#222;line-height:0.95;">ENTRADA LIBRE</span></div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de las dos etiquetas evita la tensión accidental por tangencia con su propio contenedor?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando las astas de las letras besan el filete del borde, los dos contornos se estorban y dificultan el reconocimiento de la palabra. El espacio interior (padding) disuelve esa tangencia.',
+      repaso: 'Tangencia con el borde',
+    };
+  }
+
+  function rondaAnguloTibio(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Sello inclinado a 18° que cruza la esquina con intención clara',
+        describir: 'Sello amarillo girado 18 grados de forma expresiva.',
+        es: true,
+        html: `<div class="jg-ten-box"><span style="display:inline-block;transform:rotate(-18deg);padding:6px 14px;background:#eeff41;border:2px solid #222;font-weight:900;font-size:13px;color:#222;">ESTRENO HOY</span></div>`,
+      },
+      {
+        texto: 'Sello inclinado apenas 1,8° respecto a la horizontal',
+        describir: 'Sello amarillo casi horizontal pero levemente torcido.',
+        es: false,
+        html: `<div class="jg-ten-box"><span style="display:inline-block;transform:rotate(-1.8deg);padding:6px 14px;background:#eeff41;border:2px solid #222;font-weight:900;font-size:13px;color:#222;">ESTRENO HOY</span></div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Quieres que el sello «Estreno hoy» tenga dinamismo diagonal sin parecer un error de maquetación. ¿Qué opción funciona?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Como explicaron Wertheimer (1923) y Arnheim (1974), una desviación mínima (1° a 4°) respecto al eje ortogonal se percibe como un ángulo recto mal hecho que pide enderezarse, no como una diagonal expresiva.',
+      repaso: 'Ángulo tibio frente a diagonal franca',
+    };
+  }
+
+  function rondaSuperposicion(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El círculo pisa el rectángulo 22 px creando profundidad delante-detrás',
+        describir: 'Círculo amarillo superpuesto claramente sobre la esquina del bloque negro.',
+        es: true,
+        html: `<div class="jg-ten-box"><div style="display:flex;align-items:center;"><div style="width:68px;height:48px;background:#222;"></div><div style="width:46px;height:46px;border-radius:50%;background:#eeff41;border:2px solid #222;margin-left:-20px;"></div></div></div>`,
+      },
+      {
+        texto: 'El círculo se detiene a medio píxel del borde del rectángulo',
+        describir: 'Círculo amarillo tocando apenas en un punto el borde del bloque negro.',
+        es: false,
+        html: `<div class="jg-ten-box"><div style="display:flex;align-items:center;"><div style="width:68px;height:48px;background:#222;"></div><div style="width:46px;height:46px;border-radius:50%;background:#eeff41;border:2px solid #222;margin-left:1px;"></div></div></div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de los dos emparejamientos resuelve la frontera con una relación espacial decidida?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando una curva besa una recta en un único punto tangente, se produce un pellizco visual que aplana ambas figuras. Superponerlas con holgura establece qué pieza está delante y cuál detrás.',
+      repaso: 'Superposición frente a tangencia',
+    };
+  }
+
+  function rondaTensionDirigida(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Concentrar una única aproximación tensa en el elemento protagonista y mantener el resto de la página en calma',
+        es: true,
+      },
+      {
+        texto: 'Dejar que todos los textos, botones y fotos rocen los filetes para dar energía a toda la pantalla',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuándo la tensión visual actúa como un recurso expresivo eficaz en un cartel o portada?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La tensión visual funciona como el énfasis: necesita un entorno ordenado y sereno para que la aproximación entre dos formas se lea como un gesto cargado de sentido y no como desaliño general.',
+      repaso: 'Tensión intencional localizada',
+    };
+  }
+
+  function rondaAjustarRoce(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'El recuadro del precio está a 1 px de la fotografía y produce un roce incómodo. Sepáralo con holgura (16 px o más) o superponlo con decisión (-16 px o menos).',
+      control: {
+        etiqueta: 'Distancia entre la foto y el precio',
+        min: -32,
+        max: 32,
+        paso: 2,
+        valor: 1,
+        unidad: 'px',
+      },
+      pintar: (c, v) => {
+        const roza = v >= -6 && v <= 8;
+        c.innerHTML = `<div style="padding:18px;background:#fbfbf9;display:flex;align-items:center;justify-content:center;font-family:${SANS};">
+          <div style="width:130px;height:68px;background:#222;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">OBRA #09</div>
+          <div style="margin-left:${v}px;padding:8px 14px;background:#eeff41;border:2px solid ${roza ? COTA : '#222'};font-weight:900;font-size:15px;color:#222;">45 €</div>
+        </div>`;
+      },
+      cumple: (v) => v >= 16 || v <= -16,
+      falta: (v) => `A ${v} px la relación sigue siendo tímida y ambigua. Aleja el bloque a 16 px o más, o mételo al menos -16 px dentro de la imagen.`,
+      porque: 'Salir de la franja tibia (-8 px a +8 px) elimina la duda perceptual: tanto la separación franca como el solapamiento decidido devuelven claridad a la pieza.',
+      repaso: 'Resolver tangencias',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="tension"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaTangenciaTexto(),
+        rondaAnguloTibio(),
+        rondaSuperposicion(),
+        rondaTensionDirigida(),
+        rondaAjustarRoce(),
+      ]),
+    );
+  }
+</script>
+
+<style is:global>
+  .jg-ten-box {
+    padding: 0.9rem;
+    background: #fafaf7;
+    border: 1px solid #e0e0d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4.5rem;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+  }
+</style>

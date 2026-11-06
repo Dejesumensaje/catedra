@@ -48,7 +48,14 @@ const marca = veredicto === 'bien' ? '✓' : veredicto === 'mal' ? '✗' : undef
       ></span>
     ))}
     {notas.map((n, i) => (
-      <span class="dv-pin" data-pin={i} aria-hidden="true" style={`left:${n.x}%;top:${n.y}%`}>{i + 1}</span>
+      <button
+        type="button"
+        class="dv-pin"
+        data-pin={i}
+        tabindex="-1"
+        aria-label={`Nota ${i + 1}`}
+        style={`left:clamp(0.75rem, ${n.x}%, calc(100% - 0.75rem));top:clamp(0.75rem, ${n.y}%, calc(100% - 0.75rem))`}
+      >{i + 1}</button>
     ))}
   </div>
   <figcaption>
@@ -72,21 +79,121 @@ const marca = veredicto === 'bien' ? '✓' : veredicto === 'mal' ? '✗' : undef
 <script>
   for (const fig of document.querySelectorAll<HTMLElement>('[data-anotada]')) {
     const botones = [...fig.querySelectorAll<HTMLButtonElement>('[data-nota]')];
-    const activar = (i: number | null) => {
+    const pines = [...fig.querySelectorAll<HTMLButtonElement>('[data-pin]')];
+    const pieza = fig.querySelector<HTMLElement>('.dv-anotada-pieza');
+    if (pieza && pines.length > 0) {
+      const pr = pieza.getBoundingClientRect();
+      if (pr.width > 0 && pr.height > 0) {
+        const textRects = [...pieza.querySelectorAll('svg text')]
+          .map((t) => t.getBoundingClientRect())
+          .filter((r) => r.width > 0 && r.height > 0)
+          .map((r) => ({ l: r.left - pr.left, t: r.top - pr.top, r: r.right - pr.left, b: r.bottom - pr.top }));
+
+        const fijados: { x: number; y: number }[] = [];
+        for (const p of pines) {
+          const idx = Number(p.dataset.pin);
+          const pb = p.getBoundingClientRect();
+          const hw = pb.width / 2 + 2;
+          const hh = pb.height / 2 + 2;
+          let cx = pb.left - pr.left + pb.width / 2;
+          let cy = pb.top - pr.top + pb.height / 2;
+
+          const areaSolape = (x: number, y: number) => {
+            let area = 0;
+            for (const tr of textRects) {
+              const ox = Math.min(x + hw, tr.r) - Math.max(x - hw, tr.l);
+              const oy = Math.min(y + hh, tr.b) - Math.max(y - hh, tr.t);
+              if (ox > 0 && oy > 0) area += ox * oy;
+            }
+            for (const f of fijados) {
+              if (Math.abs(x - f.x) < pb.width + 4 && Math.abs(y - f.y) < pb.height + 4) {
+                area += 10000;
+              }
+            }
+            return area;
+          };
+
+          if (areaSolape(cx, cy) > 0) {
+            const zEl = pieza.querySelector<HTMLElement>(`[data-zona="${idx}"]`);
+            const zr = zEl ? zEl.getBoundingClientRect() : null;
+            const zBox = zr && zr.width > 0
+              ? { l: zr.left - pr.left, t: zr.top - pr.top, r: zr.right - pr.left, b: zr.bottom - pr.top }
+              : null;
+
+            let mejorX = cx;
+            let mejorY = cy;
+            let mejorCosto = Infinity;
+            const paso = 6;
+            const minX = Math.ceil(hw + 2);
+            const maxX = Math.floor(pr.width - hw - 2);
+            const minY = Math.ceil(hh + 2);
+            const maxY = Math.floor(pr.height - hh - 2);
+
+            for (let y = minY; y <= maxY; y += paso) {
+              for (let x = minX; x <= maxX; x += paso) {
+                const sol = areaSolape(x, y);
+                let distZ = 0;
+                if (zBox) {
+                  const dx = x < zBox.l ? zBox.l - x : x > zBox.r ? x - zBox.r : 0;
+                  const dy = y < zBox.t ? zBox.t - y : y > zBox.b ? y - zBox.b : 0;
+                  distZ = Math.hypot(dx, dy);
+                }
+                const distOrig = Math.hypot(x - cx, y - cy);
+                const costo = sol * 500 + distZ * 8 + distOrig;
+                if (costo < mejorCosto) {
+                  mejorCosto = costo;
+                  mejorX = x;
+                  mejorY = y;
+                }
+              }
+            }
+            cx = mejorX;
+            cy = mejorY;
+            p.style.left = `${((cx / pr.width) * 100).toFixed(2)}%`;
+            p.style.top = `${((cy / pr.height) * 100).toFixed(2)}%`;
+          }
+          fijados.push({ x: cx, y: cy });
+        }
+      }
+    }
+    let fijada: number | null = null;
+
+    const pintar = (i: number | null) => {
       if (i === null) fig.removeAttribute('data-activa');
       else fig.dataset.activa = String(i);
-      for (const b of botones) b.setAttribute('aria-pressed', String(Number(b.dataset.nota) === i));
+      for (const b of botones) {
+        const k = Number(b.dataset.nota);
+        b.setAttribute('aria-pressed', String(fijada === k));
+        b.classList.toggle('es-activa', k === i);
+      }
       for (const el of fig.querySelectorAll<HTMLElement>('[data-pin], [data-zona]')) {
         const k = Number(el.dataset.pin ?? el.dataset.zona);
         el.classList.toggle('es-activa', k === i);
       }
     };
+
     for (const b of botones) {
       const i = Number(b.dataset.nota);
-      b.addEventListener('click', () => activar(b.getAttribute('aria-pressed') === 'true' ? null : i));
-      b.addEventListener('mouseenter', () => activar(i));
-      b.addEventListener('focus', () => activar(i));
+      b.addEventListener('click', () => {
+        fijada = fijada === i ? null : i;
+        pintar(fijada);
+      });
+      b.addEventListener('mouseenter', () => pintar(i));
+      b.addEventListener('mouseleave', () => pintar(fijada));
+      b.addEventListener('focus', () => pintar(i));
+      b.addEventListener('blur', () => pintar(fijada));
     }
-    fig.addEventListener('mouseleave', () => activar(null));
+    for (const p of pines) {
+      const i = Number(p.dataset.pin);
+      p.addEventListener('click', () => {
+        fijada = fijada === i ? null : i;
+        pintar(fijada);
+        if (fijada !== null && window.innerWidth <= 832) {
+          botones[i]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+      p.addEventListener('mouseenter', () => pintar(i));
+      p.addEventListener('mouseleave', () => pintar(fijada));
+    }
   }
 </script>

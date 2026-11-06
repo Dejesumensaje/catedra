@@ -1,0 +1,180 @@
+---
+titulo: Patrones
+territorio: sistemas
+pregunta: ¿Por qué dos pantallas hechas con componentes distintos pueden sentirse familiares y fáciles de usar desde el primer segundo?
+resumen: "Un patrón no es una pieza gráfica concreta, sino una solución probada a un problema recurrente en un contexto dado (cómo filtrar una lista, cómo pedir confirmación antes de borrar, cómo mostrar en qué paso vas). Los componentes son los ladrillos; el patrón es la disposición que resuelve la tarea."
+modos: [comparacion, diseccion]
+orden: 31
+relaciones:
+  - concepto: componentes
+    porQue: Los componentes son los objetos reutilizables (botones, campos, tarjetas); el patrón es la coreografía con que varios componentes resuelven un flujo.
+  - concepto: sistemas-y-excepciones
+    porQue: Un sistema maduro no solo estandariza el aspecto de sus piezas, sino también los patrones con que responde a situaciones repetidas.
+  - concepto: variantes
+    porQue: Muchos patrones (como la confirmación de una acción destructiva) se apoyan en variantes de jerarquía para distinguir la salida segura de la irreversible.
+  - concepto: semejanza
+    porQue: Repetir el mismo patrón funcional en distintas pantallas crea una semejanza de comportamiento que reduce el esfuerzo de aprendizaje.
+  - concepto: continuidad
+    porQue: Patrones como la miga de pan, los pasos numerados o el esquema maestro-detalle sostienen la continuidad espacial a lo largo de una tarea.
+fuentes:
+  - autor: Christopher Alexander, Sara Ishikawa y Murray Silverstein
+    obra: "A Pattern Language: Towns, Buildings, Construction. Oxford University Press"
+    anio: 1977
+    nota: Formulación original del concepto de patrón de diseño como solución estructural a un problema recurrente dentro de un contexto.
+  - autor: Jenifer Tidwell, Charles Brewer y Aynne Valencia
+    obra: "Designing Interfaces: Patterns for Effective Interaction Design (3rd ed.). O'Reilly Media"
+    anio: 2020
+    nota: Catálogo y estructura de patrones de interfaz e información (navegación, revelación progresiva, búsqueda facetada y formularios).
+  - autor: Alla Kholmatova
+    obra: "Design Systems: A practical guide to creating design languages for digital products. Smashing Media"
+    anio: 2017
+    nota: Distinción entre patrones funcionales (flujos y comportamientos recurrentes) y patrones perceptuales (tono y estilo visual).
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import PatronesExp from '../../components/diseno-visual/experiencias/PatronesExp.astro';
+
+<Paso id="idea" titular="Los componentes son los ladrillos; el patrón es la solución a la situación">
+
+<PatronesExp paso="idea" />
+
+<p class="dv-frase">Un componente es un objeto; un patrón es una manera repetible de resolver una situación.</p>
+
+<div class="dv-texto">
+
+Al entrar por primera vez a un catálogo bien hecho, no hace falta un manual para saber cómo filtrar por tema, ver cuántos artículos quedaron o volver a la lista completa. Aunque nunca hayas visitado ese sitio y sus botones tengan un diseño propio, reconoces su disposición general.
+
+Eso que reconoces no es un [componente](/diseno-visual/componentes) aislado, sino un *patrón*: una respuesta estructural probada para un problema que se repite una y otra vez. Mientras un componente define cómo es un campo de texto o una pastilla de filtro, el patrón define cómo cooperan el buscador, las categorías, el contador en vivo y el mensaje de «cero resultados» para que quien busca nunca se pierda.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cinco palabras para explorarlo</h3>
+  <dl>
+    <dt>Patrón</dt>
+    <dd>Una solución estructural reutilizable que resuelve un problema recurrente de organización o interacción sin imponer una única apariencia visual.</dd>
+    <dt>Contexto</dt>
+    <dd>Las condiciones concretas (quién usa la pieza, cuántos datos hay, desde qué dispositivo) que hacen que un patrón sea adecuado o inadecuado.</dd>
+    <dt>Problema (fuerzas en tensión)</dt>
+    <dd>El conflicto que el diseño necesita equilibrar: por ejemplo, ofrecer muchos ajustes expertos sin abrumar a quien recién llega.</dd>
+    <dt>Solución estructural</dt>
+    <dd>La disposición de partes y reglas de comportamiento que resuelve la tensión entre esas fuerzas.</dd>
+    <dt>Revelación progresiva</dt>
+    <dd>El patrón que muestra de entrada solo las opciones indispensables y despliega las avanzadas cuando la persona las solicita.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Mecánicas improvisadas frente a tres patrones que cooperan">
+
+<div class="dv-texto">
+
+Ambas pantallas de configuración y borrado contienen las mismas opciones técnicas: la izquierda las arroja sin orden y la derecha aplica tres patrones clásicos de interfaz.
+
+</div>
+
+<PatronesExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión de la izquierda hay que adivinar en qué parte del sitio se está, leer catorce parámetros técnicos mezclados para encontrar el título y tener cuidado de no rozar «Borrar todo al clic». En la derecha, la **miga de pan** sitúa el lugar, la **revelación progresiva** despeja la tarea principal y el **diálogo de confirmación** protege contra el clic accidental.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Tres patrones puestos a prueba cuando sube la complejidad">
+
+<PatronesExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres criterios para elegir y aplicar patrones con rigor">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Pregunta primero cuál es el volumen y el contexto real</h3>
+      <p>Elegir entre pestañas horizontales, un esquema maestro-detalle o un buscador con facetas no es una cuestión de gusto estético: depende de si vas a mostrar tres elementos, veinte o quinientos. Adopta el patrón que corresponda a la escala del problema.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Oculta la complejidad secundaria detrás de «Más controles»</h3>
+      <p>Cuando una herramienta necesite más de cuatro o cinco controles, separa lo que se usa el noventa por ciento de las veces de lo que sirve para casos especiales. La revelación progresiva permite que la misma pantalla sea sencilla al entrar y completa al profundizar.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Diseña también los bordes del patrón (como el estado vacío)</h3>
+      <p>Un patrón de búsqueda o de lista está incompleto si solo se pensó para cuando hay diez resultados. Define siempre qué se muestra cuando hay cero coincidencias, cuando hay un solo ítem o cuando una acción no tiene vuelta atrás.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<PatronesExp paso="errores" />
+
+<div class="dv-texto">
+
+### Los patrones en piezas reales
+
+</div>
+
+<PatronesExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Identifica patrones, antipatrones y umbrales de complejidad">
+
+<PatronesExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Christopher Alexander, las fuerzas en conflicto y por qué no copiar a ciegas">
+
+<Seccion titulo="De la arquitectura de ciudades al diseño de información">
+
+El concepto de *patrón de diseño* nació en 1977 en la arquitectura y el urbanismo con el libro *A Pattern Language*, de Christopher Alexander, Sara Ishikawa y Murray Silverstein. Alexander observó que los mejores espacios públicos, ventanas o pórticos de distintas culturas resolvían una y otra vez los mismos conflictos humanos mediante relaciones espaciales parecidas, sin copiarse literalmente unos a otros.
+
+Para documentarlos, propuso una estructura tripartita que sigue siendo la herramienta más clara para pensar cualquier interfaz:
+
+1. **El contexto:** en qué situación y bajo qué condiciones aparece la necesidad.
+2. **El problema (las fuerzas en tensión):** qué necesidades contrapuestas chocan si no se interviene (por ejemplo, la necesidad de ver el detalle de un documento frente a la necesidad de no perder de vista la lista completa).
+3. **La solución:** qué disposición espacial o secuencia de pasos equilibra esas fuerzas.
+
+</Seccion>
+
+<Seccion titulo="Por qué fracasa un patrón cuando se copia sin su contexto">
+
+En *Designing Interfaces* (2020), Jenifer Tidwell recuerda que ningún patrón es bueno en abstracto: un patrón solo funciona si las fuerzas de tu problema coinciden con las fuerzas para las que nació.
+
+El ejemplo clásico es el **desplazamiento infinito** (*infinite scroll*). En un flujo de entretenimiento sin meta fija puede tener sentido; pero cuando se copia por moda en una biblioteca académica o en una tienda que tiene información clave en el pie de página, se convierte en una trampa: cada vez que quien lee intenta alcanzar el pie o recordar a qué altura de la página vio un libro para compararlo con otro, el suelo se mueve bajo sus pies.
+
+</Seccion>
+
+<Seccion titulo="Patrones funcionales y patrones perceptuales">
+
+Alla Kholmatova distingue en *Design Systems* (2017) dos familias de patrones que sostienen la coherencia de una publicación o un producto:
+
+- **Los patrones funcionales:** determinan cómo se estructura una tarea recurrente (filtrar, revelar opciones avanzadas, recorrer una guía paso a paso, confirmar un borrado).
+- **Los patrones perceptuales:** son las relaciones visuales que dan carácter propio al sistema, como usar siempre sombra dura desplazada sin desenfoque (`8 px 8 px 0`) o emplear el símbolo `↔` para cruzar dos polos en tensión.
+
+</Seccion>
+
+<Seccion titulo="Convención útil frente a invención gratuita">
+
+**No reinventes cómo se cierra una ventana ni dónde va el botón de cancelar.** Cuando una acción es rutinaria e instrumental, apoyarse en un patrón conocido libera la atención del lector para que se concentre en el contenido o en el fenómeno que está estudiando.
+
+**Reserva la invención para el corazón de la pieza.** En `/diseno-visual`, el marco de cada instrumento repite rigurosamente el mismo patrón de lectura en vivo, comparación A/B y «Más controles»; gracias a esa regularidad, cada escenario puede inventar una experiencia visual distinta sin que nadie tenga que reaprender cómo se opera la página.
+
+</Seccion>
+
+</Paso>

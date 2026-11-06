@@ -1,0 +1,172 @@
+---
+titulo: Dependencia del contexto
+territorio: color
+pregunta: ¿Por qué un color elegido en una muestra aislada cambia de aspecto cuando cambia el tamaño de la mancha, el borde que lo encierra o la pantalla que lo ilumina?
+resumen: "La percepción de un color depende del tamaño de la superficie que ocupa, del grosor y color de los contornos que lo tocan (asimilación o efecto Bezold) y del modo de iluminación general (papel claro frente a interfaz oscura)."
+modos: [laboratorio, provocacion]
+orden: 24
+relaciones:
+  - concepto: interaccion-del-color
+    porQue: Amplía el contraste simultáneo al mostrar cómo el tamaño de la superficie y las tramas finas invierten la relación entre colores vecinos.
+  - concepto: contraste
+    porQue: Un par de colores que alcanza suficiente contraste en un bloque sólido puede perderlo al aplicarse en trazos de 1 px o sobre modo oscuro.
+  - concepto: armonia
+    porQue: Una paleta armónica exige ajustar la saturación de cada muestra según el área real que ocupará en la página.
+  - concepto: accesibilidad-del-color
+    porQue: Cambiar entre tema claro, tema oscuro y condiciones de luz ambiental altera la luminancia relativa y exige recalibrar los colores.
+  - concepto: peso-y-contraste
+    porQue: En tipografía menuda, el grosor del trazo determina cuánto se mezcla ópticamente el color de la letra con el color del papel.
+fuentes:
+  - autor: Michel Eugène Chevreul
+    obra: "De la loi du contraste simultané des couleurs. Pitois-Levrault"
+    anio: 1839
+    nota: Ley del contraste simultáneo y alteración mutua de muestras contiguas según su cercanía y extensión.
+  - autor: Wilhelm von Bezold
+    obra: "Die Farbenlehre im Hinblick auf Kunst und Kunstgewerbe. George Westermann"
+    anio: 1874
+    nota: Descubrimiento del efecto de asimilación cromática (efecto Bezold) cuando las formas son pequeñas o están atravesadas por tramas.
+  - autor: Josef Albers
+    obra: "Interaction of Color. Yale University Press"
+    anio: 1963
+    nota: Estudios experimentales sobre el efecto de extensión o cantidad y sobre los contornos que alternan entre contraste y asimilación.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import DependenciaContextoExp from '../../components/diseno-visual/experiencias/DependenciaContextoExp.astro';
+
+<Paso id="idea" titular="Una muestra de color aislada nunca dice la verdad completa">
+
+<DependenciaContextoExp paso="idea" />
+
+<p class="dv-frase">No existen colores para toda ocasión: una muestra de dos centímetros miente sobre una pared o un botón de dos píxeles.</p>
+
+<div class="dv-texto">
+
+Quienes fabrican pintura y quienes diseñan interfaces conocen la misma sorpresa: eliges un color en un cuadradito de muestra de dos centímetros, lo aplicas al fondo completo de la página —o a una línea de texto de 12 px, o a una pantalla en modo oscuro— y parece que alguien hubiera cambiado el código por otro.
+
+El código no cambió; cambió el **contexto físico y espacial**. Tres factores modifican de forma predecible la apariencia de cualquier muestra: las **líneas o tramas finas** que la atraviesan (asimilación de Bezold), el **tamaño de la superficie** que cubre (efecto de área) y la **luminancia del entorno general** (modo claro frente a modo oscuro).
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro fenómenos del contexto</h3>
+  <dl>
+    <dt>Asimilación cromática (efecto Bezold)</dt>
+    <dd>Mezcla óptica por la cual un color atravesado por líneas finas, tramas o letras pequeñas se acerca al valor de esas líneas: una trama blanca lo aclara y una trama negra lo oscurece.</dd>
+    <dt>Efecto de área (escala cromática)</dt>
+    <dd>Tendencia perceptual por la que un mismo color se percibe más saturado y luminoso cuando cubre una superficie extensa que cuando aparece en un detalle diminuto.</dd>
+    <dt>Adaptación al entorno (modo claro / oscuro)</dt>
+    <dd>Cambio en la sensibilidad del sistema visual según la luz dominante del campo: sobre un fondo oscuro, los colores saturados vibran más y los tonos oscuros pierden contraste.</dd>
+    <dt>Borde aislante</dt>
+    <dd>Filete neutro (blanco, negro o gris) interpuesto entre dos manchas saturadas para impedir que se contaminen o hagan vibrar su frontera común.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Copiar valores a ciegas frente a adaptar el color a su contexto">
+
+<div class="dv-texto">
+
+Tomar el mismo código hexadecimal de una pastilla pequeña para pintar un bloque grande —o copiar el azul de un tema claro sobre un fondo negro— altera por completo su apariencia.
+
+</div>
+
+<DependenciaContextoExp paso="miralo" />
+
+<div class="dv-texto">
+
+Para que dos piezas de distinto tamaño o en distinto tema **se perciban del mismo color**, a menudo necesitan **códigos numéricos diferentes**. La coherencia visual exige conservar la relación perceptual antes que repetir el mismo valor hexadecimal en todas partes.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Experimenta con tramas de Bezold, tamaño de mancha y modo oscuro">
+
+<DependenciaContextoExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres ajustes para cuando un color cambia de escenario">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Desatura al agrandar; satura al encoger</h3>
+      <p>Si un color pasa de un botón o etiqueta a cubrir el fondo de toda una sección, reduce con firmeza su saturación y acércalo al blanco (o al negro en modo oscuro). A la inversa, si llevas un color corporativo a un icono de 16 px o a una línea fina de un gráfico, sube un punto su saturación para que no se vea grisáceo.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>No inviertas una paleta por cálculo automático para el modo oscuro</h3>
+      <p>Al pasar de papel claro a fondo oscuro (`#121212`–`#181818`), los acentos de color necesitan subir de luminosidad (para mantener al menos 4,5:1 de contraste) y bajar entre un 15 % y un 30 % su saturación para no deslumbrar en la penumbra.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Usa filetes neutros cuando dos colores vivos deban tocarse</h3>
+      <p>En mapas, gráficos de sectores o insignias donde dos tonos intensos comparten borde, añade un contorno fino blanco o carbón de 1 px a 2 px. Ese filete detiene tanto el contraste simultáneo como la asimilación en la frontera.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<DependenciaContextoExp paso="errores" />
+
+<div class="dv-texto">
+
+### La dependencia del contexto en piezas reales
+
+</div>
+
+<DependenciaContextoExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Comprueba cómo responde tu ojo al contexto">
+
+<DependenciaContextoExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="De las alfombras de Bezold a las pantallas contemporáneas">
+
+<Seccion titulo="Contraste simultáneo frente a asimilación de Bezold: cuándo ocurre cada uno">
+
+En [Interacción del color](/diseno-visual/interaccion-del-color) vimos la ley del **contraste simultáneo** formulada por Michel Eugène Chevreul (1839): cuando una mancha rodea a otra, la empuja en dirección opuesta (un fondo blanco hace que un cuadro gris parezca más oscuro; un fondo negro lo hace parecer más claro).
+
+En 1874, el físico alemán Wilhelm von Bezold descubrió que cuando buscaba aclarar u oscurecer los tejidos de sus tapices ocurría exactamente **lo contrario**: añadir hilos blancos finos *aclaraba* el rojo adyacente y añadir hilos negros lo *oscurecía*.
+
+La explicación moderna reside en el tamaño de los campos receptivos de las neuronas ganglionares de la retina:
+
+- **En superficies medianas y grandes:** actúa la *inhibición lateral*, que exagera las diferencias entre vecinos y produce **contraste simultáneo** (repulsión cromática).
+- **En detalles muy finos (tramas, líneas de 1 px, texto pequeño):** tanto el trazo como el fondo caen dentro del mismo centro receptivo, por lo que la retina **promedia la luz de ambos** y produce **asimilación cromática** (mezcla óptica).
+
+Por eso un texto de cuerpo pequeño escrito en un color medio sobre fondo blanco parece lavarse y perder fuerza respecto a un titular grande impreso con la misma tinta.
+
+</Seccion>
+
+<Seccion titulo="El efecto de extensión: por qué el tamaño cambia el croma">
+
+Josef Albers dedicó varios estudios de *Interaction of Color* (1963) a demostrar que duplicar o multiplicar por diez la superficie de un color produce un cambio cualitativo, no solo cuantitativo. Cuando una mancha crece hasta ocupar gran parte del campo visual, estimula un número mucho mayor de fotorreceptores y reduce la referencia de blanco que el cerebro usa para calibrar la escena.
+
+En la práctica cotidiana esto significa que **una paleta de diseño nunca debe aprobarse mirando cuadraditos iguales en una fila**. Hay que probar cada color con el tamaño exacto que tendrá en la maqueta final: el color de fondo cubriendo toda la ventana, el color de tarjeta en su caja y el color de texto en una frase de 14 px.
+
+</Seccion>
+
+<Seccion titulo="Por qué el modo oscuro exige una segunda paleta calibrada">
+
+En una habitación iluminada o sobre una pantalla con fondo blanco, la pupila se contrae y el sistema visual se adapta a un nivel alto de luminancia (*visión fotópica*). Cuando pasamos a una interfaz oscura en un entorno tenue, el ojo aumenta su ganancia y cualquier mancha de color saturado al 100 % actúa como un pequeño faro que produce halo y fatiga visual.
+
+Por esa razón, los sistemas de diseño maduros no usan la misma escala cromática en ambos modos: en el **tema claro** emplean tonos de los niveles `600` a `800` (más oscuros y saturados) sobre fondos `50` a `100`, mientras que en el **tema oscuro** emplean tonos de los niveles `200` a `400` (más luminosos y apastelados) sobre superficies `900`.
+
+</Seccion>
+
+</Paso>

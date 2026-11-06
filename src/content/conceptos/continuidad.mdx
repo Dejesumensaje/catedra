@@ -1,0 +1,167 @@
+---
+titulo: Continuidad
+territorio: percepcion
+pregunta: ¿Por qué nuestra mirada prefiere seguir una trayectoria suave antes que doblar en una esquina brusca?
+resumen: "Los elementos alineados en una dirección continua —recta o curva suave— se perciben como parte de un mismo recorrido, aunque los atraviesen otras formas."
+modos: [laboratorio, diseccion]
+orden: 10
+relaciones:
+  - concepto: reticulas-y-alineacion
+    porQue: Todo eje de una retícula es una línea de continuidad implícita que permite recorrer la página sin zigzaguear.
+  - concepto: proximidad
+    porQue: Cuanto más cerca están los segmentos de una trayectoria, mayor cambio de ángulo tolera el ojo sin perder el hilo.
+  - concepto: gestalt
+    porQue: Wertheimer formuló en 1923 la buena continuación como uno de los factores primarios que deciden qué tramos se unen.
+  - concepto: ritmo-tipografico
+    porQue: La línea base sobre la que se apoyan las letras mantiene la continuidad horizontal durante la lectura de cada renglón.
+  - concepto: ruptura
+    porQue: Quebrar de golpe una trayectoria continua es la manera más directa de detener la mirada en un punto de alerta.
+fuentes:
+  - autor: Max Wertheimer
+    obra: "Untersuchungen zur Lehre von der Gestalt. II. Psychologische Forschung, 4, 301–350"
+    anio: 1923
+    url: https://doi.org/10.1007/BF00410640
+    nota: Formulación del Faktor der guten Fortsetzung (factor de la buena continuación).
+  - autor: David J. Field, Anthony Hayes y Robert F. Hess
+    obra: 'Contour integration by the human visual system: Evidence for a local "association field". Vision Research, 33(2), 173–193'
+    anio: 1993
+    url: https://doi.org/10.1016/0042-6989(93)90156-Q
+    nota: 'Demostración psicofísica del «campo de asociación» en la corteza visual primaria: el ojo integra segmentos colineales o con cambios de ángulo menores a ~30°–45°.'
+  - autor: Colin Ware
+    obra: "Information Visualization: Perception for Design (4th ed.). Morgan Kaufmann"
+    anio: 2020
+    nota: Aplicación de la buena continuación en diagramas de red, series temporales y alineación de interfaces.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import ContinuidadExp from '../../components/diseno-visual/experiencias/ContinuidadExp.astro';
+
+<Paso id="idea" titular="La mirada tiene inercia: prefiere seguir derecho">
+
+<ContinuidadExp paso="idea" />
+
+<p class="dv-frase">El ojo sigue el camino que exige menos giros bruscos.</p>
+
+<div class="dv-texto">
+
+Cuando dos líneas se cruzan o varios elementos se suceden en el espacio, el sistema visual los enlaza siguiendo la trayectoria más suave y predecible. Igual que un vehículo en marcha, la mirada tiene inercia direccional: continuar en línea recta o a lo largo de una curva abierta cuesta mucho menos trabajo que frenar en seco y doblar en ángulo agudo.
+
+Este fenómeno —llamado *buena continuación* o *continuidad*— explica tanto por qué podemos seguir un cable en medio de una maraña como por qué un formulario mal alineado cansa los ojos en pocos segundos.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Buena continuación</dt>
+    <dd>La tendencia perceptual a unir segmentos que mantienen una misma dirección rectilínea o una curvatura suave.</dd>
+    <dt>Trayectoria implícita</dt>
+    <dd>Una línea no dibujada —como el borde izquierdo compartido por cinco párrafos— que el ojo recorre como un riel continuo.</dd>
+    <dt>Campo de asociación</dt>
+    <dd>El cono angular (alrededor de ±30°) dentro del cual la corteza visual busca el siguiente tramo para prolongar un contorno.</dd>
+    <dt>Quiebre direccional</dt>
+    <dd>Un giro abrupto que supera ese umbral angular y rompe la unidad del recorrido en pedazos independientes.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Zigzags que agotan frente a trayectorias fluidas">
+
+<div class="dv-texto">
+
+La continuidad determina el recorrido ocular en situaciones tan distintas como un gráfico donde se cruzan dos series de datos y un formulario de registro.
+
+</div>
+
+<ContinuidadExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la versión de la izquierda, las dos líneas del gráfico parecen rebotar en el centro y los campos del formulario obligan a saltar de izquierda a derecha en cada paso. En la de la derecha, las curvas conservan su inercia al cruzarse y todos los campos cuelgan de un único eje vertical continuo.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="El umbral angular donde una ruta se rompe">
+
+<ContinuidadExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres formas de poner la continuidad a favor de quien lee">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Apoya las secuencias de lectura sobre un solo eje</h3>
+      <p>En formularios, listas de precios o menús, alinea el arranque de todas las etiquetas en la misma coordenada vertical. Cada escalón innecesario hacia los lados interrumpe el barrido del ojo.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Cruza las líneas en ángulos francos, nunca rasantes</h3>
+      <p>En diagramas de red, árboles o gráficos de líneas, evita que dos trazos se toquen casi en paralelo. Un cruce cercano a 45° o 90°, acompañado de estilos de trazo distintos, permite que cada línea conserve su identidad al otro lado.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Corta un elemento en el borde cuando quieras anunciar que hay más</h3>
+      <p>Si una fila de tarjetas termina justo en el margen con un espacio limpio, la continuidad se da por cerrada. Si el borde de la pantalla parte por la mitad la tarjeta siguiente, el ojo proyecta la trayectoria hacia afuera y entiende que puede desplazarse.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<ContinuidadExp paso="errores" />
+
+<div class="dv-texto">
+
+### La continuidad en piezas reales
+
+</div>
+
+<ContinuidadExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Comprueba dónde se mantiene y dónde se quiebra el camino">
+
+<ContinuidadExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="El campo de asociación en la corteza visual y el diseño de información">
+
+<Seccion titulo="Cómo une puntos la corteza visual primaria">
+
+En 1993, los investigadores David J. Field, Anthony Hayes y Robert F. Hess publicaron un experimento decisivo en *Vision Research*. Presentaron a los participantes cuadrículas compuestas por cientos de pequeños parches orientados al azar, dentro de los cuales escondieron una cadena de elementos alineados a lo largo de una curva invisible.
+
+Descubrieron que el sistema visual humano detecta el camino escondido siempre que el cambio de orientación entre un elemento y su vecino no supere los **30° a 45°**, y siempre que la orientación de cada trazo sea tangente a la curva general. A esa zona de integración local la llamaron **campo de asociación** (*association field*): las células detectoras de bordes de la corteza visual primaria (V1) excitan a las células vecinas que apuntan en la misma dirección o en una curva suave, e inhiben a las que doblan en ángulo agudo.
+
+</Seccion>
+
+<Seccion titulo="Por qué los diagramas con curvas suaves superan a las esquinas rectas">
+
+En *Information Visualization: Perception for Design* (2020), Colin Ware aplica estos hallazgos de Field al diseño de diagramas de nodos y redes (como mapas de arquitectura de software, organigramas o rutas de transporte).
+
+Cuando dos conexiones se dibujan con líneas ortogonales llenas de codos a 90°, cada esquina actúa como un punto de detención donde el campo de asociación se interrumpe. Si además dos codos coinciden cerca, el ojo pierde por completo qué nodo conecta con cuál. Sustituir esos quiebres por curvas suaves de radio continuo reduce los errores de seguimiento en más de la mitad.
+
+</Seccion>
+
+<Seccion titulo="La retícula como sistema de continuidad implícita">
+
+Solemos pensar en la continuidad solo cuando dibujamos flechas o líneas, pero su aplicación más frecuente en diseño editorial y de interfaces no lleva tinta: es la [alineación](/diseno-visual/reticulas-y-alineacion).
+
+Cuando el titular, el sumario, la fotografía, el cuerpo de texto y el pie de página apoyan su borde izquierdo sobre la misma vertical, esos cinco puntos de arranque activan el mismo campo de asociación colineal que los segmentos del laboratorio. La página se percibe ordenada porque la mirada puede deslizarse por ese riel invisible sin tropezar con esquinas desfasadas.
+
+</Seccion>
+
+</Paso>

@@ -1,0 +1,169 @@
+---
+titulo: Ambigüedad
+territorio: expresion
+pregunta: ¿Cuándo una composición con dos lecturas posibles es un fallo que bloquea a quien la usa y cuándo es un hallazgo que multiplica su sentido?
+resumen: "Hay ambigüedad visual cuando las señales de una composición admiten dos o más interpretaciones con parecida verosimilitud (qué va con qué, qué está delante, qué significa un icono). En una interfaz operativa es un obstáculo; en un cartel, un símbolo o una portada puede ser el centro poético de la pieza."
+modos: [provocacion, comparacion]
+orden: 36
+relaciones:
+  - concepto: figura-fondo
+    porQue: Cuando la figura y el fondo tienen un peso parecido y comparten un contorno significativo, la imagen se vuelve reversible y admite dos lecturas.
+  - concepto: proximidad
+    porQue: Si un rótulo o un precio queda a la misma distancia de dos bloques vecinos, se produce una ambigüedad espacial sobre su pertenencia.
+  - concepto: semejanza
+    porQue: En un grupo de solo dos elementos con estilos distintos (1 contra 1), la semejanza no basta para saber cuál representa el estado activo.
+  - concepto: cierre
+    porQue: Las formas abiertas o incompletas invitan al espectador a proyectar más de una hipótesis para cerrar el contorno.
+  - concepto: extranamiento
+    porQue: Una doble lectura deliberada frena el reconocimiento automático y obliga a detenerse para descifrar la segunda capa de sentido.
+fuentes:
+  - autor: Semir Zeki
+    obra: "The neurology of ambiguity. Consciousness and Cognition, 13(1), 173–196"
+    anio: 2004
+    url: https://doi.org/10.1016/j.concog.2003.10.003
+    nota: Distinción neurobiológica entre la inestabilidad biestable simple (como el cubo de Necker o la copa de Rubin) y la ambigüedad cognitiva superior en las artes visuales, donde conviven varias lecturas válidas.
+  - autor: Ernst H. Gombrich
+    obra: "Art and Illusion: A Study in the Psychology of Pictorial Representation. Pantheon Books / Phaidon"
+    anio: 1960
+    nota: Análisis de cómo la percepción proyecta hipótesis sobre estímulos reversibles o incompletos y cómo el diseño juega con ese cambio de interpretación.
+  - autor: Bruno Munari
+    obra: "Design e comunicazione visiva: Contributo a una metodologia didattica. Laterza (ed. española: Diseño y comunicación visual, Gustavo Gili)"
+    anio: 1968
+    nota: La diferencia fundamental entre el mensaje operativo unívoco (señal de tráfico, instrumento técnico) y el mensaje plurisignificativo o estético.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import AmbiguedadExp from '../../components/diseno-visual/experiencias/AmbiguedadExp.astro';
+
+<Paso id="idea" titular="Dos lecturas al mismo tiempo: obstáculo o hallazgo">
+
+<AmbiguedadExp paso="idea" />
+
+<p class="dv-frase">En un tablero de control la duda detiene la mano; en un cartel detiene la mirada para hacer pensar.</p>
+
+<div class="dv-texto">
+
+La *ambigüedad visual* aparece cada vez que una señal admite dos interpretaciones con casi la misma probabilidad: una etiqueta colocada exactamente a mitad de camino entre dos campos de texto, un botón de dos estados donde no sabemos cuál es el encendido, o una silueta que puede leerse a la vez como un libro y como una puerta.
+
+Que esa ambigüedad sea un defecto o una virtud depende por completo de la función de la pieza. Cuando alguien necesita operar una herramienta, leer un horario o confirmar un pago, toda ambigüedad es ruido que provoca errores. Cuando alguien contempla un cartel teatral, el logotipo de una editorial o la portada de un ensayo, fundir dos ideas en una misma forma produce un chispazo intelectual que ninguna explicación literal consigue.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Biestabilidad</dt>
+    <dd>El fenómeno por el cual un mismo estímulo visual oscila entre dos configuraciones igualmente verosímiles sin fijarse en ninguna.</dd>
+    <dt>Equívoco funcional</dt>
+    <dd>La ambigüedad involuntaria en una interfaz o señalización que impide saber qué está activo, qué va con qué o qué ocurrirá al pulsar.</dd>
+    <dt>Doble lectura (plurisignificación)</dt>
+    <dd>La construcción deliberada de una imagen o composición que articula dos significados complementarios en una sola figura.</dd>
+    <dt>Desambiguación</dt>
+    <dd>La adición de una señal redundante —como un signo «✓», una palabra junto al icono o un salto claro de distancia— que deshace un empate perceptivo.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="El costo de hacer dudar en un formulario">
+
+<div class="dv-texto">
+
+En la versión izquierda de este panel de publicación aparecen tres empates perceptivos frecuentes en interfaces cotidianas; en la derecha, cada uno se deshace sumando una señal que inclina la balanza hacia una sola lectura.
+
+</div>
+
+<AmbiguedadExp paso="miralo" />
+
+<div class="dv-texto">
+
+Fíjate en el primer control: cuando hay tres o cuatro pestañas y solo una es negra, se reconoce sin dudar cuál está activa. Pero cuando hay **solo dos** opciones («Borrador» y «Publicado»), el cambio de color no basta para distinguir cuál es el estado elegido. Sumar un signo de verificación (`✓`) o un verbo de estado despeja la duda.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Explora el umbral 50/50 en tres terrenos">
+
+<AmbiguedadExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres criterios para decidir cuándo desambiguar y cuándo jugar">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>En controles binarios (2 opciones), nunca confíes solo en el color</h3>
+      <p>Si un selector segmentado alterna entre dos únicos estados (Sí/No, Público/Privado, Mensual/Anual), añade siempre una segunda pista: un marcador «✓», un botón de radio, un riel deslizante con pulgar físico o una frase explícita que declare el estado activo.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Rompe los empates de distancia y los verbos contradictorios</h3>
+      <p>Nunca dejes un título, precio o mensaje de error a igual distancia de dos bloques vecinos. Y en las ventanas de confirmación, evita enfrentar «Cancelar» con «Aceptar» cuando la acción misma se llama «Cancelar suscripción»: usa verbos que nombren el efecto real («Mantener suscripción» / «Dar de baja»).</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Si buscas doble lectura en un cartel, despeja de dudas los datos prácticos</h3>
+      <p>Cuando construyas una imagen reversible o una metáfora visual para una portada o afiche, dale todo el protagonismo en el centro pero mantén la fecha, el lugar y el precio en una tipografía directa y sin ambigüedad.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<AmbiguedadExp paso="errores" />
+
+<div class="dv-texto">
+
+### La ambigüedad y su control en piezas reales
+
+</div>
+
+<AmbiguedadExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Detecta equívocos en interfaces y dobles lecturas en carteles">
+
+<AmbiguedadExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Munari, Zeki y por qué el número dos es el más ambiguo">
+
+<Seccion titulo="Mensajes unívocos frente a mensajes plurisignificativos">
+
+En *Diseño y comunicación visual* (1968), Bruno Munari propuso dividir los mensajes visuales según el margen de interpretación que admiten:
+
+- **En la comunicación casual o estética**, un estímulo puede sugerir múltiples asociaciones según la memoria de quien mira, como las nubes o una metáfora poética.
+- **En la comunicación práctica u operativa** —una señal de salida de emergencia, un manómetro, el tablero de un avión o un formulario de pago—, el objetivo del diseñador es reducir el ruido y la ambigüedad a **cero**: si cien personas miran la señal, las cien deben entender la misma instrucción en el primer vistazo.
+
+El problema surge cuando las herramientas operativas se diseñan con la vaguedad de un acertijo, o cuando un cartel cultural que debería despertar la imaginación se resuelve con la frialdad burocrática de un formulario.
+
+</Seccion>
+
+<Seccion titulo="La neurología de la ambigüedad según Semir Zeki">
+
+En su estudio *The neurology of ambiguity* (2004), el neurobiólogo Semir Zeki demostró que la ambigüedad en la percepción visual no es sinónimo de vaguedad ni de falta de definición. Al contrario: significa que el cerebro dispone de **dos o más certezas perceptivas igual de sólidas** que compiten por el mismo estímulo.
+
+En los casos de biestabilidad geométrica simple —como el cubo de Necker o la inversión [figura-fondo](/diseno-visual/figura-fondo) de Rubin—, los mecanismos de la corteza visual obligan a elegir una sola lectura cada vez, alternando entre una y otra cada pocos segundos. En cambio, en la ambigüedad superior del diseño gráfico y del arte (como los carteles de Shigeo Fukuda, Roman Cieślewicz o Noma Bar), esa oscilación conecta dos campos de significado distintos: el espectador reconoce que la llave *es* la ciudad y esa relación fija la imagen en la memoria.
+
+</Seccion>
+
+<Seccion titulo="Por qué los grupos de dos elementos son una trampa en diseño de interfaces">
+
+Existe una razón perceptual precisa por la que los selectores de **dos** pestañas fallan tanto mientras los de tres, cuatro o cinco pestañas se entienden a la primera.
+
+Cuando muestras cuatro botones (`Día`, `Semana`, `Mes`, `Año`), tres de ellos comparten el mismo aspecto tranquilo y uno solo difiere: la ley de [semejanza](/diseno-visual/semejanza) aísla al único elemento distinto (`1 contra 3`). Pero cuando muestras solo dos botones (`Día`, `Mes`), hay un elemento de cada tipo (`1 contra 1`): desaparece la mayoría que define cuál es el estilo «normal» de reposo y cuál es la «excepción» activa. Por eso todo selector binario exige una marca asimétrica adicional —un signo de verificación, un punto encendido o un texto de estado— para romper el empate.
+
+</Seccion>
+
+</Paso>

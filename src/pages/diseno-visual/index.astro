@@ -3,21 +3,22 @@ import DisenoVisual from '../../layouts/DisenoVisual.astro';
 import Glifo from '../../components/diseno-visual/Glifo.astro';
 import CartelAnatomia from '../../components/diseno-visual/CartelAnatomia.astro';
 import { territorios, modos, nombreModo } from '../../data/diseno-visual/territorios';
-import { conceptos, itemsDe, rutaConcepto } from '../../lib/diseno-visual/relaciones';
+import { conceptos, itemsDe, rutaConcepto, RUTA_INICIAL } from '../../lib/diseno-visual/relaciones';
 
 const todas = await conceptos();
 
 // Orden sugerido para quien empieza de cero. Cada paso usa lo anterior.
-const ruta = [
-  ['proximidad', 'Empieza por el espacio: descubre cómo la distancia entre elementos puede crear grupos.'],
-  ['semejanza', 'Explora cómo reconocer elementos relacionados por su apariencia y qué ocurre cuando la semejanza compite con la proximidad.'],
-  ['escalas-tipograficas', 'Descubre cómo las diferencias de tamaño organizan el orden de lectura.'],
-  ['reticulas-y-alineacion', 'Aprende a reconocer las líneas invisibles que dan estructura a una composición.'],
-  ['interaccion-del-color', 'Comprueba cómo cambia un color según su entorno y qué hace que un texto sea legible.'],
-  ['sistemas-y-excepciones', 'Reúne varias decisiones en un conjunto de reglas y descubre cómo una excepción puede cambiar su significado.'],
-].map(([slug, porque]) => ({ entrada: todas.find((c) => c.id === slug), porque }))
+const ruta = RUTA_INICIAL
+  .map(({ slug, porque }) => ({ entrada: todas.find((c) => c.id === slug), porque }))
   .filter((r) => r.entrada);
 const conEntrada = todas.length;
+const totalPrevistos = territorios.reduce(
+  (acc, t) => acc + itemsDe(t, todas).filter((it) => !it.entrada).length,
+  0,
+);
+const textoInicialResultado = totalPrevistos > 0
+  ? `${conEntrada === 1 ? 'Hay 1 concepto disponible' : `Hay ${conEntrada} conceptos disponibles`}. Los demás están en preparación.`
+  : `${conEntrada} conceptos en ${territorios.length} territorios.`;
 
 // Texto en el que busca el filtro: sin tildes ni mayúsculas.
 const plano = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
@@ -40,21 +41,19 @@ const descModo: Record<(typeof modos)[number], string> = {
     <h1>Anatomía del diseño visual</h1>
     <div class="dv-intro">
       <p>¿Qué cambia cuando acercas dos elementos, agrandas una palabra o alteras un color?</p>
-      <p>El diseño visual está hecho de decisiones que modifican cómo vemos, agrupamos y leemos lo que tenemos delante. En esta enciclopedia puedes experimentar con ellas: mover, comparar, desarmar composiciones y descubrir qué hace cada elemento.</p>
-      <p>Cada concepto es una invitación a probar, observar y sacar tus propias conclusiones. No se trata de memorizar reglas, sino de entender cómo funcionan, qué posibilidades abren y qué ocurre cuando las llevamos al límite.</p>
-      <p>Elige algo que te dé curiosidad y empieza a explorar.</p>
+      <p>El diseño visual está hecho de relaciones observables: distancias, proporciones, pesos y contrastes que organizan cómo vemos y leemos una superficie. En esta enciclopedia cada concepto se estudia con instrumentos manipulables para cambiar una variable a la vez y comprobar su efecto.</p>
     </div>
   </header>
 
   <section class="dv-puerta" aria-labelledby="puerta-titulo">
     <h2 id="puerta-titulo">Mira cómo se construye un cartel</h2>
-    <p>Un cartel reúne muchas decisiones en una sola composición. Selecciona cada número para descubrir una de ellas, ver qué efecto produce y explorar el concepto que hay detrás.</p>
+    <p>Un cartel reúne varias decisiones en una sola superficie. Selecciona cada número para ver dónde actúa cada principio y entrar a su estudio.</p>
     <CartelAnatomia />
   </section>
 
   <section class="dv-ruta" aria-labelledby="ruta-titulo">
     <h2 id="ruta-titulo">Una ruta para empezar</h2>
-    <p>Si todavía no sabes por dónde entrar, sigue esta ruta. Empieza por las relaciones más sencillas y avanza hacia decisiones que combinan varios conceptos.</p>
+    <p>Si empiezas de cero, recorre estas siete entradas en orden: cada una apoya la siguiente.</p>
     <ol>
       {ruta.map(({ entrada, porque }) => (
         <li>
@@ -67,9 +66,8 @@ const descModo: Record<(typeof modos)[number], string> = {
     </ol>
   </section>
 
-  <h2 class="dv-todos-titulo" id="todos">Explora todos los conceptos</h2>
-  <p class="dv-todos-intro">Cada entrada recorre seis momentos: <strong>La idea, Míralo, Pruébalo, Úsalo, Ponte a prueba y A fondo</strong>. Puedes entender el concepto, observarlo en acción, experimentar con sus variables y comprobar lo que descubriste.</p>
-  <p class="dv-todos-intro">Los instrumentos interactivos proponen cuatro maneras de explorar. Elige una para encontrar los conceptos que la ponen en práctica.</p>
+  <h2 class="dv-todos-titulo" id="todos">Todos los conceptos</h2>
+  <p class="dv-todos-intro">Cada entrada recorre seis pasos: <strong>La idea, Míralo, Pruébalo, Úsalo, Ponte a prueba y A fondo</strong>. Puedes leerlos en orden o ir directo al instrumento y a los ejercicios.</p>
   <h3 class="dv-leyenda-titulo">Cuatro maneras de explorar</h3>
   <dl class="dv-leyenda">
     {modos.map((m) => (
@@ -96,7 +94,7 @@ const descModo: Record<(typeof modos)[number], string> = {
       </div>
     </fieldset>
   </form>
-  <p class="dv-filtro-resultado" role="status" data-resultado>{conEntrada === 1 ? 'Hay 1 concepto disponible' : `Hay ${conEntrada} conceptos disponibles`}. Los demás están en preparación.</p>
+  <p class="dv-filtro-resultado" role="status" data-resultado>{textoInicialResultado}</p>
 
   {territorios.map((t, i) => {
     const items = itemsDe(t, todas);
@@ -122,7 +120,10 @@ const descModo: Record<(typeof modos)[number], string> = {
                   <a href={rutaConcepto(entrada!.id)}>
                     <Glifo slug={entrada!.id} />
                     <div>
-                      <h3>{entrada!.data.titulo} <span class="flecha" aria-hidden="true">→</span></h3>
+                      <div class="dv-concepto-cab-linea">
+                        <h3>{entrada!.data.titulo} <span class="flecha" aria-hidden="true">→</span></h3>
+                        <span class="hecho" data-hecho={entrada!.id}></span>
+                      </div>
                       <p class="resumen">{entrada!.data.resumen}</p>
                       <ul class="dv-modos" aria-label="Modos">
                         {entrada!.data.modos.map((m) => <li>{nombreModo[m]}</li>)}
@@ -196,5 +197,14 @@ const descModo: Record<(typeof modos)[number], string> = {
 
     form.addEventListener('input', filtrar);
     form.addEventListener('submit', (e) => e.preventDefault());
+
+    const modoUrl = new URLSearchParams(location.search).get('modo');
+    if (modoUrl) {
+      const radio = form.querySelector<HTMLInputElement>(`input[name="dv-modo"][value="${CSS.escape(modoUrl)}"]`);
+      if (radio) {
+        radio.checked = true;
+        filtrar();
+      }
+    }
   }
 </script>

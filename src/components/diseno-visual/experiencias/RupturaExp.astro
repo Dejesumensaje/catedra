@@ -1,0 +1,1021 @@
+---
+// Ruptura: transgresión localizada sobre un orden previo firme (Weingart, 2000;
+// Müller-Brockmann, 1981; Gombrich, 1979).
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'ruptura';
+
+const W = 360;
+const H = 280;
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const TX = '#444444';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Construye primero la norma.',
+    hacer: 'Pon «Firmeza del orden de fondo» en 100 % y «Magnitud de la ruptura» en 0 %.',
+    pista: 'Lleva el primer control al máximo y el segundo al mínimo.',
+    preparar: { rebeldes: 1 },
+    logro: 'Las seis tarjetas obedecen la misma retícula de tres columnas. Hay orden claro, pero ningún acontecimiento extraordinario interrumpe la pauta.',
+  },
+  {
+    titulo: 'Introduce una ruptura rotunda sobre el orden.',
+    hacer: 'Con el orden al 100 %, sube «Magnitud de la ruptura» por encima de 70 %.',
+    pista: 'Arrastra el segundo deslizador hacia la derecha.',
+    logro: 'Como las otras cinco piezas mantienen intacta la cuadrícula, la única pieza que la rompe cobra una fuerza magnética inmediata y se lee como una decisión deliberada.',
+  },
+  {
+    titulo: 'Destruye el orden de fondo y observa qué ocurre.',
+    hacer: 'Mantén la ruptura alta y baja «Firmeza del orden de fondo» a 20 % o menos.',
+    pista: 'Mueve el primer deslizador hacia la izquierda.',
+    logro: 'La pieza principal sigue teniendo exactamente el mismo giro o desborde, pero dejó de verse especial: cuando el fondo está desordenado, la ruptura se disuelve en confusión.',
+  },
+  {
+    titulo: 'Multiplica los elementos que rompen la regla.',
+    hacer: 'Devuelve «Firmeza del orden de fondo» a 100 % y sube «Piezas que rompen la regla» a 5.',
+    pista: 'Pon el primer deslizador al 100 % y el tercero en 5.',
+    logro: 'Si casi todas las piezas intentan ser la excepción, la excepción desaparece y la retícula pierde su capacidad de contraste.',
+  },
+  {
+    titulo: 'Prueba distintos modos de quebrar la retícula.',
+    hacer: 'Deja «Piezas que rompen la regla» en 1 y cambia «Tipo de ruptura» a «Invadir dos columnas» o «Salir a sangre».',
+    preparar: { orden: 100, magnitud: 85, rebeldes: 1 },
+    logro: 'No hace falta girar un elemento para romper la norma: cruzar una calle entre columnas o rebasar el margen exterior son rupturas igual de elocuentes.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres secuencias de doce barras: la primera con doce barras verticales paralelas; la segunda con doce barras cada una en un ángulo distinto; la tercera con once barras verticales estrictas y una sola que las cruza en diagonal.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      <!-- 1. Orden puro -->
+      <text x="102" y="28" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>1 · ORDEN PURO</text>
+      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+        <line x1={36 + i * 12} y1="48" x2={36 + i * 12} y2="124" stroke={T} stroke-width="3" />
+      ))}
+      <text x="102" y="152" text-anchor="middle" font-family={SANS} font-size="11" fill={TX}>Regularidad sin evento</text>
+
+      <line x1="202" y1="24" x2="202" y2="158" stroke="#e5e5e5" />
+
+      <!-- 2. Desorden general -->
+      <text x="300" y="28" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>2 · SIN NORMA PREVIA</text>
+      {[-28, 19, -42, 31, -14, 44, -35, 22, -18, 38, -26, 15].map((ang, i) => {
+        const cx = 234 + i * 12;
+        return (
+          <line
+            x1={cx}
+            y1="48"
+            x2={cx}
+            y2="124"
+            stroke={T}
+            stroke-width="3"
+            transform={`rotate(${ang} ${cx} 86)`}
+          />
+        );
+      })}
+      <text x="300" y="152" text-anchor="middle" font-family={SANS} font-size="11" fill={TX}>Ruido: nada destaca</text>
+
+      <line x1="398" y1="24" x2="398" y2="158" stroke="#e5e5e5" />
+
+      <!-- 3. Ruptura sobre norma -->
+      <text x="498" y="28" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>3 · RUPTURA INTENCIONAL</text>
+      <circle cx="510" cy="86" r="28" fill={AMARILLO} stroke={T} stroke-width="1.5" />
+      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11].map((i) => (
+        <line x1={432 + i * 12} y1="48" x2={432 + i * 12} y2="124" stroke={T} stroke-width="3" />
+      ))}
+      <line x1="540" y1="44" x2="540" y2="128" stroke={ROJO} stroke-width="4" transform="rotate(34 540 86)" />
+      <text x="498" y="152" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Once sostienen a la duodécima</text>
+    </svg>
+    <p>En la segunda y en la tercera escena hay barras inclinadas a 34°. ¿Por qué solo en la tercera esa barra inclinada parece un acontecimiento poderoso?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Porque en la tercera escena las otras once barras se mantuvieron firmes en su vertical. La fuerza de una <strong>ruptura</strong> no proviene del elemento rebelde por sí solo, sino de la disciplina del sistema que lo rodea: cuanto más clara es la regla previa, más elocuente resulta quebrarla en un punto exacto.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Todo roto a la vez: la excepción se vuelve confusión"
+      notas={[
+        {
+          ...pct(180, 56),
+          titulo: 'Cabecera y subtítulo desalineados',
+          texto: 'Incluso los datos de sección y fecha van torcidos. Al no existir ninguna referencia horizontal, el ojo pierde el suelo de la página.',
+          zona: zona(18, 16, 324, 72),
+        },
+        {
+          ...pct(180, 148),
+          titulo: 'Columnas que se pisan sin motivo',
+          texto: 'Los tres bloques del reportaje están girados en ángulos distintos y se tapan entre sí, dificultando leer cualquier párrafo.',
+          zona: zona(18, 94, 324, 112),
+        },
+        {
+          ...pct(264, 236),
+          titulo: 'Nada actúa como protagonista',
+          texto: 'Cuando cinco elementos rompen la retícula al mismo tiempo, ninguno se percibe como el centro expresivo del tema.',
+          zona: zona(22, 208, 316, 56),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Doble página sobre un sismo donde absolutamente todos los títulos, columnas de texto y recuadros están girados y desalineados.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <g transform="rotate(-4 180 40)">
+          <rect x="24" y="22" width="140" height="24" fill={T} />
+          <text x="32" y="38" font-family={SANS} font-size="11" font-weight="900" fill={AMARILLO}>ESPECIAL GEOLOGÍA</text>
+        </g>
+        <g transform="rotate(5 220 82)">
+          <text x="84" y="84" font-family={SANS} font-size="22" font-weight="900" fill={T}>FALLA ACTIVA</text>
+        </g>
+        <g transform="rotate(-6 92 150)">
+          <rect x="24" y="102" width="128" height="86" fill="#f3f3ef" stroke={T} stroke-width="1.5" />
+          <rect x="34" y="116" width="104" height="7" fill={TX} />
+          <rect x="34" y="130" width="96" height="7" fill={TX} />
+          <rect x="34" y="144" width="108" height="7" fill={TX} />
+          <rect x="34" y="158" width="84" height="7" fill={TX} />
+        </g>
+        <g transform="rotate(7 248 156)">
+          <rect x="172" y="106" width="156" height="88" fill={AMARILLO} stroke={T} stroke-width="2" />
+          <text x="184" y="134" font-family={SANS} font-size="13" font-weight="900" fill={T}>MAGNITUD 7,4</text>
+          <rect x="184" y="148" width="124" height="7" fill={T} />
+          <rect x="184" y="162" width="110" height="7" fill={T} />
+        </g>
+        <g transform="rotate(-3 180 236)">
+          <rect x="42" y="214" width="276" height="38" fill={T} />
+          <text x="180" y="238" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">INFORME DEL OBSERVATORIO SÍSMICO</text>
+        </g>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Retícula estricta de tres columnas y un único quiebre con sentido"
+      notas={[
+        {
+          ...pct(86, 118),
+          titulo: 'Retícula visible y rigurosa',
+          texto: 'La cabecera y las columnas de texto obedecen una estructura ortogonal impecable que establece la ley visual de la página.',
+          zona: zona(20, 20, 198, 238),
+        },
+        {
+          ...pct(266, 138),
+          titulo: 'La ruptura traduce el tema',
+          texto: 'Solo la tarjeta del sismo («Falla activa · 7,4») se desplaza y gira 8°, invadiendo la calle entre la segunda y la tercera columna como una placa tectónica.',
+          zona: zona(186, 82, 158, 116),
+        },
+        {
+          ...pct(180, 242),
+          titulo: 'Lectura informativa protegida',
+          texto: 'Los párrafos y el pie de página siguen siendo completamente legibles porque no participan en el giro.',
+          zona: zona(20, 214, 320, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma doble página con una retícula impecable de tres columnas donde únicamente la ficha de la falla sísmica quiebra el eje de la tercera columna.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <!-- Guías de 3 columnas -->
+        <line x1="24" y1="52" x2="336" y2="52" stroke={T} stroke-width="2" />
+        <text x="24" y="40" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1.2" fill={G}>ESPECIAL GEOLOGÍA · OBSERVATORIO</text>
+        <text x="336" y="40" text-anchor="end" font-family={SANS} font-size="10" font-weight="700" fill={G}>PÁG. 14</text>
+
+        <!-- Columna 1 -->
+        <text x="24" y="80" font-family={SERIF} font-size="16.5" font-weight="700" fill={T}>La fractura</text>
+        <text x="24" y="102" font-family={SERIF} font-size="16.5" font-weight="700" fill={T}>del subsuelo</text>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <rect x="24" y={120 + i * 13} width={i === 5 ? 64 : 92} height="6" fill={TX} />
+        ))}
+
+        <!-- Columna 2 -->
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+          <rect x="132" y={68 + i * 13} width={i === 7 ? 58 : 92} height="6" fill={TX} />
+        ))}
+
+        <!-- Columna 3 + Ruptura localizada -->
+        <g transform="rotate(-7 268 138)">
+          <rect x="196" y="86" width="136" height="102" fill={AMARILLO} stroke={T} stroke-width="2.5" />
+          <text x="210" y="108" font-family={SANS} font-size="9.5" font-weight="900" letter-spacing="0.8" fill={ROJO}>RUPTURA DE PLACA</text>
+          <text x="210" y="142" font-family={SANS} font-size="22" font-weight="900" fill={T}>7,4 Mw</text>
+          <text x="210" y="172" font-family={SANS} font-size="10.5" font-weight="700" fill={T}>Desplazamiento: 2,8 m</text>
+        </g>
+
+        <line x1="24" y1="224" x2="336" y2="224" stroke="#e5e5e5" stroke-width="1.5" />
+        <text x="24" y="246" font-family={SANS} font-size="10.5" fill={G}>Registro continuo de las estaciones de la cordillera central.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · la ley del orden previo y la excepción"
+    consigna="Comprueba cómo la eficacia de una ruptura depende tanto de su propia decisión como de la firmeza del orden que la rodea. Ajusta la regularidad de la retícula de fondo, la magnitud del quiebre y cuántas piezas desobedecen la norma."
+    nota="Fija en A el orden de fondo al 100 % con 1 pieza en ruptura al 80 %. Luego baja en B el orden de fondo al 15 % sin tocar la pieza principal: verás cómo el mismo gesto pasa de ser diseño intencional a parecer desorden."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Seis módulos en una retícula de tres por dos; cinco mantienen alineación estricta y uno rompe la columna con giro y acento amarillo.">
+      <rect width="640" height="320" fill="#fbfbf9" />
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const f = Math.floor(i / 3);
+        const c = i % 3;
+        const x = 56 + c * 184;
+        const y = 36 + f * 128;
+        const rot = i === 4 ? 'rotate(-8 320 214)' : undefined;
+        return (
+          <g transform={rot}>
+            <rect x={x} y={y} width="160" height="104" fill={i === 4 ? '#eeff41' : '#ffffff'} stroke="#222222" stroke-width={i === 4 ? 2.5 : 1.5} />
+            <rect x={x + 14} y={y + 18} width="64" height="7" fill="#6f6f6f" />
+            <rect x={x + 14} y={y + 36} width="120" height="12" fill="#222222" />
+            <rect x={x + 14} y={y + 60} width="96" height="7" fill="#444444" />
+          </g>
+        );
+      })}
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba en «Más controles» a mostrar las líneas de la retícula base para ver cómo operan los distintos tipos de ruptura." />
+
+    <Deslizador
+      lab={lab}
+      variable="orden"
+      etiqueta="Firmeza del orden de fondo"
+      min={0}
+      max={100}
+      paso={5}
+      valor={100}
+      unidad="%"
+      ayuda="100 %: las piezas normales obedecen una retícula estricta. 0 %: el entorno está desalineado."
+    />
+    <Deslizador
+      lab={lab}
+      variable="magnitud"
+      etiqueta="Magnitud de la ruptura"
+      min={0}
+      max={100}
+      paso={5}
+      valor={80}
+      unidad="%"
+      ayuda="1 %–20 %: ruptura tibia (parece un descuido). 65 %–100 %: ruptura franca e intencional."
+    />
+    <Deslizador
+      lab={lab}
+      variable="rebeldes"
+      etiqueta="Piezas que rompen la regla"
+      min={1}
+      max={6}
+      paso={1}
+      valor={1}
+      ayuda="Cuántos de los seis módulos abandonan la retícula al mismo tiempo."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="tipo"
+        etiqueta="Tipo de ruptura"
+        valor="giro"
+        opciones={[
+          { valor: 'giro', texto: 'Rotar el eje' },
+          { valor: 'invadir', texto: 'Invadir dos columnas' },
+          { valor: 'sangre', texto: 'Salir por el margen' },
+        ]}
+        ayuda="Explora tres maneras clásicas de interrumpir la pauta modular."
+      />
+      <Interruptor
+        lab={lab}
+        variable="guias"
+        etiqueta="Mostrar las guías de la retícula base"
+        activo={true}
+        ayuda="Dibuja las calles y márgenes que definen la norma ortogonal de la página."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"orden":100,"magnitud":85,"rebeldes":1,"tipo":"giro"}'>Ruptura limpia sobre retícula firme</button>
+      <button type="button" class="dv-boton" data-preset='{"orden":100,"magnitud":90,"rebeldes":1,"tipo":"invadir"}'>Invadir la calle entre dos columnas</button>
+      <button type="button" class="dv-boton" data-preset='{"orden":100,"magnitud":15,"rebeldes":1,"tipo":"giro"}'>Error: ruptura tibia (15 %) que parece descuido</button>
+      <button type="button" class="dv-boton" data-preset='{"orden":15,"magnitud":85,"rebeldes":4,"tipo":"giro"}'>Error: ruptura sin orden previo</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="1 · Sal de la ruptura tibia: o alineas del todo o rompes con decisión"
+      comparar={false}
+      consigna="Esta tarjeta sobresale apenas 3 px respecto a la columna de texto. Quien la mira no sabe si quisiste destacarla o si se te movió el ratón al maquetar. Lleva el desborde a 0 px o supéralo por encima de 24 px."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Cita destacada del capítulo</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="desborde"
+        etiqueta="Desborde izquierdo respecto a la columna"
+        min={0}
+        max={44}
+        paso={1}
+        valor={3}
+        unidad="px"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="2 · Ordena los elementos vecinos antes de romper la retícula"
+      comparar={false}
+      consigna="La pieza amarilla intenta romper el esquema, pero como las otras tres fichas están desalineadas, todo el conjunto se ve caótico. Alinea las fichas vecinas para que la excepción cobre fuerza."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:700;">Cuatro módulos del programa</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e2`}
+        variable="regularidad"
+        etiqueta="Alineación de los módulos vecinos"
+        min={0}
+        max={100}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="3 · Reserva la ruptura para el elemento que realmente cambia el sentido"
+      comparar={false}
+      consigna="En este cartel de teatro, quien rompe la retícula es el aviso legal del patrocinador en lugar del título de la obra («Antígona»). Pasa la ruptura al elemento que la merece."
+    >
+      <div slot="escenario" style="padding:16px 18px;font-family:Roboto,Helvetica,Arial,sans-serif;color:#222;">
+        <p style="margin:0;font-weight:900;">ANTÍGONA · TEATRO EXPERIMENTAL</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="quien"
+        etiqueta="Elemento que rompe la cuadrícula"
+        valor="legal"
+        opciones={[
+          { valor: 'legal', texto: 'El código de registro legal' },
+          { valor: 'obra', texto: 'El título «Antígona»' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Tipografía de Basilea (Wolfgang Weingart): quiebre sobre estructura suiza"
+      notas={[
+        {
+          ...pct(180, 62),
+          titulo: 'Andamiaje ortogonal riguroso',
+          texto: 'Los filetes horizontales y los bloques de fecha construyen primero una jaula geométrica estricta y reconocible.',
+          zona: zona(22, 20, 316, 72),
+        },
+        {
+          ...pct(184, 152),
+          titulo: 'Palabra escalonada y cortada',
+          texto: 'El título central se parte en dos niveles y cruza el filete grueso en diagonal, poniendo en tensión la rigidez del marco.',
+          zona: zona(48, 102, 264, 96),
+        },
+        {
+          ...pct(180, 238),
+          titulo: 'Cierre de nuevo en la retícula',
+          texto: 'La base recupera la horizontal exacta para que el espectador mida el ángulo de la ruptura contra una línea fija.',
+          zona: zona(22, 208, 316, 52),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel inspirado en Wolfgang Weingart donde una estructura de filetes horizontales suizos es quebrada en el centro por un bloque tipográfico escalonado y girado.">
+        <rect width={W} height={H} fill="#f6f5f0" />
+        <line x1="24" y1="32" x2="336" y2="32" stroke={T} stroke-width="4" />
+        <text x="24" y="54" font-family={SANS} font-size="10.5" font-weight="900" letter-spacing="2" fill={T}>KUNSTGEWERBEMUSEUM</text>
+        <text x="336" y="54" text-anchor="end" font-family={SANS} font-size="10.5" font-weight="700" fill={G}>BASEL · 1976</text>
+        <line x1="24" y1="68" x2="336" y2="68" stroke={T} stroke-width="1.5" />
+
+        <rect x="44" y="106" width="272" height="88" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <g transform="rotate(-9 180 140)">
+          <rect x="58" y="110" width="244" height="42" fill={T} />
+          <text x="72" y="138" font-family={SANS} font-size="22" font-weight="900" letter-spacing="3" fill={AMARILLO}>TYPOGRAPHIE</text>
+        </g>
+        <rect x="192" y="162" width="128" height="26" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="256" y="179" text-anchor="middle" font-family={SANS} font-size="10.5" font-weight="900" fill={T}>EXPERIMENTO 04</text>
+
+        <line x1="24" y1="214" x2="336" y2="214" stroke={T} stroke-width="4" />
+        <text x="24" y="238" font-family={SANS} font-size="11" font-weight="700" fill={T}>SALA DE EXPOSICIONES · MARTES A DOMINGO</text>
+        <text x="24" y="254" font-family={SANS} font-size="10" fill={G}>Catálogo impreso en prensa plana de taller</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Diseño editorial: cita destacada que cabalga entre dos columnas"
+      notas={[
+        {
+          ...pct(92, 136),
+          titulo: 'Dos columnas de lectura continua',
+          texto: 'El artículo fluye en dos columnas simétricas separadas por un medianil limpio de 20 px.',
+          zona: zona(24, 48, 312, 198),
+        },
+        {
+          ...pct(180, 146),
+          titulo: 'Interrupción deliberada del medianil',
+          texto: 'La cita destacada (*pull quote*) invade el centro de ambas columnas con un marco blanco y filetes gruesos, deteniendo la mirada.',
+          zona: zona(86, 104, 188, 84),
+        },
+        {
+          ...pct(274, 218),
+          titulo: 'Proporción controlada',
+          texto: 'El bloque que rompe la calle ocupa menos del 25 % de la altura para no destruir la estructura de las dos columnas.',
+          zona: zona(190, 192, 146, 54),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página de revista a dos columnas con una cita destacada en el centro que puentea y rompe la calle entre ambas columnas.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <text x="28" y="36" font-family={SANS} font-size="9.5" font-weight="700" letter-spacing="1.2" fill={G}>ENSAYO · EL SENTIDO DEL ORDEN</text>
+        <line x1="28" y1="46" x2="332" y2="46" stroke="#e5e5e5" />
+
+        <!-- Columna izquierda -->
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          <rect x="28" y={62 + i * 15} width={i >= 3 && i <= 7 ? 48 : 142} height="6.5" fill={TX} />
+        ))}
+
+        <!-- Columna derecha -->
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+          <rect x={i >= 3 && i <= 7 ? 284 : 190} y={62 + i * 15} width={i >= 3 && i <= 7 ? 48 : 142} height="6.5" fill={TX} />
+        ))}
+
+        <!-- Pull quote que rompe el medianil -->
+        <rect x="86" y="102" width="188" height="82" fill={AMARILLO} stroke={T} stroke-width="2" />
+        <text x="180" y="130" text-anchor="middle" font-family={SERIF} font-size="13" font-weight="700" font-style="italic" fill={T}>«Sin pauta regular previa,</text>
+        <text x="180" y="148" text-anchor="middle" font-family={SERIF} font-size="13" font-weight="700" font-style="italic" fill={T}>ninguna anomalía puede</text>
+        <text x="180" y="166" text-anchor="middle" font-family={SERIF} font-size="13" font-weight="700" font-style="italic" fill={T}>comunicar sorpresa.»</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Interfaz web: tarjeta destacada que rompe el alineamiento superior"
+      notas={[
+        {
+          ...pct(68, 152),
+          titulo: 'Fila base nivelada',
+          texto: 'Las tarjetas laterales comparten exactamente la misma línea superior e inferior, estableciendo el horizonte de la sección.',
+          zona: zona(18, 78, 102, 168),
+        },
+        {
+          ...pct(180, 56),
+          titulo: 'Desborde vertical de 22 px',
+          texto: 'La tarjeta central rebasa por arriba la línea de sus vecinas y añade sombra dura, rompiendo la fila sin perder el ancho de columna.',
+          zona: zona(126, 44, 108, 206),
+        },
+        {
+          ...pct(180, 214),
+          titulo: 'Alineación interna conservada',
+          texto: 'Aunque la caja central sobresale en vertical, sus textos y su botón siguen la misma escala tipográfica del sistema.',
+          zona: zona(132, 178, 96, 62),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Tres tarjetas de suscripción en fila donde las dos laterales comparten línea superior y la central sobresale 22 px hacia arriba.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <line x1="16" y1="78" x2="344" y2="78" stroke={ROJO} stroke-dasharray="3 3" />
+
+        <!-- Lateral 1 -->
+        <rect x="22" y="78" width="96" height="162" fill="#ffffff" stroke="#cfcfc8" stroke-width="1.5" />
+        <text x="34" y="102" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>ESTUDIANTE</text>
+        <text x="34" y="132" font-family={SANS} font-size="20" font-weight="900" fill={T}>8 €</text>
+        <rect x="34" y="152" width="72" height="6" fill={TX} />
+        <rect x="34" y="166" width="58" height="6" fill={TX} />
+        <rect x="34" y="204" width="72" height="22" fill="none" stroke={T} stroke-width="1.5" />
+
+        <!-- Central que rompe el borde superior -->
+        <rect x="132" y="52" width="96" height="196" fill={T} stroke={T} stroke-width="2" />
+        <rect x="142" y="64" width="76" height="16" fill={AMARILLO} />
+        <text x="180" y="75" text-anchor="middle" font-family={SANS} font-size="8.5" font-weight="900" fill={T}>TALLER COMPLETO</text>
+        <text x="144" y="114" font-family={SANS} font-size="24" font-weight="900" fill="#ffffff">19 €</text>
+        <rect x="144" y="136" width="72" height="6" fill="#d4d4d0" />
+        <rect x="144" y="150" width="64" height="6" fill="#d4d4d0" />
+        <rect x="144" y="164" width="72" height="6" fill="#d4d4d0" />
+        <rect x="144" y="208" width="72" height="26" fill={AMARILLO} />
+        <text x="180" y="224" text-anchor="middle" font-family={SANS} font-size="9.5" font-weight="900" fill={T}>INSCRIBIRSE</text>
+
+        <!-- Lateral 3 -->
+        <rect x="242" y="78" width="96" height="162" fill="#ffffff" stroke="#cfcfc8" stroke-width="1.5" />
+        <text x="254" y="102" font-family={SANS} font-size="9.5" font-weight="700" fill={G}>INSTITUCIONAL</text>
+        <text x="254" y="132" font-family={SANS} font-size="20" font-weight="900" fill={T}>45 €</text>
+        <rect x="254" y="152" width="72" height="6" fill={TX} />
+        <rect x="254" y="166" width="62" height="6" fill={TX} />
+        <rect x="254" y="204" width="72" height="22" fill="none" stroke={T} stroke-width="1.5" />
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas para distinguir entre una ruptura expresiva respaldada por una retícula y un desorden o descuido tibio."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const SERIF = "'PT Serif', Georgia, serif";
+
+  type E = {
+    orden: number;
+    magnitud: number;
+    rebeldes: number;
+    tipo: string;
+    guias: boolean;
+  };
+
+  const TINTA = '#222222';
+  const TEXTO = '#444444';
+  const GRIS = '#6f6f6f';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  const DESORDEN_BASE: [number, number, number][] = [
+    [-12, 8, -5],
+    [14, -10, 6],
+    [-8, 12, -7],
+    [10, -8, 4],
+    [0, 0, 0],
+    [-14, -9, 8],
+  ];
+
+  const ORDEN_REBELDES = [4, 1, 5, 0, 2, 3];
+
+  function calcularClaridad(e: E) {
+    const kOrden = e.orden / 100;
+    const kMag = e.magnitud / 100;
+    const tibia = e.magnitud > 0 && e.magnitud < 28;
+    const excesoRebeldes = e.rebeldes >= 3;
+    // Índice de eficacia de la ruptura (0 a 100)
+    const penalizacionRebeldes = 1 / (1 + (e.rebeldes - 1) * 0.55);
+    const eficacia = Math.round(kOrden * kMag * penalizacionRebeldes * 100);
+    return { eficacia, tibia, excesoRebeldes };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 310;
+    const { eficacia, tibia } = calcularClaridad(e);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Retícula de seis módulos con orden de fondo al ${e.orden} %, magnitud de ruptura al ${e.magnitud} % y ${e.rebeldes} piezas rompiendo la norma.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const padX = W < 460 ? 20 : 44;
+    const padY = 26;
+    const gapX = W < 460 ? 12 : 20;
+    const gapY = 18;
+    const cw = (W - padX * 2 - gapX * 2) / 3;
+    const ch = (H - padY * 2 - gapY - 26) / 2;
+
+    if (e.guias) {
+      for (let c = 0; c < 3; c++) {
+        const gx = padX + c * (cw + gapX);
+        raiz.append(
+          svg('rect', {
+            x: gx,
+            y: padY,
+            width: cw,
+            height: ch * 2 + gapY,
+            fill: 'none',
+            stroke: '#deded6',
+            'stroke-dasharray': '4 3',
+          }),
+        );
+      }
+    }
+
+    const setRebeldes = new Set(ORDEN_REBELDES.slice(0, e.rebeldes));
+    const caos = (100 - e.orden) / 100;
+    const kMag = e.magnitud / 100;
+
+    // Pintar primero los normales y luego los rebeldes
+    const indices = [0, 1, 2, 3, 4, 5].sort((a, b) => (setRebeldes.has(a) ? 1 : setRebeldes.has(b) ? -1 : 0));
+
+    for (const i of indices) {
+      const f = Math.floor(i / 3);
+      const c = i % 3;
+      const esRebelde = setRebeldes.has(i) && e.magnitud > 0;
+
+      let x = padX + c * (cw + gapX);
+      let y = padY + f * (ch + gapY);
+      let w = cw;
+      let h = ch;
+      let ang = 0;
+
+      if (!esRebelde && caos > 0) {
+        const [dx, dy, da] = DESORDEN_BASE[i];
+        x += dx * caos * 1.4;
+        y += dy * caos * 1.4;
+        ang = da * caos * 1.6;
+      }
+
+      if (esRebelde) {
+        const dir = i % 2 === 0 ? -1 : 1;
+        if (e.tipo === 'giro') {
+          ang = dir * kMag * 12;
+          x += dir * kMag * 8;
+          y -= kMag * 10;
+        } else if (e.tipo === 'invadir') {
+          const extraW = kMag * (gapX + cw * 0.42);
+          if (c > 0) x -= extraW;
+          w += extraW;
+          y -= kMag * 8;
+        } else if (e.tipo === 'sangre') {
+          x += (c === 0 ? -1 : 1) * kMag * (padX + 18);
+          y += (f === 0 ? -1 : 1) * kMag * 18;
+        }
+      }
+
+      const g = svg('g');
+      if (ang !== 0) {
+        g.setAttribute('transform', `rotate(${ang.toFixed(1)} ${x + w / 2} ${y + h / 2})`);
+      }
+
+      g.append(
+        svg('rect', {
+          x,
+          y,
+          width: w,
+          height: h,
+          fill: esRebelde ? (tibia ? '#f8f9d6' : AMARILLO) : '#ffffff',
+          stroke: esRebelde && tibia ? COTA : TINTA,
+          'stroke-width': esRebelde ? 2.4 : 1.4,
+        }),
+      );
+
+      const tTag = svg('text', {
+        x: x + 12,
+        y: y + 20,
+        'font-family': SANS,
+        'font-size': 9.5,
+        'font-weight': 700,
+        fill: esRebelde ? TINTA : GRIS,
+      });
+      tTag.textContent = esRebelde ? `EXCEPCIÓN · 0${i + 1}` : `MÓDULO · 0${i + 1}`;
+      g.append(tTag);
+
+      g.append(
+        svg('rect', {
+          x: x + 12,
+          y: y + 32,
+          width: Math.max(40, w - 28),
+          height: 11,
+          fill: TINTA,
+        }),
+      );
+      g.append(
+        svg('rect', {
+          x: x + 12,
+          y: y + 52,
+          width: Math.max(30, (w - 28) * 0.72),
+          height: 6.5,
+          fill: TEXTO,
+        }),
+      );
+
+      raiz.append(g);
+    }
+
+    const pie = svg('text', {
+      x: padX,
+      y: H - 10,
+      'font-family': SANS,
+      'font-size': 10.5,
+      'font-weight': 700,
+      fill: eficacia >= 55 && !tibia ? TINTA : COTA,
+    });
+    pie.textContent = `CONTRASTE NORMA / RUPTURA: ${eficacia} %`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { eficacia, tibia, excesoRebeldes } = calcularClaridad(e);
+
+    if (e.magnitud === 0) {
+      return e.orden >= 80
+        ? 'Sin ruptura: las seis piezas obedecen la retícula con regularidad perfecta.'
+        : `No hay ruptura elegida y además el fondo solo tiene <b class="dv-cifra">${e.orden} % de orden</b>: la página se ve desalineada sin propósito.`;
+    }
+
+    if (tibia) {
+      return `Ruptura tibia (<b class="dv-cifra">${e.magnitud} %</b>): la desviación respecto a la columna es tan pequeña que parece un fallo al alinear la caja. Sube la magnitud por encima de 60 % o devuélvela a 0 %.`;
+    }
+
+    if (e.orden < 55) {
+      return `El orden de fondo cayó a <b class="dv-cifra">${e.orden} %</b>: cuando los módulos vecinos están torcidos, la ruptura pierde su marco de referencia y todo se lee como desorden (eficacia: <b class="dv-cifra">${n(eficacia, 0)} %</b>).`;
+    }
+
+    if (excesoRebeldes) {
+      return `Hay <b class="dv-cifra">${e.rebeldes} de 6 piezas</b> rompiendo la retícula a la vez. Cuando la excepción se vuelve mayoría, deja de ser una ruptura y destruye la norma.`;
+    }
+
+    return `Ruptura intencional clara (<b class="dv-cifra">${n(eficacia, 0)} % de contraste</b>): la firmeza del orden de fondo (${e.orden} %) multiplica el impacto de la excepción.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="ruptura"]')) {
+    guiar<E>(raiz, [
+      (e) => e.orden === 100 && e.magnitud === 0,
+      (e) => e.orden >= 90 && e.magnitud >= 70 && e.rebeldes === 1,
+      (e) => e.orden <= 20 && e.magnitud >= 50,
+      (e) => e.orden >= 90 && e.rebeldes >= 5,
+      (e) => e.rebeldes === 1 && (e.tipo === 'invadir' || e.tipo === 'sangre') && e.magnitud >= 60,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────────────────
+  type E1 = { desborde: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const tibia = e.desborde >= 1 && e.desborde <= 12;
+    d.innerHTML = `
+      <div style="padding:16px 18px 16px 52px;background:#fbfbf9;font-family:${SERIF};font-size:12.5px;color:#444;position:relative;">
+        <div style="border-left:2px dashed #ccc;padding-left:14px;">
+          <p style="margin:0 0 8px;">La retícula define el margen izquierdo constante de toda la columna.</p>
+          <div style="margin:8px 0 8px ${-e.desborde}px;padding:8px 12px;background:${e.desborde >= 20 ? AMARILLO : '#fff'};border:2px solid ${tibia ? COTA : '#222'};font-family:${SANS};font-weight:700;color:#222;">
+            «Romper una regla exige que el gesto sea inequívoco.»
+          </div>
+          <p style="margin:0;">El texto posterior retoma exactamente el hilo vertical de la columna.</p>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.desborde === 0) return '<b class="dv-cifra">0 px (alineado)</b>: la cita respeta el borde de la columna sin intentar romperlo.';
+    if (e.desborde <= 12) return `Con solo <b class="dv-cifra">${e.desborde} px</b> de salida, parece un descuido de maquetación.`;
+    return `<b class="dv-cifra">Ruptura franca (-${e.desborde} px)</b>: la cita invade el margen con una intención imposible de dudar.`;
+  }
+
+  type E2 = { regularidad: number };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const k = (100 - e.regularidad) / 100;
+    const giros = [-9 * k, 7 * k, -6 * k];
+    d.innerHTML = `
+      <div style="padding:18px;background:#fbfbf9;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-family:${SANS};">
+        <div style="transform:rotate(${giros[0]}deg);padding:10px 8px;background:#fff;border:1.5px solid #222;font-size:11px;font-weight:700;color:#222;">01 · Base</div>
+        <div style="transform:rotate(${giros[1]}deg);padding:10px 8px;background:#fff;border:1.5px solid #222;font-size:11px;font-weight:700;color:#222;">02 · Ejes</div>
+        <div style="transform:rotate(-10deg) translateY(-4px);padding:10px 8px;background:#eeff41;border:2px solid #222;font-size:11px;font-weight:900;color:#222;">03 · GIRO</div>
+        <div style="transform:rotate(${giros[2]}deg);padding:10px 8px;background:#fff;border:1.5px solid #222;font-size:11px;font-weight:700;color:#222;">04 · Cierre</div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.regularidad < 50) return `Al <b class="dv-cifra">${e.regularidad} %</b> de alineación vecina, las cuatro fichas están torcidas y la tercera no destaca.`;
+    if (e.regularidad < 90) return 'Los vecinos empiezan a enderezarse y la pieza 03 gana contraste.';
+    return `<b class="dv-cifra">Norma al ${e.regularidad} %</b>: cuando 01, 02 y 04 son estrictas, el giro de 03 cobra toda su fuerza.`;
+  }
+
+  type E3 = { quien: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const esObra = e.quien === 'obra';
+    d.innerHTML = `
+      <div style="padding:16px 18px;background:#fff;border:1.5px solid #ddd;font-family:${SANS};color:#222;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#6f6f6f;border-bottom:1px solid #e5e5e5;padding-bottom:6px;margin-bottom:10px;">
+          <span>TEMPORADA DE OTOÑO</span>
+          <span>SALA PRINCIPAL</span>
+        </div>
+        <div style="${esObra ? 'transform:rotate(-4deg);background:#eeff41;border:2px solid #222;padding:8px 12px;display:inline-block;margin-bottom:10px;' : 'margin-bottom:10px;'}">
+          <strong style="font-size:20px;font-weight:900;color:#222;">ANTÍGONA</strong>
+        </div>
+        <div style="${!esObra ? 'transform:rotate(-5deg);background:#eeff41;border:2px solid #222;padding:6px 10px;display:inline-block;' : 'font-size:10px;color:#6f6f6f;'}">
+          <span style="font-size:10.5px;font-weight:700;color:#222;">Expediente administrativo #409-B · Exento</span>
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.quien === 'legal') return 'Romper la retícula en el <b class="dv-cifra">código administrativo</b> es una ruptura gratuita que desvía la atención hacia un dato irrelevante.';
+    return '<b class="dv-cifra">Motivación semántica</b>: la ruptura recae sobre «Antígona», el centro dramático del cartel.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    ['ruptura-e1', pintarE1 as never, describirE1 as never],
+    ['ruptura-e2', pintarE2 as never, describirE2 as never],
+    ['ruptura-e3', pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, d] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: d });
+    }
+  }
+
+  // ── Juego (5 rondas) ──────────────────────────────────────────────
+  function rondaNormaPrevia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Siete tarjetas alineadas en cuadrícula estricta y una octava que rompe el ángulo con claridad',
+        describir: 'Siete cajas derechas y una caja amarilla girada.',
+        es: true,
+        html: `<div class="jg-rup-grid">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span class="jg-rup-foco"></span><span></span><span></span>
+        </div>`,
+      },
+      {
+        texto: 'Ocho tarjetas giradas todas en ángulos distintos sin ninguna cuadrícula compartida',
+        describir: 'Ocho cajas desordenadas en ángulos distintos.',
+        es: false,
+        html: `<div class="jg-rup-grid jg-rup-caos">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span class="jg-rup-foco"></span><span></span><span></span>
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿En cuál de las dos composiciones la pieza amarilla produce una verdadera ruptura visual?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => { d.innerHTML = o.html; },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La ruptura existe únicamente por contraste con una regularidad previa. Si todos los módulos están girados, el giro deja de ser una excepción.',
+      repaso: 'Necesidad del orden previo',
+    };
+  }
+
+  function rondaRupturaTibia(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Una fotografía que rebasa el borde de su columna en 36 px e invade con decisión el margen blanco',
+        es: true,
+      },
+      {
+        texto: 'Una fotografía que sobresale 2 px de su columna respecto al párrafo superior',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de estas dos salidas de columna se lee como una decisión de diseño y no como un descuido?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Un desfase de 2 px cae dentro del umbral de error de maquetación. Para que romper la columna funcione, el salto debe superar con holgura la zona de duda.',
+      repaso: 'Evitar la ruptura tibia',
+    };
+  }
+
+  function rondaMotivacionSemantica(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'En la alerta extraordinaria o en el titular que anuncia un cambio de rumbo',
+        es: true,
+      },
+      {
+        texto: 'En el enlace a los términos de privacidad del pie de página',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Como explicaba Josef Müller-Brockmann (1981), ¿dónde está justificado interrumpir la retícula de una publicación?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Romper la pauta estructural reclama la máxima atención del lector; por eso debe reservarse para un contenido que realmente represente una excepción o acontecimiento especial.',
+      repaso: 'Motivación semántica de la ruptura',
+    };
+  }
+
+  function rondaGombrich(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Porque nuestro sistema visual construye rápido una predicción a partir de la pauta repetida y dispara una alerta cuando algo la contradice',
+        es: true,
+      },
+      {
+        texto: 'Porque el ojo humano solo es capaz de ver formas inclinadas y es ciego a las líneas verticales',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según Ernst H. Gombrich (*The Sense of Order*, 1979), ¿por qué detectamos tan rápido una interrupción en un patrón regular?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Gombrich mostró que percibir el orden consiste en proyectar expectativas de continuidad: cuanto más predecible es la serie, más salta a la vista cualquier quiebre.',
+      repaso: 'Detector de regularidades',
+    };
+  }
+
+  function rondaAjustarOrden(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'La tarjeta destacada («ESTRENO») ya tiene un giro expresivo, pero no destaca porque las cinco tarjetas vecinas están desordenadas. Aumenta el orden del entorno hasta que la ruptura funcione.',
+      control: {
+        etiqueta: 'Orden de las tarjetas vecinas',
+        min: 0,
+        max: 100,
+        paso: 5,
+        valor: 10,
+        unidad: '%',
+      },
+      pintar: (c, v) => {
+        const caos = (100 - v) / 100;
+        const angs = [-12, 9, -8, 11, -10].map((a) => (a * caos).toFixed(1));
+        c.innerHTML = `<div style="padding:16px;background:#fbfbf9;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-family:${SANS};">
+          <div style="transform:rotate(${angs[0]}deg);padding:8px;background:#fff;border:1.5px solid #222;font-size:10.5px;color:#444;">Ciclo 01</div>
+          <div style="transform:rotate(${angs[1]}deg);padding:8px;background:#fff;border:1.5px solid #222;font-size:10.5px;color:#444;">Ciclo 02</div>
+          <div style="transform:rotate(-9deg) scale(1.04);padding:8px;background:#eeff41;border:2px solid #222;font-size:11px;font-weight:900;color:#222;">ESTRENO</div>
+          <div style="transform:rotate(${angs[2]}deg);padding:8px;background:#fff;border:1.5px solid #222;font-size:10.5px;color:#444;">Ciclo 04</div>
+          <div style="transform:rotate(${angs[3]}deg);padding:8px;background:#fff;border:1.5px solid #222;font-size:10.5px;color:#444;">Ciclo 05</div>
+          <div style="transform:rotate(${angs[4]}deg);padding:8px;background:#fff;border:1.5px solid #222;font-size:10.5px;color:#444;">Ciclo 06</div>
+        </div>`;
+      },
+      cumple: (v) => v >= 80,
+      falta: (v) => `Con el entorno al ${v} % de orden, las tarjetas vecinas siguen distrayendo. Sube el orden a 80 % o más.`,
+      porque: 'Sin cambiar nada en la tarjeta «ESTRENO», alinear las cinco tarjetas vecinas basta para que su giro se lea como una ruptura deliberada.',
+      repaso: 'Construir la norma antes de romperla',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-juego="ruptura"]');
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaNormaPrevia(),
+        rondaRupturaTibia(),
+        rondaMotivacionSemantica(),
+        rondaGombrich(),
+        rondaAjustarOrden(),
+      ]),
+    );
+  }
+</script>
+
+<style is:global>
+  .jg-rup-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.45rem;
+    padding: 0.75rem;
+    background: #fafaf7;
+    border: 1px solid #e0e0d8;
+  }
+
+  .jg-rup-grid span {
+    height: 1.9rem;
+    background: #fff;
+    border: 1.5px solid #222;
+    display: block;
+  }
+
+  .jg-rup-grid .jg-rup-foco {
+    background: #eeff41;
+    border-width: 2px;
+    transform: rotate(-11deg);
+  }
+
+  .jg-rup-caos span:nth-child(1) { transform: rotate(9deg); }
+  .jg-rup-caos span:nth-child(2) { transform: rotate(-12deg); }
+  .jg-rup-caos span:nth-child(3) { transform: rotate(7deg); }
+  .jg-rup-caos span:nth-child(4) { transform: rotate(-8deg); }
+  .jg-rup-caos span:nth-child(5) { transform: rotate(11deg); }
+  .jg-rup-caos span:nth-child(7) { transform: rotate(-10deg); }
+  .jg-rup-caos span:nth-child(8) { transform: rotate(8deg); }
+</style>

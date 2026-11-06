@@ -1,0 +1,174 @@
+---
+titulo: Equilibrio
+territorio: composicion
+pregunta: ¿Cómo logras que una página no parezca volcarse hacia un lado cuando sus elementos no están centrados?
+resumen: "El equilibrio visual es el reparto de pesos perceptuales sobre una superficie. Funciona como una balanza: un elemento grande y claro cerca del centro se compensa con un elemento pequeño, oscuro o saturado más cerca del borde."
+modos: [laboratorio, comparacion]
+orden: 26
+relaciones:
+  - concepto: asimetria
+    porQue: La asimetría es la forma más viva de alcanzar el equilibrio enfrentando piezas distintas a distancias distintas del centro.
+  - concepto: proporcion
+    porQue: Cuando una partición desigual da dos tercios del espacio a un bloque, el tercio restante necesita ajustar su peso visual para sostener el plano.
+  - concepto: enfasis
+    porQue: Crear un punto focal de alto contraste aumenta de inmediato el peso de esa zona y desplaza el centro de gravedad de la página.
+  - concepto: espacio-negativo
+    porQue: "Una superficie despejada no pesa cero: el vacío que rodea a un elemento aislado en el extremo opuesto actúa como brazo de palanca."
+  - concepto: tension
+    porQue: Cuando el peso visual se desplaza deliberadamente hacia un borde sin compensarse del todo, el equilibrio cede paso a la tensión.
+fuentes:
+  - autor: Rudolf Arnheim
+    obra: "Art and Visual Perception: A Psychology of the Creative Eye. University of California Press"
+    anio: 1974
+    nota: Capítulo 1 («Balance»), sobre la estructura oculta de fuerzas del marco y los factores que determinan el peso y la dirección visual.
+  - autor: Rudolf Arnheim
+    obra: "The Power of the Center: A Study of Composition in the Visual Arts. University of California Press"
+    anio: 1982
+    nota: Interacción entre el centro geométrico del formato y los centros de gravedad locales de cada figura.
+  - autor: György Kepes
+    obra: "Language of Vision. Paul Theobald"
+    anio: 1944
+    nota: Equilibrio dinámico de fuerzas ópticas sobre el plano plástico.
+---
+
+import Paso from '../../components/diseno-visual/Paso.astro';
+import Seccion from '../../components/diseno-visual/Seccion.astro';
+import EquilibrioExp from '../../components/diseno-visual/experiencias/EquilibrioExp.astro';
+
+<Paso id="idea" titular="Una balanza que pesa tamaño, contraste y distancia">
+
+<EquilibrioExp paso="idea" />
+
+<p class="dv-frase">Un punto pequeño y oscuro lejos del centro pesa tanto como un bloque grande y claro en el medio.</p>
+
+<div class="dv-texto">
+
+Si todos los bloques oscuros y grandes de un cartel o una pantalla se acumulan en un mismo costado, la página parece inclinarse hacia ese lado. No hace falta medir con una regla: el sistema visual evalúa la estabilidad de una composición de forma parecida a como juzgamos si un objeto físico está a punto de volcarse.
+
+El *equilibrio visual* se alcanza cuando las fuerzas perceptuales que tiran hacia la izquierda y la derecha, o hacia arriba y abajo, se compensan alrededor del centro de la superficie. Puedes conseguirlo repitiendo lo mismo a ambos lados de un eje central (simetría), o enfrentando piezas de distinto tamaño, tono y distancia como en una balanza de brazos desiguales.
+
+</div>
+
+<aside class="dv-vocabulario">
+  <h3>Cuatro palabras para explorarlo</h3>
+  <dl>
+    <dt>Peso visual</dt>
+    <dd>La fuerza con la que un elemento atrae la mirada y «tira» del plano según su tamaño, oscuridad, color, textura y aislamiento.</dd>
+    <dt>Brazo de palanca</dt>
+    <dd>La distancia de una figura respecto al centro del formato: cuanto más cerca del borde se ubica una pieza, mayor es su peso efectivo.</dd>
+    <dt>Centro óptico</dt>
+    <dd>El punto donde el ojo percibe el centro estable de una página, situado un poco por encima (en torno al `45 %`–`47 %`) de la mitad matemática.</dd>
+    <dt>Gravedad visual</dt>
+    <dd>La tendencia perceptual por la cual un mismo bloque parece más pesado en la parte superior del marco que apoyado en la base.</dd>
+  </dl>
+</aside>
+
+</Paso>
+
+<Paso id="miralo" titular="Un costado hundido frente a una diagonal compensada">
+
+<div class="dv-texto">
+
+Ambas portadas contienen el mismo título, la misma fotografía y el mismo sello de edición, pero solo la segunda sostiene toda la superficie.
+
+</div>
+
+<EquilibrioExp paso="miralo" />
+
+<div class="dv-texto">
+
+En la portada de la izquierda todos los elementos se apilan sobre el margen izquierdo y dejan la mitad derecha desfondada. En la de la derecha, la fotografía y el titular ocupan el cuadrante superior izquierdo mientras el sello negro con acento amarillo se desplaza al rincón inferior derecho: esa diagonal cruza el centro óptico y estabiliza el pliego sin necesidad de centrar nada.
+
+</div>
+
+</Paso>
+
+<Paso id="pruebalo" titular="Balanza perceptual en dos ejes">
+
+<EquilibrioExp paso="pruebalo" />
+
+</Paso>
+
+<Paso id="usalo" titular="Tres decisiones para equilibrar sin centrar todo">
+
+<ol class="dv-receta">
+  <li>
+    <div>
+      <h3>Compensa una masa grande con un acento denso al otro lado</h3>
+      <p>No necesitas poner dos fotografías del mismo tamaño para equilibrar una página. Si a la izquierda tienes una imagen extensa o un bloque largo de texto, puedes compensarlo a la derecha con una pieza mucho más pequeña que concentre mayor contraste o esté más cerca del margen.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Traza diagonales que crucen el centro del formato</h3>
+      <p>Si el elemento principal vive arriba a la izquierda, busca colocar el segundo punto de interés abajo a la derecha. Cuando la línea imaginaria entre ambos cruza cerca del centro de la página, toda la superficie queda sujeta.</p>
+    </div>
+  </li>
+  <li>
+    <div>
+      <h3>Eleva el centro de masa un poco por encima del 50 %</h3>
+      <p>Cuando centres un título, un logotipo o una tarjeta en vertical, no uses el <code>50 %</code> matemático a ciegas. Subirlo hacia el <code>45 %</code> o <code>46 %</code> desde el borde superior evita que parezca hundirse.</p>
+    </div>
+  </li>
+</ol>
+
+<div class="dv-texto">
+
+### Tres errores frecuentes
+
+</div>
+
+<EquilibrioExp paso="errores" />
+
+<div class="dv-texto">
+
+### El equilibrio en piezas reales
+
+</div>
+
+<EquilibrioExp paso="ejemplos" />
+
+</Paso>
+
+<Paso id="juega" titular="Pon a prueba tu ojo para los pesos visuales">
+
+<EquilibrioExp paso="juego" />
+
+</Paso>
+
+<Paso id="a-fondo" titular="Qué hace que una forma pese más y por qué el centro no está en el medio">
+
+<Seccion titulo="Los seis factores del peso visual según Rudolf Arnheim">
+
+En el primer capítulo de *Art and Visual Perception* (1974), Rudolf Arnheim sintetizó las variables experimentales que hacen que un elemento «pese» más o menos dentro de un marco:
+
+- **Tamaño:** a igual tono, una superficie mayor tiene más peso que una menor.
+- **Oscuridad y contraste con el fondo:** sobre papel blanco, una mancha negra maciza pesa mucho más que una mancha gris clara del mismo tamaño.
+- **Color y saturación:** un rojo o un amarillo intenso atraen más fuerza que un tono apagado de igual claridad.
+- **Distancia al centro (ley de la palanca):** cualquier forma gana peso a medida que se aleja del eje central hacia los bordes o las esquinas.
+- **Aislamiento:** un círculo rodeado de [espacio negativo](/diseno-visual/espacio-negativo) pesa más que un círculo idéntico apretado dentro de un grupo.
+- **Regularidad y compacidad:** las formas geométricas simples y compactas suelen percibirse más densas que las formas difusas o abiertas.
+
+</Seccion>
+
+<Seccion titulo="Centro geométrico frente a centro óptico">
+
+Si trazas las dos diagonales de una hoja rectangular, su cruce marca el **centro geométrico** (al `50 %` de la altura). Sin embargo, cuando colocamos un bloque justo en ese punto, nuestros ojos suelen sentir que está un poco caído.
+
+Esto ocurre porque evaluamos el plano bajo el hábito de la gravedad terrestre: esperamos que la mitad inferior tenga más base de sostén que la mitad superior. Por eso el **centro óptico** se sitúa un poco más arriba, alrededor del `45 %`–`47 %` medido desde el borde superior. Las portadas de libros, los paspartús de grabado y las ventanas modales de las interfaces suelen dejar un margen inferior más generoso que el superior para compensar ese efecto.
+
+</Seccion>
+
+<Seccion titulo="Arriba y abajo, izquierda y derecha no pesan igual">
+
+Además de la diferencia entre arriba y abajo, la costumbre de leer de izquierda a derecha en alfabetos occidentales introduce una asimetría lateral. Arnheim (1974, 1982) observó que solemos entrar a la composición por la izquierda: un elemento colocado en la mitad izquierda se percibe con mayor naturalidad como punto de apoyo inicial, mientras que el mismo elemento colocado a la derecha llama más la atención y parece pesar un poco más.
+
+</Seccion>
+
+<Seccion titulo="Cuando el desequilibrio es intencional">
+
+No toda pieza busca el reposo absoluto. Una composición equilibrada transmite estabilidad, permanencia y calma; pero cuando quieres expresar movimiento, caída, urgencia o inquietud, puedes desplazar el peso hacia un borde. En ese umbral, el estudio del equilibrio se conecta con el de la [tensión](/diseno-visual/tension): la diferencia entre una página mal maquetada y un desequilibrio expresivo está en que el segundo es franco e inequívoco.
+
+</Seccion>
+
+</Paso>

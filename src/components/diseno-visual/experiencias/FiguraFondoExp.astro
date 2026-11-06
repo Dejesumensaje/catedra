@@ -1,0 +1,840 @@
+---
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'figura-fondo';
+
+const T = '#222222';
+const TXT = '#444444';
+const G = '#6f6f6f';
+const REGLA = '#e5e5e5';
+const AMARILLO = '#eeff41';
+const ROJO = '#b3261e';
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: Math.round((x / W) * 100), y: Math.round((y / H) * 100) });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: Math.round((x / W) * 100),
+  y: Math.round((y / H) * 100),
+  w: Math.round((w / W) * 100),
+  h: Math.round((h / H) * 100),
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Estabiliza una figura pequeña y rodeada.',
+    hacer: 'Pon «Proporción de área central» entre 20 % y 30 %, con «Rodeo» en «Rodeada» y «Contraste» alto.',
+    pista: 'Mueve el primer deslizador hacia 25 %.',
+    preparar: { area: 25, rodeo: 'rodeada', contraste: 85, contorno: 'convexo', borde: false },
+    logro: 'Una región más pequeña, convexa y completamente rodeada por otra se percibe sin vacilación como figura que avanza sobre el fondo.',
+  },
+  {
+    titulo: 'Lleva la proporción al punto de oscilación (50 / 50).',
+    hacer: 'En «Rodeo», selecciona «División 50/50 (Rubin)» y coloca «Proporción de área central» en 50 %.',
+    pista: 'Elige la segunda opción de «Rodeo» y pon el deslizador en 50 %.',
+    preparar: { rodeo: 'dividida', area: 50, contraste: 90 },
+    logro: 'Cuando ambas zonas tocan el marco exterior y ocupan casi la misma superficie, el sistema visual no puede decidir cuál es el objeto y cuál el fondo: la percepción se vuelve reversible.',
+  },
+  {
+    titulo: 'Invierte qué es figura y qué es agujero.',
+    hacer: 'Vuelve a «Rodeada» y sube «Proporción de área central» a 85 %.',
+    pista: 'Elige «Rodeada» y arrastra el primer deslizador hacia la derecha.',
+    preparar: { rodeo: 'rodeada', area: 85, contraste: 85 },
+    logro: 'Al crecer tanto la mancha central, el marco exterior se estrecha y la relación puede invertirse: la zona central empieza a parecer un patio o una ventana vista a través de un marco.',
+  },
+  {
+    titulo: 'Debilita la separación de planos.',
+    hacer: 'Baja «Contraste con el fondo» a 15 %.',
+    pista: 'Arrastra el deslizador de contraste hacia la izquierda.',
+    preparar: { area: 35, rodeo: 'rodeada', contraste: 15 },
+    logro: 'Con una diferencia de claridad mínima y sin borde definido, la figura pierde relieve y tiende a pegarse al mismo plano que el papel.',
+  },
+  {
+    titulo: 'Observa a quién pertenece el borde.',
+    hacer: 'Abre «Más controles», activa «Mostrar pertenencia del borde» y devuelve el contraste a 85 %.',
+    pista: 'Enciende el interruptor y sube «Contraste con el fondo».',
+    preparar: { area: 30, rodeo: 'rodeada', contraste: 85, borde: true },
+    abrir: true,
+    logro: 'Las flechas amarillas indican hacia qué lado se asigna el contorno compartido: el borde da forma a la figura, mientras el fondo parece continuar liso por debajo.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <div class="dv-pv-lienzo">
+      <svg viewBox="0 0 600 180" role="img" aria-label="A la izquierda, un disco amarillo rodeado de un campo oscuro estable; a la derecha, la copa reversible de Edgar Rubin donde el centro blanco es un cáliz y los lados negros son dos rostros de perfil mirándose.">
+        <rect width="600" height="180" fill="#fbfbf9" />
+        <text x="155" y="22" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>A · FIGURA ESTABLE (RODEADA Y MENOR)</text>
+        <text x="445" y="22" text-anchor="middle" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>B · FIGURA REVERSIBLE (RUBIN, 1915)</text>
+        <line x1="300" y1="18" x2="300" y2="166" stroke={REGLA} stroke-width="1.5" stroke-dasharray="4 4" />
+
+        {/* A: Figura estable */}
+        <rect x="55" y="34" width="200" height="128" fill={T} />
+        <circle cx="155" cy="98" r="34" fill={AMARILLO} stroke="#ffffff" stroke-width="2" />
+
+        {/* B: Copa / perfiles de Rubin */}
+        <rect x="345" y="34" width="200" height="128" fill={T} stroke={T} stroke-width="1.5" />
+        <path
+          d="M 395 34 L 495 34
+             C 495 50, 468 56, 468 68
+             C 468 78, 482 82, 482 90
+             C 482 98, 464 102, 468 112
+             C 472 122, 456 126, 456 138
+             C 456 150, 488 154, 495 162
+             L 395 162
+             C 402 154, 434 150, 434 138
+             C 434 126, 418 122, 422 112
+             C 426 102, 408 98, 408 90
+             C 408 82, 422 78, 422 68
+             C 422 56, 395 50, 395 34 Z"
+          fill="#fbfbf9"
+        />
+      </svg>
+    </div>
+    <p>Mira el recuadro B durante cinco segundos. ¿Ves una copa blanca en el centro o dos rostros oscuros de perfil mirándose frente a frente? ¿Puedes ver las dos cosas exactamente al mismo tiempo?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>Puedes alternar entre la copa y los dos rostros, pero resulta casi imposible ver ambos como objetos simultáneos. Como demostró Edgar Rubin en 1915, la línea que separa el blanco del negro es una sola: cuando tu cerebro se la asigna al cáliz blanco, el negro retrocede como fondo vacío; cuando se la asigna a las frentes, narices y mentones negros, el blanco pasa a ser el aire que los separa.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Cuando la ventana emergente se funde con la página trasera"
+      notas={[
+        {
+          ...pct(332, 54),
+          titulo: 'Mismo valor tonal en ambos planos',
+          texto: 'Tanto la tabla de atrás como el cuadro de diálogo tienen fondo blanco puro y texto negro al 100 %: ocupan el mismo plano óptico.',
+          zona: zona(18, 18, 324, 96),
+        },
+        {
+          ...pct(332, 146),
+          titulo: 'Borde débil que se confunde con la rejilla',
+          texto: 'El contorno de 1 px del modal se mezcla con las líneas de la tabla inferior, rompiendo la separación de la figura.',
+          zona: zona(46, 68, 268, 142),
+        },
+        {
+          ...pct(332, 232),
+          titulo: 'Botones traseros compiten con la decisión actual',
+          texto: 'Al no atenuar el fondo, los botones de la página siguen reclamando clics junto al diálogo de confirmación.',
+          zona: zona(18, 198, 324, 64),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Ventana modal blanca superpuesta sobre una página blanca con tabla; sin velo ni borde fuerte, ambas capas se confunden.">
+        <rect width={W} height={H} fill="#ffffff" />
+        {/* Página de fondo sin atenuar */}
+        <text x="22" y="34" font-family={SANS} font-size="13" font-weight="900" fill={T}>Inventario general · 128 registros</text>
+        <rect x="22" y="44" width="316" height="32" fill="#f5f5f2" stroke={T} stroke-width="1.2" />
+        <text x="32" y="64" font-family={SANS} font-size="11" font-weight="700" fill={T}>Lote #402 · Prensa hidráulica · Activo</text>
+        <rect x="22" y="76" width="316" height="32" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <rect x="22" y="108" width="316" height="32" fill="#f5f5f2" stroke={T} stroke-width="1.2" />
+        <rect x="22" y="140" width="316" height="32" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <rect x="22" y="172" width="316" height="32" fill="#f5f5f2" stroke={T} stroke-width="1.2" />
+        <rect x="22" y="216" width="110" height="32" fill={T} />
+        <text x="77" y="236" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill="#ffffff">+ Nuevo registro</text>
+        <rect x="242" y="216" width="96" height="32" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="290" y="236" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Exportar CSV</text>
+
+        {/* Modal sin contraste de plano */}
+        <rect x="54" y="72" width="252" height="132" fill="#ffffff" stroke="#b0b0aa" stroke-width="1" />
+        <text x="72" y="102" font-family={SANS} font-size="13" font-weight="900" fill={T}>¿Archivar el lote #402?</text>
+        <text x="72" y="124" font-family={SANS} font-size="11" fill={TXT}>Dejará de aparecer en las búsquedas</text>
+        <text x="72" y="140" font-family={SANS} font-size="11" fill={TXT}>activas del taller.</text>
+        <rect x="72" y="158" width="84" height="30" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <text x="114" y="177" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Cancelar</text>
+        <rect x="168" y="158" width="118" height="30" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <text x="227" y="177" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Confirmar archivo</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Cuando el fondo se silencia y la figura reclama su borde"
+      notas={[
+        {
+          ...pct(332, 42),
+          titulo: 'Velo que unifica y empuja el plano trasero',
+          texto: 'Al atenuar el contraste de la tabla inferior, toda la página retrocede como una superficie continua detrás del diálogo.',
+          zona: zona(12, 12, 336, 62),
+        },
+        {
+          ...pct(332, 126),
+          titulo: 'Contorno propio y sombra dura desplazada',
+          texto: 'Un borde de 2 px y un segundo contorno desplazado adjudican sin duda la frontera al cuadro de diálogo.',
+          zona: zona(48, 68, 266, 148),
+        },
+        {
+          ...pct(332, 192),
+          titulo: 'Menor área rodeada y alto contraste interno',
+          texto: 'El modal cumple las leyes de Rubin: es menor que el campo, está completamente rodeado y concentra la máxima claridad.',
+          zona: zona(64, 150, 232, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma ventana modal sobre un velo oscuro que atenúa la página trasera; el diálogo blanco con borde firme y botón amarillo salta al primer plano.">
+        <rect width={W} height={H} fill="#d8d8d2" />
+        <text x="22" y="34" font-family={SANS} font-size="13" font-weight="900" fill="#888882">Inventario general · 128 registros</text>
+        <rect x="22" y="44" width="316" height="32" fill="#cecec8" stroke="#b4b4ae" stroke-width="1" />
+        <rect x="22" y="76" width="316" height="32" fill="#d8d8d2" stroke="#b4b4ae" stroke-width="1" />
+        <rect x="22" y="108" width="316" height="32" fill="#cecec8" stroke="#b4b4ae" stroke-width="1" />
+        <rect x="22" y="140" width="316" height="32" fill="#d8d8d2" stroke="#b4b4ae" stroke-width="1" />
+        <rect x="22" y="172" width="316" height="32" fill="#cecec8" stroke="#b4b4ae" stroke-width="1" />
+        <rect x="22" y="216" width="110" height="32" fill="#b4b4ae" />
+
+        {/* Sombra dura permitida por el sistema visual y modal nítido */}
+        <rect x="62" y="80" width="252" height="132" fill={T} />
+        <rect x="54" y="72" width="252" height="132" fill="#ffffff" stroke={T} stroke-width="2.2" />
+        <text x="72" y="102" font-family={SANS} font-size="13" font-weight="900" fill={T}>¿Archivar el lote #402?</text>
+        <text x="72" y="124" font-family={SANS} font-size="11" fill={TXT}>Dejará de aparecer en las búsquedas</text>
+        <text x="72" y="140" font-family={SANS} font-size="11" fill={TXT}>activas del taller.</text>
+        <rect x="72" y="158" width="84" height="30" fill="#ffffff" stroke={T} stroke-width="1.5" />
+        <text x="114" y="177" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={T}>Cancelar</text>
+        <rect x="168" y="158" width="118" height="30" fill={AMARILLO} stroke={T} stroke-width="1.8" />
+        <text x="227" y="177" text-anchor="middle" font-family={SANS} font-size="11" font-weight="900" fill={T}>Confirmar archivo</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · las condiciones de Edgar Rubin (1915)"
+    consigna="Manipula las cuatro variables que deciden qué región se percibe como figura y cuál retrocede como fondo: proporción de área, rodeo (inclusión), contraste de claridad y convexidad del contorno. Observa cuándo la figura es sólida y cuándo la percepción oscila."
+    nota="Fija como A una figura estable (área 25 %, rodeada) y compárala con B en equilibrio biestable (50 %, división Rubin)."
+  >
+    <svg slot="escenario" viewBox="0 0 640 320" role="img" aria-label="Figura convexa clara rodeada por un campo oscuro sobre la mesa de pruebas.">
+      <rect width="640" height="320" fill="#222222" />
+      <rect x="210" y="88" width="220" height="144" rx="18" fill="#ffffff" stroke={AMARILLO} stroke-width="2.5" />
+    </svg>
+
+    <Guia slot="guia" pasos={pasos} final="Guía completada. Prueba a alternar entre contorno convexo y cóncavo mientras mantienes el área cerca del 50 %." />
+
+    <Deslizador
+      lab={lab}
+      variable="area"
+      etiqueta="Proporción de área central"
+      min={10}
+      max={90}
+      paso={5}
+      valor={28}
+      unidad="%"
+      ayuda="Las áreas menores tienden a verse como figuras; cerca del 50 % aumenta la ambigüedad; hacia el 85 % se invierten los papeles."
+    />
+    <Opciones
+      lab={lab}
+      variable="rodeo"
+      etiqueta="Rodeo (inclusión)"
+      valor="rodeada"
+      opciones={[
+        { valor: 'rodeada', texto: 'Rodeada por el fondo' },
+        { valor: 'dividida', texto: 'División 50/50 (Rubin)' },
+      ]}
+      ayuda="Una región completamente rodeada tiende a verse como objeto; si ambas tocan los bordes exteriores, compiten."
+    />
+    <Deslizador
+      lab={lab}
+      variable="contraste"
+      etiqueta="Contraste con el fondo"
+      min={10}
+      max={100}
+      paso={5}
+      valor={85}
+      unidad="%"
+      ayuda="Diferencia de claridad entre las dos regiones."
+    />
+
+    <Fragment slot="avanzados">
+      <Opciones
+        lab={lab}
+        variable="contorno"
+        etiqueta="Forma del contorno central"
+        valor="convexo"
+        opciones={[
+          { valor: 'convexo', texto: 'Convexo (abombado)' },
+          { valor: 'concavo', texto: 'Cóncavo (mordido)' },
+        ]}
+        ayuda="Las formas convexas tienden a imponerse como figuras frente a las formas cóncavas."
+      />
+      <Interruptor
+        lab={lab}
+        variable="borde"
+        etiqueta="Mostrar pertenencia del borde"
+        ayuda="Señala con vectores hacia qué región se asigna perceptualmente la frontera compartida."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"area":25,"rodeo":"rodeada","contraste":90,"contorno":"convexo","borde":false}'>Figura clara e inequívoca (25 %)</button>
+      <button type="button" class="dv-boton" data-preset='{"area":50,"rodeo":"dividida","contraste":90,"contorno":"convexo","borde":true}'>Equilibrio reversible 50 / 50</button>
+      <button type="button" class="dv-boton" data-preset='{"area":85,"rodeo":"rodeada","contraste":90,"contorno":"concavo","borde":true}'>Inversión: el centro parece un hueco</button>
+      <button type="button" class="dv-boton" data-preset='{"area":30,"rodeo":"rodeada","contraste":15,"contorno":"convexo","borde":false}'>Bajo contraste: planos fundidos</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Separa un diálogo superpuesto atenuando el fondo"
+      comparar={false}
+      consigna="El cuadro de confirmación se confunde con la página que tiene debajo. Oscurece el velo del plano trasero para empujar la página al fondo."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Superposición de diálogo modal</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="velo"
+        etiqueta="Atenuación del plano trasero"
+        min={0}
+        max={80}
+        paso={10}
+        valor={0}
+        unidad="%"
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Evita que una imagen o trama devore el titular"
+      comparar={false}
+      consigna="Cuando se escribe texto directamente sobre un fondo lleno de formas contrastadas, el fondo compite como figura y rompe las letras. Añade una superficie calme detrás del titular."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Titular sobre fondo tramado</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="proteccion"
+        etiqueta="Separación entre letra y trama"
+        valor="ninguna"
+        opciones={[
+          { valor: 'ninguna', texto: 'Texto suelto sobre trama' },
+          { valor: 'cartela', texto: 'Cartela sólida bajo el texto' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Abre el espacio interno (contrapunzón) de un icono en negativo"
+      comparar={false}
+      consigna="En un icono calado en negativo, si los huecos internos son demasiado estrechos dejan de leerse como fondo y el símbolo se convierte en un borrón negro. Ensancha los cortes internos."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};color:#222;`}>
+        <p style="margin:0;font-size:13px;font-weight:700;">Pictograma perforado en negativo</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e3`}
+        variable="calado"
+        etiqueta="Grosor del corte en negativo"
+        min={1}
+        max={7}
+        paso={1}
+        valor={1}
+        unidad="px"
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Cartel cultural: reversibilidad deliberada entre objeto y escenario"
+      notas={[
+        {
+          ...pct(330, 58),
+          titulo: 'Un único contorno que trabaja dos veces',
+          texto: 'El borde escalonado dibuja hacia abajo las teclas negras de un piano y hacia arriba los edificios de una ciudad nocturna.',
+          zona: zona(34, 42, 292, 128),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Equilibrio 50 / 50 de superficie',
+          texto: 'Al repartir el área en mitades casi iguales entre tinta carbón y papel marfil, el cartel invita a oscilar entre ambas lecturas.',
+          zona: zona(34, 24, 292, 168),
+        },
+        {
+          ...pct(330, 232),
+          titulo: 'Tipografía anclada en zona estable',
+          texto: 'La información práctica del concierto se sitúa al pie sobre fondo liso, donde no hay ambigüedad figura-fondo.',
+          zona: zona(34, 198, 292, 62),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Cartel de festival de jazz donde el contorno compartido entre el negro superior y el blanco inferior forma a la vez las teclas de un piano y el perfil de edificios con ventanas.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="28" y="18" width="304" height="244" fill="#ffffff" stroke={T} stroke-width="2" />
+        {/* Parte superior negra cuyos salientes hacia abajo son teclas negras y cuyos entrantes blancos desde abajo son rascacielos */}
+        <path
+          d="M 28 18 L 332 18 L 332 168
+             L 296 168 L 296 96 L 274 96 L 274 168
+             L 238 168 L 238 168
+             L 212 168 L 212 88 L 190 88 L 190 168
+             L 158 168 L 158 96 L 136 96 L 136 168
+             L 98 168 L 98 84 L 76 84 L 76 168
+             L 28 168 Z"
+          fill={T}
+        />
+        {/* Divisiones finas entre teclas blancas abajo que también parecen calles */}
+        {[64, 117, 174, 238, 304].map((x) => (
+          <line x1={x} y1="168" x2={x} y2="194" stroke={T} stroke-width="1.5" />
+        ))}
+        {/* Pequeñas ventanas amarillas en las torres negras que acentúan la doble lectura */}
+        <rect x="83" y="102" width="8" height="12" fill={AMARILLO} />
+        <rect x="197" y="114" width="8" height="12" fill={AMARILLO} />
+        <rect x="281" y="108" width="8" height="12" fill={AMARILLO} />
+
+        <line x1="28" y1="194" x2="332" y2="194" stroke={T} stroke-width="2" />
+        <text x="42" y="220" font-family={SANS} font-size="12.5" font-weight="900" letter-spacing="0.5" fill={T}>JAZZ EN LA TERRAZA · CICLO NOCTURNO</text>
+        <text x="42" y="240" font-family={SERIF} font-size="12" fill={TXT}>Teatro Universitario · Viernes de noviembre, 20:00 h</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Señalética en negativo: cuando el agujero pasa a ser la figura"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'Placa oscura como campo local',
+          texto: 'El cuadrado negro se separa primero de la pared blanca; luego, dentro de él, la flecha recortada se lee como figura luminosa.',
+          zona: zona(44, 34, 132, 132),
+        },
+        {
+          ...pct(330, 146),
+          titulo: 'Proporción controlada entre trazo y fondo',
+          texto: 'La flecha amarilla ocupa cerca del 30 % de la placa negra, asegurando que el negro se perciba como soporte y no como barrotes.',
+          zona: zona(68, 58, 84, 84),
+        },
+        {
+          ...pct(330, 228),
+          titulo: 'Cero ambigüedad en lectura de emergencia',
+          texto: 'En señalética de orientación no se busca reversibilidad, sino una asignación figura-fondo instantánea a veinte metros.',
+          zona: zona(184, 52, 152, 114),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Placa de señalización negra con una flecha diagonal amarilla de alto contraste y rótulo de Salida de emergencia.">
+        <rect width={W} height={H} fill="#fbfbf9" />
+        <rect x="46" y="42" width="124" height="124" fill={T} />
+        <path d="M 78 134 L 134 78 M 96 78 L 134 78 L 134 116" fill="none" stroke={AMARILLO} stroke-width="14" stroke-linecap="square" />
+        <text x="192" y="82" font-family={SANS} font-size="10" font-weight="700" letter-spacing="1" fill={G}>PLANTA BAJA · SECTOR B</text>
+        <text x="192" y="110" font-family={SANS} font-size="20" font-weight="900" fill={T}>Salida al</text>
+        <text x="192" y="134" font-family={SANS} font-size="20" font-weight="900" fill={T}>claustro</text>
+        <text x="46" y="212" font-family={SERIF} font-size="11" fill={TXT}>Dos escalones de figura-fondo: la placa negra es figura sobre</text>
+        <text x="46" y="232" font-family={SERIF} font-size="11" fill={TXT}>el muro, y la flecha calada es figura dentro de la placa.</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Pestaña activa: continuidad del fondo para unir pestaña y lienzo"
+      notas={[
+        {
+          ...pct(330, 56),
+          titulo: 'La pestaña activa comparte fondo con el panel',
+          texto: 'Al eliminar la línea inferior de la pestaña «Código» y darle el mismo blanco del lienzo, ambas zonas se funden en una sola figura.',
+          zona: zona(22, 34, 112, 54),
+        },
+        {
+          ...pct(330, 138),
+          titulo: 'Pestañas inactivas empujadas al plano trasero',
+          texto: 'El gris más oscuro y el borde inferior continuo hacen que «Vista previa» y «Historial» parezcan asomar por detrás del panel blanco.',
+          zona: zona(130, 34, 210, 44),
+        },
+        {
+          ...pct(330, 224),
+          titulo: 'Oclusión sin sombras difusas',
+          texto: 'La simple pertenencia del borde indica qué capa está delante y cuál continúa detrás.',
+          zona: zona(22, 72, 316, 184),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Sistema de tres pestañas donde la primera pestaña blanca se funde sin línea divisoria con el área de trabajo, empujando las otras dos pestañas grises hacia el fondo.">
+        <rect width={W} height={H} fill="#eeeee8" />
+        {/* Pestañas inactivas detrás */}
+        <rect x="132" y="38" width="102" height="36" fill="#deded6" stroke={T} stroke-width="1.5" />
+        <text x="183" y="60" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={TXT}>Vista previa</text>
+        <rect x="234" y="38" width="98" height="36" fill="#deded6" stroke={T} stroke-width="1.5" />
+        <text x="283" y="60" text-anchor="middle" font-family={SANS} font-size="11" font-weight="700" fill={TXT}>Historial (4)</text>
+
+        {/*Figura única: pestaña activa + panel blanco unidos */}
+        <path d="M 24 74 L 24 34 L 132 34 L 132 74 L 336 74 L 336 254 L 24 254 Z" fill="#ffffff" stroke={T} stroke-width="2" />
+        <rect x="24" y="34" width="108" height="5" fill={AMARILLO} />
+        <text x="78" y="60" text-anchor="middle" font-family={SANS} font-size="11.5" font-weight="900" fill={T}>1. Esquema</text>
+
+        <text x="44" y="114" font-family={SANS} font-size="13" font-weight="900" fill={T}>Estructura de la colección</text>
+        <text x="44" y="138" font-family={SERIF} font-size="12.5" fill={TXT}>La pestaña activa y este contenedor comparten</text>
+        <text x="44" y="158" font-family={SERIF} font-size="12.5" fill={TXT}>un mismo contorno cerrado: se leen como una</text>
+        <text x="44" y="178" font-family={SERIF} font-size="12.5" fill={TXT}>sola hoja apoyada delante de las demás.</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas sobre las condiciones de Rubin, la pertenencia unilateral del borde y la separación entre capas."
+  />
+)}
+
+<script>
+  import { conectar, svg } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const TINTA = '#222222';
+  const AMARILLO = '#eeff41';
+  const COTA = '#b3261e';
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+
+  type E = {
+    area: number;
+    rodeo: string;
+    contraste: number;
+    contorno: string;
+    borde: boolean;
+  };
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 280);
+    const H = 320;
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+
+    const padX = 44;
+    const padY = 26;
+    const campoW = W - padX * 2;
+    const campoH = H - padY * 2 - 22;
+
+    const kCon = e.contraste / 100;
+    const grisFondo = Math.round(240 - kCon * 206); // de 240 (casi blanco) a 34 (#222)
+    const colorCampo = `rgb(${grisFondo},${grisFondo},${grisFondo})`;
+
+    raiz.setAttribute(
+      'aria-label',
+      `Campo visual con proporción central del ${e.area} %, modo ${e.rodeo}, contraste ${e.contraste} % y contorno ${e.contorno}.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+    raiz.append(svg('rect', { x: padX, y: padY, width: campoW, height: campoH, fill: colorCampo, stroke: TINTA, 'stroke-width': 2 }));
+
+    const cx = padX + campoW / 2;
+    const cy = padY + campoH / 2;
+
+    if (e.rodeo === 'rodeada') {
+      const escala = Math.sqrt(e.area / 100);
+      const fw = campoW * escala * 0.88;
+      const fh = campoH * escala * 0.88;
+      const x0 = cx - fw / 2;
+      const y0 = cy - fh / 2;
+      const cur = e.contorno === 'convexo' ? 22 : -22;
+
+      const d = `M ${x0} ${y0}
+                 Q ${cx} ${y0 - cur} ${x0 + fw} ${y0}
+                 Q ${x0 + fw + cur} ${cy} ${x0 + fw} ${y0 + fh}
+                 Q ${cx} ${y0 + fh + cur} ${x0} ${y0 + fh}
+                 Q ${x0 - cur} ${cy} ${x0} ${y0} Z`;
+
+      raiz.append(svg('path', { d, fill: '#ffffff', stroke: TINTA, 'stroke-width': 2 }));
+
+      if (e.borde) {
+        const haciaCentro = e.area <= 65;
+        const dir = haciaCentro ? 1 : -1;
+        for (const [bx, by, vx, vy] of [
+          [cx, y0 - cur * 0.5, 0, dir * 16],
+          [cx, y0 + fh + cur * 0.5, 0, -dir * 16],
+          [x0 - cur * 0.5, cy, dir * 16, 0],
+          [x0 + fw + cur * 0.5, cy, -dir * 16, 0],
+        ]) {
+          raiz.append(svg('line', { x1: bx, y1: by, x2: bx + vx, y2: by + vy, stroke: COTA, 'stroke-width': 2.5 }));
+          raiz.append(svg('circle', { cx: bx + vx, cy: by + vy, r: 3.5, fill: AMARILLO, stroke: COTA, 'stroke-width': 1.5 }));
+        }
+      }
+    } else {
+      // División tipo Rubin que toca los bordes superior e inferior del campo
+      const anchoBanda = campoW * (e.area / 100);
+      const xIzq = cx - anchoBanda / 2;
+      const xDer = cx + anchoBanda / 2;
+      const amp = e.contorno === 'convexo' ? 26 : -26;
+
+      const d = `M ${xIzq} ${padY}
+                 L ${xDer} ${padY}
+                 C ${xDer + amp} ${padY + campoH * 0.3}, ${xDer - amp} ${padY + campoH * 0.7}, ${xDer} ${padY + campoH}
+                 L ${xIzq} ${padY + campoH}
+                 C ${xIzq + amp} ${padY + campoH * 0.7}, ${xIzq - amp} ${padY + campoH * 0.3}, ${xIzq} ${padY} Z`;
+
+      raiz.append(svg('path', { d, fill: '#ffffff', stroke: TINTA, 'stroke-width': 2 }));
+
+      if (e.borde) {
+        for (const yM of [padY + campoH * 0.35, padY + campoH * 0.65]) {
+          raiz.append(svg('line', { x1: xIzq - 16, y1: yM, x2: xIzq + 16, y2: yM, stroke: COTA, 'stroke-width': 2.5 }));
+          raiz.append(svg('line', { x1: xDer - 16, y1: yM, x2: xDer + 16, y2: yM, stroke: COTA, 'stroke-width': 2.5 }));
+        }
+      }
+    }
+
+    const biestable = (e.rodeo === 'dividida' && e.area >= 40 && e.area <= 60) || (e.rodeo === 'rodeada' && e.area >= 60 && e.area <= 75);
+    const invertida = e.rodeo === 'rodeada' && e.area > 75;
+    const pie = svg('text', {
+      x: W / 2,
+      y: H - 10,
+      'text-anchor': 'middle',
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 700,
+      fill: biestable || e.contraste < 25 ? COTA : TINTA,
+    });
+    pie.textContent = e.contraste < 25
+      ? `CONTRASTE DÉBIL (${e.contraste} %) · LOS PLANOS SE FUNDEN`
+      : biestable
+        ? `EQUILIBRIO BIESTABLE (${e.area} %) · LA PERCEPCIÓN OSCILA ENTRE AMBAS REGIONES`
+        : invertida
+          ? `INVERSIÓN FIGURA-FONDO (${e.area} %) · EL EXTERIOR SE LEE COMO MARCO Y EL CENTRO COMO HUECO`
+          : `FIGURA ESTABLE (${e.area} %) · EL BORDE PERTENECE A LA REGIÓN CENTRAL`;
+    raiz.append(pie);
+
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    if (e.contraste < 25) {
+      return `Con solo un <b class="dv-cifra">${e.contraste} % de contraste</b>, la diferencia de claridad entre las dos superficies es tan baja que cuesta separar qué plano avanza y cuál retrocede.`;
+    }
+    if (e.rodeo === 'dividida' && e.area >= 40 && e.area <= 60) {
+      return `Ambas zonas tocan el marco exterior y se reparten el espacio casi a mitades (<b class="dv-cifra">${e.area} % / ${100 - e.area} %</b>). Es la condición clásica de Edgar Rubin: <b class="dv-cifra">percepción biestable</b> donde el borde salta de una región a otra.`;
+    }
+    if (e.rodeo === 'rodeada' && e.area >= 75) {
+      return `Al ocupar el <b class="dv-cifra">${e.area} %</b> de la superficie, la mancha blanca se vuelve tan grande que deja de parecer un objeto suelto: el anillo oscuro periférico pasa a leerse como un marco y el centro blanco como el fondo que se ve a través.`;
+    }
+    const bonoConvexo = e.contorno === 'convexo' ? 'Su contorno convexo refuerza aún más su carácter de objeto sólido.' : 'Aunque el contorno cóncavo resta algo de solidez, el área menor y el rodeo mantienen la figura.';
+    return `Relación estable: con un <b class="dv-cifra">${e.area} % del área</b>, la zona central se percibe sin esfuerzo como figura apoyada sobre un fondo continuo. ${bonoConvexo}`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-lab="figura-fondo"]')) {
+    guiar<E>(raiz, [
+      (e) => e.rodeo === 'rodeada' && e.area >= 20 && e.area <= 35 && e.contraste >= 70,
+      (e) => e.rodeo === 'dividida' && e.area >= 45 && e.area <= 55,
+      (e) => e.rodeo === 'rodeada' && e.area >= 80,
+      (e) => e.contraste <= 20,
+      (e) => e.borde && e.contraste >= 70,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── Especímenes de error ──────────────────────────────
+  type E1 = { velo: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const k = e.velo / 100;
+    const bg = Math.round(255 - k * 120);
+    const txtBg = Math.round(34 + k * 110);
+    const sombra = k >= 0.4 ? '6px 6px 0 #222' : 'none';
+    d.innerHTML = `
+      <div style="padding:14px 16px;font-family:${SANS};background:rgb(${bg},${bg},${bg});position:relative;">
+        <div style="font-size:11px;color:rgb(${txtBg},${txtBg},${txtBg});margin-bottom:8px;">
+          <strong>Listado de entregas (42)</strong> · Filtro activo · Semestre 2026
+        </div>
+        <div style="padding:10px 12px;background:#fff;border:${k >= 0.3 ? 2 : 1}px solid #222;box-shadow:${sombra};color:#222;">
+          <strong style="font-size:12.5px;display:block;margin-bottom:6px;">¿Cerrar el acta de calificaciones?</strong>
+          <span style="font-size:11px;font-weight:700;padding:4px 8px;background:${AMARILLO};border:1.5px solid #222;display:inline-block;">Confirmar cierre</span>
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.velo < 30) return `Con un velo del ${e.velo} %, la página trasera y el diálogo <b class="dv-cifra">compiten en el mismo plano</b>.`;
+    return `<b class="dv-cifra">Planos separados (${e.velo} %)</b>: el fondo retrocede como superficie continua y el diálogo avanza como figura.`;
+  }
+
+  type E2 = { proteccion: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const rayas = 'repeating-linear-gradient(135deg, #222 0 8px, #eeff41 8px 16px, #fff 16px 24px)';
+    const caja = e.proteccion === 'cartela'
+      ? 'background:#ffffff;padding:8px 12px;border:2px solid #222;box-shadow:4px 4px 0 #222;'
+      : 'background:transparent;padding:8px 12px;';
+    d.innerHTML = `
+      <div style="padding:18px;background:${rayas};font-family:${SANS};text-align:center;">
+        <span style="display:inline-block;${caja}font-size:15px;font-weight:900;color:#222;">JORNADAS DE ARQUITECTURA</span>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.proteccion === 'ninguna') return 'Las franjas del fondo tienen tanto contraste que <b class="dv-cifra">devoran los contornos de las letras</b>.';
+    return '<b class="dv-cifra">Figura protegida</b>: la cartela intermedia actúa como fondo tranquilo para el titular.';
+  }
+
+  type E3 = { calado: number };
+  function pintarE3(d: HTMLElement, e: E3) {
+    d.innerHTML = `
+      <div style="padding:14px 16px;text-align:center;">
+        <svg viewBox="0 0 220 90" style="width:100%;max-width:220px;height:auto;background:#fbfbf9;border:1px solid #e5e5e5;">
+          <rect x="74" y="14" width="72" height="62" rx="6" fill="#222" />
+          <line x1="88" y1="32" x2="132" y2="32" stroke="#fbfbf9" stroke-width="${e.calado}" />
+          <line x1="88" y1="45" x2="132" y2="45" stroke="#fbfbf9" stroke-width="${e.calado}" />
+          <line x1="88" y1="58" x2="118" y2="58" stroke="#fbfbf9" stroke-width="${e.calado}" />
+        </svg>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.calado <= 2) return `Con cortes de ${e.calado} px, la tinta negra domina tanto que <b class="dv-cifra">los renglones calados casi se cierran</b>.`;
+    return `<b class="dv-cifra">Calado nítido (${e.calado} px)</b>: los trazos blancos dentro del bloque negro se leen con claridad como figura interna.`;
+  }
+
+  for (const [id, p, desc] of [
+    ['figura-fondo-e1', pintarE1, describirE1],
+    ['figura-fondo-e2', pintarE2, describirE2],
+    ['figura-fondo-e3', pintarE3, describirE3],
+  ] as const) {
+    for (const r of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz: r, pintar: p as never, describir: desc as never });
+    }
+  }
+
+  // ── Juego de 5 rondas ─────────────────────────────────
+  function rBordeUnilateral(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Se asigna casi siempre a la figura (le da su forma), mientras el fondo parece continuar liso por detrás',
+        es: true,
+      },
+      {
+        texto: 'Se reparte exactamente al 50 % entre la figura y el fondo al mismo tiempo',
+        es: false,
+      },
+      {
+        texto: 'Pertenece siempre al fondo y deja a la figura sin límite definido',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Según el principio de «pertenencia unilateral del borde» (border ownership) de Edgar Rubin, ¿a quién pertenece la línea que separa una figura de su fondo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'El contorno compartido rara vez se percibe como propiedad de ambas zonas a la vez: define el límite de la figura, mientras que el fondo se percibe como una superficie sin forma que pasa por debajo.',
+      repaso: 'Pertenencia unilateral del borde',
+    };
+  }
+
+  function rCondicionesRubin(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'La región de menor área, convexa y completamente rodeada por la otra',
+        es: true,
+      },
+      {
+        texto: 'La región más grande que toca los cuatro bordes exteriores de la pantalla',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'En igualdad de condiciones, ¿cuál de dos regiones tiene mucha mayor probabilidad de percibirse como figura?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Las leyes clásicas de Rubin (1915) demostraron que el rodeo (estar encerrada), el área relativa menor, la simetría y la convexidad empujan a una región a verse como objeto en primer plano.',
+      repaso: 'Condiciones de figura de Rubin',
+    };
+  }
+
+  function rReversibilidad(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'En carteles, logotipos o ilustraciones editoriales donde el doble sentido visual enriquece el mensaje, nunca en ventanas de alerta o formularios críticos',
+        es: true,
+      },
+      {
+        texto: 'En botones de pago y cuadros de diálogo para que el usuario adivine qué capa está activa',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuándo es deseable provocar deliberadamente una relación figura-fondo reversible (50 / 50)?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'En gráfica cultural o identidad visual, un contorno compartido que esconde dos figuras memorables retiene la mirada; en una interfaz operativa, en cambio, los planos deben distinguirse sin la menor duda.',
+      repaso: 'Estabilidad frente a reversibilidad',
+    };
+  }
+
+  function rPeterson(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'El reconocimiento de formas familiares (como la silueta de un rostro o una letra) interviene rápido e inclina qué región vemos como figura',
+        es: true,
+      },
+      {
+        texto: 'La memoria visual no influye jamás en la separación figura-fondo',
+        es: false,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Qué demostró Mary A. Peterson (1994) respecto al papel de la experiencia previa en la organización figura-fondo?',
+      opciones: ops.map((o) => ({ texto: o.texto })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Peterson demostró que la memoria de objetos conocidos actúa antes de que termine de cerrarse la organización figura-fondo, ayudando a que reconozcamos letras o siluetas familiares como figuras de inmediato.',
+      repaso: 'Familiaridad en figura-fondo (Peterson, 1994)',
+    };
+  }
+
+  function rAjusteEstabilidad(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Esta tarjeta ocupa el 85 % del recuadro y casi no se distingue qué es tarjeta y qué es margen. Reduce la proporción de área de la tarjeta hasta que se lea como una figura clara rodeada de fondo (entre 25 % y 45 %).',
+      control: {
+        etiqueta: 'Área relativa de la tarjeta central',
+        min: 15,
+        max: 90,
+        paso: 5,
+        valor: 85,
+        unidad: '%',
+      },
+      pintar: (esc, v) => {
+        const k = Math.sqrt(v / 100);
+        const w = Math.round(280 * k);
+        const h = Math.round(96 * k);
+        const x = Math.round((320 - w) / 2);
+        const y = Math.round((116 - h) / 2);
+        esc.innerHTML = `
+          <svg viewBox="0 0 320 116" style="width:100%;height:auto;background:#222;border:1.5px solid #222;">
+            <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#ffffff" stroke="${AMARILLO}" stroke-width="2" />
+            <text x="160" y="62" text-anchor="middle" font-family="${SANS}" font-size="11.5" font-weight="900" fill="#222">TARJETA (${v} %)</text>
+          </svg>`;
+      },
+      cumple: (v) => v >= 25 && v <= 45,
+      falta: (v) => v > 45 ? `Con ${v} % la tarjeta sigue comiéndose casi todo el fondo. Bájala a 45 % o menos.` : `Al ${v} % ya es demasiado pequeña para leer su contenido con comodidad. Súbela al menos a 25 %.`,
+      porque: 'Cuando la figura ocupa entre un cuarto y menos de la mitad del campo que la rodea, el fondo actúa como marco tranquilo y la tarjeta salta al primer plano.',
+      repaso: 'Área relativa en figura-fondo',
+    };
+  }
+
+  const juegoEl = document.querySelector<HTMLElement>('[data-juego="figura-fondo"]');
+  if (juegoEl) {
+    jugar(juegoEl, () =>
+      barajar([rBordeUnilateral(), rCondicionesRubin(), rReversibilidad(), rPeterson(), rAjusteEstabilidad()]),
+    );
+  }
+</script>

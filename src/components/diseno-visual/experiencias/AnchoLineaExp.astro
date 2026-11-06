@@ -1,0 +1,1163 @@
+---
+// Ancho de línea (medida): todos los pasos en un componente multi-modo.
+import Anotada from '../Anotada.astro';
+import Instrumento from '../controles/Instrumento.astro';
+import Deslizador from '../controles/Deslizador.astro';
+import Opciones from '../controles/Opciones.astro';
+import Interruptor from '../controles/Interruptor.astro';
+import Guia, { type PasoGuia } from '../controles/Guia.astro';
+import Juego from '../Juego.astro';
+
+interface Props {
+  paso: 'idea' | 'miralo' | 'pruebalo' | 'errores' | 'ejemplos' | 'juego';
+}
+
+const { paso } = Astro.props;
+const lab = 'ancho-de-linea';
+
+const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+const SERIF = "'PT Serif', Georgia, serif";
+const T = '#222222';
+const G = '#6f6f6f';
+const ROJO = '#b3261e';
+const AMARILLO = '#eeff41';
+
+const W = 360;
+const H = 280;
+const pct = (x: number, y: number) => ({ x: (x / W) * 100, y: (y / H) * 100 });
+const zona = (x: number, y: number, w: number, h: number) => ({
+  x: (x / W) * 100,
+  y: (y / H) * 100,
+  w: (w / W) * 100,
+  h: (h / H) * 100,
+});
+
+const pasos: PasoGuia[] = [
+  {
+    titulo: 'Lleva la columna a un pasillo estrecho.',
+    hacer: 'Mueve «Ancho del contenedor» por debajo de 240 px.',
+    pista: 'Arrastra el primer deslizador hacia la izquierda.',
+    preparar: { tamano: 16, alineacion: 'izquierda' },
+    logro: 'Con unos 22 a 26 caracteres por línea, cada frase se rompe en tres o cuatro renglones cortos. El ojo salta de línea casi en cada palabra y pierde el ritmo de lectura.',
+  },
+  {
+    titulo: 'Justifica esa columna estrecha.',
+    hacer: 'En «Alineación del párrafo», selecciona «Justificada».',
+    pista: 'Elige la segunda opción de alineación manteniendo la columna angosta.',
+    logro: 'Como caben muy pocas palabras por renglón, el navegador estira los huecos entre ellas para tocar ambos márgenes y abre grietas verticales («ríos de blanco») que fracturan el bloque.',
+  },
+  {
+    titulo: 'Estira el renglón de lado a lado.',
+    hacer: 'Vuelve a «Izquierda» y lleva «Ancho del contenedor» por encima de 860 px.',
+    pista: 'Arrastra «Ancho del contenedor» hasta el extremo derecho.',
+    preparar: { tamano: 15, alineacion: 'izquierda' },
+    logro: 'El párrafo supera los 110 caracteres por línea. Cuando terminas un renglón a la derecha, el viaje de retorno hacia el inicio de la línea siguiente es tan largo que cuesta acertar en el renglón correcto.',
+  },
+  {
+    titulo: 'Entra en la zona de 45 a 75 caracteres.',
+    hacer: 'Ajusta «Ancho del contenedor» entre 460 px y 580 px con «Tamaño de la letra» en 16 px.',
+    pista: 'Activa la franja guía si quieres ver la zona óptima marcada sobre el texto.',
+    preparar: { zona: true },
+    logro: 'Alrededor de los 60 a 68 caracteres por renglón, la vista realiza entre siete y diez fijaciones cómodas por línea y regresa al margen izquierdo sin dudar.',
+  },
+  {
+    titulo: 'Cambia los caracteres sin tocar los píxeles de la caja.',
+    hacer: 'Sin mover el ancho del contenedor, sube «Tamaño de la letra» a 22 px o más.',
+    pista: 'Mueve el segundo deslizador hacia la derecha.',
+    logro: 'La caja sigue midiendo los mismos píxeles de ancho, pero la medida bajó de ~65 a ~45 caracteres por renglón. El ancho tipográfico depende siempre de la relación entre el ancho de la columna y el cuerpo de la letra.',
+  },
+];
+---
+
+{paso === 'idea' && (
+  <div class="dv-pregunta-visual">
+    <svg viewBox="0 0 600 180" role="img" aria-label="Tres bloques con el mismo párrafo: uno muy estrecho de 22 caracteres con saltos constantes, uno equilibrado de 62 caracteres y uno interminable de 135 caracteres donde el viaje de retorno del ojo se desvía.">
+      <rect width="600" height="180" fill="#fbfbf9" />
+
+      {/* 1. 22 caracteres */}
+      <g transform="translate(18, 16)">
+        <text x="0" y="12" font-family={SANS} font-size="9" font-weight="700" fill={ROJO}>22 CH · PASILLO</text>
+        <rect x="0" y="20" width="92" height="128" fill="#ffffff" stroke="#d8d8d4" />
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+          const w = [68, 52, 74, 44, 64, 58, 70, 38][i];
+          return (
+            <g>
+              <rect x="10" y={30 + i * 13} width={w} height="4.5" fill={T} />
+              {i < 7 && (
+                <path d={`M ${10 + w} ${33 + i * 13} L 10 ${41 + i * 13}`} stroke={ROJO} stroke-width="0.9" stroke-dasharray="2 2" fill="none" />
+              )}
+            </g>
+          );
+        })}
+        <text x="0" y="160" font-family={SANS} font-size="9.5" fill={G}>Salto cada 3 palabras</text>
+      </g>
+
+      {/* 2. 62 caracteres */}
+      <g transform="translate(132, 16)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={T}>62 CARACTERES · FLUJO CÓMODO</text>
+        <rect x="0" y="20" width="184" height="128" fill="#ffffff" stroke={T} stroke-width="1.6" />
+        <rect x="126" y="20" width="48" height="128" fill={AMARILLO} opacity="0.45" />
+        {[0, 1, 2, 3, 4].map((i) => {
+          const w = [156, 162, 148, 158, 112][i];
+          return (
+            <g>
+              <rect x="12" y={34 + i * 18} width={w} height="5" fill={T} />
+              {i === 0 && (
+                <path d={`M ${12 + w} 39 Q 90 46 12 50`} stroke={T} stroke-width="1.2" fill="none" />
+              )}
+            </g>
+          );
+        })}
+        <text x="12" y="138" font-family={SANS} font-size="9.5" font-weight="700" fill={T}>Franja óptima: 45–75 ch</text>
+        <text x="0" y="160" font-family={SANS} font-size="9.5" fill={G}>Retorno ocular limpio y estable</text>
+      </g>
+
+      {/* 3. 135 caracteres */}
+      <g transform="translate(338, 16)">
+        <text x="0" y="12" font-family={SANS} font-size="10" font-weight="700" fill={ROJO}>135 CARACTERES · RENGLÓN INTERMINABLE</text>
+        <rect x="0" y="20" width="244" height="128" fill="#ffffff" stroke="#d8d8d4" />
+        {[0, 1, 2].map((i) => {
+          const w = [224, 220, 168][i];
+          return <rect x="10" y={36 + i * 22} width={w} height="4.5" fill={T} />;
+        })}
+        <path d="M 234 40 C 160 66, 80 42, 14 58" stroke={ROJO} stroke-width="1.4" stroke-dasharray="3 2" fill="none" />
+        <circle cx="14" cy="58" r="3" fill={ROJO} />
+        <text x="12" y="118" font-family={SANS} font-size="9.5" font-weight="700" fill={ROJO}>¿Qué línea seguía?</text>
+        <text x="12" y="133" font-family={SANS} font-size="9" fill={G}>El ojo se pierde al volver a la izquierda</text>
+        <text x="0" y="160" font-family={SANS} font-size="9.5" fill={G}>Viaje de vuelta demasiado largo</text>
+      </g>
+    </svg>
+    <p>Los tres bloques contienen exactamente las mismas palabras. ¿Por qué solo el del centro se lee de corrido sin fatigar la vista?</p>
+    <details>
+      <summary>Ver la respuesta</summary>
+      <div class="dv-texto">
+        <p>En la columna de 22 caracteres el renglón se acaba antes de completar una idea y la mirada salta en escalera sin descanso. En la de 135 caracteres ocurre lo opuesto: al terminar una línea tan larga, el ángulo de regreso hacia el margen izquierdo es tan tendido que el ojo suele repetir el mismo renglón o saltarse el siguiente. Entre 45 y 75 caracteres (con 60–66 como centro cómodo), el barrido horizontal y el salto de línea entran en equilibrio.</p>
+      </div>
+    </details>
+  </div>
+)}
+
+{paso === 'miralo' && (
+  <div class="dv-anotadas">
+    <Anotada
+      veredicto="mal"
+      rotulo="Texto de lado a lado en pantalla ancha (~140 caracteres)"
+      notas={[
+        {
+          ...pct(310, 48),
+          titulo: '100 % del monitor (1280 px)',
+          texto: 'El párrafo hereda todo el ancho de la ventana sin límite. A 16 px caben cerca de 140 caracteres en cada renglón.',
+          zona: zona(16, 28, 328, 34),
+        },
+        {
+          ...pct(180, 128),
+          titulo: 'Retorno ocular impreciso',
+          texto: 'Recorrer más de veinte centímetros de pantalla para volver al inicio del renglón siguiente obliga a buscar con el dedo o el cursor por dónde iba la lectura.',
+          zona: zona(16, 70, 328, 92),
+        },
+        {
+          ...pct(286, 224),
+          titulo: 'Espacio lateral desaprovechado',
+          texto: 'En vez de reservar margen para un índice o notas de apoyo, toda la superficie se llena con un muro de renglones larguísimos.',
+          zona: zona(16, 174, 328, 86),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página de documentación donde los párrafos ocupan todo el ancho de 1280 píxeles de lado a lado.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="14" y="14" width="332" height="252" fill="#fbfbf9" stroke="#d6d6d2" />
+        <text x="24" y="32" font-family={SANS} font-size="8.5" font-weight="700" fill={ROJO}>CONTENEDOR 1280 PX · TEXTO AL 100 % (~140 CARACTERES POR LÍNEA)</text>
+        <text x="24" y="54" font-family={SANS} font-size="14" font-weight="900" fill={T}>Guía de migración del motor de búsqueda</text>
+
+        {[0, 1, 2, 3, 4].map((i) => (
+          <text x="24" y={78 + i * 13} font-family={SERIF} font-size="5.3" fill={T}>
+            {[
+              'Cuando un documento técnico se extiende de borde a borde en un monitor de escritorio, cada renglón acumula más de veinte palabras',
+              'seguidas y obliga al lector a girar el cuello de izquierda a derecha. Al terminar la línea en el extremo derecho, el ojo tiene',
+              'que cruzar toda la pantalla para encontrar el comienzo del renglón siguiente; como las líneas son largas y parecen idénticas,',
+              'es habitual volver a leer por error la misma línea o saltarse una entera sin notarlo hasta mitad de frase.',
+              'El problema no es el ancho de la pantalla, sino confundir el ancho del contenedor general con el ancho de la columna de lectura.',
+            ][i]}
+          </text>
+        ))}
+
+        <path d="M 332 92 C 230 116, 110 92, 24 104" stroke={ROJO} stroke-width="1.4" stroke-dasharray="3 2" fill="none" />
+        <circle cx="24" cy="104" r="2.8" fill={ROJO} />
+
+        <rect x="24" y="156" width="312" height="36" fill="#f0f0ec" stroke="#d4d4d0" />
+        <text x="32" y="177" font-family={SANS} font-size="8.5" fill={G}>bloque de código o tabla estirada al mismo ancho que la prosa</text>
+
+        {[0, 1, 2].map((i) => (
+          <text x="24" y={212 + i * 13} font-family={SERIF} font-size="5.3" fill={T}>
+            {[
+              'Incluso un texto breve de tres o cuatro oraciones parece pesado y burocrático cuando se despliega en renglones interminables',
+              'que no ofrecen puntos de apoyo visual ni pausas claras a lo largo del recorrido horizontal.',
+              'Quien consulta la documentación termina escaneando palabras sueltas en lugar de comprender el procedimiento.',
+            ][i]}
+          </text>
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      veredicto="bien"
+      rotulo="Contenedor amplio + columna de texto acotada a 65ch"
+      notas={[
+        {
+          ...pct(140, 96),
+          titulo: 'Columna acotada a 65ch',
+          texto: 'El texto corrido se limita a unos 65 caracteres por línea. Cada renglón se abarca en pocas fijaciones y el salto al siguiente es inmediato.',
+          zona: zona(22, 62, 214, 100),
+        },
+        {
+          ...pct(302, 96),
+          titulo: 'Margen activo para consulta',
+          texto: 'El espacio que libera el párrafo en pantallas anchas aloja el índice de la página o notas al margen sin competir con la lectura.',
+          zona: zona(248, 56, 92, 110),
+        },
+        {
+          ...pct(180, 206),
+          titulo: 'Las tablas sí pueden abrirse más',
+          texto: 'Acotar el párrafo a 65ch no encierra toda la página: una tabla comparativa o un diagrama puede ocupar un ancho mayor cuando lo necesita.',
+          zona: zona(22, 172, 314, 78),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="La misma página de documentación con la columna de lectura limitada a 65 caracteres, un índice lateral a la derecha y una tabla ancha debajo.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="14" y="14" width="332" height="252" fill="#fbfbf9" stroke={T} stroke-width="1.4" />
+        <text x="24" y="32" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>CONTENEDOR 1280 PX · COLUMNA DE LECTURA: MAX-WIDTH 65CH</text>
+        <text x="24" y="54" font-family={SANS} font-size="14" font-weight="900" fill={T}>Guía de migración del motor</text>
+
+        <rect x="24" y="64" width="210" height="92" fill={AMARILLO} opacity="0.22" />
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <text x="24" y={76 + i * 13} font-family={SERIF} font-size="9" fill={T}>
+            {[
+              'Limitar el párrafo a unos 65 caracteres',
+              'permite mantener un ritmo constante de',
+              'lectura sin perder el inicio del renglón',
+              'siguiente. El contenedor general sigue',
+              'siendo amplio, pero cada pieza usa el',
+              'ancho que conviene a su función.',
+            ][i]}
+          </text>
+        ))}
+
+        {/* Columna lateral de índice */}
+        <line x1="248" y1="62" x2="248" y2="156" stroke="#dcdcd6" />
+        <text x="258" y="74" font-family={SANS} font-size="7.5" font-weight="700" letter-spacing="0.08em" fill={G}>EN ESTA PÁGINA</text>
+        <text x="258" y="90" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>1. Requisitos</text>
+        <text x="258" y="105" font-family={SANS} font-size="8.5" fill={G}>2. Índices nuevos</text>
+        <text x="258" y="120" font-family={SANS} font-size="8.5" fill={G}>3. Pruebas de carga</text>
+        <text x="258" y="135" font-family={SANS} font-size="8.5" fill={G}>4. Reversión</text>
+
+        {/* Tabla que sí aprovecha el ancho */}
+        <rect x="24" y="174" width="312" height="72" fill="#ffffff" stroke={T} stroke-width="1.2" />
+        <rect x="24" y="174" width="312" height="20" fill="#222222" />
+        <text x="32" y="187" font-family={SANS} font-size="8" font-weight="700" fill={AMARILLO}>PARÁMETRO</text>
+        <text x="134" y="187" font-family={SANS} font-size="8" font-weight="700" fill="#ffffff">VERSIÓN 2</text>
+        <text x="234" y="187" font-family={SANS} font-size="8" font-weight="700" fill="#ffffff">VERSIÓN 3</text>
+        <text x="32" y="210" font-family={SANS} font-size="8.5" fill={T}>Límite por lote</text>
+        <text x="134" y="210" font-family={SANS} font-size="8.5" fill={G}>500 docs</text>
+        <text x="234" y="210" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>2.000 docs</text>
+        <line x1="24" y1="218" x2="336" y2="218" stroke="#e5e5e5" />
+        <text x="32" y="234" font-family={SANS} font-size="8.5" fill={T}>Tiempo de espera</text>
+        <text x="134" y="234" font-family={SANS} font-size="8.5" fill={G}>30 s</text>
+        <text x="234" y="234" font-family={SANS} font-size="8.5" font-weight="700" fill={T}>10 s (configurable)</text>
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'pruebalo' && (
+  <Instrumento
+    id={lab}
+    titulo="Instrumento · medida en caracteres frente a ancho en píxeles"
+    consigna="Ajusta el ancho del contenedor y el tamaño de la letra sobre el mismo párrafo. Observa cómo varía el número real de caracteres por renglón y qué ocurre con los espacios entre palabras al justificar una columna estrecha."
+    nota="Fija una medida de ~65 caracteres en A (por ejemplo, 520 px a 16 px) y en B consigue esos mismos ~65 caracteres con una letra de 21 px ensanchando el contenedor."
+  >
+    <svg slot="escenario" viewBox="0 0 640 300" role="img" aria-label="Párrafo de ensayo con regla superior en caracteres y franja óptima entre 45 y 75 caracteres.">
+      <rect width="640" height="300" fill="#fbfbf9" />
+      <rect x="36" y="24" width="440" height="248" fill="#ffffff" stroke="#222222" stroke-width="1.5" />
+      <rect x="280" y="24" width="165" height="248" fill="#eeff41" opacity="0.28" />
+      <text x="52" y="52" font-family={SANS} font-size="11" font-weight="700" fill="#222222">MEDIDA PROMEDIO: 64 CARACTERES POR LÍNEA (ÓPTIMA: 45–75)</text>
+      <text x="52" y="84" font-family={SERIF} font-size="15" fill="#222222">
+        <tspan x="52" dy="0">La medida de una columna no se define por los centímetros</tspan>
+        <tspan x="52" dy="24">que mide en el papel ni por los píxeles que ocupa en el</tspan>
+        <tspan x="52" dy="24">monitor, sino por cuántas letras y espacios caben en cada</tspan>
+        <tspan x="52" dy="24">renglón antes de que la vista deba regresar al margen.</tspan>
+      </text>
+    </svg>
+
+    <Guia
+      slot="guia"
+      pasos={pasos}
+      final="Guía completada. Prueba ahora cómo una misma caja de 500 px puede ser ancha para una letra de 13 px y estrecha para una de 24 px."
+    />
+
+    <Deslizador
+      lab={lab}
+      variable="ancho"
+      etiqueta="Ancho del contenedor"
+      min={180}
+      max={920}
+      paso={10}
+      valor={520}
+      unidad="px"
+      ayuda="Ancho físico de la columna en píxeles."
+    />
+    <Deslizador
+      lab={lab}
+      variable="tamano"
+      etiqueta="Tamaño de la letra"
+      min={13}
+      max={24}
+      paso={1}
+      valor={16}
+      unidad="px"
+      ayuda="Cambiar el cuerpo altera cuántos caracteres caben en el mismo contenedor."
+    />
+    <Opciones
+      lab={lab}
+      variable="alineacion"
+      etiqueta="Alineación del párrafo"
+      valor="izquierda"
+      opciones={[
+        { valor: 'izquierda', texto: 'Izquierda' },
+        { valor: 'justificada', texto: 'Justificada' },
+      ]}
+      ayuda="Prueba qué pasa con los espacios entre palabras al justificar una columna de menos de 40 caracteres."
+    />
+
+    <Fragment slot="avanzados">
+      <Interruptor
+        lab={lab}
+        variable="zona"
+        etiqueta="Marcar la zona de 45 a 75 caracteres"
+        valor={true}
+        ayuda="Resalta la franja donde una columna de lectura continua resulta más cómoda."
+      />
+    </Fragment>
+
+    <Fragment slot="pruebas">
+      <button type="button" class="dv-boton" data-preset='{"ancho":520,"tamano":16,"alineacion":"izquierda","zona":true}'>Columna óptima (~65 ch)</button>
+      <button type="button" class="dv-boton" data-preset='{"ancho":210,"tamano":16,"alineacion":"justificada","zona":true}'>Pasillo estrecho justificado (ríos)</button>
+      <button type="button" class="dv-boton" data-preset='{"ancho":900,"tamano":14,"alineacion":"izquierda","zona":true}'>Monitor de lado a lado (~125 ch)</button>
+      <button type="button" class="dv-boton" data-preset='{"ancho":700,"tamano":22,"alineacion":"izquierda","zona":true}'>Cuerpo grande en caja ancha (~63 ch)</button>
+    </Fragment>
+  </Instrumento>
+)}
+
+{paso === 'errores' && (
+  <div class="dv-especimenes">
+    <Instrumento
+      id={`${lab}-e1`}
+      titulo="Acota el párrafo en pantallas grandes sin desperdiciar la retícula"
+      comparar={false}
+      consigna="En este artículo el texto ocupa el 100 % del contenedor y supera los 120 caracteres por renglón. Reduce el ancho máximo de la columna de texto y aprovecha el espacio lateral para la ficha de resumen."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SERIF};font-size:13px;color:#222;`}>
+        <p style="margin:0;">Cuando la columna de texto se estira al ancho total de la pantalla, los renglones superan los cien caracteres y dificultan el regreso del ojo.</p>
+      </div>
+      <Deslizador
+        lab={`${lab}-e1`}
+        variable="medida"
+        etiqueta="Ancho máximo del párrafo"
+        min={55}
+        max={125}
+        paso={5}
+        valor={120}
+        unidad="ch"
+        ayuda="Lleva la columna al rango de 60–70 ch para liberar el margen lateral."
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e2`}
+      titulo="Elimina los «ríos de blanco» en una columna estrecha"
+      comparar={false}
+      consigna="Esta nota lateral mide apenas 28 caracteres por línea y está justificada a ambos lados, lo que abre huecos enormes entre palabras. Cambia la alineación o ensancha la medida para recuperar un espaciado uniforme."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SERIF};font-size:13px;color:#222;`}>
+        <p style="margin:0;">Justificar una columna estrecha abre huecos irregulares entre palabras.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e2`}
+        variable="modo"
+        etiqueta="Cómo resolver la columna estrecha"
+        valor="justificado-estrecho"
+        opciones={[
+          { valor: 'justificado-estrecho', texto: 'Justificada en 28 ch (con ríos)' },
+          { valor: 'izquierda-estrecho', texto: 'Alineada a la izquierda en 28 ch' },
+          { valor: 'justificado-ancho', texto: 'Justificada en 60 ch' },
+        ]}
+      />
+    </Instrumento>
+
+    <Instrumento
+      id={`${lab}-e3`}
+      titulo="Divide un formato apaisado en dos columnas cómodas"
+      comparar={false}
+      consigna="En un folleto horizontal, una sola columna produce renglones de 115 caracteres; cuatro columnas producen pasillos de 24 caracteres. Elige la división que deje cada columna en una medida legible."
+    >
+      <div slot="escenario" style={`padding:16px 18px;font-family:${SANS};font-size:13px;color:#222;`}>
+        <p style="margin:0;">El número de columnas de una retícula depende de cuántos caracteres caben en cada una.</p>
+      </div>
+      <Opciones
+        lab={`${lab}-e3`}
+        variable="columnas"
+        etiqueta="División del formato apaisado"
+        valor="1"
+        opciones={[
+          { valor: '1', texto: '1 columna (~115 ch)' },
+          { valor: '2', texto: '2 columnas (~54 ch c/u)' },
+          { valor: '4', texto: '4 columnas (~24 ch c/u)' },
+        ]}
+      />
+    </Instrumento>
+  </div>
+)}
+
+{paso === 'ejemplos' && (
+  <div class="dv-anotadas">
+    <Anotada
+      rotulo="Página de novela impresa (~62 caracteres por línea)"
+      notas={[
+        {
+          ...pct(180, 92),
+          titulo: 'Caja de ~62 caracteres',
+          texto: 'En una columna única de lectura inmersiva, entre 58 y 66 caracteres permiten sostener el ritmo durante decenas de páginas sin fatiga.',
+          zona: zona(58, 44, 244, 174),
+        },
+        {
+          ...pct(32, 130),
+          titulo: 'Márgenes generosos',
+          texto: 'El blanco que rodea la caja no es espacio perdido: acota la medida del renglón y deja lugar para sostener el libro con los pulgares.',
+          zona: zona(16, 36, 38, 196),
+        },
+        {
+          ...pct(180, 236),
+          titulo: 'Justificado sin ríos',
+          texto: 'Con más de diez palabras por renglón y partición silábica activa, la justificación reparte los espacios de forma imperceptible.',
+          zona: zona(58, 190, 244, 48),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página de novela con márgenes amplios y caja de texto de unos 62 caracteres por renglón.">
+        <rect width={W} height={H} fill="#f4f1ea" />
+        <rect x="34" y="18" width="292" height="244" fill="#fffdf8" stroke="#dcd6c8" />
+        <text x="180" y="38" text-anchor="middle" font-family={SERIF} font-size="8.5" letter-spacing="1.2" fill={G}>CAPÍTULO IV · LA MEDIDA DEL PÁGINA</text>
+        {[
+          'A media tarde la luz entraba sesgada por los ventanales del',
+          'taller y dibujaba sobre las mesas de pino la sombra exacta de',
+          'los componedores metálicos. El oficial ajustaba la mordaza a',
+          'veinticuatro cíceros antes de colocar la primera línea: sabía',
+          'por oficio que un renglón demasiado largo extravía la mirada',
+          'cuando regresa al margen, y que uno demasiado corto obliga a',
+          'partir las palabras en sílabas apretadas a cada paso.',
+          '   Bastaba sostener la prueba a cuarenta centímetros de los',
+          'ojos para comprobar si el bloque respiraba con naturalidad o',
+          'si pedía un punto menos de cuerpo para entrar en medida.',
+        ].map((linea, i) => (
+          <text x="64" y={62 + i * 16.5} font-family={SERIF} font-size="8.8" fill={T}>{linea}</text>
+        ))}
+        <text x="180" y="246" text-anchor="middle" font-family={SERIF} font-size="9" fill={G}>— 62 ch · 147 —</text>
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Crónica de periódico en columnas múltiples (40–48 caracteres)"
+      notas={[
+        {
+          ...pct(92, 134),
+          titulo: 'Medida más corta para varias columnas',
+          texto: 'Como recomienda Bringhurst, cuando varias columnas conviven en una página ancha su medida ideal baja a 40–50 caracteres.',
+          zona: zona(22, 68, 148, 186),
+        },
+        {
+          ...pct(180, 148),
+          titulo: 'Mediana clara entre bloques',
+          texto: 'La calle vertical impide que el ojo salte por accidente de la columna izquierda a la derecha al leer rápido.',
+          zona: zona(170, 68, 20, 186),
+        },
+        {
+          ...pct(268, 108),
+          titulo: 'Titular que abraza ambas columnas',
+          texto: 'El titular cruza el ancho completo con un cuerpo grande, mientras el texto baja a 9,5 pt para caber con holgura en cada columna.',
+          zona: zona(22, 24, 316, 40),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Recorte de periódico con titular a dos columnas y texto corrido de unos 44 caracteres por renglón.">
+        <rect width={W} height={H} fill="#f7f6f2" />
+        <line x1="22" y1="22" x2="338" y2="22" stroke={T} stroke-width="2" />
+        <text x="22" y="42" font-family={SERIF} font-size="16" font-weight="700" fill={T}>El archivo sonoro vuelve al barrio</text>
+        <text x="22" y="56" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>CRÓNICA URBANA · DOS COLUMNAS DE 44 CARACTERES</text>
+        <line x1="22" y1="64" x2="338" y2="64" stroke="#d4d4ce" />
+
+        {[
+          'Durante tres décadas las cintas',
+          'magnéticas permanecieron guardadas',
+          'en cajas de cartón numeradas bajo',
+          'la escalera de la biblioteca local.',
+          'Cada carrete conserva voces de los',
+          'vecinos que fundaron la emisora',
+          'comunitaria en el invierno de 1978.',
+          '   Hoy un equipo de cuatro técnicos',
+          'digitaliza las grabaciones a ritmo',
+          'constante para abrir un catálogo',
+          'público de consulta en sala.',
+        ].map((l, i) => (
+          <text x="22" y={82 + i * 15} font-family={SERIF} font-size="8.6" fill={T}>{l}</text>
+        ))}
+
+        <line x1="180" y1="72" x2="180" y2="252" stroke="#dcdcd4" />
+
+        {[
+          'La primera audición abierta reunió',
+          'a setenta personas en el patio del',
+          'antiguo teatro. Muchos reconocieron',
+          'de inmediato el timbre de sus abuelos',
+          'narrando cómo se trazaron las calles',
+          'del sector norte antes del asfalto.',
+          '   El catálogo permite buscar por',
+          'fecha, oficio o nombre de calle,',
+          'y acompaña cada audio con la ficha',
+          'manuscrita original del locutor.',
+          'Las sesiones seguirán en noviembre.',
+        ].map((l, i) => (
+          <text x="192" y={82 + i * 15} font-family={SERIF} font-size="8.6" fill={T}>{l}</text>
+        ))}
+      </svg>
+    </Anotada>
+
+    <Anotada
+      rotulo="Nota al margen y pie de figura (~30 caracteres en bandera)"
+      notas={[
+        {
+          ...pct(284, 118),
+          titulo: 'Excepción válida para textos breves',
+          texto: 'Un pie de foto o una glosa marginal de cuatro líneas puede medir 28–34 caracteres porque no exige lectura prolongada.',
+          zona: zona(228, 72, 112, 92),
+        },
+        {
+          ...pct(284, 184),
+          titulo: 'Siempre alineado a la izquierda',
+          texto: 'En medidas tan cortas se prescinde del justificado: el borde derecho en bandera mantiene constante el espacio entre palabras.',
+          zona: zona(228, 166, 112, 68),
+        },
+        {
+          ...pct(116, 146),
+          titulo: 'Contraste con el cuerpo principal',
+          texto: 'La columna principal conserva sus ~62 caracteres mientras la nota lateral usa un cuerpo menor y sin serifas.',
+          zona: zona(20, 44, 194, 198),
+        },
+      ]}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Página técnica con columna principal de 62 caracteres y nota al margen de 30 caracteres alineada a la izquierda.">
+        <rect width={W} height={H} fill="#ffffff" />
+        <rect x="16" y="16" width="328" height="248" fill="#fbfbf9" stroke="#dcdcd6" />
+        <text x="28" y="38" font-family={SANS} font-size="8.5" font-weight="700" fill={G}>MANUAL DE CAMPO · COLUMNA + GLOSA MARGINAL</text>
+
+        {[
+          'Las estaciones meteorológicas de alta montaña',
+          'registran presión, humedad relativa y ráfagas',
+          'de viento cada diez minutos. Los sensores van',
+          'protegidos dentro de una garita ventilada de',
+          'doble persiana que impide la radiación solar',
+          'directa sobre el termómetro seco.',
+          '   Antes de transmitir el paquete horario, el',
+          'registrador descarta las lecturas fuera de',
+          'rango y calcula la media móvil de tres tomas',
+          'consecutivas para evitar falsas alarmas.',
+        ].map((l, i) => (
+          <text x="28" y={62 + i * 16} font-family={SERIF} font-size="8.8" fill={T}>{l}</text>
+        ))}
+
+        <line x1="226" y1="52" x2="226" y2="236" stroke="#e2e2dc" />
+        <rect x="236" y="74" width="96" height="18" fill={AMARILLO} />
+        <text x="241" y="86" font-family={SANS} font-size="7.5" font-weight="700" fill={T}>NOTA TÉCNICA · 30 CH</text>
+        {[
+          'Si la garita supera',
+          'los 2.800 m de altitud,',
+          'calibre el barómetro',
+          'con la tabla B-4 antes',
+          'del primer registro',
+          'de la temporada.',
+        ].map((l, i) => (
+          <text x="236" y={106 + i * 13} font-family={SANS} font-size="8.2" fill="#444444">{l}</text>
+        ))}
+      </svg>
+    </Anotada>
+  </div>
+)}
+
+{paso === 'juego' && (
+  <Juego
+    slug={lab}
+    rondas={5}
+    descripcion="Cinco rondas breves sobre medida en caracteres, barrido de retorno, ríos de blanco y relación entre cuerpo y ancho de columna."
+  />
+)}
+
+<script>
+  import { conectar, svg, n } from '../../../lib/diseno-visual/estado';
+  import { guiar } from '../../../lib/diseno-visual/guia';
+  import { jugar, barajar, type Ronda } from '../../../lib/diseno-visual/juego';
+
+  const lab = 'ancho-de-linea';
+
+  const SANS = 'Roboto, Helvetica, Arial, sans-serif';
+  const SERIF = "'PT Serif', Georgia, serif";
+  const TINTA = '#222222';
+  const SEC = '#6f6f6f';
+  const COTA = '#b3261e';
+  const AMARILLO = '#eeff41';
+
+  // ── 1. Instrumento principal: ancho-de-linea ────────────────────
+  type E = {
+    ancho: number;
+    tamano: number;
+    alineacion: string;
+    zona: boolean;
+  };
+
+  const TEXTO_LAB =
+    'El ancho de una columna de lectura no se mide en centímetros ni en píxeles fijos, sino en cuántas letras y espacios entran en cada renglón. Cuando la línea reúne entre cuarenta y cinco y setenta y cinco caracteres, el ojo avanza con fijaciones regulares y regresa al margen izquierdo sin perder el hilo ni saltar de renglón.';
+
+  function partirEnLineas(texto: string, maxChars: number): string[] {
+    const palabras = texto.split(' ');
+    const lineas: string[] = [];
+    let actual = '';
+    for (const p of palabras) {
+      if (!actual) {
+        actual = p;
+      } else if (actual.length + 1 + p.length <= maxChars) {
+        actual += ' ' + p;
+      } else {
+        lineas.push(actual);
+        actual = p;
+      }
+    }
+    if (actual) lineas.push(actual);
+    return lineas;
+  }
+
+  function calcularMedida(e: E) {
+    const anchoChar = e.tamano * 0.49;
+    const padInterno = 28;
+    const util = Math.max(80, e.ancho - padInterno * 2);
+    const charsMax = Math.max(14, Math.round(util / anchoChar));
+    const lineas = partirEnLineas(TEXTO_LAB, charsMax);
+    const promedio = Math.round(
+      lineas.slice(0, Math.max(1, lineas.length - 1)).reduce((acc, l) => acc + l.length, 0) /
+        Math.max(1, lineas.length - 1),
+    );
+    return { charsMax, promedio, lineas, anchoChar, padInterno };
+  }
+
+  function pintar(destino: HTMLElement, e: E) {
+    const W = Math.max(destino.clientWidth, 300);
+    const escala = Math.min(1, (W - 24) / 920);
+    const { charsMax, promedio, lineas, anchoChar, padInterno } = calcularMedida(e);
+
+    const fs = Math.max(10.5, e.tamano * (W < 540 ? 0.78 : 0.88));
+    const lh = Math.round(fs * 1.48);
+    const cajaW = Math.min(W - 24, Math.max(140, Math.round(e.ancho * (W < 640 ? Math.min(0.88, escala + 0.18) : 0.66))));
+    const topCaja = 44;
+    const altoTexto = lineas.length * lh + 32;
+    const H = Math.max(250, topCaja + altoTexto + 34);
+
+    const raiz = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
+    raiz.setAttribute(
+      'aria-label',
+      `Columna de ${e.ancho} píxeles con letra de ${e.tamano} píxeles: promedio de ${promedio} caracteres por línea.`,
+    );
+    raiz.append(svg('rect', { width: W, height: H, fill: '#fbfbf9' }));
+
+    const xCaja = 16;
+    const optimo = promedio >= 45 && promedio <= 75;
+    const hayRios = e.alineacion === 'justificada' && promedio < 38;
+
+    // Etiqueta superior de estado
+    const estadoTxt = optimo
+      ? `MEDIDA CÓMODA · ~${promedio} CARACTERES POR LÍNEA`
+      : promedio < 45
+        ? `COLUMNA ESTRECHA · ~${promedio} CARACTERES POR LÍNEA`
+        : `RENGLÓN EXCESIVO · ~${promedio} CARACTERES POR LÍNEA`;
+
+    const etq = svg('text', {
+      x: xCaja,
+      y: 24,
+      'font-family': SANS,
+      'font-size': 11,
+      'font-weight': 700,
+      fill: optimo ? TINTA : COTA,
+    });
+    etq.textContent = `${estadoTxt}  (${e.ancho} px · cuerpo ${e.tamano} px)`;
+    raiz.append(etq);
+
+    // Caja contenedora
+    raiz.append(
+      svg('rect', {
+        x: xCaja,
+        y: topCaja,
+        width: cajaW,
+        height: altoTexto,
+        fill: '#ffffff',
+        stroke: optimo ? TINTA : COTA,
+        'stroke-width': optimo ? 1.6 : 1.8,
+      }),
+    );
+
+    const xTexto = xCaja + 16;
+    const anchoTextoMax = cajaW - 32;
+    const pxPorChar = anchoTextoMax / Math.max(14, charsMax);
+
+    // Franja de 45 a 75 caracteres
+    if (e.zona) {
+      const x45 = xTexto + 45 * pxPorChar;
+      const x75 = xTexto + 75 * pxPorChar;
+      const xIni = Math.min(xCaja + cajaW - 2, Math.max(xTexto, x45));
+      const xFin = Math.min(xCaja + cajaW - 2, Math.max(xIni, x75));
+      if (xFin > xIni + 4) {
+        raiz.append(
+          svg('rect', {
+            x: xIni,
+            y: topCaja + 1,
+            width: xFin - xIni,
+            height: altoTexto - 2,
+            fill: AMARILLO,
+            opacity: 0.32,
+          }),
+        );
+      }
+      if (x45 <= xCaja + cajaW + 40) {
+        const l45 = Math.min(W - 8, x45);
+        raiz.append(
+          svg('line', {
+            x1: l45,
+            y1: topCaja - 6,
+            x2: l45,
+            y2: topCaja + altoTexto + 6,
+            stroke: TINTA,
+            'stroke-width': 1,
+            'stroke-dasharray': '3 3',
+          }),
+        );
+        const t45 = svg('text', {
+          x: l45 + 3,
+          y: topCaja + altoTexto + 16,
+          'font-family': SANS,
+          'font-size': 9.5,
+          'font-weight': 700,
+          fill: TINTA,
+        });
+        t45.textContent = '45 ch';
+        raiz.append(t45);
+      }
+      if (x75 <= W - 12) {
+        raiz.append(
+          svg('line', {
+            x1: x75,
+            y1: topCaja - 6,
+            x2: x75,
+            y2: topCaja + altoTexto + 6,
+            stroke: TINTA,
+            'stroke-width': 1,
+            'stroke-dasharray': '3 3',
+          }),
+        );
+        const t75 = svg('text', {
+          x: x75 + 3,
+          y: topCaja + altoTexto + 16,
+          'font-family': SANS,
+          'font-size': 9.5,
+          'font-weight': 700,
+          fill: TINTA,
+        });
+        t75.textContent = '75 ch';
+        raiz.append(t75);
+      }
+    }
+
+    // Dibujar renglones y ríos si aplica
+    lineas.forEach((linea, idx) => {
+      const y = topCaja + 24 + idx * lh;
+      const esUltima = idx === lineas.length - 1;
+      const t = svg('text', {
+        x: xTexto,
+        y,
+        'font-family': SERIF,
+        'font-size': fs,
+        fill: TINTA,
+      });
+      if (e.alineacion === 'justificada' && !esUltima && linea.includes(' ')) {
+        t.setAttribute('textLength', String(Math.round(anchoTextoMax)));
+        t.setAttribute('lengthAdjust', 'spacing');
+      }
+      t.textContent = linea;
+      raiz.append(t);
+
+      // Marcar huecos/ríos cuando se justifica en estrecho
+      if (hayRios && !esUltima) {
+        const palabras = linea.split(' ');
+        if (palabras.length > 1 && palabras.length <= 5) {
+          let acum = 0;
+          for (let p = 0; p < palabras.length - 1; p++) {
+            acum += palabras[p].length;
+            const frac = (acum + p * 1.4) / Math.max(1, linea.length);
+            const rx = xTexto + frac * anchoTextoMax;
+            raiz.append(
+              svg('rect', {
+                x: rx - 3,
+                y: y - fs * 0.78,
+                width: 8,
+                height: fs * 0.92,
+                fill: COTA,
+                opacity: 0.22,
+              }),
+            );
+          }
+        }
+      }
+    });
+
+    // Si es excesivamente largo, dibujar la curva de retorno que se pierde
+    if (promedio > 82 && lineas.length >= 2) {
+      const y1 = topCaja + 24;
+      const y2 = topCaja + 24 + lh;
+      const xFin = xTexto + Math.min(anchoTextoMax, lineas[0].length * pxPorChar);
+      raiz.append(
+        svg('path', {
+          d: `M ${xFin} ${y1 - 3} C ${xTexto + anchoTextoMax * 0.6} ${y2 + 8}, ${xTexto + anchoTextoMax * 0.25} ${y1 - 6}, ${xTexto} ${y2 - 3}`,
+          fill: 'none',
+          stroke: COTA,
+          'stroke-width': 1.4,
+          'stroke-dasharray': '4 3',
+        }),
+      );
+    }
+
+    void anchoChar;
+    void padInterno;
+    destino.replaceChildren(raiz);
+  }
+
+  function describir(e: E): string {
+    const { promedio, lineas } = calcularMedida(e);
+    const cifra = `<b class="dv-cifra">~${n(promedio, 0)} caracteres por línea</b>`;
+    const rios =
+      e.alineacion === 'justificada' && promedio < 38
+        ? ' Además, al justificar una línea tan corta se abren <b class="dv-cifra">ríos de blanco</b> entre las palabras.'
+        : '';
+
+    if (promedio < 38) {
+      return `Con ${e.ancho} px de ancho y letra de ${e.tamano} px caben ${cifra} (${lineas.length} renglones). La columna es demasiado estrecha: el ojo salta de línea a cada instante.${rios}`;
+    }
+    if (promedio < 45) {
+      return `Medida de ${cifra}: funciona bien en composiciones de varias columnas o notas breves, aunque resulta algo corta para una columna única de lectura larga.${rios}`;
+    }
+    if (promedio <= 75) {
+      return `Medida equilibrada de ${cifra} (${lineas.length} renglones). Está dentro de la franja recomendada de <b class="dv-cifra">45 a 75 caracteres</b> para lectura continua en una sola columna.`;
+    }
+    if (promedio <= 90) {
+      return `Medida de ${cifra}: empieza a superar el límite cómodo de 75 caracteres. Si mantienes este ancho, conviene aumentar el interlineado para no perder el renglón al volver.`;
+    }
+    return `Medida excesiva de ${cifra}: el renglón es tan largo que el barrido de retorno hacia el margen izquierdo pierde precisión y cansa la vista.`;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${lab}"]`)) {
+    guiar<E>(raiz, [
+      (e) => e.ancho <= 240,
+      (e) => e.ancho <= 260 && e.alineacion === 'justificada',
+      (e) => e.alineacion === 'izquierda' && e.ancho >= 860,
+      (e) => {
+        const { promedio } = calcularMedida(e);
+        return promedio >= 55 && promedio <= 72 && e.tamano === 16;
+      },
+      (e) => e.tamano >= 22,
+    ]);
+    conectar<E>({ raiz, pintar, describir });
+  }
+
+  // ── 2. Especímenes de error ────────────────────────────────────
+  type E1 = { medida: number };
+  function pintarE1(d: HTMLElement, e: E1) {
+    const acotado = e.medida <= 75;
+    const anchoPct = Math.min(100, Math.round((e.medida / 125) * 100));
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SANS};color:#222;">
+        <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+          <div style="flex:1 1 ${anchoPct}%;max-width:${anchoPct}%;font-family:${SERIF};font-size:13px;line-height:1.5;color:#222;">
+            <p style="margin:0 0 6px;font-family:${SANS};font-size:10px;font-weight:700;letter-spacing:0.08em;color:${acotado ? '#222' : COTA};">COLUMNA PRINCIPAL · MAX-WIDTH: ${e.medida}CH</p>
+            <p style="margin:0;">Cuando limitas el ancho máximo del párrafo a unos 65 caracteres, el texto deja de estirarse sin control en monitores grandes y el margen derecho queda disponible para información de apoyo.</p>
+          </div>
+          ${
+            acotado
+              ? `<aside style="flex:0 0 140px;padding:8px 10px;background:#fbfbf9;border:1px solid #222;font-size:11px;line-height:1.35;">
+                  <strong style="display:block;font-size:10px;letter-spacing:0.06em;color:#6f6f6f;margin-bottom:4px;">FICHA LATERAL</strong>
+                  <span style="color:#222;">Tiempo de lectura: 4 min · Nivel intermedio</span>
+                </aside>`
+              : ''
+          }
+        </div>
+      </div>`;
+  }
+  function describirE1(e: E1) {
+    if (e.medida > 90) return `A <b class="dv-cifra">${e.medida} ch</b> el renglón cruza todo el contenedor y fatiga la lectura.`;
+    if (e.medida > 75) return `A <b class="dv-cifra">${e.medida} ch</b> la línea ya se acorta, pero todavía supera el umbral cómodo de 75 caracteres.`;
+    return `<b class="dv-cifra">${e.medida} ch</b>: la columna entra en la franja óptima y libera espacio limpio para la ficha lateral.`;
+  }
+
+  type E2 = { modo: string };
+  function pintarE2(d: HTMLElement, e: E2) {
+    const esJustEstrecho = e.modo === 'justificado-estrecho';
+    const esIzqEstrecho = e.modo === 'izquierda-estrecho';
+    const maxW = e.modo === 'justificado-ancho' ? '360px' : '165px';
+    const align = esIzqEstrecho ? 'left' : 'justify';
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};color:#222;">
+        <div style="max-width:${maxW};padding:10px 12px;border:1.5px solid ${esJustEstrecho ? COTA : '#222'};background:#fff;text-align:${align};font-size:13px;line-height:1.48;">
+          ${
+            esJustEstrecho
+              ? 'La&nbsp;&nbsp;&nbsp;&nbsp;observación&nbsp;&nbsp;&nbsp;de&nbsp;&nbsp;&nbsp;las<br/>estrellas&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;variables&nbsp;&nbsp;&nbsp;&nbsp;exige<br/>comparar&nbsp;&nbsp;&nbsp;&nbsp;su&nbsp;&nbsp;&nbsp;&nbsp;brillo&nbsp;&nbsp;&nbsp;con<br/>tres&nbsp;&nbsp;&nbsp;referencias&nbsp;&nbsp;&nbsp;vecinas.'
+              : 'La observación de las estrellas variables exige comparar su brillo aparente con tres referencias vecinas del mismo campo.'
+          }
+        </div>
+      </div>`;
+  }
+  function describirE2(e: E2) {
+    if (e.modo === 'justificado-estrecho') {
+      return 'En 28 caracteres con justificación forzada aparecen <b class="dv-cifra">ríos de blanco</b> que parten el párrafo en vertical.';
+    }
+    if (e.modo === 'izquierda-estrecho') {
+      return '<b class="dv-cifra">Espaciado uniforme</b>: si la columna debe ser estrecha, alinear a la izquierda conserva constante el espacio entre palabras.';
+    }
+    return '<b class="dv-cifra">Medida suficiente (60 ch)</b>: cuando caben diez o doce palabras por línea, el justificado reparte el blanco sin abrir grietas.';
+  }
+
+  type E3 = { columnas: string };
+  function pintarE3(d: HTMLElement, e: E3) {
+    const cols = Number(e.columnas);
+    const bien = cols === 2;
+    const chAprox = cols === 1 ? 115 : cols === 2 ? 54 : 24;
+    d.innerHTML = `
+      <div style="padding:16px 18px;font-family:${SERIF};color:#222;">
+        <p style="margin:0 0 8px;font-family:${SANS};font-size:10px;font-weight:700;letter-spacing:0.08em;color:${bien ? '#222' : COTA};">FORMATO APAISADO · ${cols} ${cols === 1 ? 'COLUMNA' : 'COLUMNAS'} (~${chAprox} CH POR LÍNEA)</p>
+        <div style="column-count:${cols};column-gap:16px;font-size:12px;line-height:1.45;border:1.5px solid ${bien ? '#222' : '#d4d4d0'};padding:10px 12px;background:#fff;">
+          El catálogo del jardín botánico organiza las especies según el estrato de bosque que habitan. Cada ficha indica la temporada de floración, el tipo de suelo y las aves que participan en la dispersión de sus semillas a lo largo de la cordillera.
+        </div>
+      </div>`;
+  }
+  function describirE3(e: E3) {
+    if (e.columnas === '1') return 'Una sola columna de <b class="dv-cifra">~115 caracteres</b> obliga a recorrer todo el pliego horizontal en cada renglón.';
+    if (e.columnas === '4') return 'Cuatro columnas de <b class="dv-cifra">~24 caracteres</b> fragmentan las frases en pasillos demasiado angostos.';
+    return '<b class="dv-cifra">Dos columnas de ~54 caracteres</b>: cada bloque queda dentro de la medida cómoda sin desaprovechar el formato horizontal.';
+  }
+
+  const especimenes: [string, (d: HTMLElement, e: never) => void, (e: never) => string][] = [
+    [`${lab}-e1`, pintarE1 as never, describirE1 as never],
+    [`${lab}-e2`, pintarE2 as never, describirE2 as never],
+    [`${lab}-e3`, pintarE3 as never, describirE3 as never],
+  ];
+  for (const [id, p, desc] of especimenes) {
+    for (const raiz of document.querySelectorAll<HTMLElement>(`[data-lab="${id}"]`)) {
+      conectar({ raiz, pintar: p, describir: desc });
+    }
+  }
+
+  // ── 3. Juego de 5 rondas ───────────────────────────────────────
+  function rondaUnidadMedida(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Columna limitada a 65ch (unos 62–66 caracteres por línea)',
+        describir: 'Párrafo acotado en caracteres que conserva su proporción al cambiar el cuerpo.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:12.5px;line-height:1.45;color:#222;max-width:250px;margin:0 auto;">
+          <span style="display:block;font-family:${SANS};font-size:9.5px;font-weight:700;color:#222;margin-bottom:4px;">MAX-WIDTH: 65CH · ~64 CARACTERES</span>
+          La medida se adapta al tamaño de la letra y mantiene entre nueve y once palabras por renglón.
+        </div>`,
+      },
+      {
+        texto: 'Columna al 100 % del monitor (más de 135 caracteres por línea)',
+        describir: 'Párrafo estirado de borde a borde con renglones larguísimos.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:9px;line-height:1.35;color:#222;">
+          <span style="display:block;font-family:${SANS};font-size:9.5px;font-weight:700;color:${COTA};margin-bottom:4px;">WIDTH: 100% · ~138 CARACTERES</span>
+          Cuando el párrafo ocupa todo el ancho de la ventana sin límite en caracteres, cada línea acumula más de veinte palabras y el ojo pierde la referencia al regresar al margen izquierdo.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: '¿Cuál de las dos columnas aplica la regla clásica de Robert Bringhurst (45 a 75 caracteres) para lectura continua en una columna?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La medida de lectura continua en una columna se sitúa entre 45 y 75 caracteres (con 60–66 como referencia ideal). Expresarla en unidades ch mantiene esa proporción aunque cambie la pantalla.',
+      repaso: 'Rango de 45 a 75 caracteres',
+    };
+  }
+
+  function rondaRiosJustificado(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Columna estrecha alineada a la izquierda (en bandera)',
+        describir: 'Nota lateral de 28 caracteres alineada a la izquierda con espacios regulares entre palabras.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:12px;line-height:1.45;color:#222;width:148px;margin:0 auto;">
+          Las muestras de arcilla se secan a la sombra durante cuarenta y ocho horas antes del horneado.
+        </div>`,
+      },
+      {
+        texto: 'Columna estrecha justificada a ambos lados',
+        describir: 'Nota lateral de 28 caracteres justificada con grandes huecos blancos entre palabras.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:justify;font-family:${SERIF};font-size:12px;line-height:1.45;color:#222;width:148px;margin:0 auto;">
+          Las&nbsp;&nbsp;&nbsp;&nbsp;muestras&nbsp;&nbsp;&nbsp;&nbsp;de<br/>arcilla&nbsp;&nbsp;&nbsp;&nbsp;se&nbsp;&nbsp;&nbsp;&nbsp;secan<br/>durante&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cuarenta<br/>y&nbsp;&nbsp;&nbsp;&nbsp;ocho&nbsp;&nbsp;&nbsp;&nbsp;horas.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Tienes una columna lateral donde solo caben 28 caracteres por línea. ¿Qué alineación evita los «ríos de blanco»?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Cuando caben tres o cuatro palabras por línea, forzar la justificación reparte todo el espacio sobrante en dos o tres huecos enormes. Alinear a la izquierda preserva el ritmo entre palabras.',
+      repaso: 'Ríos de blanco en columnas estrechas',
+    };
+  }
+
+  function rondaCuerpoYMedida(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Con letra de 16 px (~64 caracteres por renglón)',
+        describir: 'Caja de 500 px con cuerpo de 16 px y medida cómoda de 64 caracteres.',
+        es: true,
+        html: `<div style="padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:13px;line-height:1.45;color:#222;">
+          <span style="display:block;font-family:${SANS};font-size:9.5px;font-weight:700;color:#222;margin-bottom:4px;">CAJA DE 500 PX · LETRA DE 16 PX (~64 CH)</span>
+          En la misma caja de 500 px, un cuerpo de 16 px produce unos 64 caracteres por línea y se lee con fluidez.
+        </div>`,
+      },
+      {
+        texto: 'Con letra de 28 px (~34 caracteres por renglón)',
+        describir: 'La misma caja de 500 px con cuerpo de 28 px donde caben pocas letras por renglón.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:18px;line-height:1.25;color:#222;">
+          <span style="display:block;font-family:${SANS};font-size:9.5px;font-weight:700;color:${COTA};margin-bottom:4px;">CAJA DE 500 PX · LETRA DE 28 PX (~34 CH)</span>
+          El cuerpo grande reduce la medida a pocas palabras por renglón.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Ambas cajas miden exactamente 500 píxeles de ancho. ¿Cuál conserva una medida adecuada para leer varios párrafos seguidos?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'La misma caja en píxeles cambia de medida al modificar el tamaño de la fuente: a mayor cuerpo de letra, menos caracteres entran en cada renglón.',
+      repaso: 'Relación entre cuerpo y ancho de caja',
+    };
+  }
+
+  function rondaMulticolumna(): Ronda {
+    const ops = barajar([
+      {
+        texto: 'Dos columnas de ~48 caracteres separadas por una calle clara',
+        describir: 'Página apaisada dividida en dos columnas cómodas de 48 caracteres.',
+        es: true,
+        html: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 12px;background:#fff;border:1.5px solid #222;text-align:left;font-family:${SERIF};font-size:11px;line-height:1.4;color:#222;">
+          <div>En formatos anchos, dividir el texto en dos columnas acerca la medida al rango de 40 a 50 caracteres.</div>
+          <div>Cada columna se recorre con pocas fijaciones y el salto al renglón siguiente resulta seguro.</div>
+        </div>`,
+      },
+      {
+        texto: 'Una sola columna de ~115 caracteres que cruza todo el pliego',
+        describir: 'Página apaisada con una única línea larguísima de lado a lado.',
+        es: false,
+        html: `<div style="padding:10px 12px;background:#fff;border:1px solid #ccc;text-align:left;font-family:${SERIF};font-size:9.5px;line-height:1.4;color:#222;">
+          En formatos anchos, dejar una sola columna de más de cien caracteres obliga a recorrer toda la lámina horizontal en cada línea y multiplica los tropiezos al regresar al margen izquierdo.
+        </div>`,
+      },
+    ]);
+    return {
+      tipo: 'eleccion',
+      pregunta: 'Diseñas un catálogo impreso en formato horizontal. ¿Qué disposición mantiene una medida descansada para el lector?',
+      opciones: ops.map((o) => ({
+        texto: o.texto,
+        describir: o.describir,
+        pintar: (d) => {
+          d.innerHTML = o.html;
+        },
+      })),
+      correcta: ops.findIndex((o) => o.es),
+      porque: 'Para páginas de varias columnas, Bringhurst recomienda entre 40 y 50 caracteres por línea: así se aprovecha el formato apaisado sin estirar los renglones.',
+      repaso: 'Medida en retículas multicolumna',
+    };
+  }
+
+  function rondaAjusteMedida(): Ronda {
+    return {
+      tipo: 'ajuste',
+      pregunta: 'Este artículo en pantalla ancha tiene unos 120 caracteres por línea. Ajusta el ancho de la columna hasta dejar la medida dentro del rango cómodo de 55 a 70 caracteres.',
+      control: {
+        etiqueta: 'Medida de la columna de lectura',
+        min: 30,
+        max: 120,
+        paso: 5,
+        valor: 120,
+        unidad: 'ch',
+      },
+      pintar: (c, v) => {
+        const ok = v >= 55 && v <= 70;
+        const pctW = Math.max(32, Math.min(100, Math.round((v / 120) * 100)));
+        c.innerHTML = `
+          <div style="padding:14px;background:#fbfbf9;border:1px solid #dcdcd6;text-align:left;">
+            <p style="margin:0 0 6px;font-family:${SANS};font-size:10.5px;font-weight:700;color:${ok ? TINTA : COTA};">
+              MEDIDA ACTUAL: ${v} CARACTERES POR LÍNEA ${ok ? '· RANGO ÓPTIMO (55–70 CH)' : ''}
+            </p>
+            <div style="width:${pctW}%;padding:10px 12px;background:#ffffff;border:1.5px solid ${ok ? TINTA : COTA};font-family:${SERIF};font-size:12.5px;line-height:1.48;color:#222;">
+              La lectura fluida ocurre cuando la vista abarca el renglón en unas pocas fijaciones y vuelve al comienzo de la línea siguiente sin dudar.
+            </div>
+          </div>`;
+      },
+      cumple: (v) => v >= 55 && v <= 70,
+      falta: (v) =>
+        v > 70
+          ? `Con ${v} ch la línea sigue siendo demasiado larga. Acota más la columna.`
+          : `Con ${v} ch la columna quedó demasiado estrecha. Ábrela hasta al menos 55 ch.`,
+      porque: 'Entre 55 y 70 caracteres por línea, el párrafo combina buen ritmo horizontal con un barrido de retorno corto y seguro.',
+      repaso: 'Ajuste de la medida óptima',
+    };
+  }
+
+  const root = document.querySelector<HTMLElement>(`[data-juego="${lab}"]`);
+  if (root) {
+    jugar(root, () =>
+      barajar([
+        rondaUnidadMedida(),
+        rondaRiosJustificado(),
+        rondaCuerpoYMedida(),
+        rondaMulticolumna(),
+        rondaAjusteMedida(),
+      ]),
+    );
+  }
+</script>
