@@ -55,7 +55,7 @@ export interface SessionRecord {
   demosAndReferences: {
     name: string;
     detail: string;
-    /** Demo publicada en este mismo sitio */
+    /** Dirección de la demo publicada */
     url?: string;
   }[];
   featuredNodeIds: string[];
@@ -781,6 +781,7 @@ export const SESSIONS: SessionRecord[] = [
         name: 'Alborada',
         detail:
           'Minijuego arcade para evitar el estallido de pólvora y cuidar el sueño de un gato: gesto simple con postura ética.',
+        url: 'https://alborada-pico.netlify.app/',
       },
     ],
     featuredNodeIds: ['n16', 'n10', 'n11', 'n12', 'n13'],
