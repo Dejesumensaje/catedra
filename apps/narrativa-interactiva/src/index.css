@@ -1,0 +1,83 @@
+@import "allo-font";
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Allo", system-ui, -apple-system, sans-serif;
+  --font-serif: "Allo", system-ui, -apple-system, sans-serif;
+  --font-mono: "Allo", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --canvas: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-lavender: #F1EDFF;
+  --surface-paper: #F2EFE9;
+  --ink: #1F1147;
+  --ink-muted: #5B5275;
+  --accent-cobalt: #0D47FF;
+  --accent-yellow: #FFE94D;
+}
+
+@layer base {
+  html {
+    font-family: "Allo", system-ui, -apple-system, sans-serif;
+    font-variation-settings: "opsz" 14, "ROND" 45;
+    background-color: var(--canvas);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: "Allo", system-ui, -apple-system, sans-serif;
+    font-variation-settings: "opsz" 32, "ROND" 85;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+}
+
+.allo-display {
+  font-variation-settings: "opsz" 32, "ROND" 95;
+  letter-spacing: -0.025em;
+}
+
+.allo-sharp {
+  font-variation-settings: "opsz" 14, "ROND" 0;
+  font-feature-settings: "tnum" 1, "ss02" 1, "calt" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.allo-tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "ss02" 1, "ss03" 1;
+}
+
+/* Tactile keycap button inspired by Allo specimen */
+.keycap-surface {
+  border: 1.5px solid #1F1147;
+  border-bottom-width: 3px;
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-bottom-width 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 140ms ease;
+}
+
+.keycap-surface:active:not(:disabled) {
+  transform: translateY(1px);
+  border-bottom-width: 1.5px;
+}
+
+/* Studio specimen dot matrix for the conceptual map and cover */
+.specimen-grid {
+  background-color: #FAFAF8;
+  background-image: radial-gradient(rgba(31, 17, 71, 0.13) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
