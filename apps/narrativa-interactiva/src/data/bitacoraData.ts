@@ -340,7 +340,7 @@ export const CONCEPT_NODES: ConceptNode[] = [
     y: 470,
     summary: [
       'Frente a la ansiedad técnica —sentir que TouchDesigner, Unreal, Arduino o los shaders son barreras insalvables— el laboratorio propuso mirar la tecnología como creación humana al servicio de la expresión.',
-      'Inspirado en la idea de las "máquinas inútiles" (como una licuadora controlada por la intensidad del grito), se reivindicó el valor de crear artefactos sin utilidad productiva, capaces de cuestionar nuestra relación automática con las herramientas y recordar el privilegio de experimentar en la universidad.',
+      'Inspirado en la idea de las "máquinas inútiles" (como Blendie, la licuadora de Kelly Dobson que se enciende cuando alguien imita con la voz el sonido de su motor), se reivindicó el valor de crear artefactos sin utilidad productiva, capaces de cuestionar nuestra relación automática con las herramientas y recordar el privilegio de experimentar en la universidad.',
     ],
     betOrFinding:
       'Perderle el miedo a la complejidad técnica: con herramientas simples y código accesible hoy es posible enfocarse en lo verdaderamente difícil: decidir qué experiencia vale la pena construir.',
@@ -745,9 +745,9 @@ export const SESSIONS: SessionRecord[] = [
         url: '/demos/sisifo/',
       },
       {
-        name: 'Máquina inútil: licuadora activada por grito',
+        name: 'Blendie (Kelly Dobson, 2004)',
         detail:
-          'Ejemplo de creación expresiva sin utilidad práctica para replantear nuestra relación con la tecnología.',
+          'Una licuadora que gira cuando se le imita el sonido del motor con la voz: creación expresiva sin utilidad práctica para replantear nuestra relación con la tecnología.',
       },
       {
         name: 'Referentes de cooperación propuestos',
