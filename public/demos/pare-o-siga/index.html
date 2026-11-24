@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PARE O SIGA · dados que se lanzan con la mano</title>
-<meta name="description" content="Juego de dados para todo el salón: tiras con la mano frente a la webcam y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.">
+<meta name="description" content="Juego de dados para jugar con amigos en un mismo dispositivo: tiras con la mano frente a la webcam o con el mouse y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.">
 <link rel="canonical" href="https://catedra.dejesumensaje.com/demos/pare-o-siga/">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.webmanifest">
@@ -18,7 +18,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cátedra · William Montoya">
 <meta property="og:title" content="PARE O SIGA · dados que se lanzan con la mano">
-<meta property="og:description" content="Juego de dados para todo el salón: tiras con la mano frente a la webcam y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.">
+<meta property="og:description" content="Juego de dados para jugar con amigos en un mismo dispositivo: tiras con la mano frente a la webcam o con el mouse y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.">
 <meta property="og:url" content="https://catedra.dejesumensaje.com/demos/pare-o-siga/">
 <meta property="og:image" content="https://catedra.dejesumensaje.com/demos/pare-o-siga/og.png">
 <meta property="og:image:type" content="image/png">
@@ -32,7 +32,7 @@
   "@context": "https://schema.org",
   "@type": "VideoGame",
   "name": "PARE O SIGA",
-  "description": "Juego de dados para todo el salón: tiras con la mano frente a la webcam y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.",
+  "description": "Juego de dados para jugar con amigos en un mismo dispositivo: tiras con la mano frente a la webcam o con el mouse y decides si paras o sigues antes de que salga un 1. Gratis, en el navegador, sin instalar nada.",
   "url": "https://catedra.dejesumensaje.com/demos/pare-o-siga/",
   "image": "https://catedra.dejesumensaje.com/demos/pare-o-siga/og.png",
   "inLanguage": "es",
@@ -62,7 +62,7 @@
 :root{
   --cream:#F6EFE2; --paper:#FFFBF4; --ink:#161A36; --ink2:#454A6B; --line:#E4DAC7;
   --cobalt:#2448F0; --cobalt-d:#1733C2; --tomato:#FF5436; --tomato-d:#D93A1E; --sun:#FFC62B; --mint:#2FD3A0; --mint-d:#14A87A; --sky:#DCE5FF;
-  --bg:var(--cream); --fg:var(--ink); --panel:var(--paper); --panel-fg:var(--ink); --muted:#6D6F86;
+  --bg:var(--cream); --fg:var(--ink); --panel:var(--paper); --panel-fg:var(--ink); --muted:#65677E;
   --font:"Archivo","ArchivoLocal","Arial Black","Helvetica Neue",Arial,system-ui,sans-serif;
   --e-pop:cubic-bezier(.2,1.45,.35,1); --e-out:cubic-bezier(.16,.84,.3,1);
   --hard:0 .35rem 0 var(--ink); --r:1.4rem;
@@ -71,7 +71,7 @@
 body.r4{ --bg:#101648; --fg:#FFFBF4; --panel:#1B2466; --panel-fg:#FFFBF4; --muted:#A9B2E8; --line:#2C377E }
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:calc(min(1vw, 1.78vh));background:var(--bg)}
-body{font-family:var(--font);font-stretch:108%;font-weight:800;color:var(--fg);background:var(--bg);overflow:hidden;height:100vh;transition:background .9s var(--e-out),color .6s;-webkit-font-smoothing:antialiased;user-select:none}
+body{font-family:var(--font);font-stretch:108%;font-weight:700;color:var(--fg);background:var(--bg);overflow:hidden;height:100vh;transition:background .9s var(--e-out),color .6s;-webkit-font-smoothing:antialiased;user-select:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input,textarea{font:inherit;color:var(--ink)}
 .screen{position:fixed;inset:0;display:none}
@@ -84,7 +84,7 @@ input,textarea{font:inherit;color:var(--ink)}
 .btn:hover{transform:translateY(-.15rem);filter:brightness(1.06)}
 .btn:active{transform:translateY(.15rem)}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
-.btn.cobalt{background:var(--cobalt);color:#fff}.btn.tomato{background:var(--tomato);color:#fff}.btn.sun{background:var(--sun);color:var(--ink)}.btn.mint{background:var(--mint);color:var(--ink)}
+.btn.cobalt{background:var(--cobalt);color:#fff}.btn.tomato{background:var(--tomato-d);color:#fff}.btn.sun{background:var(--sun);color:var(--ink)}.btn.mint{background:var(--mint);color:var(--ink)}
 .btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 .2rem currentColor}
 .btn.small{font-size:1.1rem;padding:.6rem 1.2rem;border-radius:.8rem}
 .key{display:inline-block;white-space:nowrap;min-width:1.7em;padding:.1em .45em;border-radius:.35em;background:rgba(255,255,255,.22);box-shadow:inset 0 -.12em 0 rgba(0,0,0,.25);font-size:.62em;font-weight:900;text-align:center;vertical-align:middle}
@@ -92,9 +92,9 @@ input,textarea{font:inherit;color:var(--ink)}
 
 /* ---------- the signature: ¿PARE O SIGA? ---------- */
 .sig{display:flex;align-items:center;justify-content:center;gap:1.1rem;line-height:.9;font-weight:900;font-stretch:118%;letter-spacing:-.01em}
-.sig .b{display:inline-block;padding:.12em .28em .1em;border-radius:.2em;color:#fff}
-.sig .p{background:var(--tomato);transform:rotate(-3deg)}
-.sig .s{background:var(--cobalt);transform:rotate(2deg)}
+.sig .b{display:inline-block;font-weight:900;letter-spacing:-.02em}
+.sig .p{color:var(--tomato);transform:rotate(-3deg)}
+.sig .s{color:var(--cobalt);transform:rotate(2deg)}
 .sig .o{display:inline-grid;place-items:center;width:1.12em;height:1.12em;border-radius:50%;background:var(--sun);color:var(--ink);font-size:.66em;line-height:1;padding-top:.04em}
 .sig.land .b,.sig.land .o{animation:land .62s var(--e-pop) both}
 .sig.land .o{animation-delay:.09s}.sig.land .s{animation-delay:.16s}
@@ -103,8 +103,8 @@ input,textarea{font:inherit;color:var(--ink)}
 
 /* ---------- TITLE ---------- */
 #s-title{background:var(--cream);color:var(--ink)}
-#s-title .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.6rem}
-#s-title .sig{font-size:9.6rem}
+#s-title .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.6rem;padding:0 1.4rem}
+#s-title .sig{font-size:9.6rem;max-width:100%}
 #s-title .tag{font-size:2.1rem;font-weight:800;color:var(--ink2);text-align:center;max-width:60rem;line-height:1.25}
 #s-title .row{display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center}
 #s-title .btn{font-size:2.3rem;padding:1.5rem 3.4rem}
@@ -160,7 +160,7 @@ input,textarea{font:inherit;color:var(--ink)}
 .gcol header .cnt.opt{color:var(--muted)}
 .gcol .emptyB{grid-column:1/3;font-size:1.3rem;color:var(--muted);padding:1.2rem;border:.18rem dashed var(--line);border-radius:1rem;text-align:center;line-height:1.35}
 .gcol .tag{width:3.4rem;height:3.4rem;border-radius:.8rem;display:grid;place-items:center;color:#fff;font-size:2rem}
-.gA .tag{background:var(--cobalt)}.gB .tag{background:var(--tomato)}
+.gA .tag,.gB .tag{background:var(--ink);color:var(--paper)}
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;min-height:4rem}
 .chip{display:flex;align-items:center;gap:.4rem;padding:.35rem .4rem .35rem .8rem;border-radius:.9rem;background:#fff;box-shadow:0 .2rem 0 var(--line),inset 0 0 0 .15rem var(--line);font-size:1.45rem;cursor:grab;transition:transform .18s var(--e-out),box-shadow .15s}
 .chip:active{cursor:grabbing}
@@ -175,12 +175,12 @@ input,textarea{font:inherit;color:var(--ink)}
 .addrow input:focus{border-style:solid;border-color:var(--cobalt);background:#fff}
 /* group choice */
 .gc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.4rem;margin-top:1rem}
-.gcard{border-radius:2rem;padding:2rem 2.2rem;text-align:left;color:#fff;box-shadow:0 .5rem 0 var(--ink);transition:transform .15s var(--e-out)}
-.gcard:hover{transform:translateY(-.3rem) rotate(-.5deg)}
-.gcard.A{background:var(--cobalt)}.gcard.B{background:var(--tomato)}
+.gcard{border-radius:2rem;padding:2rem 2.2rem;text-align:left;color:var(--ink);background:var(--paper);box-shadow:0 .5rem 0 var(--ink),inset 0 0 0 .2rem var(--line);transition:transform .15s var(--e-out),box-shadow .15s}
+.gcard:hover{transform:translateY(-.3rem) rotate(-.5deg);box-shadow:0 .5rem 0 var(--ink),inset 0 0 0 .2rem var(--cobalt)}
+.gcard.A,.gcard.B{background:var(--paper)}
 .gcard h3{font-size:5rem;font-weight:900;font-stretch:120%;line-height:1}
 .gcard ol{margin:1.2rem 0 0 2rem;font-size:1.6rem;columns:2;line-height:1.5}
-.gcard .st{display:inline-block;margin-top:1.2rem;font-size:1.3rem;background:rgba(255,255,255,.2);padding:.4rem .9rem;border-radius:.7rem}
+.gcard .st{display:inline-block;margin-top:1.2rem;font-size:1.3rem;background:var(--sky);color:var(--ink);padding:.4rem .9rem;border-radius:.7rem}
 /* order */
 .or-wrap{display:grid;grid-template-columns:1fr 30rem;gap:2.4rem;align-items:start}
 .or-list{display:grid;gap:.7rem;counter-reset:o}
@@ -361,7 +361,7 @@ body.r4 .choice{padding:1.2rem 2rem 1.3rem}
 @keyframes slam{0%{opacity:0;transform:scale(1.9) translateY(-.2em);filter:blur(6px)}60%{opacity:1;filter:none}80%{transform:scale(.96)}100%{opacity:1;transform:none}}
 #decide .choices{display:flex;gap:3rem;pointer-events:auto}
 .choice{position:relative;width:27rem;border-radius:2rem;padding:1.6rem 2rem 1.7rem;color:#fff;text-align:center;box-shadow:0 .55rem 0 rgba(0,0,0,.4);transition:transform .25s var(--e-out),opacity .3s}
-.choice.pare{background:var(--tomato)}.choice.siga{background:var(--cobalt)}
+.choice.pare{background:var(--tomato-d)}.choice.siga{background:var(--cobalt)}
 body.r4 .choice.siga{box-shadow:0 .55rem 0 rgba(0,0,0,.4),inset 0 0 0 .25rem rgba(255,255,255,.4)}
 .choice:hover{transform:translateY(-.3rem)}
 .choice .t{display:block;font-size:6.4rem;font-weight:900;font-stretch:120%;line-height:.95}
@@ -411,13 +411,15 @@ html.mobile #outcome .win{font-size:5.6rem;white-space:normal}
 #bGrabar[hidden]{display:none}
 #bGrabar i{width:.9rem;height:.9rem;border-radius:50%;background:var(--tomato);animation:pulse 1.2s infinite}
 /* ranking on demand */
-#rankov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(8,10,34,.9)}
+#rankov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:#080A22}
 #rankov[hidden]{display:none}
-.rkbox{width:min(62rem,90vw);color:#fff}
+.rkbox{width:min(62rem,90vw);color:#fff;background:var(--plate);border-radius:2.4rem;padding:2.4rem 3rem 2rem;box-shadow:var(--plate-sh);display:flex;flex-direction:column;max-height:min(86vh, 72rem);overflow:hidden}
 .rkt{font-size:1.4rem;letter-spacing:.18em;opacity:.8;margin-bottom:1.2rem}
-.rklist{display:flex;flex-direction:column;gap:.2rem}
+.rklist{display:flex;flex-direction:column;gap:.2rem;min-height:0;overflow-y:auto;padding-right:.4rem;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.35) transparent}
+.rklist::-webkit-scrollbar{width:.6rem}
+.rklist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.3);border-radius:1rem}
 .rr{display:flex;align-items:center;gap:1.4rem;padding:.55rem .4rem;border-bottom:.12rem solid rgba(255,255,255,.12);font-size:2.4rem}
-.rr .p{width:3.6rem;font-size:1.6rem;opacity:.7}
+.rr .p{width:4.4rem;font-size:1.6rem;opacity:.7}
 .rr .n{flex:1;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rr .n svg{width:2.2rem;height:1.7rem;margin-right:.5rem;vertical-align:-.15rem}
 .rr .rd{display:flex;gap:.3rem}
@@ -427,7 +429,7 @@ html.mobile #outcome .win{font-size:5.6rem;white-space:normal}
 .rr.ldr .s{color:var(--sun)}
 .rr.prov .s{font-weight:600;opacity:.75}
 .rr .pv{font-size:1rem;letter-spacing:.12em;opacity:.75;margin-left:.8rem;font-weight:800;vertical-align:.2rem}
-.rkhint{margin-top:1.2rem;font-size:1.1rem;opacity:.6}
+.rkhint{margin-top:1.2rem;font-size:1.1rem;opacity:.72;text-align:center}
 /* the new-leader moment: typography, not a box */
 #banner{position:absolute;left:50%;top:26%;transform:translate(-50%,-50%);z-index:8;pointer-events:none;font-size:6rem;font-weight:900;font-stretch:118%;color:var(--sun);text-shadow:0 .3rem 0 var(--ink),0 .6rem 2rem rgba(0,0,0,.3);opacity:0;white-space:nowrap}
 #banner.go{animation:ban 1.8s var(--e-out) both}
@@ -451,11 +453,11 @@ html.mobile #outcome .win{font-size:5.6rem;white-space:normal}
 #card .rule{font-size:2.3rem;font-weight:800;max-width:70rem;line-height:1.3;opacity:.95}
 #card .rule b{color:var(--sun)}
 #card.r4card{background:#101648;color:#fff}
-#card .rule{font-size:2.2rem;font-weight:800;line-height:1.35;text-align:center;opacity:.92}
+#card .rule{font-size:2.2rem;font-weight:800;line-height:1.35;text-align:center;opacity:.92;text-wrap:balance}
 html.mobile #card .rule{font-size:1.9rem}
-#card.r4card .top3{display:flex;gap:3.2rem;justify-content:center;font-size:2rem}
+#card.r4card .top3{display:flex;flex-wrap:wrap;gap:.7rem 3.2rem;justify-content:center;font-size:2rem;max-width:82rem}
 #card.r4card .top3 div{display:flex;align-items:baseline;gap:.7rem;opacity:.85}
-#card.r4card .top3 div:first-child{color:var(--sun);opacity:1}
+#card.r4card .top3 div.lead{color:var(--sun);opacity:1}
 #card.r4card .top3 b{font-size:3rem}
 .crown{display:inline-block;width:1.1em;height:.8em;vertical-align:-.05em}
 #card .go{font-size:2.4rem;padding:1.3rem 3.2rem}
@@ -488,7 +490,7 @@ body.r4 #card.turn .rr.cur{background:rgba(255,255,255,.08)}
 #card.turn .rr.cur .n{text-decoration:none}
 
 /* final */
-#s-final,#s-both{background:var(--cream);color:var(--ink);overflow:auto}
+#s-final{background:var(--cream);color:var(--ink);overflow:auto}
 .fin{display:flex;flex-direction:column;align-items:center;padding:1.6rem 2rem 2rem;gap:1.1rem}
 .fin h2{font-size:3.4rem;font-weight:900;font-stretch:118%}
 .podium{display:flex;align-items:flex-end;gap:1.2rem;margin-top:1rem}
@@ -496,10 +498,10 @@ body.r4 #card.turn .rr.cur{background:rgba(255,255,255,.08)}
 .pod .nm{display:block;width:100%;font-size:2.8rem;font-weight:900;text-align:center;line-height:1.05}
 .pod .sc{font-size:2.2rem}
 .pod .st{width:100%;border-radius:1.6rem 1.6rem .6rem .6rem;display:flex;align-items:flex-start;justify-content:center;padding-top:.6rem;font-size:5.4rem;font-weight:900;color:#fff;box-shadow:0 .4rem 0 var(--ink);transform-origin:bottom;animation:grow .9s var(--e-pop) both}
-.pod.p1 .st{height:15rem;background:var(--cobalt);animation-delay:.5s}.pod.p2 .st{height:10.5rem;background:var(--tomato);animation-delay:.25s}.pod.p3 .st{height:7.5rem;background:var(--mint);color:var(--ink)}
-.pod.p2 .st{color:var(--ink)} /* white on tomato is only 3.2:1; ink is 5.3:1 */
+.pod.p1 .st{height:15rem;background:var(--sun);color:var(--ink);animation-delay:.5s}.pod.p2 .st{height:10.5rem;background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 .2rem var(--line),0 .4rem 0 var(--ink);animation-delay:.25s}.pod.p3 .st{height:7.5rem;background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 .2rem var(--line),0 .4rem 0 var(--ink)}
 .pod.p1 .nm{font-size:3.6rem}
 .fin .tie,#finBox .tie{font-size:2.6rem;font-weight:900;color:var(--ink);text-align:center}
+.fin .early,#finBox .early{max-width:46rem;margin:.2rem auto 1rem;font-size:1.5rem;color:var(--ink2);text-align:center;line-height:1.35}
 @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .fl{width:min(80rem,92vw);display:grid;gap:.5rem;grid-template-columns:1fr 1fr}
 .fl.one{grid-template-columns:1fr}
@@ -530,7 +532,7 @@ html.mobile .fl .r:only-child{width:100%}
 .howto .steps p{font-size:2rem;line-height:1.3;color:var(--ink)}
 .howto .ic{flex:none;width:6rem;height:6rem;border-radius:1.4rem;background:var(--cream);display:grid;place-items:center;color:var(--ink)}
 .howto .ic svg{width:4.2rem;height:4.2rem}
-.howto .chip{padding:.35rem .6rem;border-radius:.5rem;color:#fff;font-size:1.4rem;font-weight:900;transform:rotate(-3deg)}.howto .chip.p{background:var(--tomato)}
+.howto .chip{padding:.35rem .6rem;border-radius:.5rem;color:#fff;font-size:1.4rem;font-weight:900;transform:rotate(-3deg)}.howto .chip.p{background:var(--tomato-d)}
 .howto .first{margin-top:1.4rem;font-size:1.6rem;color:var(--ink)}
 .howto .more{margin-top:1.6rem;border-top:.14rem solid var(--line);padding-top:1rem}
 .howto .more summary{cursor:pointer;font-size:1.6rem;font-weight:900;color:var(--cobalt)}
@@ -545,6 +547,8 @@ html.mobile .only-pc,html:not(.mobile) .only-mob{display:none}
 #ps-debug{position:fixed;left:.6rem;top:19rem;opacity:.92;z-index:60;font:600 12px/1.45 ui-monospace,Menlo,Consolas,monospace;color:#d8ffd8;background:rgba(0,0,0,.75);padding:8px 10px;border-radius:8px;white-space:pre;pointer-events:none}
 #toast{position:fixed;left:50%;bottom:2rem;transform:translateX(-50%);z-index:50;background:var(--ink);color:var(--paper);font-size:1.4rem;padding:.7rem 1.3rem;border-radius:1rem;opacity:0;transition:opacity .25s;pointer-events:none}
 #toast.on{opacity:1}
+.tbstate{margin-left:auto;font-size:.92em;font-weight:900;opacity:.8}
+.tb .key+.tbstate{margin-left:.7rem}
 
 /* ---------- LEGIBILITY: every message over the scene sits on a solid PLATE — near-opaque navy, solid-fill text, a heavy soft shadow.
    Nothing depends on outlines or on the colour of what happens to be behind it. ---------- */
@@ -575,6 +579,7 @@ html.mobile #leadtag{right:6.4rem;top:1.9rem;gap:.5rem}
 html.mobile #leadtag svg{width:2rem;height:1.6rem}
 html.mobile #leadtag .n{font-size:1.6rem;max-width:10rem}
 html.mobile #leadtag b{font-size:2.2rem}
+html.mobile body.r4 #leadtag{display:none}
 html.mobile .dots{right:1.2rem;top:1.2rem;width:4.2rem;height:4.2rem}
 html.mobile #tray{right:1.2rem;top:6.2rem}
 html.mobile .tb{height:4.4rem;font-size:1.6rem}
@@ -595,6 +600,8 @@ html.mobile #hint{bottom:25rem;white-space:normal;width:90%}
 html.mobile #hint .big{font-size:2rem;justify-content:center}
 html.mobile #pill{left:50%;transform:translateX(-50%);bottom:15rem;grid-auto-flow:column;grid-template-columns:none;align-items:center;padding:.9rem 1.8rem}
 html.mobile #pill .hr{display:none}
+html.mobile body.r4 #pill .safe,html.mobile body.r4 #pill .tot{display:none}
+html.mobile body.r4 #pill{padding:.8rem 1.6rem}
 html.mobile #pill .row{display:flex;flex-direction:column-reverse;align-items:center;gap:.2rem;padding:0 1.3rem}
 html.mobile #pill span{padding:0;font-size:1rem;letter-spacing:.12em}
 html.mobile #pill .safe b,html.mobile #pill .tot b{font-size:3.2rem}
@@ -622,6 +629,7 @@ html.mobile #result.dbl .one{font-size:4.2rem}
 html.mobile #result.dbl .nm{font-size:2.2rem}
 html.mobile #banner{top:17%;font-size:3.8rem;white-space:normal;text-align:center;width:90%;padding:1rem 1.6rem 1.2rem}
 html.mobile #rankov .rr{font-size:2.2rem}
+html.mobile .rkbox{max-height:82vh;padding:2rem 1.8rem 1.6rem}
 html.mobile #card{padding:3rem 2rem}
 html.mobile #card.round .rn{font-size:5.4rem;gap:1rem}
 html.mobile #card .name2{font-size:3.4rem}
@@ -652,7 +660,7 @@ html.mobile .gcard h3{font-size:3.6rem}
 html.mobile .gcard ol{font-size:1.8rem}
 html.mobile .btn{font-size:2rem;padding:1.2rem 2.4rem}
 html.mobile .btn.small{font-size:1.6rem;padding:.9rem 1.4rem}
-html.mobile #s-title .sig{font-size:4.4rem}
+html.mobile #s-title .sig{font-size:clamp(3rem, 11.2vw, 4.4rem);gap:.7rem}
 html.mobile #s-title .btn{font-size:2.4rem;padding:1.5rem 3rem}
 html.mobile #s-title .btn.round{width:6rem;height:6rem;padding:0}
 html.mobile .ovl .cols{grid-template-columns:1fr;gap:0}
@@ -666,6 +674,7 @@ html.mobile .pod.p1 .nm{font-size:2.2rem}
 html.mobile .fl{grid-template-columns:1fr}
 html.mobile .fl .r{font-size:2rem}
 html.mobile #toast{font-size:1.8rem}
+html.mobile .tb .key{display:none}
 
 /* =====================================================================
    SETUP · designed as blocks, not as fields
@@ -690,7 +699,8 @@ html.mobile #toast{font-size:1.8rem}
 .setup .foot .next{font-size:1.9rem;padding:1.1rem 2.6rem}
 .setup .foot .next:disabled{opacity:1;background:var(--line);color:var(--muted);box-shadow:none}
 .setup .foot .back{font-size:1.3rem}
-.btn:focus-visible,.seg button:focus-visible,.mv:focus-visible,.ib:focus-visible,.pl-add:focus-visible,.linkb:focus-visible,.paste summary:focus-visible,.switch input:focus-visible+.tr,.hintskip:focus-visible{outline:.3rem solid var(--cobalt);outline-offset:.25rem}
+.btn:focus-visible,.seg button:focus-visible,.mv:focus-visible,.ib:focus-visible,.pl-add:focus-visible,.linkb:focus-visible,.paste summary:focus-visible,.switch input:focus-visible+.tr,.hintskip:focus-visible,.gcard:focus-visible,.chip:focus-visible{outline:.3rem solid var(--cobalt);outline-offset:.25rem}
+.choice:focus-visible,.dots:focus-visible,.tb:focus-visible{outline:.3rem solid var(--sun);outline-offset:.3rem}
 /* a block = a paper card with a header (title left, its own tool right) */
 .blk,.pl-block{background:var(--paper);border-radius:var(--r);padding:1.6rem 1.8rem 1.8rem;box-shadow:inset 0 0 0 .18rem var(--line)}
 .blk-h{display:flex;align-items:center;gap:1rem;min-height:3.4rem;margin-bottom:1.2rem}
@@ -710,7 +720,7 @@ html.mobile #toast{font-size:1.8rem}
 .pl-cols.one{grid-template-columns:1fr}
 .pl-cols.one #plCol2{display:none}
 .pl-in input{background:#fff}
-.pl-in input::placeholder{color:var(--muted);opacity:.55;font-weight:700}
+.pl-in input::placeholder{color:var(--muted);opacity:1;font-weight:700}
 .pl-add{display:block;text-align:center;font-size:1.4rem;padding:.9rem 1rem;margin-left:3.2rem;width:calc(100% - 6.6rem)}
 .pl-col .pl-add{width:calc(100% - 6.6rem)}
 .pl-add[hidden],.pl-groups[hidden]{display:none}
@@ -740,7 +750,7 @@ html.mobile #toast{font-size:1.8rem}
 .chip .ib{background:transparent;color:var(--muted)}
 .chip .mv{flex:none;display:inline-flex;align-items:center;gap:.3rem;height:2.4rem;padding:0 .7rem;border-radius:.7rem;font-size:1.2rem;font-weight:900}
 .chip .mv svg{width:1.3rem;height:1.3rem}
-.chip .mv.toA{background:var(--sky);color:var(--cobalt-d)}.chip .mv.toB{background:#FFE1D9;color:#B02A10}
+.chip .mv.toA,.chip .mv.toB{background:var(--cream);color:var(--ink);box-shadow:inset 0 0 0 .12rem var(--line)}
 .chip .mv:hover{filter:brightness(.96)}
 /* the way out while holding */
 #hint .hintbtn{pointer-events:auto;font-size:2.2rem;padding:1.1rem 3.4rem;animation:up .4s var(--e-out) both}
@@ -760,6 +770,7 @@ html.mobile .setup .head{flex-wrap:wrap;row-gap:.8rem}
 html.mobile .setup .head .step{margin-left:0;width:100%}
 html.mobile .step .st{font-size:1.5rem}html.mobile .setup .head .step .st i{width:2.6rem;height:2.6rem;font-size:1.3rem}
 html.mobile .step .st b{display:none}
+html.mobile .step .st.cur b{display:inline}
 html.mobile .pl-block,html.mobile .pl-block.wide{max-width:none}
 html.mobile .step .sep{width:1.6rem}
 html.mobile .blk,html.mobile .pl-block{padding:1.4rem 1.2rem 1.6rem}
@@ -830,35 +841,9 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
         <textarea id="pasteBox" aria-label="Lista de nombres, uno por línea" placeholder="Un nombre por línea&#10;Ana&#10;Beto&#10;…"></textarea>
         <div class="paste-a"><button class="btn cobalt small" id="bPaste">USAR LISTA</button><button class="linkb" id="bSample">Probar con nombres de ejemplo</button></div>
       </details>
-      <div class="pl-groups" id="plGroups"><span>¿Son muchos? Pueden jugar en dos grupos.</span><button class="btn ghost small" id="bPlGroups">Dividir en grupos</button></div>
     </div>
   </div>
   <div class="foot"><button class="btn ghost small back" aria-label="Atrás" data-go="title"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="msg" id="plMsg" aria-live="polite"></span><span class="spacer"></span><button class="btn cobalt next" id="bPlNext">Configurar partida →</button></div>
-</section>
-
-<!-- ASSIGN -->
-<section id="s-assign" class="screen setup">
-  <div class="head"><h2>Grupos</h2><nav class="step" aria-label="Pasos"></nav></div>
-  <div class="body">
-    <div class="as-tools">
-      <button class="btn sun small" id="bRandom" title="Repartir al azar"><svg class="ico"><use href="#i-shuffle"/></svg> AZAR</button>
-      <button class="btn ghost small" id="bSwap" disabled title="Intercambiar seleccionados"><svg class="ico"><use href="#i-swap"/></svg></button>
-      <button class="btn ghost small hidden" id="bJoin">JUNTAR</button>
-      <span class="msg hidden" id="asSel"></span>
-    </div>
-    <div class="as-grid">
-      <div class="gcol gA" data-g="A"><header><span class="tag">A</span><span class="cnt" id="cntA">0/8</span></header><div class="chips" id="chipsA"></div><div class="addrow"><input placeholder="+" data-add="A" maxlength="24" aria-label="Añadir al grupo A"></div></div>
-      <div class="gcol gB" data-g="B"><header><span class="tag">B</span><h3 id="hB" class="hidden"></h3><span class="cnt" id="cntB">0/8</span></header><div class="chips" id="chipsB"></div><div class="addrow"><input placeholder="+" data-add="B" maxlength="24" aria-label="Añadir al grupo B"></div></div>
-    </div>
-  </div>
-  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" data-go="players"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="msg" id="asMsg"></span><span class="spacer"></span><button class="btn cobalt next" id="bAsNext">Orden →</button></div>
-</section>
-
-<!-- GROUP CHOICE -->
-<section id="s-group" class="screen setup">
-  <div class="head"><h2>¿Qué grupo?</h2><nav class="step" aria-label="Pasos"></nav></div>
-  <div class="body"><div class="gc-grid" id="gcGrid"></div></div>
-  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" data-go="assign"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="spacer"></span><button class="btn ghost small hidden" id="bSeeBoth">A + B</button></div>
 </section>
 
 <!-- ORDER = CONFIGURAR PARTIDA -->
@@ -881,7 +866,7 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
       </section>
     </div>
   </div>
-  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" id="bOrBack"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="spacer"></span><button class="btn tomato next" id="bPlay">¡A JUGAR!</button></div>
+  <div class="foot"><button class="btn ghost small back" aria-label="Atrás" id="bOrBack"><span aria-hidden="true">←</span><span class="bk"> Atrás</span></button><span class="spacer"></span><button class="btn cobalt next" id="bPlay">¡A JUGAR!</button></div>
 </section>
 
 <!-- GAME -->
@@ -891,28 +876,27 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
     <div id="dim"></div>
     <div id="turntag"><span class="nm" id="ttName">—</span><span class="th" id="ttThrow"></span></div>
     <div id="leadtag"></div>
-    <div id="hint"></div>
+    <div id="hint" aria-live="polite"></div>
     <button id="cup" class="off" aria-label="Cubilete: mantén el dedo, agita el celular y suelta"><span class="cupb"><svg viewBox="0 0 40 40" aria-hidden="true"><g class="dd"><rect x="4" y="12" width="16" height="16" rx="3.5" transform="rotate(-12 12 20)"/><rect x="20" y="14" width="16" height="16" rx="3.5" transform="rotate(9 28 22)"/></g><g class="pp"><circle cx="12" cy="20" r="2"/><circle cx="24.5" cy="18.5" r="1.8"/><circle cx="31.5" cy="25.5" r="1.8"/></g></svg></span><span class="cupt">Mantén aquí</span></button>
     <div id="cambox"><canvas id="camcv" width="320" height="240"></canvas></div>
     <div id="pill" class="hidden"></div>
     <div id="race" class="hidden"></div>
-    <div id="result" class="hidden"></div>
+    <div id="result" class="hidden" aria-live="polite" aria-atomic="true"></div>
     <div id="decide" class="hidden"></div>
-    <div id="outcome" class="hidden"></div>
+    <div id="outcome" class="hidden" role="status" aria-live="polite" aria-atomic="true"></div>
     <div id="banner"></div>
-    <button id="bDots" class="dots" title="Opciones" aria-label="Opciones">⋯</button>
+    <button id="bDots" class="dots" title="Opciones" aria-label="Opciones" aria-expanded="false" aria-controls="tray">⋯</button>
     <div id="tray" hidden>
       <button class="tb" id="bRank">Ranking <span class="key">R</span></button>
-      <button class="tb cam-only" id="bSoplo">Soplo</button>
-      <button class="tb cam-only" id="bCam">Cámara</button>
-      <button class="tb" id="bEasy">Sencillo</button>
-      <button class="tb" id="bSound">Sonido <span class="key">V</span></button>
+      <button class="tb cam-only" id="bSoplo" aria-pressed="false" title="Acerca el puño a la boca y los dados brillan">Soplar dados <span class="tbstate" id="stSoplo">No</span></button>
+      <button class="tb cam-only" id="bCam" aria-pressed="false">Cámara <span class="tbstate" id="stCam">No</span></button>
+      <button class="tb" id="bEasy" aria-pressed="false">Sencillo <span class="tbstate" id="stEasy">No</span></button>
+      <button class="tb" id="bSound" aria-pressed="false">Sonido <span class="key">V</span><span class="tbstate" id="stSound">Sí</span></button>
       <button class="tb" data-help>Cómo se juega <span class="key">H</span></button>
-      <button class="tb" id="bFull">Pantalla <span class="key">F</span></button>
+      <button class="tb" id="bFull">Pantalla completa <span class="key">F</span></button>
       <button class="tb" id="bMenu">Menú <span class="key">M</span></button>
-      <button class="tb" id="bReport">Reportar problema</button>
     </div>
-    <div id="rankov" hidden><div class="rkbox"><div class="rkt" id="rkGrp"></div><div class="rklist" id="rkList"></div></div></div>
+    <div id="rankov" hidden role="dialog" aria-modal="true" aria-label="Ranking"><div class="rkbox"><div class="rkt" id="rkGrp"></div><div class="rklist" id="rkList"></div><div class="rkhint">Toca para cerrar</div></div></div>
     <button id="bGrabar" hidden title="Descargar la grabación del gesto (JSON)"><i></i><span id="grabN">0</span> ⤓</button>
   </main>
 </section>
@@ -920,7 +904,6 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
 
 <!-- FINAL -->
 <section id="s-final" class="screen"><div class="fin" id="finBox"></div></section>
-<section id="s-both" class="screen"><div class="fin" id="bothBox"></div></section>
 
 <!-- HELP -->
 <div class="ovl" id="help" hidden><div class="box howto">
@@ -936,8 +919,8 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
     <ul>
       <li>Lo guardado nunca se pierde. Un 1 solo te quita lo de la ronda en la que vas.</li>
       <li>La partida puede ser corta (2 rondas), normal (4) o larga (6). La última ronda es la <b>final</b>.</li>
-      <li>En la final, si vas detrás del líder no puedes parar: tiras hasta pasarlo o hasta que salga un 1.</li>
-      <li>Si eres el último en tirar y pasas al líder, ganas ahí mismo. Empatar no basta.</li>
+      <li>En la final, si no vas por delante del líder no puedes parar: tiras hasta superarlo o hasta que salga un 1.</li>
+      <li>Si eres el último en tirar y tu total supera al líder, ganas ahí mismo. Empatar no basta.</li>
     </ul>
     <h3>Cómo tirar</h3>
     <ul>
@@ -962,18 +945,18 @@ body.fast *{animation-duration:.05s!important;animation-delay:0s!important;trans
 <div class="ovl" id="menu" hidden><div class="box" style="max-width:40rem">
   <div class="row" style="flex-direction:column;align-items:stretch;margin-top:0">
     <button class="btn cobalt" id="mResume">SEGUIR</button>
-    <button class="btn ghost" id="mGroups">JUGADORES</button>
+    <button class="btn ghost" id="mEnd">TERMINAR PARTIDA</button>
     <button class="btn tomato" id="mAbandon">ABANDONAR</button>
   </div>
 </div></div>
 
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 <div id="ps-debug" hidden></div><!-- never id="dbg": MediaPipe's wasm calls window.dbg as its logger -->
 <video id="video" playsinline muted style="position:fixed;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0"></video>
 
 <script type="module">
 /* =====================================================================
-   PARE O SIGA — juego de dados grupal para el salón.
+   PARE O SIGA — juego de dados para jugar entre varias personas.
    · Motor de reglas puro (Engine) + estado guardado en localStorage.
    · Dados: three.js (dibujo) + cannon-es (física). El valor de cada dado se
      sortea con crypto.getRandomValues ANTES de lanzar; la física se
@@ -1153,7 +1136,7 @@ function seenAll() { try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || 
 const seen = k => !!seenAll()[k];
 function markSeen(k) { try { const o = seenAll(); o[k] = 1; localStorage.setItem(SEEN_KEY, JSON.stringify(o)); } catch (e) { } }
 const SAMPLE = ['Ana', 'Beto', 'Carla', 'Diego', 'Elena', 'Fabián', 'Gabi', 'Hugo', 'Inés', 'Julián', 'Karen', 'Luis', 'Mara', 'Nico', 'Olga', 'Pablo'];
-function freshApp() { return { v: 1, screen: 'title', names: Array(4).fill(''), people: [], groupOf: {}, order: { A: [], B: [] }, playing: null, game: null, results: { A: null, B: null }, nextId: 1, practiced: false, ftue: {} }; }
+function freshApp() { return { v: 1, screen: 'title', names: Array(4).fill(''), people: [], groupOf: {}, order: { A: [] }, playing: null, game: null, results: { A: null }, endedEarly: {}, nextId: 1, practiced: {}, ftue: {} }; }
 let APP = freshApp();
 function load() { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { APP = Object.assign(freshApp(), s); if (APP.game) delete APP.game.hist; } } catch (e) { } } // (v3 kept an undo history: dropped)
 function save() { try { localStorage.setItem(KEY, JSON.stringify(APP)); } catch (e) { console.warn('save', e); } }
@@ -1252,17 +1235,17 @@ function show(screen) {
   $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-' + screen));
   if (screen !== 'game') { $('#card').className = ''; document.body.classList.remove('r4'); }
   renderSteps(screen);
-  ({ title: renderTitle, players: renderPlayers, assign: renderAssign, group: renderGroup, order: renderOrder, game: enterGame, final: renderFinal, both: renderBoth })[screen]?.();
+  ({ title: renderTitle, players: renderPlayers, order: renderOrder, game: enterGame, final: renderFinal })[screen]?.();
 }
-/* the steps, named: Jugadores → (Grupos, only when there are two) → Partida. Where you are, where you came from, what is left. */
+/* the steps, named: Jugadores → Partida. Where you are, where you came from, what is left. */
 function renderSteps(screen) {
   const el = $(`#s-${screen} .step`); if (!el) return;
-  const two = activeGroups().length > 1 || screen === 'assign';
-  const steps = [['players', 'Jugadores'], ...(two ? [['assign', 'Grupos']] : []), ['order', 'Partida']];
-  const at = Math.max(0, steps.findIndex(([k]) => k === (screen === 'group' ? 'assign' : screen)));
+  const steps = [['players', 'Jugadores'], ['order', 'Partida']];
+  const at = Math.max(0, steps.findIndex(([k]) => k === screen));
   el.innerHTML = steps.map(([, label], i) => `<span class="st ${i < at ? 'done' : i === at ? 'cur' : ''}"${i === at ? ' aria-current="step"' : ''}><i>${i < at ? '✓' : i + 1}</i><b>${label}</b></span>`).join('<span class="sep" aria-hidden="true"></span>');
 }
 function toast(msg, ms = 1800) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), ms); }
+function syncToggle(id, on) { const b = $('#' + id); if (b) { b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); } const s = $('#st' + id.slice(1)); if (s) s.textContent = on ? 'Sí' : 'No'; }
 function pipHTML(v, cls = '') {
   const on = { 1: [4], 2: [2, 6], 3: [2, 4, 6], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] }[v] || [];
   return `<div class="pipdie ${v === 1 ? 'one' : ''} ${cls}">${[...Array(9)].map((_, i) => `<i class="${on.includes(i) ? 'on' : ''}"></i>`).join('')}</div>`;
@@ -1282,7 +1265,7 @@ $('#bContinue').onclick = () => { au(); askMotion(); show('game'); };
 $$('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
 
 /* players: 2 to 16 name slots, added or removed on the fly */
-const MAXP = 16, MINP = 2, GMAX = 8, GMIN = 2;
+const MAXP = 16, MINP = 2;
 function renderPlayers() {
   if (!APP.names.length) APP.names = Array(4).fill('');
   const n = APP.names.length, half = Math.max(8, Math.ceil(n / 2));
@@ -1306,10 +1289,11 @@ function plCheck() {
   const names = APP.names.map(s => (s || '').trim()), filled = names.filter(Boolean).length;
   const low = names.map(s => s.toLowerCase()), dup = new Set(low.filter((s, i) => s && low.indexOf(s) !== i));
   $$('#s-players .pl-in input').forEach(inp => inp.classList.toggle('dup', dup.has(inp.value.trim().toLowerCase())));
-  $('#plMsg').textContent = filled < MINP ? 'Necesitamos mínimo dos jugadores' : filled <= GMAX ? `${filled} jugadores` : `${filled} jugadores: se juega en dos grupos`;
-  $('#bPlNext').disabled = filled < MINP;
-  $('#bPlNext').textContent = filled > GMAX ? 'Armar los grupos →' : 'Configurar partida →'; // more than 8: groups are not optional
-  $('#plGroups').hidden = !(filled >= 4 && filled <= GMAX); // two groups: an option, never the main path
+  const dupNames = [...new Set([...dup].map(d => names[low.indexOf(d)]))];
+  const dupMsg = dupNames.length ? `Hay nombres repetidos: ${dupNames.join(', ')}. Añade un apellido.` : '';
+  $('#plMsg').textContent = dupMsg || (filled < MINP ? 'Necesitamos mínimo dos jugadores' : `${filled} jugadores`);
+  $('#bPlNext').disabled = filled < MINP || dup.size > 0;
+  $('#bPlNext').textContent = 'Configurar partida →';
 }
 $('#bPaste').onclick = () => {
   const lines = $('#pasteBox').value.split(/\r?\n|;|\t/).map(s => s.trim()).filter(Boolean);
@@ -1318,104 +1302,23 @@ $('#bPaste').onclick = () => {
   toast(lines.length > MAXP ? `Máximo ${MAXP}` : `${lines.length} ✓`);
 };
 $('#bSample').onclick = () => { APP.names = SAMPLE.slice(); save(); renderPlayers(); };
-$('#bClearNames').onclick = () => { APP.names = Array(4).fill(''); save(); renderPlayers(); $('#s-players input[data-i="0"]').focus(); };
-function defaultSplit(ids) { // up to 8: one group; 9–16: two balanced groups
-  APP.groupOf = {}; const a = ids.length <= GMAX ? ids.length : Math.ceil(ids.length / 2);
-  ids.forEach((id, i) => APP.groupOf[id] = i < a ? 'A' : 'B');
-}
+$('#bClearNames').onclick = () => { if (APP.names.some(n => (n || '').trim()) && !confirm('¿Borrar todos los nombres?')) return; APP.names = Array(4).fill(''); save(); renderPlayers(); $('#s-players input[data-i="0"]').focus(); };
 function syncPeople() { // the names typed → people (ids kept when the list did not change, so the order and the calibration survive)
   const names = APP.names.map(s => (s || '').trim()).filter(Boolean);
   if (names.length < MINP) return false;
   const same = APP.people.length === names.length && APP.people.every((p, i) => p.name === names[i]);
-  if (!same) { APP.people = names.map(n => ({ id: 'p' + (APP.nextId++), name: n })); APP.order = { A: [], B: [] }; APP.results = { A: null, B: null }; }
+  if (!same) { APP.people = names.map(n => ({ id: 'p' + (APP.nextId++), name: n })); APP.order = { A: [] }; APP.results = { A: null }; }
   return true;
 }
-// the main path: one group, straight to the game settings. More than 8 players: the groups step is required.
 $('#bPlNext').onclick = () => {
-  if (!syncPeople()) return; const ids = APP.people.map(p => p.id);
-  if (ids.length > GMAX) { defaultSplit(ids); save(); return show('assign'); }
-  APP.groupOf = {}; ids.forEach(id => APP.groupOf[id] = 'A'); APP.playing = 'A'; APP.results = { A: null, B: null }; save(); show('order');
+  if (G() && G().phase !== 'game_over' && !confirm('Los cambios en jugadores se aplican a una partida nueva. ¿Continuar?')) return;
+  if (!syncPeople()) return;
+  if (G() && G().phase !== 'game_over') { APP.game = null; APP.results = { A: null }; }
+  const ids = APP.people.map(p => p.id);
+  APP.groupOf = {}; ids.forEach(id => APP.groupOf[id] = 'A'); APP.playing = 'A'; APP.results = { A: null }; save(); show('order');
 };
-// the optional path: two balanced groups, then adjust them
-$('#bPlGroups').onclick = () => {
-  if (!syncPeople()) return; const ids = APP.people.map(p => p.id), a = Math.ceil(ids.length / 2);
-  APP.groupOf = {}; ids.forEach((id, i) => APP.groupOf[id] = i < a ? 'A' : 'B'); APP.results = { A: null, B: null }; save(); show('assign');
-};
-function groupOk(g) { const n = groupIds(g).length; return g === 'B' ? n === 0 || (n >= GMIN && n <= GMAX) : n >= GMIN && n <= GMAX; }
-function groupsValid() { const a = groupIds('A').length, b = groupIds('B').length; if (a === 0 && b >= GMIN && b <= GMAX) return true; return groupOk('A') && groupOk('B'); }
-const activeGroups = () => ['A', 'B'].filter(g => groupIds(g).length > 0);
-
-/* assignment */
-let asSel = { A: null, B: null };
-function renderAssign() {
-  for (const g of ['A', 'B']) {
-    const ids = groupIds(g);
-    $('#chips' + g).innerHTML = ids.map(id => `<div class="chip ${asSel[g] === id ? 'sel' : ''}" draggable="true" data-id="${id}"><span class="nm" title="Doble clic para corregir">${esc(personName(id))}</span><button class="ib" data-ren title="Corregir" aria-label="Corregir ${esc(personName(id))}">✎</button><button class="ib" data-del title="Quitar" aria-label="Quitar ${esc(personName(id))}">✕</button><button class="mv to${g === 'A' ? 'B' : 'A'}" data-mv aria-label="Pasar ${esc(personName(id))} al grupo ${g === 'A' ? 'B' : 'A'}"><svg><use href="#i-swap"/></svg>${g === 'A' ? 'B' : 'A'}</button></div>`).join('');
-    const n = ids.length, c = $('#cnt' + g), opt = g === 'B' && n === 0;
-    c.textContent = opt ? '—' : n + '/8'; c.classList.toggle('ok', !opt && n >= GMIN && n <= GMAX); c.classList.toggle('opt', opt);
-    if (opt) $('#chipsB').innerHTML = '<div class="emptyB">opcional</div>';
-  }
-  const nA = groupIds('A').length, nB = groupIds('B').length, ok = groupsValid(), total = nA + nB;
-  $('#bAsNext').disabled = !ok; $('#bAsNext').textContent = activeGroups().length > 1 ? 'Elegir grupo →' : 'Configurar partida →';
-  const bad = g => { const n = groupIds(g).length; return n > GMAX ? `${g}: máx. 8` : n < GMIN && !(g === 'B' && n === 0) && !(g === 'A' && n === 0 && nB) ? `${g}: mín. 2` : ''; };
-  $('#asMsg').textContent = ok ? '' : [bad('A'), bad('B')].filter(Boolean).join(' · ');
-  $('#bRandom').disabled = total < 4 && !nB;
-  $('#bJoin').classList.toggle('hidden', !(total <= GMAX && nB > 0));
-  $('#bSwap').disabled = !(asSel.A && asSel.B);
-}
-function moveTo(id, g) { APP.groupOf[id] = g; asSel = { A: null, B: null }; save(); renderAssign(); }
-function swapPeople(a, b) { const ga = APP.groupOf[a]; APP.groupOf[a] = APP.groupOf[b]; APP.groupOf[b] = ga; asSel = { A: null, B: null }; save(); renderAssign(); }
-function startRename(chip) {
-  const id = chip.dataset.id, nm = chip.querySelector('.nm'); if (!nm) return;
-  const inp = document.createElement('input'); inp.value = personName(id); inp.maxLength = 24; nm.replaceWith(inp); inp.focus(); inp.select();
-  const done = ok => { if (inp._d) return; inp._d = 1; const v = inp.value.trim(); if (ok && v) { APP.people.find(p => p.id === id).name = v; save(); } renderAssign(); };
-  inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') done(true); if (e.key === 'Escape') done(false); };
-  inp.onblur = () => done(true); inp.onclick = e => e.stopPropagation(); inp.draggable = false;
-}
-$('#s-assign').addEventListener('click', e => {
-  const chip = e.target.closest('.chip'); if (!chip || chip.querySelector('input')) return;
-  const id = chip.dataset.id, g = APP.groupOf[id];
-  if (e.target.closest('[data-mv]')) return moveTo(id, g === 'A' ? 'B' : 'A');
-  if (e.target.closest('[data-del]')) { APP.people = APP.people.filter(p => p.id !== id); delete APP.groupOf[id]; asSel = { A: null, B: null }; save(); renderAssign(); return; }
-  if (e.target.closest('[data-ren]') || e.target.closest('.nm') && e.detail >= 2) return startRename(chip);
-  if (e.target.closest('.nm') && asSel[g] === id) return startRename(chip); // second click on a selected name = rename
-  asSel[g] = asSel[g] === id ? null : id; renderAssign();
-});
-$$('[data-add]').forEach(inp => inp.onkeydown = e => {
-  if (e.key !== 'Enter') return; const v = inp.value.trim(); if (!v) return;
-  const id = 'p' + (APP.nextId++); APP.people.push({ id, name: v.slice(0, 24) }); APP.groupOf[id] = inp.dataset.add; inp.value = ''; save(); renderAssign();
-});
-let dragId = null;
-$('#s-assign').addEventListener('dragstart', e => { const c = e.target.closest('.chip'); if (!c) return; dragId = c.dataset.id; e.dataTransfer.setData('text/plain', dragId); e.dataTransfer.effectAllowed = 'move'; c.classList.add('drag'); });
-$('#s-assign').addEventListener('dragend', () => { dragId = null; $$('.gcol').forEach(c => c.classList.remove('over')); $$('.chip.drag').forEach(c => c.classList.remove('drag')); });
-$$('.gcol').forEach(col => {
-  col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('over'); });
-  col.addEventListener('dragleave', e => { if (!col.contains(e.relatedTarget)) col.classList.remove('over'); });
-  col.addEventListener('drop', e => {
-    e.preventDefault(); col.classList.remove('over');
-    const id = dragId || e.dataTransfer.getData('text/plain'); if (!id || !APP.groupOf[id]) return;
-    const onChip = e.target.closest('.chip'), g = col.dataset.g;
-    if (onChip && onChip.dataset.id !== id && APP.groupOf[onChip.dataset.id] !== APP.groupOf[id]) return swapPeople(id, onChip.dataset.id);
-    if (APP.groupOf[id] !== g) moveTo(id, g);
-  });
-});
-$('#bRandom').onclick = () => { const ids = shuffle(APP.people.map(p => p.id)); const half = Math.ceil(ids.length / 2); ids.forEach((id, i) => APP.groupOf[id] = i < half ? 'A' : 'B'); asSel = { A: null, B: null }; save(); renderAssign(); }; // always balanced (differ by at most 1)
-$('#bJoin').onclick = () => { APP.people.forEach(p => APP.groupOf[p.id] = 'A'); asSel = { A: null, B: null }; save(); renderAssign(); };
-$('#bSwap').onclick = () => { if (asSel.A && asSel.B) swapPeople(asSel.A, asSel.B); };
-$('#bAsNext').onclick = () => { if (!groupsValid()) return; const ag = activeGroups(); if (ag.length === 1) { APP.playing = ag[0]; save(); show('order'); } else show('group'); };
 function rnd() { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-
-/* group choice */
-function renderGroup() {
-  $('#gcGrid').innerHTML = activeGroups().map(g => {
-    const r = APP.results[g];
-    return `<button class="gcard ${g}" data-pick="${g}"><h3>GRUPO ${g}</h3><ol>${groupIds(g).map(id => `<li>${esc(personName(id))}</li>`).join('')}</ol>${r ? `<span class="st">✓ ${esc(r[0].name)} ${r[0].score}</span>` : ''}</button>`;
-  }).join('');
-  $$('[data-pick]').forEach(b => b.onclick = () => { APP.playing = b.dataset.pick; save(); show('order'); });
-  $('#bSeeBoth').classList.toggle('hidden', !(APP.results.A && APP.results.B));
-}
-$('#bSeeBoth').onclick = () => show('both');
 
 /* order */
 function curOrder() {
@@ -1423,7 +1326,7 @@ function curOrder() {
   ids.forEach(id => { if (!o.includes(id)) o.push(id); }); APP.order[g] = o; return o;
 }
 function renderOrder() {
-  const g = APP.playing; $('#orTitle').textContent = activeGroups().length > 1 ? 'Configurar partida · Grupo ' + g : 'Configurar partida';
+  $('#orTitle').textContent = 'Configurar partida';
   const o = curOrder();
   $('#orList').innerHTML = o.map((id, i) => `<div class="orow" draggable="true" data-id="${id}"><span class="n">${i + 1}</span><span class="nm">${esc(personName(id))}</span><button class="ib" data-up title="Subir">▲</button><button class="ib" data-dn title="Bajar">▼</button></div>`).join('');
   save(); renderSettings();
@@ -1442,19 +1345,20 @@ $('#orList').addEventListener('drop', e => {
   const o = APP.order[APP.playing].filter(x => x !== id); const at = r ? o.indexOf(r.dataset.id) : o.length; o.splice(at < 0 ? o.length : at, 0, id);
   APP.order[APP.playing] = o; save(); renderOrder();
 });
-$('#bOrBack').onclick = () => show(activeGroups().length > 1 ? 'group' : 'players');
+$('#bOrBack').onclick = () => show('players');
 $('#bShuffle').onclick = () => { APP.order[APP.playing] = shuffle(curOrder()); save(); renderOrder(); };
 /* the game settings: length (corta / normal / larga) and modo sencillo */
 function renderSettings() {
   const r = APP.rounds || 4;
   $$('#rdSeg [data-r]').forEach(b => { const on = +b.dataset.r === r; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
-  $('#swEasy').checked = EZ(); document.body.classList.toggle('easy', EZ()); $('#bEasy').classList.toggle('on', EZ());
+  $('#swEasy').checked = EZ(); document.body.classList.toggle('easy', EZ()); syncToggle('bEasy', EZ());
 }
 $('#rdSeg').onclick = e => { const b = e.target.closest('[data-r]'); if (!b) return; APP.rounds = +b.dataset.r; save(); renderSettings(); };
 function setEasy(on) { APP.easy = !!on; save(); renderSettings(); if (APP.screen === 'game') { toast(on ? 'Modo sencillo' : 'Modo normal'); renderGame(); } }
 $('#swEasy').onchange = e => setEasy(e.target.checked);
 $('#bEasy').onclick = () => setEasy(!EZ());
 $('#bPlay').onclick = () => {
+  if (G() && G().phase !== 'game_over' && !confirm('Ya hay una partida en pausa. ¿Empezar una nueva?')) return;
   au(); askMotion(); const g = APP.playing, o = curOrder();
   APP.game = Engine.create(o.map(id => ({ id, name: personName(id) })), { group: g, rounds: APP.rounds || 4 });
   save(); show('game'); if (!NOCAM) startCamera(true);
@@ -1937,8 +1841,8 @@ async function openCamera() {
   const s = await navigator.mediaDevices.getUserMedia({ audio: false, video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30, max: 30 }, facingMode: 'user' } });
   HT.stream = s; video.srcObject = s; await video.play().catch(() => { });
   if (!video.videoWidth) await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
-  HT.camOn = true; $('#bCam').classList.add('on');
-  s.getVideoTracks()[0].addEventListener('ended', () => { HT.camOn = false; HT.state = 'off'; $('#bCam').classList.remove('on'); bb('cam-ended');
+  HT.camOn = true; syncToggle('bCam', true);
+  s.getVideoTracks()[0].addEventListener('ended', () => { HT.camOn = false; HT.state = 'off'; syncToggle('bCam', false); bb('cam-ended');
     if (!HT.camRetried) { HT.camRetried = true; HT.stream = null; setTimeout(() => startCamera(false), 1200); } }); // the camera dropped (sleep, a cable): try once more
   if ('requestVideoFrameCallback' in video) video.requestVideoFrameCallback(onVideoFrame); else (function loop() { onVideoFrame(); if (HT.camOn) setTimeout(loop, 33); })();
 }
@@ -1952,16 +1856,16 @@ async function startCamera(fromGesture) {
 function showCamFail(e) {
   const n = e && e.name, M = {
     NotAllowedError: ['Cámara bloqueada', 'Permite la cámara en la barra de direcciones.'],
-    NotFoundError: ['No hay cámara', 'Conecta una webcam.'],
+    NotFoundError: ['No hay cámara', 'Conecta una cámara.'],
     NotReadableError: ['Cámara ocupada', 'Cierra Zoom, Meet o Teams.'],
-    InsecureError: ['La cámara necesita https', 'Abre <b>index.html</b>, <b>localhost</b> o un enlace <b>https://</b>.'],
-    VisionError: ['Sin detector de manos', 'Revisa la conexión (<b>cdn.jsdelivr.net</b>).']
-  }[n] || ['Sin cámara', esc((e && (e.name + ': ' + e.message)) || '')];
-  $('#cfTitle').textContent = M[0]; $('#cfText').innerHTML = M[1]; $('#camfail').hidden = false; mouseOnly = true; HT.state = 'off';
+    InsecureError: ['La cámara necesita https', 'Abre el juego desde un enlace <b>https://</b> o desde <b>localhost</b>.'],
+    VisionError: ['Sin detector de manos', 'Revisa la conexión a internet y vuelve a intentar.']
+  }[n] || ['Sin cámara', 'No pudimos abrir la cámara. Revisa los permisos y vuelve a intentar.'];
+  $('#cfTitle').textContent = M[0]; $('#cfText').innerHTML = M[1]; $('#camfail').hidden = false; mouseOnly = true; HT.state = 'off'; syncToggle('bCam', false);
 }
 $('#cfMouse').onclick = () => { $('#camfail').hidden = true; mouseOnly = true; renderGame(); };
 $('#cfRetry').onclick = () => { $('#camfail').hidden = true; startCamera(true); };
-$('#bCam').onclick = () => { if (HT.camOn) { HT.stream.getTracks().forEach(t => t.stop()); HT.camOn = false; HT.state = 'off'; $('#bCam').classList.remove('on'); mouseOnly = true; renderGame(); } else startCamera(true); };
+$('#bCam').onclick = () => { if (HT.camOn) { HT.stream.getTracks().forEach(t => t.stop()); HT.camOn = false; HT.state = 'off'; syncToggle('bCam', false); mouseOnly = true; renderGame(); } else startCamera(true); };
 const ALWAYS = params.has('alwaysdetect'); // benchmarks only
 function wantHands() { const g = G(); return gameEl.classList.contains('on') && g && (canThrow(g) || ALWAYS); }
 const camCtx = $('#camcv').getContext('2d');
@@ -2147,7 +2051,7 @@ const startsAtFist = b => { const c = GS.closedPos; if (!b || !c || isNaN(b.us))
 const doubtful = (b, now) => now - TRK.otherNear < 700 || (!!b && !startsAtFist(b));
 const partialBurst = (b, now) => !!b && b.armed && b.peak >= GEST.partL && movedOpen(b) && palmMoved() && (!b.end || now - b.end < GEST.after); // a half-open hand counts only after a strong swing that went somewhere
 function trace(...a) { GS.trace = GS.trace || []; GS.trace.push([Math.round(performance.now()), ...a].join(' ')); if (GS.trace.length > 600) GS.trace.shift(); } // always on (cheap): it goes into the problem report
-/* the BLACK BOX: the few events that explain a stuck game (grab, release + why, lost hand, timeouts, watchdog, errors). ⋯ → Reportar */
+/* the BLACK BOX: the few events that explain a stuck game (grab, release + why, lost hand, timeouts, watchdog, errors). Internal only. */
 const BB = [];
 function bb(...a) { BB.push([Math.round(performance.now()), ...a]); if (BB.length > 400) BB.shift(); }
 addEventListener('error', e => bb('error', String(e.message || e).slice(0, 200)));
@@ -2446,7 +2350,7 @@ function drawPreview(now) {
 /* ---------- SOPLO: the fist close to the mouth makes the dice sparkle. Off by default; the face detector loads only when it is on ---------- */
 const SOPLO = { on: false };
 function loadFace() { if (HT.fd || HT.faceP || !HT.mp) return; HT.faceP = createFace().then(f => { HT.fd = f; }).finally(() => { HT.faceP = null; }); }
-$('#bSoplo').onclick = () => { SOPLO.on = !SOPLO.on; $('#bSoplo').classList.toggle('on', SOPLO.on); if (SOPLO.on) loadFace(); };
+$('#bSoplo').onclick = () => { SOPLO.on = !SOPLO.on; syncToggle('bSoplo', SOPLO.on); if (SOPLO.on) loadFace(); };
 
 /* ---------- ?grabar: records the gesture features in memory for tuning; the button downloads them as JSON ---------- */
 const REC = params.has('grabar') ? { v: 1, ua: navigator.userAgent, gest: null, f: [], m: [], ev: [], t0: Date.now() } : null;
@@ -2564,7 +2468,9 @@ function cupIdle() { const c = $('#cup'); c.classList.remove('held'); c.querySel
 let busy = false, prevLeaders = '';
 const gameEl = $('#s-game');
 /* the practice throw: once, before round 1 of the first group; it never counts */
-const isPractice = g => !!g && g.phase === 'round_intro' && g.round === 1 && g.idx === 0 && !APP.practiced;
+const didPractice = g => !!(g && APP.practiced && (APP.practiced === true || APP.practiced[g.group]));
+const markPracticed = g => { if (!APP.practiced || typeof APP.practiced !== 'object') APP.practiced = {}; APP.practiced[g.group] = 1; save(); };
+const isPractice = g => !!g && g.phase === 'round_intro' && g.round === 1 && g.idx === 0 && !didPractice(g);
 const canThrow = g => !!g && !busy && (g.phase === 'await_throw' || isPractice(g));
 async function enterGame() {
   const g = G(); if (!g) return show('title');
@@ -2704,15 +2610,17 @@ function pillHTML(safe, pot, keepRows) {
 function renderState(anim) {
   const g = G(), p = Engine.cur(g), pill = $('#pill'), race = $('#race'); if (!p) return;
   const on = ['await_throw', 'await_decision', 'turn_over'].includes(g.phase);
-  pill.classList.toggle('hidden', !on);
   const same = anim && HUDV.pid === p.id && HUDV.pot !== null, safe = p.secured, pot = g.phase === 'turn_over' ? 0 : g.pot;
+  const compact = MOBILE && isFinal(g);
+  pill.classList.toggle('hidden', !on || (compact && !pot));
   if (same && HUDV.pot > 0 && pot === 0 && safe === HUDV.safe + HUDV.pot) { // PARE: the pot flows up into the lock, which punches
     pill.innerHTML = pillHTML(HUDV.safe, HUDV.pot); const fromSafe = HUDV.safe;
     const potEl = pill.querySelector('.pot'); void potEl.offsetWidth; potEl.classList.add('merge');
     setTimeout(() => { if ($('#pSafe') && G() === g) { tweenNum($('#pSafe'), fromSafe, safe, 450); pill.querySelector('.safe').classList.add('punch'); SFX.lock(); buzz(20); } }, D(430));
-    setTimeout(() => { if (G() === g && Engine.cur(g) === p && g.phase === 'turn_over') pill.innerHTML = pillHTML(safe, 0); }, D(1150));
+    setTimeout(() => { if (G() === g && Engine.cur(g) === p && g.phase === 'turn_over') { pill.innerHTML = pillHTML(safe, 0); if (compact) pill.classList.add('hidden'); } }, D(1150));
   } else {
     pill.innerHTML = pillHTML(safe, pot);
+    if (compact && !pot) pill.classList.add('hidden');
     if (same && HUDV.pot !== pot && pot > 0) { tweenNum($('#pPot'), HUDV.pot, pot, 650, v => '+' + v); tweenNum($('#pTot'), HUDV.safe + HUDV.pot, safe + pot, 650); pill.querySelector('.pot b').classList.add('pulse'); }
   }
   if (isFinal(g)) { race.classList.toggle('hidden', !on); renderRace(g, Engine.duel(g), same); } else race.classList.add('hidden');
@@ -2734,8 +2642,10 @@ function renderRace(g, d, anim) {
   ld.classList.toggle('end', d.best / M > 0.62); ld.classList.toggle('start', d.best / M < 0.3); // near an edge: the label grows inward
   const gap = $('#rGap');
   // behind, mid-turn: no PARE yet, so the second line says why (from the turn's start, every throw)
-  gap.innerHTML = `<span class="need">${st === 'leader' ? '<svg class="cr"><use href="#i-crown"/></svg>' : ''}${standLine(d)}</span>` +
-    (st === 'prov' ? '<span class="nop pv">Solo cuenta si dices PARE</span>' : g.phase === 'await_throw' && Engine.mustGo(g) ? '<span class="nop">Hasta pasar al líder no hay PARE</span>' : '');
+  const shortGap = MOBILE && d.bestNames.length > 1;
+  const gapLine = shortGap ? (d.diff > 0 ? `Le llevas <b>${d.diff}</b>` : d.diff === 0 ? 'Empatas con los líderes' : `Te faltan <b>${d.toPass}</b> para pasar`) : standLine(d);
+  gap.innerHTML = `<span class="need">${st === 'leader' ? '<svg class="cr"><use href="#i-crown"/></svg>' : ''}${gapLine}</span>` +
+    (st === 'prov' ? '<span class="nop pv">Solo cuenta si dices PARE</span>' : g.phase === 'await_throw' && Engine.mustGo(g) ? `<span class="nop">${MOBILE ? 'Aún no puedes parar' : 'Hasta pasar al líder no hay PARE'}</span>` : '');
   const key = p.id + st; if (st === 'prov' && anim && HUDV.lead !== key) { gap.classList.remove('flare'); void gap.offsetWidth; gap.classList.add('flare'); SFX.provLead(); }
   HUDV.lead = key;
   if (!anim) { void r.offsetWidth; els.forEach(e => { e.style.transition = ''; }); }
@@ -2752,12 +2662,13 @@ function renderLeader(g) {
 /* the full ranking: on the turn card and on demand (R); a round-4 total with points EN JUEGO is drawn light */
 function rankHTML(g) {
   const r4 = isFinal(g), rows = Engine.standings(g, r4), cur = Engine.cur(g), L = Engine.leaders(g, r4);
+  const tied = rank => rows.filter(x => x.rank === rank).length > 1;
   return rows.map(r => {
     const isCur = cur && cur.id === r.id && g.phase !== 'round_intro', lead = L.score > 0 && L.ids.includes(r.id);
-    return `<div class="rr${isCur ? ' cur' : ''}${lead ? ' ldr' : ''}${r.prov ? ' prov' : ''}"><span class="p">${L.score > 0 ? r.rank + 'º' : '–'}</span><span class="n">${lead ? '<svg><use href="#i-crown"/></svg>' : ''}${esc(r.name)}</span><span class="s">${r.score}</span></div>`;
+    return `<div class="rr${isCur ? ' cur' : ''}${lead ? ' ldr' : ''}${r.prov ? ' prov' : ''}"><span class="p">${L.score > 0 ? (tied(r.rank) ? '=' : '') + r.rank + 'º' : '–'}</span><span class="n">${lead ? '<svg><use href="#i-crown"/></svg>' : ''}${esc(r.name)}</span><span class="s">${r.score}</span></div>`;
   }).join('');
 }
-function renderRankOv() { const g = G(); if (!g) return; $('#rkGrp').textContent = activeGroups().length > 1 ? g.group : ''; $('#rkList').innerHTML = rankHTML(g); }
+function renderRankOv() { const g = G(); if (!g) return; $('#rkGrp').textContent = 'Ranking'; $('#rkList').innerHTML = rankHTML(g); }
 function toggleRank(on) { const o = $('#rankov'); on = on === undefined ? o.hidden : on; if (on) renderRankOv(); o.hidden = !on; }
 function closeRank() { const o = $('#rankov'); if (o && !o.hidden) o.hidden = true; }
 $('#rankov').onclick = () => toggleRank(false);
@@ -2809,8 +2720,11 @@ const dots = (r, n = 4) => `<span class="rdots">${rng(n).map(k => `<i class="${k
 function showRoundCard(g) {
   const c = $('#card'), r4 = isFinal(g);
   if (r4) {
-    const top = Engine.standings(g).slice(0, 3);
-    c.innerHTML = `<div class="rn">RONDA <b>${g.round}</b></div><div class="name2">FINAL</div><p class="rule">Si vas detrás del líder no puedes parar.<br>El último que pase al líder gana.</p><div class="top3">${top.map((r, i) => `<div>${i === 0 ? '<svg class="crown"><use href="#i-crown"/></svg>' : ''}${esc(r.name)}<b>${r.score}</b></div>`).join('')}</div><button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
+    const all = Engine.standings(g), max = all[0] ? all[0].score : 0;
+    const leaders = max > 0 ? all.filter(r => r.score === max) : [];
+    const top = [...leaders, ...all.filter(r => !leaders.includes(r)).slice(0, Math.max(0, 3 - leaders.length))];
+    const lead = r => max > 0 && r.score === max;
+    c.innerHTML = `<div class="rn">RONDA <b>${g.round}</b></div><div class="name2">FINAL</div><p class="rule">Si no vas por delante del líder, no puedes parar.<br>Si eres el último y superas al líder, ganas.<br><b>Empatar no basta.</b></p><div class="top3">${top.map(r => `<div class="${lead(r) ? 'lead' : ''}">${lead(r) ? '<svg class="crown"><use href="#i-crown"/></svg>' : ''}${esc(r.name)}<b>${r.score}</b></div>`).join('')}</div><button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
   } else c.innerHTML = `<div class="rn">RONDA <b>${g.round}</b></div>${dots(g.round, RN(g))}<button class="btn ghostw go" id="cardGo">EMPEZAR</button>`;
   c.className = 'on in ' + (r4 ? 'round r4card' : 'round'); SFX.card();
   $('#cardGo').onclick = () => act(() => Engine.beginRound(g));
@@ -2855,7 +2769,7 @@ function doThrow(tp, extra) {
 async function onPractice(values) { // it never counts: the sum, a tag, then round 1
   await sleep(250); showSum(values, true, 'PRÁCTICA');
   await sleep(1700);
-  APP.practiced = true; save(); busy = false; $('#result').classList.add('hidden');
+  markPracticed(G()); busy = false; $('#result').classList.add('hidden');
   if (ST.ready) { resetDice(); markOnes(null); setCamPose(defaultPose()); }
   renderGame();
 }
@@ -2869,7 +2783,7 @@ async function settle(values, extra, P) {
   const g = G();
   await sleep(P.drama ? 380 : 220);
   const bust = values.includes(1);
-  spotlight(true, bust && isFinal(g), bust ? (values[0] === 1 ? 0 : 1) : undefined); showSum(values, true);
+  spotlight(true, bust && (isFinal(g) || (values[0] === 1 && values[1] === 1))); showSum(values, true);
   if (bust) markOnes(values);
   const pre = { safe: Engine.cur(g).secured, pot: g.pot };
   try { Engine.roll(g, values[0], values[1], { extra, src: P.tp.src, strength: +P.tp.strength.toFixed(2) }); } catch (e) { console.error(e); busy = false; return; }
@@ -2982,41 +2896,40 @@ function showOutcome(g, anim) {
   }
   html += `<button class="btn ghostw next" id="bNext">${nextTxt}</button>`;
   el.innerHTML = html; el.className = 'in';
-  const bust = L.type === 'bust';
-  spotlight(bust, bust && isFinal(g));
+  const bust = L.type === 'bust', dbl = bust && L.d && L.d[0] === 1 && L.d[1] === 1;
+  spotlight(bust, bust && (isFinal(g) || dbl));
   $('#bNext').onclick = () => nextTurn();
 }
 let autoSeq = -1;
 function nextTurn() { const g = G(); if (!g || g.phase !== 'turn_over' || busy || (g.last && g.last.type === 'clinch')) return; $('#result').classList.add('hidden'); spotlight(false); act(() => Engine.next(g)); }
-function skipPractice() { const g = G(); if (!isPractice(g) || busy) return; if (ST.mode === 'hold') cancelHold(); APP.practiced = true; save(); renderGame(); }
+function skipPractice() { const g = G(); if (!isPractice(g) || busy) return; if (ST.mode === 'hold') cancelHold(); markPracticed(g); renderGame(); }
 
 /* final ranking */
-function finishGroup() {
-  const g = G(); APP.results[g.group] = Engine.standings(g); const quiet = APP.skipFanfare; APP.skipFanfare = false; save(); show('final'); if (!quiet) SFX.fanfare();
+function finishGroup(early = false) {
+  const g = G(); if (!g) return;
+  APP.results[g.group] = Engine.standings(g);
+  APP.endedEarly = APP.endedEarly || {};
+  if (early) APP.endedEarly[g.group] = 1; else delete APP.endedEarly[g.group];
+  const quiet = APP.skipFanfare; APP.skipFanfare = false; save(); show('final'); if (!quiet) SFX.fanfare();
 }
 function renderFinal() {
   const g = G(); if (!g) return show('title');
-  const rows = APP.results[g.group] || Engine.standings(g), other = g.group === 'A' ? 'B' : 'A', hasOther = groupIds(other).length >= GMIN;
+  const rows = APP.results[g.group] || Engine.standings(g);
   // the pedestal's height and the crown follow the RANK, not the slot: a tie for first is two tall pedestals with two crowns
   const pod = [rows[1], rows[0], rows[2]].map(r => r ? `<div class="pod p${r.rank}"><span class="nm">${r.rank === 1 ? '<svg class="crown" style="width:3rem;height:2.2rem"><use href="#i-crown"/></svg> ' : ''}${esc(r.name)}</span><span class="sc">${r.score}</span><div class="st">${r.rank}º</div></div>` : '').join('');
-  const tops = rows.filter(r => r.rank === 1), tie = tops.length > 1 ? `<p class="tie">¡Empate! Ganan ${esc(joinNames(tops.map(r => r.name)))}</p>` : '';
-  $('#finBox').innerHTML = `<div class="sig land" style="font-size:2.4rem"><span class="b p">PARE</span><span class="o">O</span><span class="b s">SIGA</span></div>${activeGroups().length > 1 ? `<h2>${g.group}</h2>` : ''}${tie}<div class="podium">${pod}</div>
-    <div class="fl">${rows.slice(3).map(r => `<div class="r"><span class="p">${r.rank}º</span><span class="n">${esc(r.name)}</span><span class="sc">${r.score}</span></div>`).join('')}</div>
+  const noScores = rows.every(r => !r.score);
+  const tops = rows.filter(r => r.rank === 1), tie = !noScores && tops.length > 1 ? `<p class="tie">¡Empate! Ganan ${esc(joinNames(tops.map(r => r.name)))}</p>` : '';
+  const early = APP.endedEarly && APP.endedEarly[g.group] ? '<p class="early">Partida terminada antes de tiempo. El pozo en juego no cuenta.</p>' : '';
+  const empty = noScores ? '<p class="tie">Todavía no hay puntajes.</p>' : `<div class="podium">${pod}</div>
+    <div class="fl">${rows.slice(3).map(r => `<div class="r"><span class="p">${r.rank}º</span><span class="n">${esc(r.name)}</span><span class="sc">${r.score}</span></div>`).join('')}</div>`;
+  $('#finBox').innerHTML = `<div class="sig land" style="font-size:2.4rem"><span class="b p">PARE</span><span class="o">O</span><span class="b s">SIGA</span></div>${early}${tie}${empty}
     <div class="row" style="display:flex;gap:1.2rem;margin-top:1rem;flex-wrap:wrap;justify-content:center">
-      ${hasOther && !APP.results[other] ? `<button class="btn tomato" id="bOther" style="font-size:2rem">GRUPO ${other} →</button>` : hasOther ? `<button class="btn cobalt" id="bBoth" style="font-size:2rem">A + B</button>` : `<button class="btn cobalt" id="bAgain" style="font-size:2rem">OTRA VEZ</button>`}
-      <button class="btn ghost" id="bFinGroups">${activeGroups().length > 1 ? '← GRUPOS' : '← JUGADORES'}</button></div>`;
+      <button class="btn cobalt" id="bAgain" style="font-size:2rem">OTRA VEZ</button>
+      <button class="btn ghost" id="bFinGroups">← JUGADORES</button></div>`;
   // names break between words only: while the longest word overflows its pedestal, the name gets smaller («Guadalupe», never «Guadalu / pe»)
   $$('#finBox .pod .nm').forEach(el => { let fs = parseFloat(getComputedStyle(el).fontSize); for (let k = 0; k < 30 && el.scrollWidth > el.clientWidth + 1; k++) el.style.fontSize = (fs *= 0.94) + 'px'; });
-  const ba = $('#bAgain'); if (ba) ba.onclick = () => { APP.results[g.group] = null; APP.playing = g.group; save(); show('order'); };
-  const bo = $('#bOther'); if (bo) bo.onclick = () => { APP.playing = other; save(); show('order'); };
-  const bb = $('#bBoth'); if (bb) bb.onclick = () => show('both');
-  $('#bFinGroups').onclick = () => show(activeGroups().length > 1 ? 'group' : 'players');
-}
-function renderBoth() {
-  const col = g => { const rows = APP.results[g]; return `<div><h3>${g}</h3><div class="fl" style="width:100%">${rows ? rows.map(r => `<div class="r"><span class="p">${r.rank}º</span><span class="n">${r.rank === 1 ? '<svg class="crown"><use href="#i-crown"/></svg> ' : ''}${esc(r.name)}</span><span class="sc">${r.score}</span></div>`).join('') : '<p>—</p>'}</div></div>`; };
-  $('#bothBox').innerHTML = `<div class="sig" style="font-size:3.2rem"><span class="b p">PARE</span><span class="o">O</span><span class="b s">SIGA</span></div><div class="both">${col('A')}${col('B')}</div><div style="display:flex;gap:1rem"><button class="btn ghost" id="bBothBack">← GRUPOS</button><button class="btn cobalt" id="bBothNew">NUEVA</button></div>`;
-  $('#bBothBack').onclick = () => show('group');
-  $('#bBothNew').onclick = () => { if (confirm('¿Empezar de cero? (los nombres se conservan)')) { const names = APP.names; APP = freshApp(); APP.names = names; save(); show('players'); } };
+  const ba = $('#bAgain'); if (ba) ba.onclick = () => { APP.results[g.group] = null; if (APP.endedEarly) delete APP.endedEarly[g.group]; APP.playing = g.group; save(); show('order'); };
+  $('#bFinGroups').onclick = () => show('players');
 }
 
 /* help, menu, options tray, keys */
@@ -3024,19 +2937,21 @@ function renderBoth() {
 function openHelp(first) { first = first === true; $('#helpFirst').hidden = !first; $('#bHelpClose').textContent = first ? '¡A PROBAR!' : 'ENTENDIDO'; $('#help').hidden = false; }
 $$('[data-help]').forEach(b => b.onclick = () => openHelp());
 $('#bHelpClose').onclick = () => { $('#help').hidden = true; markSeen('rules'); };
-const openMenu = () => { openMenuLabel(); $('#menu').hidden = false; };
+const openMenu = () => { $('#menu').hidden = false; };
 $('#bMenu').onclick = openMenu;
 $('#mResume').onclick = () => { $('#menu').hidden = true; };
-$('#mGroups').onclick = () => { $('#menu').hidden = true; if (ST.mode === 'hold') cancelHold(); show(activeGroups().length > 1 ? 'group' : 'players'); };
-const openMenuLabel = () => { $('#mGroups').textContent = activeGroups().length > 1 ? 'GRUPOS' : 'JUGADORES'; };
-$('#mAbandon').onclick = () => { if (!confirm('¿Abandonar la partida?')) return; $('#menu').hidden = true; APP.game = null; save(); show('group'); };
-$('#bSound').onclick = () => { AU.muted = !AU.muted; $('#bSound').classList.toggle('on', !AU.muted); rumbleSet(0); toast(AU.muted ? '🔇' : '🔊'); };
-$('#bSound').classList.add('on');
+$('#mEnd').onclick = () => {
+  const g = G(); if (!g || !confirm('¿Terminar la partida y ver los resultados? El pozo en juego no cuenta.')) return;
+  $('#menu').hidden = true; g.pot = 0; g.phase = 'game_over'; APP.skipFanfare = true; save(); finishGroup(true);
+};
+$('#mAbandon').onclick = () => { if (!confirm('¿Abandonar la partida? No se guardan resultados.')) return; $('#menu').hidden = true; APP.game = null; save(); show('players'); };
+$('#bSound').onclick = () => { AU.muted = !AU.muted; syncToggle('bSound', !AU.muted); rumbleSet(0); toast(AU.muted ? 'Sonido silenciado' : 'Sonido activado'); };
+syncToggle('bSound', !AU.muted);
 $('#bFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => { }); };
 $('#bRank').onclick = () => toggleRank();
 /* ⋯ : everything that is not the game lives in one tray that hides by itself */
 let trayT = null;
-function trayOpen(on) { const t = $('#tray'); t.hidden = !on; clearTimeout(trayT); if (on) trayT = setTimeout(() => { t.hidden = true; }, 6000); }
+function trayOpen(on) { const t = $('#tray'); t.hidden = !on; $('#bDots').setAttribute('aria-expanded', on ? 'true' : 'false'); clearTimeout(trayT); if (on) trayT = setTimeout(() => { t.hidden = true; $('#bDots').setAttribute('aria-expanded', 'false'); }, 9000); }
 $('#bDots').onclick = e => { e.stopPropagation(); trayOpen($('#tray').hidden); };
 $('#tray').addEventListener('pointerenter', () => clearTimeout(trayT));
 $('#tray').addEventListener('pointerleave', () => { if (!$('#tray').hidden) trayOpen(true); });
@@ -3053,7 +2968,7 @@ addEventListener('keydown', e => {
   if (!$('#help').hidden || !$('#menu').hidden) return;
   if (scr === 'title' && k === 'Enter') { e.preventDefault(); return ($('#bContinue').classList.contains('hidden') ? $('#bStart') : $('#bContinue')).click(); }
   if (scr === 'order' && k === 'Enter') { e.preventDefault(); return $('#bPlay').click(); }
-  if (scr === 'final' && k === 'Enter') { e.preventDefault(); return ($('#bOther') || $('#bBoth') || $('#bAgain')).click(); }
+  if (scr === 'final' && k === 'Enter') { e.preventDefault(); return $('#bAgain').click(); }
   if (scr !== 'game' || !g) return;
   if (!$('#camfail').hidden) { if (k === 'Enter') $('#cfMouse').click(); return; }
   if (k === 'r' || k === 'R') return toggleRank();
@@ -3105,14 +3020,6 @@ if (TEST) window.__ps = { Engine, SFX, CUP, TRK, REC, get APP() { return APP; },
   startHoldHand, gestureTick, get CAL() { return CAL; }, set CAL(v) { CAL = v; }, calibStep, calibShape, updateHint, finishCalib, maybeCalib, motionGesture, forceThrow, BB, setEasy, get EZ() { return EZ(); },
   showCamFail, force(...pairs) { if (!TEST) return; forcedQueue.push(...pairs); if (!forced) forced = forcedQueue.shift(); }, onShape, GS, MO, GEST, doThrow, fingerFeatures, get practice() { return isPractice(G()); }, MOT, SOPLO, REC, MODE, get portrait() { return ST.portrait; }, setFast(v) { FAST = v; document.body.classList.toggle('fast', v); } };
 
-/* ⋯ → Reportar problema: everything needed to explain a stuck game, as one JSON file (nothing leaves the computer) */
-$('#bReport').onclick = () => {
-  const g = G(), rep = { v: 1, at: new Date().toISOString(), ua: navigator.userAgent, mode: MODE, easy: EZ(), cam: { on: HT.camOn, delegate: HT.delegate, ms: +HT.ms.toFixed(1), state: HT.state, lock: TRK.lock, hands: TRK.cands },
-    game: g && { phase: g.phase, round: g.round, R: RN(g), idx: g.idx, n: g.order.length }, busy, stMode: ST.mode, gest: GEST, bb: BB, trace: GS.trace || [], log: GS.log.slice(-20) };
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(rep)], { type: 'application/json' }));
-  a.download = 'pareosiga-reporte-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.json'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-  toast('Reporte descargado');
-};
 if (params.has('sencillo')) { APP.easy = true; save(); }
 renderSettings();
 /* boot */

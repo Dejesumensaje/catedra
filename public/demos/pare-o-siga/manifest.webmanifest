@@ -2,7 +2,7 @@
   "id": "./",
   "name": "PARE O SIGA",
   "short_name": "Pare o Siga",
-  "description": "Juego de dados para jugar con otros en un solo celular: tira, suma y decide si paras o sigues antes de que salga un 1.",
+  "description": "Juego de dados para jugar con otros en un solo dispositivo: tira, suma y decide si paras o sigues antes de que salga un 1.",
   "lang": "es",
   "dir": "ltr",
   "start_url": "./",
