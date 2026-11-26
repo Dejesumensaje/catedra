@@ -13,12 +13,9 @@ const cursos = (await getCollection('cursos')).sort(
 >
   <section class="hero hero-indice">
     <h1 class="sube sube-1">Soy William Montoya, periodista, diseñador UX y docente de transformación digital, cultura y diseño.</h1>
-    <p class="intro sube sube-2">En cada edición de mis cursos, una sesión se publica dos veces: el programa antes de clase y el registro de lo que pasó después.</p>
   </section>
 
-  <section class="seccion" id="cursos">
-    <span class="mono">Los cursos</span>
-
+  <section class="seccion cursos" id="cursos" aria-label="Cursos">
     {cursos.map((curso) => (
       <a class="poster" href={`/${curso.data.ruta}`}>
         {curso.data.version && (
@@ -42,8 +39,8 @@ const cursos = (await getCollection('cursos')).sort(
     ))}
   </section>
 
-  <section class="seccion" aria-labelledby="fuera-de-curso">
-    <h2 class="mono" id="fuera-de-curso">Fuera de los cursos</h2>
+  <section class="seccion publicaciones" aria-labelledby="otras-publicaciones">
+    <h2 class="sr-solo" id="otras-publicaciones">Otras publicaciones</h2>
     <p class="publicacion">
       <a href="/diseno-visual"><strong>Anatomía del diseño visual</strong></a>.
       Por qué un color parece otro según el fondo, o en qué momento la distancia vuelve grupo lo que estaba suelto. 37 conceptos de diseño visual con instrumentos para comprobar cada efecto en vivo y ejercicios para entrenar el ojo.
@@ -56,6 +53,8 @@ const cursos = (await getCollection('cursos')).sort(
 </Base>
 
 <style>
+  .cursos { padding-top: 0; }
+  .publicaciones { border-top: 1px solid var(--regla); }
   .publicacion { max-width: 46ch; }
   .publicacion + .publicacion { margin-top: 1.25em; }
   .publicacion a { color: var(--tinta); text-decoration-thickness: 2px; text-underline-offset: 0.2em; font-family: var(--sans); }
