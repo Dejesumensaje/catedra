@@ -397,6 +397,10 @@
     .s .poster h3 { font-size: 2rem; }
   }
 
+  .s .archivo-bloque { row-gap: var(--space-4); }
+  .s .archivo-bloque > h2 { grid-column: 1 / span 3; padding-top: var(--space-5); }
+  .s .archivo-bloque > ol { grid-column: 4 / -1; }
+  @container pantalla (max-width: 899px) { .s .archivo-bloque > h2, .s .archivo-bloque > ol { grid-column: 1 / -1; padding-top: 0; } }
   .s ol.archivo { list-style: none; border-top: 1px solid var(--tinta); }
   .s .archivo li { border-bottom: 1px solid var(--regla); }
   .s .archivo a {
@@ -507,19 +511,28 @@
   .s .seccion-curso p { max-width: 56ch; }
   .s .seccion-curso > p + p { margin-top: calc(var(--space-2) * -1); }
 
-  /* arco */
+  /* arco: fases sobre una línea, con un marcador cuadrado por fase */
   .s .arco {
+    list-style: none;
     display: grid;
-    grid-template-columns: 5fr 2.5fr 5fr 4fr 2.5fr;
-    border: 1px solid var(--tinta);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: var(--gutter);
   }
-  .s .fase { padding: var(--space-4); border-right: 1px solid var(--tinta); display: grid; gap: var(--space-2); align-content: start; min-width: 0; }
-  .s .fase:last-child { border-right: 0; }
-  .s .fase .rango { font-family: var(--sans); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; color: var(--secundario); font-variant-numeric: tabular-nums; }
-  .s .fase strong { font-family: var(--sans); font-size: 0.95rem; color: var(--tinta); line-height: 1.25; }
+  .s .fase {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-top: var(--space-6);
+    min-width: 0;
+  }
+  .s .fase::before { content: ""; position: absolute; top: 5px; left: 0; right: calc(var(--gutter) * -1); border-top: 1px solid var(--tinta); }
+  .s .fase:last-child::before { right: 0; }
+  .s .fase::after { content: ""; position: absolute; top: 0; left: 0; width: 11px; height: 11px; background: var(--tinta); }
+  .s .fase.bisagra::after { background: var(--papel); border: 1px solid var(--tinta); }
+  .s .fase .rango { font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secundario); font-variant-numeric: tabular-nums; }
+  .s .fase strong { font-family: var(--sans); font-size: 1rem; color: var(--tinta); line-height: 1.25; }
   .s .fase p { font-size: 0.85rem; line-height: 1.45; }
-  .s .fase.bisagra { background: var(--regla); }
-  .s .fase.bisagra p { display: none; }
   .s .marcas { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; margin-top: var(--space-2); }
   .s .marcas span { height: 10px; border: 1px solid var(--tinta); }
   .s .marcas span.dada { background: var(--tinta); }
@@ -528,16 +541,19 @@
   .s .leyenda i { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--tinta); margin-right: var(--space-2); vertical-align: -1px; }
   .s .leyenda i.dada { background: var(--tinta); }
   .s .leyenda i.memo { background: var(--amarillo); }
-  @container pantalla (max-width: 899px) {
-    .s .arco { grid-template-columns: 1fr; }
-    .s .fase { border-right: 0; border-bottom: 1px solid var(--tinta); }
-    .s .fase:last-child { border-bottom: 0; }
-    .s .fase.bisagra p { display: block; }
+  /* bajo 760 la línea se vuelve vertical: el marcador sigue en el mismo sitio */
+  @container pantalla (max-width: 759px) {
+    .s .arco { grid-template-columns: 1fr; row-gap: var(--space-5); }
+    .s .fase { padding-top: 0; padding-left: var(--space-8); }
+    .s .fase::before { top: 0; bottom: calc(var(--space-5) * -1); left: 5px; right: auto; border-top: 0; border-left: 1px solid var(--tinta); }
+    .s .fase:last-child::before { bottom: 0; }
   }
 
   /* sesiones agrupadas por fase */
   .s .grupo { display: grid; gap: var(--space-3); }
   .s .grupo + .grupo { margin-top: var(--space-8); }
+  .s .grupo-cabeza { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-1) var(--space-4); }
+  .s .grupo-cabeza span { font-family: var(--sans); font-size: 0.78rem; color: var(--secundario); font-variant-numeric: tabular-nums; }
   .s .grupo h3 { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--tinta); }
   .s ol.clases { list-style: none; border-top: 1px solid var(--tinta); }
   .s .clases li { border-bottom: 1px solid var(--regla); }
@@ -655,6 +671,13 @@
     text-align: center;
   }
   .s .riel .boton-deck:hover { background: var(--amarillo); color: var(--tinta); }
+  .s .en-fase { border-top: 1px solid var(--tinta); padding-top: var(--space-4); display: grid; gap: var(--space-3); }
+  .s .en-fase ol { list-style: none; display: grid; }
+  .s .en-fase a { display: grid; grid-template-columns: 2rem 1fr; gap: var(--space-2); padding: var(--space-2) var(--space-1); font-family: var(--sans); font-size: 0.88rem; line-height: 1.3; color: var(--texto); text-decoration: none; border-bottom: 1px solid var(--regla); }
+  .s .en-fase a span { font-weight: 700; color: var(--secundario); font-variant-numeric: tabular-nums; }
+  .s .en-fase a:hover { color: var(--tinta); background: linear-gradient(to right, var(--amarillo) 3px, transparent 3px); }
+  .s .en-fase a[aria-current="page"] { color: var(--tinta); font-weight: 700; background: linear-gradient(to right, var(--amarillo) 3px, transparent 3px); }
+  .s .en-fase a[aria-current="page"] span { color: var(--tinta); }
   .s .riel .nota { font-size: 0.82rem; color: var(--secundario); margin-top: calc(var(--space-3) * -1); }
   .s .sticker {
     display: inline-block;
@@ -702,7 +725,7 @@
   .s .nav-sesiones strong { font-family: var(--sans); color: var(--tinta); }
   @container pantalla (max-width: 899px) {
     .s .riel { grid-column: 1 / -1; position: static; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
-    .s .riel .boton-deck, .s .riel .nota { grid-column: 1 / -1; }
+    .s .riel .boton-deck, .s .riel .nota, .s .en-fase { grid-column: 1 / -1; }
     .s .lectura { grid-column: 1 / -1; gap: var(--space-14); }
   }
   @container pantalla (max-width: 759px) {
@@ -717,7 +740,7 @@
   .referentes .hoja { display: grid; gap: var(--space-3); align-content: start; }
   .referentes h3 { font-family: var(--sans); font-weight: 700; font-size: 1.05rem; color: var(--tinta); }
   .referentes ul { padding-left: var(--space-5); display: grid; gap: var(--space-2); font-size: 0.95rem; }
-  .referentes .hoja.vacia { border-style: dashed; background: transparent; }
+  .referentes a { color: var(--tinta); text-underline-offset: 0.15em; }
 
   ol.decisiones { list-style: none; counter-reset: d; display: grid; gap: var(--space-4); max-width: 60rem; }
   .decisiones li { counter-increment: d; display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-4); background: var(--papel); border: 1px solid var(--tinta); padding: var(--space-5); }
@@ -954,7 +977,7 @@
             </section>
 
             <section class="bloque-home">
-              <div class="envoltura">
+              <div class="envoltura ret archivo-bloque">
                 <h2 class="mono">Ediciones anteriores</h2>
                 <ol class="archivo" role="list">
                   <li>
@@ -989,7 +1012,7 @@
         </div>
       </div>
       <ul class="notas">
-        <li><strong>Vigente y archivo, separados</strong>El póster queda para la edición en curso. Una segunda edición del mismo curso no compite con ella: baja a una fila con sus números.</li>
+        <li><strong>Vigente y archivo, separados</strong>El póster queda para la edición en curso. Las anteriores bajan a filas con sus números, con el rótulo en su propia columna, como el archivo de ReadMe.</li>
         <li><strong>Ficha a la derecha</strong>Lo que hoy son etiquetas sueltas (sesiones, modalidad, programa) pasa a una ficha con rótulo y valor, como los metadatos de los casos del portafolio.</li>
         <li><strong>El hero se acorta</strong>Se va la segunda frase sobre «dos veces»: con la memoria en 1 de 16 sesiones, la promesa no se cumplió.</li>
       </ul>
@@ -1069,13 +1092,13 @@
                 <section class="seccion-curso">
                   <h2>El arco</h2>
                   <p>Cinco fases. Cada una prepara la siguiente.</p>
-                  <div class="arco">
-                    <div class="fase"><span class="rango">S01–S05</span><strong>Aprender a leer</strong><p>Interfaces, pistas, personas, modelos, convenciones.</p></div>
-                    <div class="fase bisagra"><span class="rango">S06</span><strong>Territorio y pregunta</strong><p>Bisagra con Taller: identidad, para quién, pregunta de interacción.</p></div>
-                    <div class="fase"><span class="rango">S07–S11</span><strong>Las dimensiones</strong><p>Loop, sensación, cuerpo, fricción, apropiación.</p></div>
-                    <div class="fase"><span class="rango">S12–S15</span><strong>El modelo</strong><p>Agencia, incertidumbre, especificación, prueba con personas.</p></div>
-                    <div class="fase bisagra"><span class="rango">S16</span><strong>La defensa</strong><p>Reconstruir el recorrido y defender decisiones con evidencia.</p></div>
-                  </div>
+                  <ol class="arco" role="list">
+                    <li class="fase"><span class="rango">Fase 1 · S01–S05</span><strong>Aprender a leer</strong><p>Interfaces, pistas, personas, modelos, convenciones.</p></li>
+                    <li class="fase bisagra"><span class="rango">Fase 2 · S06</span><strong>Territorio y pregunta</strong><p>Bisagra con Taller: identidad, para quién, pregunta de interacción.</p></li>
+                    <li class="fase"><span class="rango">Fase 3 · S07–S11</span><strong>Las dimensiones</strong><p>Loop, sensación, cuerpo, fricción, apropiación.</p></li>
+                    <li class="fase"><span class="rango">Fase 4 · S12–S15</span><strong>El modelo</strong><p>Agencia, incertidumbre, especificación, prueba con personas.</p></li>
+                    <li class="fase bisagra"><span class="rango">Fase 5 · S16</span><strong>La defensa</strong><p>Reconstruir el recorrido y defender decisiones con evidencia.</p></li>
+                  </ol>
                   <div class="marcas" role="img" aria-label="16 sesiones: 13 con presentación, 1 de ellas con memoria, 3 sin presentación">
                     <span class="dada"></span><span class="memo"></span><span class="dada"></span><span class="dada"></span><span class="dada"></span>
                     <span class="dada"></span>
@@ -1090,7 +1113,7 @@
                   <h2>Sesiones</h2>
 
                   <div class="grupo">
-                    <h3>Aprender a leer · S01–S05</h3>
+                    <div class="grupo-cabeza"><h3>Aprender a leer · S01–S05</h3><span>5 sesiones · 5 con presentación</span></div>
                     <ol class="clases" role="list">
                       <li><a class="clase" href="#sesion"><span class="num">01</span><span><span class="tit">¿Qué hay en el medio?</span><span class="ten">Usabilidad ↔ Experiencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">6 ago</span></span></a></li>
                       <li><a class="clase" href="#sesion"><span class="num">02</span><span><span class="tit">El lenguaje secreto de las cosas</span><span class="ten">Mostrar ↔ Descubrir</span></span><span class="lado"><span class="estado memo">Con memoria</span><span class="fecha">13 ago</span></span></a></li>
@@ -1101,14 +1124,14 @@
                   </div>
 
                   <div class="grupo">
-                    <h3>Territorio y pregunta · S06</h3>
+                    <div class="grupo-cabeza"><h3>Territorio y pregunta · S06</h3><span>1 sesión · con presentación</span></div>
                     <ol class="clases" role="list">
                       <li><a class="clase" href="#sesion"><span class="num">06</span><span><span class="tit">El lugar que ya no está</span><span class="ten">Colección ↔ Sistema</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">10 sept</span></span></a></li>
                     </ol>
                   </div>
 
                   <div class="grupo">
-                    <h3>Las dimensiones · S07–S11</h3>
+                    <div class="grupo-cabeza"><h3>Las dimensiones · S07–S11</h3><span>5 sesiones · 3 con presentación</span></div>
                     <ol class="clases" role="list">
                       <li><a class="clase" href="#sesion"><span class="num">07</span><span><span class="tit">¿Podemos defender este territorio?</span><span class="ten">Espectador ↔ Participante</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">17 sept</span></span></a></li>
                       <li><a class="clase" href="#sesion"><span class="num">08</span><span><span class="tit">El mecanismo de interacción principal</span><span class="ten">Intención ↔ Interpretación</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">24 sept</span></span></a></li>
@@ -1119,7 +1142,7 @@
                   </div>
 
                   <div class="grupo">
-                    <h3>El modelo · S12–S15</h3>
+                    <div class="grupo-cabeza"><h3>El modelo · S12–S15</h3><span>4 sesiones · 4 con presentación</span></div>
                     <ol class="clases" role="list">
                       <li><a class="clase" href="#sesion"><span class="num">12</span><span><span class="tit">Reglas que se ven</span><span class="ten">Colección ↔ Sistema</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">22 oct</span></span></a></li>
                       <li><a class="clase" href="#sesion"><span class="num">13</span><span><span class="tit">Hora de testear</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">29 oct</span></span></a></li>
@@ -1129,7 +1152,7 @@
                   </div>
 
                   <div class="grupo">
-                    <h3>La defensa · S16</h3>
+                    <div class="grupo-cabeza"><h3>La defensa · S16</h3><span>1 sesión · sin presentación</span></div>
                     <ol class="clases" role="list">
                       <li><a class="clase" href="#sesion"><span class="num">16</span><span><span class="tit">¿Qué creíamos que iba a pasar?</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado sin">Sin presentación</span><span class="fecha">19 nov</span></span></a></li>
                     </ol>
@@ -1184,8 +1207,8 @@
         </div>
       </div>
       <ul class="notas">
-        <li><strong>El arco reemplaza la barra</strong>La barra «Sesión 15 / 16» se vuelve las cinco fases con 16 marcas debajo. El estado se lee en la marca y también va escrito en cada fila.</li>
-        <li><strong>Sesiones por fase</strong>La lista de 16 se parte en cinco grupos con su rango. La fecha y el estado van a la derecha, siempre en el mismo lugar.</li>
+        <li><strong>El arco reemplaza la barra</strong>La barra «Sesión 15 / 16» se vuelve las cinco fases sobre una línea, como en Wild, con 16 marcas debajo. Las fases de una sola sesión llevan el marcador vacío.</li>
+        <li><strong>Sesiones por fase</strong>La lista de 16 se parte en cinco grupos. Cada uno dice cuántas sesiones tiene y cuántas con presentación, como los capítulos de Sketch.</li>
         <li><strong>Evaluación visible</strong>Las 5 evaluaciones y la escala ya estaban escritas en el repo. Las escalas de valoración se resumen aquí; el texto completo puede ir en un desplegable.</li>
         <li><strong>Índice fijo</strong>En escritorio, el índice queda a la izquierda mientras se baja. Bajo 900px se vuelve una fila de enlaces arriba.</li>
       </ul>
@@ -1250,6 +1273,16 @@
                 </div>
                 <button class="boton-deck" type="button">Abrir la presentación →</button>
                 <p class="nota">Pide la contraseña en clase.</p>
+                <nav class="en-fase" aria-label="Sesiones de esta fase">
+                  <span class="mono">En esta fase · Aprender a leer</span>
+                  <ol role="list">
+                    <li><a href="#sesion"><span>01</span>¿Qué hay en el medio?</a></li>
+                    <li><a href="#sesion" aria-current="page"><span>02</span>El lenguaje secreto de las cosas</a></li>
+                    <li><a href="#sesion"><span>03</span>¿Qué es esta cosa?</a></li>
+                    <li><a href="#sesion"><span>04</span>Preguntar y percibir</a></li>
+                    <li><a href="#sesion"><span>05</span>¿Qué dice una interacción?</a></li>
+                  </ol>
+                </nav>
               </aside>
 
               <div class="lectura">
@@ -1303,7 +1336,7 @@
         </div>
       </div>
       <ul class="notas">
-        <li><strong>Riel con los datos</strong>Fecha, tensión, evaluación a la que cuenta, conceptos y el botón del deck viven juntos a la izquierda y acompañan la lectura. Hoy están repartidos entre el hero y una tarjeta.</li>
+        <li><strong>Riel con los datos</strong>Fecha, tensión, evaluación a la que cuenta, conceptos y el botón del deck viven juntos a la izquierda. Debajo, las sesiones de la misma fase con la actual marcada, como en Magnific: se pasa a la siguiente sin volver al curso.</li>
         <li><strong>«Cuenta para» es nuevo</strong>Sale de <code>evaluaciones.sesiones</code>, que ya existe. La función <code>evaluacionDeSesion</code> está escrita en <code>src/lib/contenido.ts</code> y nunca se llamó.</li>
         <li><strong>Propósito primero</strong>El campo estaba en las 16 sesiones sin mostrarse. Abre la lectura porque dice para qué es la clase antes de contar qué pasa en ella.</li>
         <li><strong>Memoria al final y opcional</strong>Conserva su diseño de hoy (par esperado/ocurrido, sorpresa en amarillo), pero solo aparece donde existe.</li>
@@ -1327,9 +1360,22 @@
           <li>Cabecera con destinos fijos y marca a la izquierda.</li>
         </ul>
       </div>
-      <div class="hoja vacia">
-        <h3>Mobbin · pendiente</h3>
-        <p>El conector todavía no estaba disponible en esta sesión. Cuando lo conectes, la búsqueda propuesta es: páginas de curso y syllabus, listas de lecciones agrupadas, líneas de tiempo de currículo, barras laterales de documentación, archivos de ediciones y rúbricas. Solo se guardan enlaces y el patrón que aporta cada uno; ninguna captura entra al repo.</p>
+      <div class="hoja">
+        <h3>Mobbin · lo que entra</h3>
+        <ul>
+          <li><a href="https://mobbin.com/sites/sections/1bac0acb-c4fe-46ec-acd7-fe0bf057faf2" target="_blank" rel="noopener">Wild</a>: fases sobre una línea con un marcador cada una. De ahí sale el arco del curso.</li>
+          <li><a href="https://mobbin.com/sites/sections/c6fdb3c9-c8dc-4758-a1ac-fbbfae854618" target="_blank" rel="noopener">Sketch</a>: cada capítulo lleva su conteo en la cabecera. De ahí sale el conteo de cada fase en la lista de sesiones.</li>
+          <li><a href="https://mobbin.com/screens/4b0d7119-a2fc-4ddc-8291-b3cacf949237" target="_blank" rel="noopener">Magnific</a>: la lección actual marcada dentro de su módulo. De ahí sale «En esta fase» en la sesión.</li>
+          <li><a href="https://mobbin.com/sites/sections/826f4820-b518-4513-9713-f490808e140c" target="_blank" rel="noopener">ReadMe</a>: el rótulo del archivo en su propia columna. De ahí sale «Ediciones anteriores» en el home.</li>
+        </ul>
+      </div>
+      <div class="hoja">
+        <h3>Mobbin · lo que confirma</h3>
+        <ul>
+          <li><a href="https://mobbin.com/screens/731c0653-266e-4c03-aae6-df4d07631ebd" target="_blank" rel="noopener">Mintlify</a> y <a href="https://mobbin.com/screens/13279c45-183e-40a7-9241-de57707b691c" target="_blank" rel="noopener">Codecademy</a>: el índice fijo con la sección actual marcada.</li>
+          <li><a href="https://mobbin.com/screens/1475417b-9a9d-4640-9da1-254a5e1951bd" target="_blank" rel="noopener">Uxcel</a> y <a href="https://mobbin.com/screens/eadf9ce5-5d7c-4730-b06f-1078e461460e" target="_blank" rel="noopener">Podia</a>: título y descripción con una ficha de datos al lado.</li>
+        </ul>
+        <p class="aviso">Lo que no entra: progreso por estudiante, compra, insignias y certificados. Cátedra no es un LMS.</p>
       </div>
     </div>
   </section>
