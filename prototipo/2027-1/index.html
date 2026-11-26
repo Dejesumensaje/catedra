@@ -1,0 +1,1445 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cátedra 2027-1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Prototipo de layout para la edición 2027-1.
+     Color y tipografía: los de Cátedra, sin cambios (AGENTS.md §9).
+     Layout: la gramática del portafolio (escala de 4px, retícula de 12
+     columnas, márgenes y gutters semánticos). Tema único y claro, como el
+     sitio: es una decisión del sistema, no un olvido. */
+  :root {
+    --tinta: #222222;
+    --texto: #444444;
+    --secundario: #6f6f6f;
+    --papel: #ffffff;
+    --regla: #e5e5e5;
+    --amarillo: #eeff41;
+    --fondo-revision: #f4f4f1;
+    --sans: 'Roboto', Helvetica, Arial, sans-serif;
+    --serif: 'PT Serif', Georgia, serif;
+
+    /* escala de 4px, la misma del portafolio */
+    --space-1: 4px;  --space-2: 8px;   --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 24px;  --space-8: 32px; --space-10: 40px;
+    --space-11: 48px; --space-14: 64px; --space-16: 80px; --space-18: 96px;
+    --space-19: 112px; --space-20: 160px;
+
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p, ul, ol, dl, dd, figure, table { margin: 0; padding: 0; }
+  html { font-size: 100%; }
+
+  body {
+    background: var(--fondo-revision);
+    color: var(--texto);
+    font-family: var(--serif);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+
+  a { color: inherit; }
+  ::selection { background: var(--amarillo); color: var(--tinta); }
+  :focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+
+  /* ═══════════ documento de revisión ═══════════ */
+  .doc {
+    max-width: 1296px;
+    margin: 0 auto;
+    padding-block: var(--space-14) var(--space-20);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid;
+    gap: var(--space-18);
+  }
+
+  .rotulo {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--secundario);
+  }
+
+  .doc-cabeza { display: grid; gap: var(--space-6); max-width: 46rem; }
+  .doc-cabeza h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--tinta);
+    text-wrap: balance;
+  }
+  .doc-cabeza p { font-size: 1.1rem; max-width: 56ch; }
+  .doc-cabeza nav ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .doc-cabeza nav a { color: var(--tinta); text-underline-offset: 0.2em; }
+
+  .parte { display: grid; gap: var(--space-8); }
+  /* un hijo de grid no baja de su min-content: sin esto el marco de 1440
+     ensancha la página en vez de quedarse dentro de su lienzo con scroll */
+  .doc > *, .parte > *, .vista > * { min-width: 0; }
+  .parte > header { display: grid; gap: var(--space-3); max-width: 46rem; }
+  .parte h2 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--tinta);
+    text-wrap: balance;
+  }
+  .parte > header p { max-width: 60ch; }
+
+  .hoja {
+    background: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: var(--space-8);
+  }
+
+  /* ── auditoría ── */
+  .tabla-envoltura { overflow-x: auto; position: relative; }
+  table.auditoria {
+    width: 100%;
+    min-width: 56rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .auditoria th, .auditoria td {
+    text-align: left;
+    vertical-align: top;
+    padding: var(--space-4) var(--space-4) var(--space-4) 0;
+    border-bottom: 1px solid var(--regla);
+  }
+  .auditoria thead th {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    border-bottom: 1px solid var(--tinta);
+  }
+  .auditoria tbody th {
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--tinta);
+    width: 15rem;
+  }
+  .auditoria td.decision { width: 13rem; }
+  .auditoria code { font-size: 0.85em; }
+  .eleccion { display: grid; gap: var(--space-1); font-family: var(--sans); font-size: 0.85rem; }
+  .eleccion label { display: flex; gap: var(--space-2); align-items: baseline; cursor: pointer; }
+  .eleccion input { accent-color: var(--tinta); }
+  .sin-decision td, .sin-decision th { color: var(--secundario); }
+
+  .copiar-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+    margin-top: var(--space-6);
+  }
+  .boton {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tinta);
+    color: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: var(--space-3) var(--space-6);
+    cursor: pointer;
+  }
+  .boton:hover { background: var(--amarillo); color: var(--tinta); }
+  .aviso { font-family: var(--sans); font-size: 0.85rem; color: var(--secundario); }
+  textarea#decisiones-texto {
+    width: 100%;
+    min-height: 8rem;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.8rem;
+    border: 1px solid var(--regla);
+    padding: var(--space-3);
+    margin-top: var(--space-4);
+    background: var(--papel);
+    color: var(--tinta);
+  }
+
+  /* ── gramática ── */
+  .gramatica { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-6); }
+  .gramatica .hoja { display: grid; gap: var(--space-4); align-content: start; }
+  .gramatica h3 { font-family: var(--sans); font-weight: 700; font-size: 1.1rem; color: var(--tinta); }
+  .gramatica p { font-size: 0.95rem; }
+  .escala { display: grid; gap: var(--space-1); font-family: var(--sans); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .escala div { display: grid; grid-template-columns: 3rem 1fr; align-items: center; gap: var(--space-3); color: var(--secundario); }
+  .escala span.barra { height: 8px; background: var(--tinta); }
+  .reticula-muestra {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+    height: 56px;
+  }
+  .reticula-muestra span { background: var(--regla); }
+  .reticula-muestra span.ocupa { background: var(--amarillo); outline: 1px solid var(--tinta); }
+
+  /* ── marcos de vista ── */
+  .vista { display: grid; gap: var(--space-4); }
+  .vista-barra {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .vista-barra h3 { font-family: var(--sans); font-weight: 700; font-size: 1.15rem; color: var(--tinta); }
+  .anchos { display: flex; gap: var(--space-1); font-family: var(--sans); }
+  .anchos button {
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--tinta);
+    background: var(--papel);
+    color: var(--tinta);
+    cursor: pointer;
+  }
+  .anchos button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+  .anchos button:hover { background: var(--amarillo); color: var(--tinta); }
+
+  .lienzo {
+    overflow-x: auto;
+    background: repeating-linear-gradient(45deg, transparent 0 10px, rgba(0,0,0,0.03) 10px 11px);
+    border: 1px dashed #b9b9b4;
+    padding: var(--space-6) 0;
+  }
+  .marco {
+    container: pantalla / inline-size;
+    width: var(--ancho, 1440px);
+    margin: 0 auto;
+    background: var(--papel);
+    border: 1px solid var(--tinta);
+    box-shadow: 8px 8px 0 var(--tinta);
+  }
+  .notas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: var(--space-4) var(--space-8);
+    font-size: 0.95rem;
+  }
+  .notas li { list-style: none; border-top: 1px solid var(--tinta); padding-top: var(--space-3); }
+  .notas strong { font-family: var(--sans); color: var(--tinta); display: block; margin-bottom: var(--space-1); }
+
+  /* ═══════════ el sitio propuesto (dentro del marco) ═══════════
+     Los quiebres son container queries: responden al ancho del marco,
+     no al de la ventana. En el sitio real serían @media. */
+  .s {
+    --margen: var(--space-16);
+    --gutter: var(--space-6);
+    --seccion: var(--space-19);
+    color: var(--texto);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  @container pantalla (max-width: 1100px) { .s { --margen: var(--space-11); --seccion: var(--space-18); } }
+  @container pantalla (max-width: 759px)  { .s { --margen: var(--space-5); --gutter: var(--space-4); --seccion: var(--space-16); font-size: 16px; } }
+
+  .s .envoltura { max-width: 1296px; margin: 0 auto; padding-inline: var(--margen); }
+  .s .ret { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
+  .s .mono {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--secundario);
+  }
+  .s h1, .s h2, .s h3 { color: var(--tinta); text-wrap: balance; }
+  .s .pendiente {
+    font-family: var(--sans);
+    font-size: 0.85em;
+    color: var(--secundario);
+    border-bottom: 1px dashed var(--secundario);
+  }
+
+  /* cabecera */
+  .s .cabecera { border-bottom: 1px solid var(--tinta); }
+  .s .cabecera .envoltura {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-8);
+    flex-wrap: wrap;
+    padding-block: var(--space-6);
+  }
+  .s .marca {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+  .s .marca span { color: var(--secundario); font-weight: 400; }
+  .s .nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
+  .s .nav a {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--texto);
+    text-decoration: none;
+    padding-block: var(--space-1);
+  }
+  .s .nav a:hover { color: var(--tinta); }
+  .s .nav a[aria-current="page"] { color: var(--tinta); box-shadow: inset 0 -3px 0 var(--amarillo); }
+  @container pantalla (max-width: 759px) {
+    .s .cabecera .envoltura { flex-direction: column; gap: var(--space-3); padding-block: var(--space-5); }
+    .s .nav ul { gap: var(--space-1) var(--space-4); }
+  }
+
+  .s .pie { border-top: 1px solid var(--regla); }
+  .s .pie .envoltura {
+    padding-block: var(--space-6) var(--space-10);
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--secundario);
+  }
+
+  /* ── HOME ── */
+  .s .hero-indice { padding-block: var(--space-16) var(--space-14); }
+  .s .hero-indice .ret { row-gap: var(--space-6); }
+  .s .hero-indice .mono { grid-column: 1 / -1; }
+  .s .hero-indice h1 {
+    grid-column: 1 / span 8;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .s .hero-indice p { grid-column: 1 / span 6; }
+  @container pantalla (max-width: 899px) {
+    .s .hero-indice h1, .s .hero-indice p { grid-column: 1 / -1; }
+    .s .hero-indice h1 { font-size: 1.3rem; }
+    .s .hero-indice { padding-block: var(--space-11) var(--space-10); }
+  }
+
+  .s .bloque-home { padding-bottom: var(--seccion); }
+  .s .bloque-home > .envoltura > h2.mono { margin-bottom: var(--space-6); }
+
+  .s .poster {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: var(--space-4);
+    text-decoration: none;
+    border: 2px solid var(--tinta);
+    padding: var(--space-11);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .s .poster:hover { transform: translateY(-4px); box-shadow: 8px 8px 0 var(--amarillo), 8px 8px 0 2px var(--tinta); }
+  .s .poster .izq { grid-column: 1 / span 7; display: grid; gap: var(--space-4); align-content: start; }
+  .s .poster .der {
+    grid-column: 9 / -1;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    border-left: 1px solid var(--regla);
+    padding-left: var(--gutter);
+  }
+  .s .poster h3 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 2.6rem;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .s .poster .desc { max-width: 44ch; }
+  .s .ficha { display: grid; gap: var(--space-3); }
+  .s .ficha div { display: grid; gap: 0; }
+  .s .ficha dt { font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secundario); }
+  .s .ficha dd { font-family: var(--sans); font-size: 0.95rem; color: var(--tinta); }
+  .s .cta {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta);
+  }
+  @container pantalla (max-width: 899px) {
+    .s .poster { padding: var(--space-6); }
+    .s .poster .izq, .s .poster .der { grid-column: 1 / -1; }
+    .s .poster .der { border-left: 0; padding-left: 0; border-top: 1px solid var(--regla); padding-top: var(--space-4); }
+    .s .poster h3 { font-size: 2rem; }
+  }
+
+  .s ol.archivo { list-style: none; border-top: 1px solid var(--tinta); }
+  .s .archivo li { border-bottom: 1px solid var(--regla); }
+  .s .archivo a {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: var(--space-1);
+    align-items: baseline;
+    padding-block: var(--space-5);
+    text-decoration: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+  }
+  .s .archivo a:hover {
+    background: linear-gradient(to right, var(--amarillo) 0.35rem, transparent 0.35rem);
+    transform: translateX(0.35rem);
+  }
+  .s .archivo .periodo { grid-column: 1 / span 2; font-family: var(--sans); font-weight: 900; font-size: 1.4rem; color: var(--tinta); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .s .archivo .nombre { grid-column: 3 / span 5; font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+  .s .archivo .datos { grid-column: 8 / -1; font-family: var(--sans); font-size: 0.85rem; color: var(--secundario); text-align: right; }
+  @container pantalla (max-width: 759px) {
+    .s .archivo .periodo { grid-column: 1 / span 4; font-size: 1.15rem; }
+    .s .archivo .nombre { grid-column: 5 / -1; }
+    .s .archivo .datos { grid-column: 5 / -1; text-align: left; }
+  }
+
+  .s .fuera { row-gap: var(--gutter); }
+  .s .fuera a {
+    grid-column: span 6;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    border: 1px solid var(--tinta);
+    padding: var(--space-8);
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .s .fuera a:hover { transform: translateY(-3px); box-shadow: 6px 6px 0 var(--tinta); }
+  .s .fuera h3 { font-family: var(--sans); font-weight: 700; font-size: 1.2rem; }
+  .s .fuera p { font-size: 0.95rem; }
+  @container pantalla (max-width: 759px) { .s .fuera a { grid-column: 1 / -1; padding: var(--space-6); } }
+
+  /* ── CURSO ── */
+  .s .hero-curso { padding-block: var(--space-16) var(--space-14); }
+  .s .hero-curso .ret { row-gap: var(--space-8); }
+  .s .hero-curso .izq { grid-column: 1 / span 7; display: grid; gap: var(--space-5); align-content: start; }
+  .s .hero-curso h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 4.4rem;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+  .s .hero-curso .tres { display: inline-block; background: var(--amarillo); padding: 0 0.15em; transform: rotate(-2deg); }
+  .s .hero-curso .lede { font-style: italic; font-size: 1.3rem; line-height: 1.5; max-width: 34ch; }
+  .s .hero-curso .der { grid-column: 9 / -1; border: 2px solid var(--tinta); padding: var(--space-6); align-self: start; display: grid; gap: var(--space-5); }
+  .s .sello {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: var(--space-1) var(--space-3);
+    justify-self: start;
+  }
+  @container pantalla (max-width: 899px) {
+    .s .hero-curso .izq, .s .hero-curso .der { grid-column: 1 / -1; }
+    .s .hero-curso h1 { font-size: 3rem; }
+    .s .hero-curso .der { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+    .s .hero-curso .der .sello { grid-column: 1 / -1; }
+    .s .hero-curso { padding-block: var(--space-11) var(--space-10); }
+  }
+  @container pantalla (max-width: 459px) { .s .hero-curso h1 { font-size: 2.4rem; } .s .hero-curso .lede { font-size: 1.1rem; } }
+
+  /* índice interno + cuerpo */
+  .s .curso-cuerpo { padding-bottom: var(--seccion); row-gap: var(--space-11); }
+  .s .indice {
+    grid-column: 1 / span 3;
+    align-self: start;
+    position: sticky;
+    top: var(--space-6);
+    border-top: 1px solid var(--tinta);
+    padding-top: var(--space-4);
+  }
+  .s .indice ol { list-style: none; display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+  .s .indice a { font-family: var(--sans); font-size: 0.9rem; color: var(--texto); text-decoration: none; display: flex; gap: var(--space-3); }
+  .s .indice a:hover { color: var(--tinta); }
+  .s .indice a.activo { color: var(--tinta); font-weight: 700; }
+  .s .indice a.activo::before { content: ""; width: 4px; background: var(--amarillo); outline: 1px solid var(--tinta); }
+  .s .principal { grid-column: 4 / -1; display: grid; gap: var(--seccion); min-width: 0; }
+  @container pantalla (max-width: 899px) {
+    .s .indice { grid-column: 1 / -1; position: static; }
+    .s .indice ol { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+    .s .principal { grid-column: 1 / -1; }
+  }
+
+  .s .seccion-curso { display: grid; gap: var(--space-6); }
+  .s .seccion-curso > h2 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    border-top: 1px solid var(--tinta);
+    padding-top: var(--space-4);
+  }
+  .s .seccion-curso p { max-width: 56ch; }
+  .s .seccion-curso > p + p { margin-top: calc(var(--space-2) * -1); }
+
+  /* arco */
+  .s .arco {
+    display: grid;
+    grid-template-columns: 5fr 2.5fr 5fr 4fr 2.5fr;
+    border: 1px solid var(--tinta);
+  }
+  .s .fase { padding: var(--space-4); border-right: 1px solid var(--tinta); display: grid; gap: var(--space-2); align-content: start; min-width: 0; }
+  .s .fase:last-child { border-right: 0; }
+  .s .fase .rango { font-family: var(--sans); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; color: var(--secundario); font-variant-numeric: tabular-nums; }
+  .s .fase strong { font-family: var(--sans); font-size: 0.95rem; color: var(--tinta); line-height: 1.25; }
+  .s .fase p { font-size: 0.85rem; line-height: 1.45; }
+  .s .fase.bisagra { background: var(--regla); }
+  .s .fase.bisagra p { display: none; }
+  .s .marcas { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; margin-top: var(--space-2); }
+  .s .marcas span { height: 10px; border: 1px solid var(--tinta); }
+  .s .marcas span.dada { background: var(--tinta); }
+  .s .marcas span.memo { background: var(--amarillo); }
+  .s .leyenda { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); font-family: var(--sans); font-size: 0.8rem; color: var(--secundario); }
+  .s .leyenda i { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--tinta); margin-right: var(--space-2); vertical-align: -1px; }
+  .s .leyenda i.dada { background: var(--tinta); }
+  .s .leyenda i.memo { background: var(--amarillo); }
+  @container pantalla (max-width: 899px) {
+    .s .arco { grid-template-columns: 1fr; }
+    .s .fase { border-right: 0; border-bottom: 1px solid var(--tinta); }
+    .s .fase:last-child { border-bottom: 0; }
+    .s .fase.bisagra p { display: block; }
+  }
+
+  /* sesiones agrupadas por fase */
+  .s .grupo { display: grid; gap: var(--space-3); }
+  .s .grupo + .grupo { margin-top: var(--space-8); }
+  .s .grupo h3 { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--tinta); }
+  .s ol.clases { list-style: none; border-top: 1px solid var(--tinta); }
+  .s .clases li { border-bottom: 1px solid var(--regla); }
+  .s .clase {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    gap: var(--space-5);
+    align-items: center;
+    padding: var(--space-4) var(--space-2);
+    text-decoration: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+  }
+  .s a.clase:hover { background: linear-gradient(to right, var(--amarillo) 0.35rem, transparent 0.35rem); transform: translateX(0.35rem); }
+  .s .clase .num { font-family: var(--sans); font-weight: 900; font-size: 1.7rem; color: var(--tinta); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .s .clase .tit { font-family: var(--sans); font-weight: 700; color: var(--tinta); line-height: 1.25; display: block; }
+  .s .clase .ten { font-family: var(--sans); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secundario); display: block; margin-top: var(--space-1); }
+  .s .clase .fecha { font-family: var(--sans); font-size: 0.78rem; color: var(--secundario); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .s .estado {
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 2px var(--space-2);
+    border: 1px solid var(--tinta);
+    color: var(--tinta);
+  }
+  .s .estado.memo { background: var(--amarillo); }
+  .s .estado.sin { border-color: var(--regla); color: var(--secundario); }
+  .s .clase .lado { display: grid; justify-items: end; gap: var(--space-1); }
+  @container pantalla (max-width: 759px) {
+    .s .clase { grid-template-columns: 2.25rem minmax(0, 1fr); gap: var(--space-2) var(--space-3); }
+    .s .clase .num { font-size: 1.3rem; }
+    .s .clase .lado { grid-column: 2; justify-items: start; grid-auto-flow: column; justify-content: start; gap: var(--space-3); align-items: baseline; }
+  }
+
+  /* evaluación */
+  .s .tabla { overflow-x: auto; }
+  .s table.eval { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .s .eval th, .s .eval td { text-align: left; padding: var(--space-3) var(--space-4) var(--space-3) 0; border-bottom: 1px solid var(--regla); vertical-align: baseline; }
+  .s .eval thead th { font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secundario); border-bottom: 1px solid var(--tinta); }
+  .s .eval td.pct { font-family: var(--sans); font-weight: 900; font-size: 1.3rem; color: var(--tinta); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .s .eval .nom { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+  .s .eval .ses { font-family: var(--sans); font-size: 0.85rem; white-space: nowrap; }
+  .s .barra-pct { display: flex; height: 14px; border: 1px solid var(--tinta); margin-top: var(--space-2); }
+  .s .barra-pct span { border-right: 1px solid var(--tinta); }
+  .s .barra-pct span:last-child { border-right: 0; }
+  .s .barra-pct span:nth-child(odd) { background: var(--regla); }
+  @container pantalla (max-width: 759px) {
+    .s table.eval thead { display: none; }
+    .s table.eval tr { display: grid; grid-template-columns: 4rem 1fr; padding-block: var(--space-3); border-bottom: 1px solid var(--regla); }
+    .s .eval td { border: 0; padding: 0; }
+    .s .eval td.pct { grid-row: span 3; }
+  }
+
+  .s .escala-val { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: var(--gutter); }
+  .s .nivel { border-top: 2px solid var(--tinta); padding-top: var(--space-3); display: grid; gap: var(--space-2); align-content: start; }
+  .s .nivel .rango { font-family: var(--sans); font-weight: 900; font-size: 1.1rem; color: var(--tinta); font-variant-numeric: tabular-nums; }
+  .s .nivel strong { font-family: var(--sans); color: var(--tinta); }
+  .s .nivel p { font-size: 0.88rem; line-height: 1.5; }
+
+  .s ol.propositos { list-style: none; counter-reset: p; display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 0 var(--gutter); }
+  .s .propositos li { counter-increment: p; display: grid; grid-template-columns: 2rem 1fr; gap: var(--space-3); padding-block: var(--space-3); border-top: 1px solid var(--regla); font-size: 0.95rem; }
+  .s .propositos li::before { content: counter(p, decimal-leading-zero); font-family: var(--sans); font-weight: 700; font-size: 0.8rem; color: var(--secundario); padding-top: 3px; font-variant-numeric: tabular-nums; }
+
+  /* ── SESIÓN ── */
+  .s .hero-clase { padding-block: var(--space-14) var(--space-11); }
+  .s .hero-clase .ret { row-gap: var(--space-4); }
+  .s .hero-clase .ret > * { grid-column: 1 / span 9; }
+  .s .hero-clase .migas { font-family: var(--sans); font-size: 0.85rem; color: var(--secundario); }
+  .s .hero-clase .migas a { color: var(--texto); }
+  .s .numeral-hero {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 7rem;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: var(--amarillo);
+    -webkit-text-stroke: 2px var(--tinta);
+  }
+  .s .hero-clase h1 { font-family: var(--sans); font-weight: 900; font-size: 3.2rem; line-height: 1.04; letter-spacing: -0.025em; }
+  .s .hero-clase .lede { font-style: italic; font-size: 1.25rem; line-height: 1.5; max-width: 42ch; }
+  @container pantalla (max-width: 759px) {
+    .s .hero-clase .ret > * { grid-column: 1 / -1; }
+    .s .numeral-hero { font-size: 4.5rem; }
+    .s .hero-clase h1 { font-size: 2rem; }
+    .s .hero-clase .lede { font-size: 1.1rem; }
+    .s .hero-clase { padding-block: var(--space-10) var(--space-8); }
+  }
+
+  .s .clase-cuerpo { padding-bottom: var(--seccion); row-gap: var(--space-11); }
+  .s .riel {
+    grid-column: 1 / span 4;
+    align-self: start;
+    position: sticky;
+    top: var(--space-6);
+    border: 2px solid var(--tinta);
+    padding: var(--space-6);
+    display: grid;
+    gap: var(--space-5);
+  }
+  .s .riel .boton-deck {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tinta);
+    color: var(--papel);
+    border: 1px solid var(--tinta);
+    padding: var(--space-3) var(--space-5);
+    cursor: pointer;
+    justify-self: stretch;
+    text-align: center;
+  }
+  .s .riel .boton-deck:hover { background: var(--amarillo); color: var(--tinta); }
+  .s .riel .nota { font-size: 0.82rem; color: var(--secundario); margin-top: calc(var(--space-3) * -1); }
+  .s .sticker {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--amarillo);
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: var(--space-1) var(--space-3);
+    transform: rotate(-2deg);
+    box-shadow: 2px 2px 0 var(--tinta);
+  }
+  .s .tags { display: flex; flex-wrap: wrap; gap: var(--space-2); list-style: none; }
+  .s .tags li { font-family: var(--sans); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--regla); padding: 2px var(--space-2); color: var(--texto); }
+  .s .lectura { grid-column: 6 / -1; display: grid; gap: var(--space-16); min-width: 0; }
+  .s .lectura section { display: grid; gap: var(--space-5); }
+  .s .lectura section > h2 { font-family: var(--sans); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--secundario); }
+  .s .lectura p { max-width: 60ch; }
+  .s .proposito-txt { font-size: 1.15rem; line-height: 1.55; color: var(--tinta); }
+  .s .momento { border-left: 3px solid var(--amarillo); padding-left: var(--space-5); display: grid; gap: var(--space-1); }
+  .s .momento h3 { font-family: var(--sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .s .momento p { font-size: 0.98rem; }
+  .s .momentos { display: grid; gap: var(--space-6); }
+  .s .resto { font-family: var(--sans); font-size: 0.85rem; color: var(--secundario); }
+  .s ul.materiales { list-style: none; border-top: 1px solid var(--regla); }
+  .s .materiales li { border-bottom: 1px solid var(--regla); }
+  .s .materiales a { display: block; padding: var(--space-3) var(--space-1); color: var(--tinta); text-decoration: none; transition: transform 0.18s ease; }
+  .s .materiales a:hover { transform: translateX(0.35rem); }
+  .s .memoria-par { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6) var(--space-10); }
+  .s .memoria-par > div { padding-left: var(--space-5); display: grid; gap: var(--space-2); align-content: start; }
+  .s .memoria-par .esp { border-left: 3px solid var(--regla); }
+  .s .memoria-par .pas { border-left: 3px solid var(--amarillo); }
+  .s .memoria-par h3 { font-family: var(--sans); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+  .s .memoria-par .esp h3 { color: var(--secundario); }
+  .s .memoria-par p { font-size: 0.98rem; }
+  .s .sorpresa { background: var(--amarillo); border: 2px solid var(--tinta); box-shadow: 4px 4px 0 var(--tinta); padding: var(--space-6) var(--space-8); display: grid; gap: var(--space-2); }
+  .s .sorpresa h3 { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+  .s .sorpresa p { color: var(--tinta); max-width: none; }
+  .s .nav-sesiones { border-top: 1px solid var(--tinta); display: grid; grid-template-columns: 1fr 1fr; gap: var(--gutter); padding-block: var(--space-6) 0; }
+  .s .nav-sesiones a { text-decoration: none; display: grid; gap: var(--space-1); }
+  .s .nav-sesiones a:last-child { text-align: right; }
+  .s .nav-sesiones strong { font-family: var(--sans); color: var(--tinta); }
+  @container pantalla (max-width: 899px) {
+    .s .riel { grid-column: 1 / -1; position: static; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+    .s .riel .boton-deck, .s .riel .nota { grid-column: 1 / -1; }
+    .s .lectura { grid-column: 1 / -1; gap: var(--space-14); }
+  }
+  @container pantalla (max-width: 759px) {
+    .s .memoria-par { grid-template-columns: 1fr; }
+    .s .sorpresa { padding: var(--space-5); }
+    .s .nav-sesiones { grid-template-columns: 1fr; }
+    .s .nav-sesiones a:last-child { text-align: left; }
+  }
+
+  /* ── referentes y decisiones ── */
+  .referentes { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--space-6); }
+  .referentes .hoja { display: grid; gap: var(--space-3); align-content: start; }
+  .referentes h3 { font-family: var(--sans); font-weight: 700; font-size: 1.05rem; color: var(--tinta); }
+  .referentes ul { padding-left: var(--space-5); display: grid; gap: var(--space-2); font-size: 0.95rem; }
+  .referentes .hoja.vacia { border-style: dashed; background: transparent; }
+
+  ol.decisiones { list-style: none; counter-reset: d; display: grid; gap: var(--space-4); max-width: 60rem; }
+  .decisiones li { counter-increment: d; display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-4); background: var(--papel); border: 1px solid var(--tinta); padding: var(--space-5); }
+  .decisiones li::before { content: "D" counter(d); font-family: var(--sans); font-weight: 900; font-size: 1.3rem; color: var(--tinta); }
+  .decisiones strong { font-family: var(--sans); color: var(--tinta); display: block; margin-bottom: var(--space-1); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    .s .poster:hover, .s a.clase:hover, .s .archivo a:hover, .s .fuera a:hover, .s .materiales a:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<main class="doc">
+
+  <header class="doc-cabeza">
+    <span class="rotulo">Cátedra · propuesta para revisar · 26 de noviembre de 2026</span>
+    <h1>Cátedra para la edición 2027-1</h1>
+    <p>Un prototipo del home, la página del curso y la página de sesión. El color y la tipografía son los de hoy. Cambia el layout: la retícula y la escala de espaciado vienen del portafolio. Nada de esto está aplicado en el sitio; los decks y las demos no se tocan.</p>
+    <nav aria-label="Partes de la propuesta">
+      <ol>
+        <li><a href="#auditoria">1. Qué se usó y qué no</a></li>
+        <li><a href="#gramatica">2. Gramática de layout</a></li>
+        <li><a href="#home">3. Home</a></li>
+        <li><a href="#curso">4. Curso</a></li>
+        <li><a href="#sesion">5. Sesión</a></li>
+        <li><a href="#referentes">6. Referentes</a></li>
+        <li><a href="#decisiones">7. Decisiones abiertas</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- ═══════════ 1. AUDITORÍA ═══════════ -->
+  <section class="parte" id="auditoria" aria-labelledby="t-auditoria">
+    <header>
+      <span class="rotulo">1</span>
+      <h2 id="t-auditoria">Qué se usó en 2026-2 y qué no aplicó</h2>
+      <p>Cada fila sale del contenido y del código actuales. Marca una opción por fila; con «Copiar decisiones» queda un texto que puedes pegarme para aplicar solo lo que elegiste. Las marcas se guardan en este navegador nada más.</p>
+    </header>
+
+    <div class="hoja">
+      <div class="tabla-envoltura">
+        <table class="auditoria">
+          <thead>
+            <tr><th scope="col">Pieza</th><th scope="col">Qué pasó</th><th scope="col">Propuesta</th><th scope="col">Tu decisión</th></tr>
+          </thead>
+          <tbody>
+            <tr class="sin-decision">
+              <th scope="row">Sesión, deck y materiales</th>
+              <td>Se usaron cada semana: 13 de 16 sesiones con deck, 10 con materiales y momentos en las 16.</td>
+              <td>Son el núcleo del rediseño.</td>
+              <td>Se queda</td>
+            </tr>
+            <tr class="sin-decision">
+              <th scope="row">Páginas de actividad y demos</th>
+              <td>15 de 16 páginas de actividad y las 7 demos están enlazadas desde sesiones o decks.</td>
+              <td>No se tocan.</td>
+              <td>Se queda</td>
+            </tr>
+            <tr data-fila="bitacora-resultados">
+              <th scope="row"><code>bitacora-resultados</code></th>
+              <td>Es la única página de actividad que ninguna sesión ni deck enlaza.</td>
+              <td>Enlazarla desde s03, donde se proyectaron los resultados, o retirarla.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="estado">
+              <th scope="row">Campo <code>estado</code></th>
+              <td>No se mantuvo: de s05 a s15 tienen deck y siguen marcadas «programada». El sitio ya calcula si una sesión está disponible a partir de su deck.</td>
+              <td>Derivarlo: con deck es «dictada», con memoria es «con memoria». Quitar el campo manual.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="memoria">
+              <th scope="row">Memoria de sesión</th>
+              <td>Se escribió en 1 de 16 sesiones (s02). El ritual semanal no se sostuvo.</td>
+              <td>Dejarla opcional: aparece solo donde existe y no organiza el layout. El prototipo la muestra así.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="tensiones">
+              <th scope="row">Tensiones como navegación</th>
+              <td>Hay 14 y 6 nunca se usaron. Dos de ellas cubren 8 sesiones. La página <code>/tensiones</code> nunca se construyó.</td>
+              <td>Dejarlas como etiqueta de cada sesión, sin página propia. Borrar las 6 sin uso.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="referentes">
+              <th scope="row">Colección <code>referentes</code></th>
+              <td>5 entradas; solo s10 las enlaza y ninguna página las muestra. Los referentes viajaron como materiales.</td>
+              <td>Pasarlas a <code>materiales</code> y retirar la colección y el campo <code>sesiones.referentes</code>.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="trabajos">
+              <th scope="row">Colección <code>trabajos</code></th>
+              <td>Vacía todo el semestre.</td>
+              <td>Retirarla del schema hasta que haya un trabajo con consentimiento registrado.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="evaluacion">
+              <th scope="row">Evaluaciones, propósitos y escala</th>
+              <td>Escritos completos y nunca mostrados.</td>
+              <td>Mostrarlos en la página del curso. El prototipo lo hace.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="campos-sesion">
+              <th scope="row"><code>proposito</code>, <code>puenteAudiovisual</code>, <code>subtitulo</code></th>
+              <td><code>proposito</code> está en las 16 sesiones; <code>puenteAudiovisual</code> en 2; <code>subtitulo</code> en el curso. Ninguno se muestra.</td>
+              <td>Mostrar <code>proposito</code> en la sesión. Retirar los otros dos.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="syllabus">
+              <th scope="row">Syllabus frente a sesiones</th>
+              <td>Los títulos divergieron. s05 era «No me hagas aprender dos veces» y se dictó como «¿Qué dice una interacción?».</td>
+              <td>Los títulos salen del <code>.mdx</code>; del syllabus solo las cinco fases del arco.</td>
+              <td class="decision"></td>
+            </tr>
+            <tr data-fila="documentos">
+              <th scope="row">Documentos del repo</th>
+              <td><code>BOOTSTRAP.md</code> pide que lo borren; <code>README.md</code> es el de la plantilla de Astro; AGENTS.md promete <code>/tensiones</code>, <code>/referentes</code>, <code>/politica-de-uso</code>, <code>verificar-render</code> y un subagente que verifica fuentes, y nada de eso existe.</td>
+              <td>Borrar BOOTSTRAP, reescribir el README y ajustar AGENTS.md a lo que sí hay.</td>
+              <td class="decision"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="copiar-fila">
+        <button class="boton" type="button" id="copiar">Copiar decisiones</button>
+        <span class="aviso" id="copiar-aviso" role="status" aria-live="polite"></span>
+      </div>
+      <label class="aviso" for="decisiones-texto" hidden id="decisiones-rotulo">Si el botón no copió, selecciona este texto:</label>
+      <textarea id="decisiones-texto" readonly hidden></textarea>
+    </div>
+  </section>
+
+  <!-- ═══════════ 2. GRAMÁTICA ═══════════ -->
+  <section class="parte" id="gramatica" aria-labelledby="t-gramatica">
+    <header>
+      <span class="rotulo">2</span>
+      <h2 id="t-gramatica">Lo que se toma del portafolio</h2>
+      <p>Solo estructura. El amarillo, la tinta, PT Serif y Roboto siguen igual; tampoco entran radios ni sombras suaves.</p>
+    </header>
+    <div class="gramatica">
+      <div class="hoja">
+        <h3>Escala de 4px</h3>
+        <p>Todo padding, margin y gap sale de una escala con nombre, como en el portafolio. Hoy Cátedra mezcla valores sueltos en rem.</p>
+        <div class="escala" aria-hidden="true">
+          <div>4<span class="barra" style="width:4px"></span></div>
+          <div>8<span class="barra" style="width:8px"></span></div>
+          <div>16<span class="barra" style="width:16px"></span></div>
+          <div>24<span class="barra" style="width:24px"></span></div>
+          <div>48<span class="barra" style="width:48px"></span></div>
+          <div>80<span class="barra" style="width:80px"></span></div>
+          <div>112<span class="barra" style="width:112px"></span></div>
+          <div>160<span class="barra" style="width:160px"></span></div>
+        </div>
+      </div>
+      <div class="hoja">
+        <h3>Retícula de 12 columnas</h3>
+        <p>Hasta 1296px, con margen de 80px que baja a 48 y luego a 20. Hoy todo vive en una columna de 62rem. La lectura sigue en 56–60ch; lo que se ensancha son los índices.</p>
+        <div class="reticula-muestra" aria-hidden="true">
+          <span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span>
+          <span></span>
+          <span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span>
+        </div>
+        <p class="aviso">Índice de 3 columnas + contenido de 9: curso. Riel de 4 + lectura de 7: sesión.</p>
+      </div>
+      <div class="hoja">
+        <h3>Navegación real</h3>
+        <p>Una cabecera con destinos fijos (Cursos, Diseño visual, Narrativa interactiva, Licencia) en lugar de solo la marca y «volver». Bajo 760px se apila; no hace falta menú desplegable para cuatro enlaces.</p>
+      </div>
+      <div class="hoja">
+        <h3>Ritmo de secciones</h3>
+        <p>Espacio entre secciones de 112px en escritorio y 80px en teléfono, un alias semántico como <code>--space-section</code>. Hoy cada bloque decide su propio aire.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 3. HOME ═══════════ -->
+  <section class="parte" id="home" aria-labelledby="t-home">
+    <header>
+      <span class="rotulo">3</span>
+      <h2 id="t-home">Home</h2>
+      <p>La edición vigente arriba, con su ficha. Las ediciones anteriores bajan a un archivo de filas. Lo que va entre corchetes punteados está por definir: no lo inventé.</p>
+    </header>
+
+    <div class="vista" data-vista>
+      <div class="vista-barra">
+        <h3>Home · <span data-ancho-texto>1440</span> px</h3>
+        <div class="anchos" role="group" aria-label="Ancho de pantalla del home">
+          <button type="button" data-ancho="360">360</button>
+          <button type="button" data-ancho="768">768</button>
+          <button type="button" data-ancho="1440">1440</button>
+        </div>
+      </div>
+      <div class="lienzo">
+        <div class="marco">
+          <div class="s">
+            <header class="cabecera">
+              <div class="envoltura">
+                <a class="marca" href="#home">Cátedra <span>/ William Montoya</span></a>
+                <nav class="nav" aria-label="Sitio (prototipo)">
+                  <ul>
+                    <li><a href="#home" aria-current="page">Cursos</a></li>
+                    <li><a href="#home">Diseño visual</a></li>
+                    <li><a href="#home">Narrativa interactiva</a></li>
+                    <li><a href="#home">Licencia</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </header>
+
+            <section class="hero-indice">
+              <div class="envoltura ret">
+                <span class="mono">Hola, bienvenidos a mi repositorio</span>
+                <h1>Soy William Montoya, periodista, diseñador UX y docente en temas de transformación digital, cultura y diseño.</h1>
+                <p>Aquí está cada edición de los cursos que he dictado, con el programa y el registro de lo que ocurrió.</p>
+              </div>
+            </section>
+
+            <section class="bloque-home">
+              <div class="envoltura">
+                <h2 class="mono">En curso</h2>
+                <a class="poster" href="#curso">
+                  <div class="izq">
+                    <span class="mono">Universidad de Antioquia · 2027-1</span>
+                    <h3>Pensamiento Sensorial <span class="pendiente">[versión]</span></h3>
+                    <p class="desc">Cómo las interfaces median la relación entre las personas, la tecnología y el mundo.</p>
+                    <span class="cta">Ver el programa →</span>
+                  </div>
+                  <dl class="der ficha">
+                    <div><dt>Programa</dt><dd>Comunicación Audiovisual y Multimedial</dd></div>
+                    <div><dt>Empieza</dt><dd><span class="pendiente">[fecha por confirmar]</span></dd></div>
+                    <div><dt>Intensidad</dt><dd>16 sesiones · 4 horas · presencial</dd></div>
+                  </dl>
+                </a>
+              </div>
+            </section>
+
+            <section class="bloque-home">
+              <div class="envoltura">
+                <h2 class="mono">Ediciones anteriores</h2>
+                <ol class="archivo" role="list">
+                  <li>
+                    <a href="#curso">
+                      <span class="periodo">2026-2</span>
+                      <span class="nombre">Pensamiento Sensorial 3.0</span>
+                      <span class="datos">16 sesiones · 13 con presentación · 1 con memoria</span>
+                    </a>
+                  </li>
+                </ol>
+              </div>
+            </section>
+
+            <section class="bloque-home">
+              <div class="envoltura">
+                <h2 class="mono" style="margin-bottom: var(--space-6)">Fuera de los cursos</h2>
+                <div class="ret fuera">
+                  <a href="#home">
+                    <h3>Anatomía del diseño visual</h3>
+                    <p>Una enciclopedia de instrumentos: cambias la distancia, el color o la regla que relaciona unos elementos con otros, y miras qué pasa con lo que percibes.</p>
+                  </a>
+                  <a href="#home">
+                    <h3>Laboratorio de Narrativa Interactiva</h3>
+                    <p>Cuatro sesiones de asesoría para destrabar seis trabajos de grado. La bitácora guarda las ideas que salieron, cómo se conectan y qué cambió en cada proyecto.</p>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <footer class="pie"><div class="envoltura">© 2026 William Montoya · Material docente bajo licencia CC BY-NC-ND 4.0 · Licencia y usos</div></footer>
+          </div>
+        </div>
+      </div>
+      <ul class="notas">
+        <li><strong>Vigente y archivo, separados</strong>El póster queda para la edición en curso. Una segunda edición del mismo curso no compite con ella: baja a una fila con sus números.</li>
+        <li><strong>Ficha a la derecha</strong>Lo que hoy van como etiquetas sueltas (sesiones, modalidad, programa) pasa a una ficha con rótulo y valor, como los metadatos de los casos del portafolio.</li>
+        <li><strong>El hero se acorta</strong>Se va la segunda frase sobre «dos veces»: con la memoria en 1 de 16 sesiones, la promesa no se cumplió.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════ 4. CURSO ═══════════ -->
+  <section class="parte" id="curso" aria-labelledby="t-curso">
+    <header>
+      <span class="rotulo">4</span>
+      <h2 id="t-curso">Página del curso</h2>
+      <p>Con los datos reales de la 3.0, ya archivada. La 2027-1 usaría la misma estructura con sus propias sesiones.</p>
+    </header>
+
+    <div class="vista" data-vista>
+      <div class="vista-barra">
+        <h3>Curso · <span data-ancho-texto>1440</span> px</h3>
+        <div class="anchos" role="group" aria-label="Ancho de pantalla del curso">
+          <button type="button" data-ancho="360">360</button>
+          <button type="button" data-ancho="768">768</button>
+          <button type="button" data-ancho="1440">1440</button>
+        </div>
+      </div>
+      <div class="lienzo">
+        <div class="marco">
+          <div class="s">
+            <header class="cabecera">
+              <div class="envoltura">
+                <a class="marca" href="#home">Cátedra <span>/ William Montoya</span></a>
+                <nav class="nav" aria-label="Sitio (prototipo)">
+                  <ul>
+                    <li><a href="#home" aria-current="page">Cursos</a></li>
+                    <li><a href="#home">Diseño visual</a></li>
+                    <li><a href="#home">Narrativa interactiva</a></li>
+                    <li><a href="#home">Licencia</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </header>
+
+            <section class="hero-curso">
+              <div class="envoltura ret">
+                <div class="izq">
+                  <span class="mono">Edición 2026-2 · archivo</span>
+                  <h1>Pensamiento Sensorial <span class="tres">3.0</span></h1>
+                  <p class="lede">¿Qué ocurre entre una persona y un sistema cuando interactúan?</p>
+                </div>
+                <dl class="der ficha">
+                  <span class="sello">Archivo · terminó el 19 nov 2026</span>
+                  <div><dt>Institución</dt><dd>Universidad de Antioquia</dd></div>
+                  <div><dt>Programa</dt><dd>Comunicación Audiovisual y Multimedial</dd></div>
+                  <div><dt>Periodo</dt><dd>6 ago – 19 nov 2026</dd></div>
+                  <div><dt>Intensidad</dt><dd>16 sesiones · 4 horas · presencial</dd></div>
+                </dl>
+              </div>
+            </section>
+
+            <div class="envoltura ret curso-cuerpo">
+              <nav class="indice" aria-label="En esta página">
+                <span class="mono">En esta página</span>
+                <ol>
+                  <li><a class="activo" href="#curso">El curso</a></li>
+                  <li><a href="#curso">El arco</a></li>
+                  <li><a href="#curso">Sesiones</a></li>
+                  <li><a href="#curso">Evaluación</a></li>
+                  <li><a href="#curso">Propósitos</a></li>
+                </ol>
+              </nav>
+
+              <div class="principal">
+                <section class="seccion-curso">
+                  <h2>El curso</h2>
+                  <p>Este curso estudia cómo las personas perciben, interpretan y actúan sobre sistemas interactivos. Más que aprender a construir pantallas, propone entender las interfaces como mediaciones que amplían, limitan o transforman nuestras posibilidades de acción.</p>
+                  <p>Se desarrolla en paralelo con Taller Multimedia Hipermedia y tiene evaluación independiente.</p>
+                </section>
+
+                <section class="seccion-curso">
+                  <h2>El arco</h2>
+                  <p>Cinco momentos. Cada uno prepara el siguiente.</p>
+                  <div class="arco">
+                    <div class="fase"><span class="rango">S01–S05</span><strong>Aprender a leer</strong><p>Interfaces, pistas, personas, modelos, convenciones.</p></div>
+                    <div class="fase bisagra"><span class="rango">S06</span><strong>Territorio y pregunta</strong><p>Bisagra con Taller: identidad, para quién, pregunta de interacción.</p></div>
+                    <div class="fase"><span class="rango">S07–S11</span><strong>Las dimensiones</strong><p>Loop, sensación, cuerpo, fricción, apropiación.</p></div>
+                    <div class="fase"><span class="rango">S12–S15</span><strong>El modelo</strong><p>Agencia, incertidumbre, especificación, prueba con personas.</p></div>
+                    <div class="fase bisagra"><span class="rango">S16</span><strong>La defensa</strong><p>Reconstruir el recorrido y defender decisiones con evidencia.</p></div>
+                  </div>
+                  <div class="marcas" role="img" aria-label="16 sesiones: 13 con presentación, 1 de ellas con memoria, 3 sin presentación">
+                    <span class="dada"></span><span class="memo"></span><span class="dada"></span><span class="dada"></span><span class="dada"></span>
+                    <span class="dada"></span>
+                    <span class="dada"></span><span class="dada"></span><span></span><span class="dada"></span><span></span>
+                    <span class="dada"></span><span class="dada"></span><span class="dada"></span><span class="dada"></span>
+                    <span></span>
+                  </div>
+                  <p class="leyenda"><span><i class="dada"></i>Con presentación</span><span><i class="memo"></i>Con memoria</span><span><i></i>Sin presentación</span></p>
+                </section>
+
+                <section class="seccion-curso">
+                  <h2>Sesiones</h2>
+
+                  <div class="grupo">
+                    <h3>Aprender a leer · S01–S05</h3>
+                    <ol class="clases" role="list">
+                      <li><a class="clase" href="#sesion"><span class="num">01</span><span><span class="tit">¿Qué hay en el medio?</span><span class="ten">Usabilidad ↔ Experiencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">6 ago</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">02</span><span><span class="tit">El lenguaje secreto de las cosas</span><span class="ten">Mostrar ↔ Descubrir</span></span><span class="lado"><span class="estado memo">Con memoria</span><span class="fecha">13 ago</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">03</span><span><span class="tit">¿Qué es esta cosa?</span><span class="ten">Intención ↔ Interpretación</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">20 ago</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">04</span><span><span class="tit">Preguntar y percibir</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">27 ago</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">05</span><span><span class="tit">¿Qué dice una interacción?</span><span class="ten">Función ↔ Expresión</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">3 sept</span></span></a></li>
+                    </ol>
+                  </div>
+
+                  <div class="grupo">
+                    <h3>Territorio y pregunta · S06</h3>
+                    <ol class="clases" role="list">
+                      <li><a class="clase" href="#sesion"><span class="num">06</span><span><span class="tit">El lugar que ya no está</span><span class="ten">Colección ↔ Sistema</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">10 sept</span></span></a></li>
+                    </ol>
+                  </div>
+
+                  <div class="grupo">
+                    <h3>Las dimensiones · S07–S11</h3>
+                    <ol class="clases" role="list">
+                      <li><a class="clase" href="#sesion"><span class="num">07</span><span><span class="tit">¿Podemos defender este territorio?</span><span class="ten">Espectador ↔ Participante</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">17 sept</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">08</span><span><span class="tit">El mecanismo de interacción principal</span><span class="ten">Intención ↔ Interpretación</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">24 sept</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">09</span><span><span class="tit">Asesorías por proyecto</span><span class="ten">Intención ↔ Interpretación</span></span><span class="lado"><span class="estado sin">Sin presentación</span><span class="fecha">1 oct</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">10</span><span><span class="tit">Lo que el gesto pone en movimiento</span><span class="ten">Intención ↔ Interpretación</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">8 oct</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">11</span><span><span class="tit">Rompe mi sistema</span><span class="ten">Guion ↔ Apropiación</span></span><span class="lado"><span class="estado sin">Sin presentación</span><span class="fecha">15 oct</span></span></a></li>
+                    </ol>
+                  </div>
+
+                  <div class="grupo">
+                    <h3>El modelo · S12–S15</h3>
+                    <ol class="clases" role="list">
+                      <li><a class="clase" href="#sesion"><span class="num">12</span><span><span class="tit">Reglas que se ven</span><span class="ten">Colección ↔ Sistema</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">22 oct</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">13</span><span><span class="tit">Hora de testear</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">29 oct</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">14</span><span><span class="tit">Hora de testear, segunda ronda</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">5 nov</span></span></a></li>
+                      <li><a class="clase" href="#sesion"><span class="num">15</span><span><span class="tit">Hora de testear, última ronda</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado">Con presentación</span><span class="fecha">12 nov</span></span></a></li>
+                    </ol>
+                  </div>
+
+                  <div class="grupo">
+                    <h3>La defensa · S16</h3>
+                    <ol class="clases" role="list">
+                      <li><a class="clase" href="#sesion"><span class="num">16</span><span><span class="tit">¿Qué creíamos que iba a pasar?</span><span class="ten">Expectativa ↔ Evidencia</span></span><span class="lado"><span class="estado sin">Sin presentación</span><span class="fecha">19 nov</span></span></a></li>
+                    </ol>
+                  </div>
+                </section>
+
+                <section class="seccion-curso">
+                  <h2>Evaluación</h2>
+                  <div class="barra-pct" role="img" aria-label="Reparto de la nota: 15, 25, 15, 25 y 20 por ciento">
+                    <span style="width:15%"></span><span style="width:25%"></span><span style="width:15%"></span><span style="width:25%"></span><span style="width:20%"></span>
+                  </div>
+                  <div class="tabla">
+                    <table class="eval">
+                      <thead><tr><th scope="col">%</th><th scope="col">Evaluación</th><th scope="col">Cuándo</th><th scope="col">Sesiones</th></tr></thead>
+                      <tbody>
+                        <tr><td class="pct">15</td><td class="nom">Laboratorios de experimentación I</td><td>Sesiones 2–5</td><td class="ses">S02–S05</td></tr>
+                        <tr><td class="pct">25</td><td class="nom">Territorio y pregunta de interacción</td><td>Viernes 18 de septiembre de 2026</td><td class="ses">S06–S07</td></tr>
+                        <tr><td class="pct">15</td><td class="nom">Laboratorios de experimentación II · individual</td><td>Sesiones 7–11</td><td class="ses">S07–S11</td></tr>
+                        <tr><td class="pct">25</td><td class="nom">Modelo de interacción</td><td>Evaluación entre las sesiones 12–15</td><td class="ses">S12–S15</td></tr>
+                        <tr><td class="pct">20</td><td class="nom">Defensa de interacción</td><td>Sesión 16</td><td class="ses">S16</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="escala-val">
+                    <div class="nivel"><span class="rango">4.6–5.0</span><strong>Sobresaliente</strong><p>Comprensión profunda del problema; decisiones sustentadas en evidencia pertinente.</p></div>
+                    <div class="nivel"><span class="rango">4.0–4.5</span><strong>Sólido</strong><p>Intención clara y comprensión consistente; decisiones coherentes y respaldadas.</p></div>
+                    <div class="nivel"><span class="rango">3.0–3.9</span><strong>En desarrollo</strong><p>Comprensión general; algunas decisiones dependen de supuestos no examinados.</p></div>
+                    <div class="nivel"><span class="rango">0.0–2.9</span><strong>Evidencia insuficiente</strong><p>No permite demostrar la comprensión o la reflexión esperadas para el momento.</p></div>
+                  </div>
+                </section>
+
+                <section class="seccion-curso">
+                  <h2>Propósitos</h2>
+                  <ol class="propositos" role="list">
+                    <li>Comprender la interacción como un sistema de relaciones entre personas, acciones, reglas, estados y respuestas.</li>
+                    <li>Analizar críticamente interfaces y experiencias interactivas, identificando los modelos conceptuales que organizan su funcionamiento.</li>
+                    <li>Reconocer que las personas interpretan los sistemas desde conocimientos, experiencias, contextos y expectativas propias.</li>
+                    <li>Investigar comportamientos y contextos sin asumir que las preferencias de quien diseña representan las de otras personas.</li>
+                    <li>Utilizar patrones, convenciones y sistemas de diseño de manera intencional y crítica.</li>
+                    <li>Construir ciclos de interacción coherentes entre acción, respuesta, interpretación y nueva acción.</li>
+                    <li>Experimentar con temporalidad, sonido, movimiento, espacio, cuerpo y otras modalidades como componentes de la interacción.</li>
+                    <li>Formular preguntas de interacción y construir prototipos acotados para investigarlas.</li>
+                    <li>Diseñar sistemas que reconozcan diferentes grados de agencia, apropiación e incertidumbre.</li>
+                    <li>Documentar, argumentar y revisar decisiones a partir de evidencia obtenida mediante investigación y experimentación.</li>
+                  </ol>
+                </section>
+              </div>
+            </div>
+
+            <footer class="pie"><div class="envoltura">© 2026 William Montoya · Material docente bajo licencia CC BY-NC-ND 4.0 · Licencia y usos</div></footer>
+          </div>
+        </div>
+      </div>
+      <ul class="notas">
+        <li><strong>El arco reemplaza la barra</strong>La barra «Sesión 15 / 16» se vuelve las cinco fases con 16 marcas debajo. El estado se lee en la marca y también va escrito en cada fila.</li>
+        <li><strong>Sesiones por fase</strong>La lista de 16 se parte en cinco grupos con su rango. La fecha y el estado van a la derecha, siempre en el mismo lugar.</li>
+        <li><strong>Evaluación visible</strong>Las 5 evaluaciones y la escala ya estaban escritas en el repo. Las escalas de valoración se resumen aquí; el texto completo puede ir en un desplegable.</li>
+        <li><strong>Índice fijo</strong>En escritorio, el índice queda a la izquierda mientras se baja. En teléfono se vuelve una fila de enlaces arriba.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════ 5. SESIÓN ═══════════ -->
+  <section class="parte" id="sesion" aria-labelledby="t-sesion">
+    <header>
+      <span class="rotulo">5</span>
+      <h2 id="t-sesion">Página de sesión</h2>
+      <p>Con la sesión 02, la única con memoria, para ver el caso más completo. Una sesión sin memoria simplemente termina en los materiales.</p>
+    </header>
+
+    <div class="vista" data-vista>
+      <div class="vista-barra">
+        <h3>Sesión · <span data-ancho-texto>1440</span> px</h3>
+        <div class="anchos" role="group" aria-label="Ancho de pantalla de la sesión">
+          <button type="button" data-ancho="360">360</button>
+          <button type="button" data-ancho="768">768</button>
+          <button type="button" data-ancho="1440">1440</button>
+        </div>
+      </div>
+      <div class="lienzo">
+        <div class="marco">
+          <div class="s">
+            <header class="cabecera">
+              <div class="envoltura">
+                <a class="marca" href="#home">Cátedra <span>/ William Montoya</span></a>
+                <nav class="nav" aria-label="Sitio (prototipo)">
+                  <ul>
+                    <li><a href="#home" aria-current="page">Cursos</a></li>
+                    <li><a href="#home">Diseño visual</a></li>
+                    <li><a href="#home">Narrativa interactiva</a></li>
+                    <li><a href="#home">Licencia</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </header>
+
+            <section class="hero-clase">
+              <div class="envoltura ret">
+                <p class="migas"><a href="#curso">Pensamiento Sensorial 3.0</a> · Aprender a leer</p>
+                <span class="numeral-hero" aria-hidden="true">02</span>
+                <h1>El lenguaje secreto de las cosas</h1>
+                <p class="lede">¿Cómo sabemos qué podemos hacer frente a un sistema que nunca habíamos visto?</p>
+              </div>
+            </section>
+
+            <div class="envoltura ret clase-cuerpo">
+              <aside class="riel" aria-label="Datos de la sesión">
+                <dl class="ficha">
+                  <div><dt>Fecha</dt><dd>Jueves 13 de agosto de 2026</dd></div>
+                  <div><dt>Tensión</dt><dd><span class="sticker">Mostrar ↔ Descubrir</span></dd></div>
+                  <div><dt>Cuenta para</dt><dd>Laboratorios de experimentación I · 15%</dd></div>
+                </dl>
+                <div>
+                  <span class="mono">Conceptos</span>
+                  <ul class="tags" role="list" style="margin-top: var(--space-2)">
+                    <li>affordance</li><li>significante</li><li>restricción</li><li>mapping</li><li>feedforward</li><li>feedback</li>
+                  </ul>
+                </div>
+                <button class="boton-deck" type="button">Abrir la presentación →</button>
+                <p class="nota">Pide la contraseña en clase.</p>
+              </aside>
+
+              <div class="lectura">
+                <section>
+                  <h2>Propósito</h2>
+                  <p class="proposito-txt">Introducir cómo los sistemas hacen perceptibles sus posibilidades mediante forma, posición, relaciones, anticipaciones y respuestas, y separar lo que un objeto permite de lo que comunica que permite.</p>
+                </section>
+
+                <section>
+                  <h2>En esta sesión</h2>
+                  <div class="momentos">
+                    <div class="momento"><h3>Apertura · Qué encontraron en la bitácora</h3><p>Al llegar, antes de cualquier teoría, cada quien registra sus tres experiencias en un formulario: un nombre corto, qué pasó contado en sus palabras, y una sola palabra para lo que sintió.</p></div>
+                    <div class="momento"><h3>Un solo cajero, seis preguntas</h3><p>Toda la teoría ocurre sobre una sola máquina —un cajero automático, el mismo que hay que rediseñar después— para que los conceptos no lleguen cada uno con su propio objeto.</p></div>
+                    <div class="momento"><h3>Actividad · User Inyerface</h3><p>En parejas, contra un sitio construido a propósito para ser hostil. Primero anotan lo que falla, en sus palabras; solo después le ponen el nombre.</p></div>
+                  </div>
+                  <p class="resto">Recortado para el prototipo. La sesión tiene 7 momentos; la página los muestra completos.</p>
+                </section>
+
+                <section>
+                  <h2>Material de la semana</h2>
+                  <ul class="materiales" role="list">
+                    <li><a href="#sesion">Bitácora de la semana · al llegar</a></li>
+                    <li><a href="#sesion">Bitácora de la semana · segunda vuelta</a></li>
+                    <li><a href="#sesion">Instructivo del laboratorio · UNO resignificado</a></li>
+                    <li><a href="#sesion">El cajero, paso a paso · cómo funciona hoy</a></li>
+                    <li><a href="#sesion">Tarea · Un cajero para todos</a></li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2>La memoria · escrita el 14 de agosto de 2026</h2>
+                  <div class="memoria-par">
+                    <div class="esp"><h3>Lo que esperaba</h3><p>La sesión estaba planeada con dos laboratorios —UNO y el rediseño del cajero— además de User Inyerface, con el rediseño empezando en clase y terminándose en casa.</p></div>
+                    <div class="pas"><h3>Lo que pasó</h3><p>No cupo. UNO y User Inyerface se llevaron el tiempo del bloque de actividades y el laboratorio del cajero no se hizo.</p></div>
+                  </div>
+                  <div class="sorpresa">
+                    <h3>La sorpresa</h3>
+                    <p>La atribución no es simétrica. Cuando algo funciona, el mérito es del diseño casi por unanimidad; cuando algo falla, la mitad del grupo se reparte la culpa entre sí mismo y la incertidumbre.</p>
+                  </div>
+                </section>
+
+                <nav class="nav-sesiones" aria-label="Sesiones vecinas">
+                  <a href="#sesion"><span class="mono">← Anterior · 6 ago</span><strong>S01 · ¿Qué hay en el medio?</strong></a>
+                  <a href="#sesion"><span class="mono">Siguiente · 20 ago →</span><strong>S03 · ¿Qué es esta cosa?</strong></a>
+                </nav>
+              </div>
+            </div>
+
+            <footer class="pie"><div class="envoltura">© 2026 William Montoya · Material docente bajo licencia CC BY-NC-ND 4.0 · Licencia y usos</div></footer>
+          </div>
+        </div>
+      </div>
+      <ul class="notas">
+        <li><strong>Riel con los datos</strong>Fecha, tensión, evaluación a la que cuenta, conceptos y el botón del deck viven juntos a la izquierda y acompañan la lectura. Hoy están repartidos entre el hero y una tarjeta.</li>
+        <li><strong>«Cuenta para» es nuevo</strong>Sale de <code>evaluaciones.sesiones</code>, que ya existe. La función <code>evaluacionDeSesion</code> está escrita en <code>src/lib/contenido.ts</code> y nunca se llamó.</li>
+        <li><strong>Propósito primero</strong>El campo estaba en las 16 sesiones sin mostrarse. Abre la lectura porque dice para qué es la clase antes de contar qué pasa en ella.</li>
+        <li><strong>Memoria al final y opcional</strong>Conserva su diseño de hoy (par esperado/ocurrido, sorpresa en amarillo), pero solo aparece donde existe.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════ 6. REFERENTES ═══════════ -->
+  <section class="parte" id="referentes" aria-labelledby="t-referentes">
+    <header>
+      <span class="rotulo">6</span>
+      <h2 id="t-referentes">Referentes</h2>
+    </header>
+    <div class="referentes">
+      <div class="hoja">
+        <h3>Tu portafolio</h3>
+        <ul>
+          <li>Escala de 4px y alias de sección (<code>src/styles/f.css</code>).</li>
+          <li>Retícula de 12 con tarjetas de 12 / 7 / 5 columnas que se apilan bajo 900px.</li>
+          <li><code>text-wrap: balance</code> en titulares y la regla de no dejar una palabra sola por línea.</li>
+          <li>Cabecera con destinos fijos y marca a la izquierda.</li>
+        </ul>
+      </div>
+      <div class="hoja vacia">
+        <h3>Mobbin · pendiente</h3>
+        <p>El conector todavía no estaba disponible en esta sesión. Cuando lo conectes, la búsqueda propuesta es: páginas de curso y syllabus, listas de lecciones agrupadas, líneas de tiempo de currículo, barras laterales de documentación, archivos de ediciones y rúbricas. Solo se guardan enlaces y el patrón que aporta cada uno; ninguna captura entra al repo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 7. DECISIONES ═══════════ -->
+  <section class="parte" id="decisiones" aria-labelledby="t-decisiones">
+    <header>
+      <span class="rotulo">7</span>
+      <h2 id="t-decisiones">Decisiones abiertas antes de tocar código</h2>
+      <p>Estas cambian el schema o las rutas. Según AGENTS.md §4 son trabajo del modelo alto y van en una pasada propia.</p>
+    </header>
+    <ol class="decisiones">
+      <li><div><strong>Rutas de edición</strong>Hoy cada curso tiene una sola ruta, así que no caben dos ediciones. Propuesta: la vigente en <code>/pensamiento-sensorial</code> y el archivo en <code>/pensamiento-sensorial/2026-2</code>, con sus sesiones debajo. Los enlaces viejos a <code>/pensamiento-sensorial/s02</code> necesitan redirección.</div></li>
+      <li><div><strong>Fases en el schema</strong>Campo nuevo <code>fases</code> en <code>cursos</code> (nombre, desde, hasta). Las de la 3.0 salen del syllabus. Las de 2027-1 las defines tú cuando escribas el programa.</div></li>
+      <li><div><strong>Nombre de la nueva edición</strong>No sé si 2027-1 es 3.0 otra vez, 3.1 o 4.0, ni cuándo empieza. En el prototipo quedan entre corchetes.</div></li>
+      <li><div><strong>Tokens en Base.astro</strong>Migrar los espaciados de <code>Base.astro</code> a la escala de 4px. Es un cambio grande en CSS, pero mecánico: puede hacerlo el modelo barato una vez apruebes la escala.</div></li>
+    </ol>
+  </section>
+
+</main>
+
+<script>
+  (function () {
+    // Anchos de los marcos: cada vista elige su propio ancho de pantalla.
+    var angosto = window.matchMedia('(max-width: 700px)').matches;
+    document.querySelectorAll('[data-vista]').forEach(function (vista) {
+      var marco = vista.querySelector('.marco');
+      var texto = vista.querySelector('[data-ancho-texto]');
+      var botones = vista.querySelectorAll('[data-ancho]');
+      function poner(ancho) {
+        marco.style.setProperty('--ancho', ancho + 'px');
+        texto.textContent = ancho;
+        botones.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.ancho === String(ancho))); });
+      }
+      botones.forEach(function (b) { b.addEventListener('click', function () { poner(b.dataset.ancho); }); });
+      poner(angosto ? 360 : 1440);
+    });
+
+    // Decisiones de la auditoría: dos opciones por fila, guardadas solo aquí.
+    var CLAVE = 'catedra-2027-decisiones';
+    var guardadas = {};
+    try { guardadas = JSON.parse(localStorage.getItem(CLAVE) || '{}') || {}; } catch (e) { guardadas = {}; }
+
+    var filas = document.querySelectorAll('tr[data-fila]');
+    filas.forEach(function (fila) {
+      var id = fila.dataset.fila;
+      var celda = fila.querySelector('.decision');
+      var grupo = document.createElement('fieldset');
+      grupo.className = 'eleccion';
+      grupo.style.border = '0';
+      grupo.style.padding = '0';
+      grupo.style.margin = '0';
+      var leyenda = document.createElement('legend');
+      leyenda.className = 'sr-solo';
+      leyenda.textContent = fila.querySelector('th').textContent;
+      leyenda.style.position = 'absolute';
+      leyenda.style.width = '1px';
+      leyenda.style.height = '1px';
+      leyenda.style.overflow = 'hidden';
+      leyenda.style.clipPath = 'inset(50%)';
+      grupo.appendChild(leyenda);
+      [['aplicar', 'Aplicar la propuesta'], ['dejar', 'Dejar como está']].forEach(function (op) {
+        var etiqueta = document.createElement('label');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'd-' + id;
+        radio.id = 'd-' + id + '-' + op[0];
+        radio.value = op[0];
+        if (guardadas[id] === op[0]) radio.checked = true;
+        radio.addEventListener('change', function () {
+          guardadas[id] = op[0];
+          try { localStorage.setItem(CLAVE, JSON.stringify(guardadas)); } catch (e) {}
+        });
+        etiqueta.appendChild(radio);
+        etiqueta.appendChild(document.createTextNode(op[1]));
+        grupo.appendChild(etiqueta);
+      });
+      celda.appendChild(grupo);
+    });
+
+    var aviso = document.getElementById('copiar-aviso');
+    var area = document.getElementById('decisiones-texto');
+    var rotulo = document.getElementById('decisiones-rotulo');
+    document.getElementById('copiar').addEventListener('click', function () {
+      var lineas = ['Decisiones sobre la auditoría de Cátedra:'];
+      var pendientes = 0;
+      filas.forEach(function (fila) {
+        var id = fila.dataset.fila;
+        var pieza = fila.querySelector('th').textContent.trim();
+        var v = guardadas[id];
+        if (!v) pendientes++;
+        lineas.push('- ' + pieza + ': ' + (v === 'aplicar' ? 'aplicar la propuesta' : v === 'dejar' ? 'dejar como está' : 'sin decidir'));
+      });
+      var texto = lineas.join('\n');
+      area.value = texto;
+      function mostrarArea() { area.hidden = false; rotulo.hidden = false; area.select(); }
+      var resto = pendientes ? ' Quedan ' + pendientes + ' filas sin decidir.' : '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function () {
+          aviso.textContent = 'Copiado.' + resto;
+        }, function () {
+          aviso.textContent = 'No se pudo copiar solo.' + resto;
+          mostrarArea();
+        });
+      } else {
+        aviso.textContent = 'No se pudo copiar solo.' + resto;
+        mostrarArea();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
