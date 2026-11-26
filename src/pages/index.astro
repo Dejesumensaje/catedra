@@ -39,9 +39,7 @@ const nombreCompleto = (c: (typeof cursos)[number]) =>
   ancho="amplio"
 >
   <section class="hero-inicio ret">
-    <span class="mono sube sube-1">Hola, bienvenidos a mi repositorio</span>
-    <h1 class="sube sube-2">Soy William Montoya, periodista, diseñador UX y docente en temas de transformación digital, cultura y diseño.</h1>
-    <p class="sube sube-3">Aquí está cada edición de los cursos que he dictado, con el programa y el registro de lo que ocurrió.</p>
+    <h1 class="sube sube-1">Soy William Montoya, periodista, diseñador UX y docente de transformación digital, cultura y diseño.</h1>
   </section>
 
   {vigentes.length > 0 && (
@@ -87,16 +85,16 @@ const nombreCompleto = (c: (typeof cursos)[number]) =>
     </section>
   )}
 
-  <section class="bloque-inicio" aria-labelledby="fuera-de-curso">
-    <h2 class="mono" id="fuera-de-curso">Fuera de los cursos</h2>
+  <section class="bloque-inicio" aria-labelledby="otras-publicaciones">
+    <h2 class="sr-solo" id="otras-publicaciones">Otras publicaciones</h2>
     <div class="ret fuera">
       <a href="/diseno-visual">
         <h3>Anatomía del diseño visual</h3>
-        <p>Una enciclopedia de instrumentos: cambias la distancia, el color o la regla que relaciona unos elementos con otros, y miras qué pasa con lo que percibes.</p>
+        <p>Por qué un color parece otro según el fondo, o en qué momento la distancia vuelve grupo lo que estaba suelto. 37 conceptos de diseño visual con instrumentos para comprobar cada efecto en vivo y ejercicios para entrenar el ojo.</p>
       </a>
       <a href="/narrativa-interactiva/">
         <h3>Laboratorio de Narrativa Interactiva</h3>
-        <p>Cuatro sesiones de asesoría para destrabar seis trabajos de grado. La bitácora guarda las ideas que salieron, cómo se conectan y qué cambió en cada proyecto.</p>
+        <p>Qué ocurre cuando seis proyectos interactivos dejan de explicar sus historias y buscan el gesto mínimo que las hace sentir. Un mapa de cuatro sesiones de asesoría con los giros y prototipos que destrabaron cada uno.</p>
       </a>
     </div>
   </section>
@@ -105,7 +103,6 @@ const nombreCompleto = (c: (typeof cursos)[number]) =>
 <style>
   /* ── hero ── */
   .hero-inicio { padding-block: var(--space-16) var(--space-14); row-gap: var(--space-6); }
-  .hero-inicio .mono { grid-column: 1 / -1; color: var(--secundario); }
   .hero-inicio h1 {
     grid-column: 1 / span 8;
     font-family: var(--sans);
@@ -116,7 +113,6 @@ const nombreCompleto = (c: (typeof cursos)[number]) =>
     color: var(--tinta);
     text-wrap: balance;
   }
-  .hero-inicio p { grid-column: 1 / span 6; }
 
   .bloque-inicio { padding-bottom: var(--seccion); }
   .bloque-inicio > h2.mono { color: var(--secundario); display: block; margin-bottom: var(--space-6); }
@@ -220,7 +216,7 @@ const nombreCompleto = (c: (typeof cursos)[number]) =>
   .fuera p { font-size: 0.95rem; }
 
   @media (max-width: 899px) {
-    .hero-inicio h1, .hero-inicio p { grid-column: 1 / -1; }
+    .hero-inicio h1 { grid-column: 1 / -1; }
     .hero-inicio h1 { font-size: 1.25rem; }
     .hero-inicio { padding-block: var(--space-11) var(--space-10); }
     .poster-edicion { padding: var(--space-6); }
