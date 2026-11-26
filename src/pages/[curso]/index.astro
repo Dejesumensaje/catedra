@@ -1,7 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { numeroSesion } from '../../lib/contenido';
+import {
+  numeroSesion,
+  evaluacionesDeCurso,
+  estadoVisible,
+  etiquetaEstado,
+  rangoFase,
+} from '../../lib/contenido';
 
 export async function getStaticPaths() {
   const cursos = await getCollection('cursos');
@@ -20,11 +26,12 @@ const sesiones = (
 const tensiones = await getCollection('tensiones');
 const tensionPorId = new Map(tensiones.map((t) => [t.id, t]));
 
-// Una sesión está disponible cuando tiene presentación publicada.
-const disponibles = sesiones.filter((s) => s.data.presentacion);
+const evaluaciones = await evaluacionesDeCurso(curso.id);
+const escala = curso.data.escalaValoracion;
+const propositos = curso.data.propositos;
+
 const total = curso.data.intensidad.sesiones;
-const ultima = disponibles.at(-1);
-const progreso = Math.min(100, (disponibles.length / total) * 100);
+const archivado = curso.data.estado === 'archivado';
 
 function fechaCorta(fecha: Date): string {
   return fecha
@@ -32,87 +39,462 @@ function fechaCorta(fecha: Date): string {
     .replace('.', '');
 }
 
+const fechaLarga = (f: Date) =>
+  f.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
 const parrafosIntro = (curso.data.introduccion ?? curso.data.descripcion)
-  .split(/\n\n+/)
+  .split(/\n+/)
   .map((p) => p.trim());
+
+// Las sesiones se agrupan por fase si el curso las define. Si no, una sola
+// lista sin rótulo, como antes.
+const grupos = curso.data.fases.length > 0
+  ? curso.data.fases.map((fase) => ({
+      fase,
+      sesiones: sesiones.filter((s) => s.data.numero >= fase.desde && s.data.numero <= fase.hasta),
+    }))
+  : [{ fase: undefined, sesiones }];
+
+function resumenGrupo(lista: typeof sesiones): string {
+  const n = lista.length;
+  const con = lista.filter((s) => estadoVisible(s) !== 'sin-presentacion').length;
+  const cuantas = n === 1 ? '1 sesión' : `${n} sesiones`;
+  if (con === 0) return `${cuantas} · sin presentación`;
+  if (n === 1) return `${cuantas} · con presentación`;
+  return `${cuantas} · ${con} con presentación`;
+}
+
+const estados = sesiones.map(estadoVisible);
+// Una sesión con memoria también tiene presentación: se cuenta dentro de esas.
+const conPresentacion = estados.filter((e) => e !== 'sin-presentacion').length;
+const conMemoria = estados.filter((e) => e === 'con-memoria').length;
+const sinPresentacion = estados.filter((e) => e === 'sin-presentacion').length;
+const resumenMarcas = `${sesiones.length} sesiones: ${conPresentacion} con presentación`
+  + (conMemoria > 0 ? ` (${conMemoria} de ellas con memoria)` : '')
+  + `, ${sinPresentacion} sin presentación`;
+
+const enLetras = (n: number) =>
+  ['Cero', 'Una', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez'][n] ?? String(n);
+
+const indice = [
+  { id: 'el-curso', texto: 'El curso' },
+  ...(curso.data.fases.length > 0 ? [{ id: 'el-arco', texto: 'El arco' }] : []),
+  { id: 'sesiones', texto: 'Sesiones' },
+  ...(evaluaciones.length > 0 ? [{ id: 'evaluacion', texto: 'Evaluación' }] : []),
+  ...(propositos.length > 0 ? [{ id: 'propositos', texto: 'Propósitos' }] : []),
+];
 ---
 
 <Base
   titulo={`${[curso.data.titulo, curso.data.version].filter(Boolean).join(' ')} · Cátedra`}
   descripcion={curso.data.descripcion}
-  volverHref="/"
-  volverTexto="Todos los cursos"
+  ancho="amplio"
 >
-  <section class="hero-curso">
-    <span class="mono sube sube-1">{curso.data.institucion} · {curso.data.programa} · {curso.data.periodo.etiqueta}</span>
-    <h1 class="sube sube-2">
-      {curso.data.titulo}{curso.data.version && <> <span class="tres">{curso.data.version}</span></>}
-    </h1>
-    {curso.data.preguntaCentral && (
-      <p class="lede sube sube-3">{curso.data.preguntaCentral}</p>
-    )}
+  <section class="hero-edicion ret">
+    <div class="izq">
+      <span class="mono sube sube-1">Edición {curso.data.periodo.etiqueta}</span>
+      <h1 class="sube sube-2">
+        {curso.data.titulo}{curso.data.version && <> <span class="tres">{curso.data.version}</span></>}
+      </h1>
+      {curso.data.preguntaCentral && (
+        <p class="lede sube sube-3">{curso.data.preguntaCentral}</p>
+      )}
+    </div>
+    <div class="der sube sube-3">
+      {archivado && <p class="sello">Archivo · terminó el {fechaLarga(curso.data.periodo.fin)}</p>}
+      <dl class="ficha">
+        <div><dt>Institución</dt><dd>{curso.data.institucion}</dd></div>
+        <div><dt>Programa</dt><dd>{curso.data.programa}</dd></div>
+        <div><dt>Periodo</dt><dd>{fechaCorta(curso.data.periodo.inicio)} – {fechaLarga(curso.data.periodo.fin)}</dd></div>
+        <div><dt>Intensidad</dt><dd>{total} sesiones · {curso.data.intensidad.horasPorSesion} horas · {curso.data.intensidad.modalidad}</dd></div>
+      </dl>
+    </div>
   </section>
 
-  <div class="semestre sube sube-3">
-    <span class="mono">Sesión {ultima ? numeroSesion(ultima.data.numero).toUpperCase() : 'S00'} / {total}</span>
-    <div
-      class="pista"
-      role="progressbar"
-      aria-label="Sesiones publicadas"
-      aria-valuemin="0"
-      aria-valuemax={total}
-      aria-valuenow={disponibles.length}
-    ><div class="relleno" style={`width: ${progreso}%;`}></div></div>
-    <span class="mono">{curso.data.periodo.etiqueta}</span>
+  <div class="cuerpo-curso ret">
+    <nav class="indice" aria-label="En esta página">
+      <h2 class="mono">En esta página</h2>
+      <ol role="list">
+        {indice.map((i) => <li><a href={`#${i.id}`}>{i.texto}</a></li>)}
+      </ol>
+    </nav>
+
+    <div class="principal">
+      <section class="seccion-curso" id="el-curso" aria-labelledby="t-el-curso">
+        <h2 id="t-el-curso">El curso</h2>
+        {parrafosIntro.map((parrafo) => <p>{parrafo}</p>)}
+      </section>
+
+      {curso.data.fases.length > 0 && (
+        <section class="seccion-curso" id="el-arco" aria-labelledby="t-el-arco">
+          <h2 id="t-el-arco">El arco</h2>
+          <p>{enLetras(curso.data.fases.length)} fases. Cada una prepara la siguiente.</p>
+          <ol class="arco" role="list" style={`--fases: ${curso.data.fases.length}`}>
+            {curso.data.fases.map((fase, i) => (
+              <li class:list={['fase', { bisagra: fase.desde === fase.hasta }]}>
+                <span class="rango">Fase {i + 1} · {rangoFase(fase)}</span>
+                <strong>{fase.nombre}</strong>
+                {fase.descripcion && <p>{fase.descripcion}</p>}
+              </li>
+            ))}
+          </ol>
+          <div class="marcas" role="img" aria-label={resumenMarcas}>
+            {sesiones.map((s) => <span class={estadoVisible(s)}></span>)}
+          </div>
+          <p class="leyenda" aria-hidden="true">
+            <span><i class="con-presentacion"></i>Con presentación</span>
+            <span><i class="con-memoria"></i>Con memoria</span>
+            <span><i class="sin-presentacion"></i>Sin presentación</span>
+          </p>
+        </section>
+      )}
+
+      <section class="seccion-curso" id="sesiones" aria-labelledby="t-sesiones">
+        <h2 id="t-sesiones">Sesiones</h2>
+        {grupos.map(({ fase, sesiones: lista }) => (
+          <div class="grupo">
+            {fase && (
+              <div class="grupo-cabeza">
+                <h3>{fase.nombre} · {rangoFase(fase)}</h3>
+                <span>{resumenGrupo(lista)}</span>
+              </div>
+            )}
+            <ol class="clases" role="list">
+              {lista.map((sesion) => {
+                const tension = sesion.data.tension
+                  ? tensionPorId.get(sesion.data.tension.id)
+                  : undefined;
+                const estado = estadoVisible(sesion);
+                const numero = numeroSesion(sesion.data.numero).slice(1);
+                return (
+                  <li>
+                    <a class="clase" href={`/${curso.data.ruta}/s${numero}`}>
+                      <span class="num">{numero}</span>
+                      <span class="cuerpo">
+                        <span class="tit">{sesion.data.titulo}</span>
+                        {tension && <span class="ten">{tension.data.poloA} ↔ {tension.data.poloB}</span>}
+                      </span>
+                      <span class="lado">
+                        <span class:list={['estado', estado]}>{etiquetaEstado[estado]}</span>
+                        <span class="fecha">{fechaCorta(sesion.data.fecha)}</span>
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ))}
+      </section>
+
+      {evaluaciones.length > 0 && (
+        <section class="seccion-curso" id="evaluacion" aria-labelledby="t-evaluacion">
+          <h2 id="t-evaluacion">Evaluación</h2>
+          <div class="barra-pct" role="img" aria-label={`Reparto de la nota: ${evaluaciones.map((e) => `${e.data.porcentaje}%`).join(', ')}`}>
+            {evaluaciones.map((e) => <span style={`width: ${e.data.porcentaje}%`}></span>)}
+          </div>
+          <div class="tabla">
+            <table class="eval">
+              <thead>
+                <tr><th scope="col">%</th><th scope="col">Evaluación</th><th scope="col">Cuándo</th><th scope="col">Sesiones</th></tr>
+              </thead>
+              <tbody>
+                {evaluaciones.map((e) => {
+                  const ses = e.data.sesiones;
+                  const rango = ses.length === 0
+                    ? ''
+                    : ses.length === 1
+                      ? numeroSesion(ses[0]).toUpperCase()
+                      : `${numeroSesion(ses[0]).toUpperCase()}–${numeroSesion(ses.at(-1)!).toUpperCase()}`;
+                  return (
+                    <tr>
+                      <td class="pct">{e.data.porcentaje}</td>
+                      <td class="nom">{e.data.titulo}{e.data.individual && <span class="individual"> · individual</span>}</td>
+                      <td>{e.data.momento}</td>
+                      <td class="ses">{rango}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {escala.length > 0 && (
+            <>
+              <h3 class="mono subtitulo">Escala de valoración</h3>
+              <div class="escala">
+                {escala.map((nivel) => (
+                  <div class="nivel">
+                    <span class="rango">{nivel.desde.toFixed(1)}–{nivel.hasta.toFixed(1)}</span>
+                    <strong>{nivel.nivel}</strong>
+                    <p>{nivel.descripcion}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+      )}
+
+      {propositos.length > 0 && (
+        <section class="seccion-curso" id="propositos" aria-labelledby="t-propositos">
+          <h2 id="t-propositos">Propósitos</h2>
+          <ol class="propositos" role="list">
+            {propositos.map((p) => <li>{p}</li>)}
+          </ol>
+        </section>
+      )}
+    </div>
   </div>
-
-  <section class="bloque">
-    <h2 class="mono">El curso</h2>
-    {parrafosIntro.map((parrafo) => <p>{parrafo}</p>)}
-  </section>
-
-  <div class="separador" aria-hidden="true">↔</div>
-
-  <section class="bloque">
-    <h2 class="mono">Sesiones — {total}, una por semana</h2>
-
-    <ol class="clases" role="list">
-      {sesiones.map((sesion) => {
-        const tension = sesion.data.tension
-          ? tensionPorId.get(sesion.data.tension.id)
-          : undefined;
-        const disponible = Boolean(sesion.data.presentacion);
-        // Una sesión con memoria tiene todo lo que tiene una dictada, y además
-        // el registro de en qué se desvió. La etiqueta lo dice: si las dos
-        // dijeran «con presentación», el estado más completo del curso sería
-        // el único que no se ve desde aquí.
-        const conMemoria = sesion.data.estado === 'con-memoria';
-        const numero = numeroSesion(sesion.data.numero).slice(1);
-
-        return (
-          <li class="clase-fila">
-            <a class={disponible ? 'clase' : 'clase programada'} href={`/${curso.data.ruta}/s${numero}`}>
-              <span class="numeral">{numero}</span>
-              <span class="cuerpo">
-                <span class="titulo-clase">{sesion.data.titulo}</span>
-                {tension && (
-                  <span class="tension">{tension.data.poloA} ↔ {tension.data.poloB}</span>
-                )}
-              </span>
-              <span class="lado">
-                {disponible ? (
-                  <span class="sticker">{conMemoria ? 'Con memoria' : 'Con presentación'}</span>
-                ) : (
-                  <span class="estado-gris">Programada · {fechaCorta(sesion.data.fecha)}</span>
-                )}
-                <span class="flecha" aria-hidden="true">→</span>
-              </span>
-            </a>
-          </li>
-        );
-      })}
-    </ol>
-
-    <p class="nota-curso">El programa de las 16 sesiones está publicado desde el primer día. La presentación de cada una se abre el día de la clase. Los títulos y fechas pueden moverse: esto es un programa en construcción, no una promesa.</p>
-  </section>
 </Base>
+
+<style>
+  /* ── hero ── */
+  .hero-edicion { padding-block: var(--space-16) var(--space-14); row-gap: var(--space-8); }
+  .hero-edicion .izq { grid-column: 1 / span 7; display: grid; gap: var(--space-5); align-content: start; }
+  .hero-edicion .izq .mono { color: var(--secundario); }
+  .hero-edicion h1 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: var(--tinta);
+    text-wrap: balance;
+  }
+  .hero-edicion .tres { display: inline-block; background: var(--amarillo); padding: 0 0.15em; transform: rotate(-2deg); }
+  .hero-edicion .lede { font-style: italic; font-size: clamp(1.1rem, 2.2vw, 1.3rem); line-height: 1.5; max-width: 34ch; }
+  .hero-edicion .der {
+    grid-column: 9 / -1;
+    align-self: start;
+    border: 2px solid var(--tinta);
+    padding: var(--space-6);
+    display: grid;
+    gap: var(--space-5);
+  }
+  .sello {
+    justify-self: start;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    border: 1px solid var(--tinta);
+    padding: var(--space-1) var(--space-3);
+  }
+
+  /* ── índice + cuerpo ── */
+  .cuerpo-curso { padding-bottom: var(--seccion); row-gap: var(--space-11); }
+  .indice {
+    grid-column: 1 / span 3;
+    align-self: start;
+    position: sticky;
+    top: var(--space-6);
+    border-top: 1px solid var(--tinta);
+    padding-top: var(--space-4);
+  }
+  .indice h2.mono { color: var(--secundario); }
+  .indice ol { list-style: none; display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+  .indice a { font-family: var(--sans); font-size: 0.9rem; color: var(--texto); text-decoration: none; }
+  .indice a:hover { color: var(--tinta); box-shadow: inset 0 -2px 0 var(--amarillo); }
+  .principal { grid-column: 4 / -1; display: grid; gap: var(--seccion); min-width: 0; }
+
+  .seccion-curso { display: grid; gap: var(--space-6); scroll-margin-top: var(--space-6); }
+  .seccion-curso > h2 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.9rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--tinta);
+    border-top: 1px solid var(--tinta);
+    padding-top: var(--space-4);
+  }
+  .seccion-curso > p { max-width: 56ch; }
+
+  /* ── arco: fases sobre una línea, un marcador por fase ── */
+  .arco { list-style: none; display: grid; grid-template-columns: repeat(var(--fases, 5), minmax(0, 1fr)); column-gap: var(--gutter); }
+  .fase { position: relative; display: grid; gap: var(--space-2); align-content: start; padding-top: var(--space-6); min-width: 0; }
+  .fase::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 0;
+    right: calc(var(--gutter) * -1);
+    border-top: 1px solid var(--tinta);
+  }
+  .fase:last-child::before { right: 0; }
+  .fase::after { content: ""; position: absolute; top: 0; left: 0; width: 11px; height: 11px; background: var(--tinta); }
+  /* una fase de una sola sesión es una bisagra: marcador vacío */
+  .fase.bisagra::after { background: var(--papel); border: 1px solid var(--tinta); }
+  .fase .rango {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    font-variant-numeric: tabular-nums;
+  }
+  .fase strong { font-family: var(--sans); font-size: 1rem; line-height: 1.25; color: var(--tinta); }
+  .fase p { font-size: 0.85rem; line-height: 1.45; }
+
+  .marcas { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; }
+  .marcas span { height: 10px; border: 1px solid var(--tinta); }
+  .marcas .con-presentacion, .leyenda .con-presentacion { background: var(--tinta); }
+  .marcas .con-memoria, .leyenda .con-memoria { background: var(--amarillo); }
+  .leyenda { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); font-family: var(--sans); font-size: 0.8rem; color: var(--secundario); }
+  .leyenda i { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--tinta); margin-right: var(--space-2); vertical-align: -1px; }
+
+  /* ── sesiones por fase ── */
+  .grupo { display: grid; gap: var(--space-3); }
+  .grupo + .grupo { margin-top: var(--space-8); }
+  .grupo-cabeza { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-1) var(--space-4); }
+  .grupo-cabeza h3 {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tinta);
+  }
+  .grupo-cabeza span { font-family: var(--sans); font-size: 0.78rem; color: var(--secundario); font-variant-numeric: tabular-nums; }
+
+  .clases { list-style: none; border-top: 1px solid var(--tinta); }
+  .clases li { border-bottom: 1px solid var(--regla); }
+  .clase {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    gap: var(--space-5);
+    align-items: center;
+    padding: var(--space-4) var(--space-2);
+    text-decoration: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+  }
+  .clase:hover, .clase:focus-visible {
+    background: linear-gradient(to right, var(--amarillo) 0.35rem, transparent 0.35rem);
+    transform: translateX(0.35rem);
+  }
+  .clase .num {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.7rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--tinta);
+    font-variant-numeric: tabular-nums;
+  }
+  .clase .cuerpo { min-width: 0; }
+  .clase .tit { display: block; font-family: var(--sans); font-weight: 700; font-size: 1.05rem; line-height: 1.25; color: var(--tinta); }
+  .clase .ten {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+  }
+  .clase .lado { display: grid; justify-items: end; gap: var(--space-1); }
+  .clase .fecha { font-family: var(--sans); font-size: 0.78rem; color: var(--secundario); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .estado {
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 2px var(--space-2);
+    border: 1px solid var(--tinta);
+    color: var(--tinta);
+  }
+  .estado.con-memoria { background: var(--amarillo); }
+  .estado.sin-presentacion { border-color: var(--regla); color: var(--secundario); }
+
+  /* ── evaluación ── */
+  .barra-pct { display: flex; height: 14px; border: 1px solid var(--tinta); }
+  .barra-pct span { border-right: 1px solid var(--tinta); }
+  .barra-pct span:last-child { border-right: 0; }
+  .barra-pct span:nth-child(odd) { background: var(--regla); }
+  .tabla { overflow-x: auto; }
+  .eval { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .eval th, .eval td { text-align: left; vertical-align: baseline; padding: var(--space-3) var(--space-4) var(--space-3) 0; border-bottom: 1px solid var(--regla); }
+  .eval thead th {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secundario);
+    border-bottom: 1px solid var(--tinta);
+  }
+  .eval .pct { font-family: var(--sans); font-weight: 900; font-size: 1.3rem; color: var(--tinta); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .eval .nom { font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+  .eval .individual { font-weight: 400; color: var(--secundario); }
+  .eval .ses { font-family: var(--sans); font-size: 0.85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  .subtitulo { color: var(--secundario); margin-top: var(--space-6); }
+  .escala { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8) var(--gutter); }
+  @media (max-width: 1100px) { .escala { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 459px) { .escala { grid-template-columns: 1fr; } }
+  .nivel { border-top: 2px solid var(--tinta); padding-top: var(--space-3); display: grid; gap: var(--space-2); align-content: start; }
+  .nivel .rango { font-family: var(--sans); font-weight: 900; font-size: 1.1rem; color: var(--tinta); font-variant-numeric: tabular-nums; }
+  .nivel strong { font-family: var(--sans); color: var(--tinta); }
+  .nivel p { font-size: 0.88rem; line-height: 1.5; }
+
+  /* ── propósitos ── */
+  .propositos { list-style: none; counter-reset: p; display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); column-gap: var(--gutter); }
+  .propositos li {
+    counter-increment: p;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--regla);
+    font-size: 0.95rem;
+  }
+  .propositos li::before {
+    content: counter(p, decimal-leading-zero);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--secundario);
+    padding-top: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── quiebres ── */
+  @media (max-width: 899px) {
+    .hero-edicion .izq, .hero-edicion .der { grid-column: 1 / -1; }
+    .hero-edicion .der .ficha { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+    .hero-edicion { padding-block: var(--space-11) var(--space-10); }
+    .indice { grid-column: 1 / -1; position: static; }
+    .indice ol { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+    .principal { grid-column: 1 / -1; }
+  }
+
+  /* bajo 900 las cinco fases no caben en fila: la línea se vuelve vertical
+     y el marcador queda en su sitio */
+  @media (max-width: 899px) {
+    .arco { grid-template-columns: 1fr; row-gap: var(--space-5); }
+    .fase { padding-top: 0; padding-left: var(--space-8); }
+    .fase::before { top: 0; bottom: calc(var(--space-5) * -1); left: 5px; right: auto; border-top: 0; border-left: 1px solid var(--tinta); }
+    .fase:last-child::before { bottom: 0; }
+  }
+
+  @media (max-width: 759px) {
+    .clase { grid-template-columns: 2.25rem minmax(0, 1fr); gap: var(--space-2) var(--space-3); }
+    .clase .num { font-size: 1.3rem; }
+    .clase .lado { grid-column: 2; grid-auto-flow: column; justify-content: start; align-items: baseline; gap: var(--space-3); }
+    .eval thead { display: none; }
+    .eval tr { display: grid; grid-template-columns: 3.5rem 1fr; padding-block: var(--space-3); border-bottom: 1px solid var(--regla); }
+    .eval td { border: 0; padding: 0; }
+    .eval .pct { grid-row: span 3; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clase:hover, .clase:focus-visible { transform: none; }
+  }
+</style>

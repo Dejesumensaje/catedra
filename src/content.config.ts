@@ -44,6 +44,14 @@ const cursos = defineCollection({
     // la interna. Párrafos separados por línea en blanco.
     introduccion: z.string().optional(),
     preguntaCentral: z.string().optional(),
+    // El arco del semestre: tramos de sesiones con nombre. Opcional; si
+    // existe, cubre todas las sesiones en orden, sin huecos ni solapes.
+    fases: z.array(z.object({
+      nombre: z.string(),
+      desde: z.number().int().positive(),
+      hasta: z.number().int().positive(),
+      descripcion: z.string().optional(),
+    })).default([]),
     propositos: z.array(z.string()).default([]),   // propósitos de formación
     escalaValoracion: z.array(z.object({
       desde: z.number(),
@@ -52,7 +60,15 @@ const cursos = defineCollection({
       descripcion: z.string(),
     })).default([]),
     orden: z.number().int().default(0),      // orden en el hub
-  }),
+  }).refine(
+    (d) => d.fases.length === 0 || (
+      d.fases[0].desde === 1
+      && d.fases.at(-1)!.hasta === d.intensidad.sesiones
+      && d.fases.every((f, i) => f.desde <= f.hasta
+        && (i === 0 || f.desde === d.fases[i - 1].hasta + 1))
+    ),
+    { message: 'Las fases de un curso deben cubrir de la sesión 1 a la última, en orden y sin huecos ni solapes.' },
+  ),
 });
 
 /* ------------------------------------------------------------------

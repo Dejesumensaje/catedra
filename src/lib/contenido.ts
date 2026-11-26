@@ -38,3 +38,40 @@ export async function evaluacionDeSesion(
 export function numeroSesion(numero: number): string {
   return `s${String(numero).padStart(2, '0')}`;
 }
+
+/**
+ * El estado que se muestra de una sesión se deriva de lo que existe, no del
+ * campo `estado`, que en 2026-2 no se mantuvo: una sesión con memoria tiene
+ * memoria; una con presentación, presentación; las demás, ninguna de las dos.
+ */
+export type EstadoVisible = 'con-memoria' | 'con-presentacion' | 'sin-presentacion';
+
+export function estadoVisible(sesion: CollectionEntry<'sesiones'>): EstadoVisible {
+  if (sesion.data.memoria) return 'con-memoria';
+  if (sesion.data.presentacion) return 'con-presentacion';
+  return 'sin-presentacion';
+}
+
+export const etiquetaEstado: Record<EstadoVisible, string> = {
+  'con-memoria': 'Con memoria',
+  'con-presentacion': 'Con presentación',
+  'sin-presentacion': 'Sin presentación',
+};
+
+type Fase = CollectionEntry<'cursos'>['data']['fases'][number];
+
+/** La fase del arco a la que pertenece una sesión, si el curso las define. */
+export function faseDeSesion(
+  curso: CollectionEntry<'cursos'>,
+  numero: number,
+): Fase | undefined {
+  return curso.data.fases.find((f) => numero >= f.desde && numero <= f.hasta);
+}
+
+/** "S01–S05", o "S06" si la fase es de una sola sesión. */
+export function rangoFase(fase: Fase): string {
+  const desde = numeroSesion(fase.desde).toUpperCase();
+  return fase.desde === fase.hasta
+    ? desde
+    : `${desde}–${numeroSesion(fase.hasta).toUpperCase()}`;
+}

@@ -244,6 +244,11 @@ poco; cuando aparece, significa algo. Responsive real, foco de teclado visible,
   sustituto de `<h2>`.
 - **Una superficie que se mueve al pasar el mouse tiene que ser clicable.** Es lo que este
   curso enseña; el sitio no puede contradecirlo.
+- **Espaciado en escala de 4px.** Lo nuevo usa los tokens `--space-*` de `Base.astro`
+  (la misma escala del portafolio); lo anterior se migra cuando se toque.
+- **Dos anchos.** `Base` recibe `ancho="lectura"` (por defecto, la columna de 62rem) o
+  `ancho="amplio"` (retícula de 12 columnas hasta 1296px, con `.ret`). El hub, el curso y
+  la sesión usan `amplio`; las páginas de actividad y `/diseno-visual`, `lectura`.
 
 ---
 

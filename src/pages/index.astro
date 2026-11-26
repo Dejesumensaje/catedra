@@ -1,64 +1,242 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { estadoVisible } from '../lib/contenido';
 
 const cursos = (await getCollection('cursos')).sort(
   (a, b) => a.data.orden - b.data.orden,
 );
+
+// La edición vigente va arriba como póster; las archivadas bajan a un archivo
+// de filas, de la más reciente a la más antigua.
+const vigentes = cursos.filter((c) => c.data.estado !== 'archivado');
+const archivadas = cursos
+  .filter((c) => c.data.estado === 'archivado')
+  .sort((a, b) => b.data.periodo.inicio.getTime() - a.data.periodo.inicio.getTime());
+
+const sesiones = await getCollection('sesiones');
+
+function conteos(cursoId: string) {
+  const propias = sesiones.filter((s) => s.data.curso.id === cursoId);
+  const estados = propias.map(estadoVisible);
+  return {
+    total: propias.length,
+    conPresentacion: estados.filter((e) => e !== 'sin-presentacion').length,
+    conMemoria: estados.filter((e) => e === 'con-memoria').length,
+  };
+}
+
+const fecha = (f: Date) =>
+  f.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+const nombreCompleto = (c: (typeof cursos)[number]) =>
+  [c.data.titulo, c.data.version].filter(Boolean).join(' ');
 ---
 
 <Base
   titulo="Cátedra · William Montoya"
   descripcion="Repositorio docente: el programa de cada curso y la memoria de lo que ocurrió de verdad."
+  ancho="amplio"
 >
-  <section class="hero hero-indice">
+  <section class="hero-inicio ret">
     <span class="mono sube sube-1">Hola, bienvenidos a mi repositorio</span>
     <h1 class="sube sube-2">Soy William Montoya, periodista, diseñador UX y docente en temas de transformación digital, cultura y diseño.</h1>
-    <p class="intro sube sube-3">Aquí está cada edición de los cursos que he dictado, con el programa y el registro de lo que ocurrió. Cada sesión se publica dos veces: el programa antes de la clase y, después, lo que realmente pasó.</p>
+    <p class="sube sube-3">Aquí está cada edición de los cursos que he dictado, con el programa y el registro de lo que ocurrió.</p>
   </section>
 
-  <section class="seccion" id="cursos">
-    <span class="mono">Los cursos</span>
+  {vigentes.length > 0 && (
+    <section class="bloque-inicio" aria-labelledby="en-curso">
+      <h2 class="mono" id="en-curso">En curso</h2>
+      {vigentes.map((curso) => (
+        <a class="poster-edicion" href={`/${curso.data.ruta}`}>
+          <div class="izq">
+            <span class="mono">{curso.data.institucion} · {curso.data.periodo.etiqueta}</span>
+            <h3>{curso.data.titulo}{curso.data.version && <> <span class="version">{curso.data.version}</span></>}</h3>
+            <p class="desc">{curso.data.descripcion}</p>
+            <span class="cta">Ver el programa <span class="flecha" aria-hidden="true">→</span></span>
+          </div>
+          <dl class="der ficha">
+            <div><dt>Programa</dt><dd>{curso.data.programa}</dd></div>
+            <div><dt>Empieza</dt><dd>{fecha(curso.data.periodo.inicio)}</dd></div>
+            <div><dt>Intensidad</dt><dd>{curso.data.intensidad.sesiones} sesiones · {curso.data.intensidad.horasPorSesion} horas · {curso.data.intensidad.modalidad}</dd></div>
+          </dl>
+        </a>
+      ))}
+    </section>
+  )}
 
-    {cursos.map((curso) => (
-      <a class="poster" href={`/${curso.data.ruta}`}>
-        {curso.data.version && (
-          <span class="numero-gigante" aria-hidden="true">{curso.data.version}</span>
-        )}
-        <span class="mono">{curso.data.institucion} · {curso.data.periodo.etiqueta}</span>
-        {/* La versión se ve una sola vez: como el número grande de la tarjeta.
-            Ese número es decorativo para asistencia técnica (`aria-hidden`), así
-            que la edición se queda en el encabezado sin verse. Sin esto, dos
-            ediciones del mismo curso suenan idénticas en un lector de pantalla
-            y el enlace no dice a cuál de las dos entra. */}
-        <h2>{curso.data.titulo}{curso.data.version && <span class="sr-solo"> {curso.data.version}</span>}</h2>
-        <p class="desc">{curso.data.descripcion}</p>
-        <ul class="tags" role="list">
-          <li>{curso.data.intensidad.sesiones} sesiones</li>
-          <li>{curso.data.intensidad.modalidad}</li>
-          <li>{curso.data.programa}</li>
-        </ul>
-        <span class="cta">Entrar al curso <span class="flecha" aria-hidden="true">→</span></span>
-      </a>
-    ))}
-  </section>
+  {archivadas.length > 0 && (
+    <section class="bloque-inicio ret archivo-bloque" aria-labelledby="anteriores">
+      <h2 class="mono" id="anteriores">Ediciones anteriores</h2>
+      <ol class="archivo" role="list">
+        {archivadas.map((curso) => {
+          const n = conteos(curso.id);
+          return (
+            <li>
+              <a href={`/${curso.data.ruta}`}>
+                <span class="periodo">{curso.data.periodo.etiqueta}</span>
+                <span class="nombre">{nombreCompleto(curso)}</span>
+                <span class="datos">
+                  {n.total} sesiones · {n.conPresentacion} con presentación{n.conMemoria > 0 && ` · ${n.conMemoria} con memoria`}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  )}
 
-  <section class="seccion" aria-labelledby="fuera-de-curso">
+  <section class="bloque-inicio" aria-labelledby="fuera-de-curso">
     <h2 class="mono" id="fuera-de-curso">Fuera de los cursos</h2>
-    <p class="publicacion">
-      <a href="/diseno-visual"><strong>Anatomía del diseño visual</strong></a>.
-      Una enciclopedia de instrumentos: cambias la distancia, el color o la regla que relaciona unos elementos con otros, y miras qué pasa con lo que percibes.
-    </p>
-    <p class="publicacion">
-      <a href="/narrativa-interactiva/"><strong>Laboratorio de Narrativa Interactiva</strong></a>.
-      Cuatro sesiones de asesoría para destrabar seis trabajos de grado. La bitácora guarda las ideas que salieron, cómo se conectan y qué cambió en cada proyecto.
-    </p>
+    <div class="ret fuera">
+      <a href="/diseno-visual">
+        <h3>Anatomía del diseño visual</h3>
+        <p>Una enciclopedia de instrumentos: cambias la distancia, el color o la regla que relaciona unos elementos con otros, y miras qué pasa con lo que percibes.</p>
+      </a>
+      <a href="/narrativa-interactiva/">
+        <h3>Laboratorio de Narrativa Interactiva</h3>
+        <p>Cuatro sesiones de asesoría para destrabar seis trabajos de grado. La bitácora guarda las ideas que salieron, cómo se conectan y qué cambió en cada proyecto.</p>
+      </a>
+    </div>
   </section>
 </Base>
 
 <style>
-  .publicacion { max-width: 46ch; }
-  .publicacion + .publicacion { margin-top: 1.25em; }
-  .publicacion a { color: var(--tinta); text-decoration-thickness: 2px; text-underline-offset: 0.2em; font-family: var(--sans); }
-  .publicacion a:hover { background: var(--amarillo); }
+  /* ── hero ── */
+  .hero-inicio { padding-block: var(--space-16) var(--space-14); row-gap: var(--space-6); }
+  .hero-inicio .mono { grid-column: 1 / -1; color: var(--secundario); }
+  .hero-inicio h1 {
+    grid-column: 1 / span 8;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 1.45rem;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    color: var(--tinta);
+    text-wrap: balance;
+  }
+  .hero-inicio p { grid-column: 1 / span 6; }
+
+  .bloque-inicio { padding-bottom: var(--seccion); }
+  .bloque-inicio > h2.mono { color: var(--secundario); display: block; margin-bottom: var(--space-6); }
+
+  /* ── edición vigente ── */
+  .poster-edicion {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: var(--space-4);
+    border: 2px solid var(--tinta);
+    padding: var(--space-11);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .poster-edicion:hover, .poster-edicion:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 8px 8px 0 var(--amarillo), 8px 8px 0 2px var(--tinta);
+  }
+  .poster-edicion .izq { grid-column: 1 / span 7; display: grid; gap: var(--space-4); align-content: start; }
+  .poster-edicion .izq .mono { color: var(--secundario); }
+  .poster-edicion .der {
+    grid-column: 9 / -1;
+    align-content: start;
+    border-left: 1px solid var(--regla);
+    padding-left: var(--gutter);
+  }
+  .poster-edicion h3 {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--tinta);
+    text-wrap: balance;
+  }
+  .poster-edicion .version { background: var(--amarillo); padding: 0 0.12em; }
+  .poster-edicion .desc { max-width: 44ch; }
+  .poster-edicion .cta {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta);
+  }
+  .poster-edicion .cta .flecha { display: inline-block; transition: transform 0.18s ease; }
+  .poster-edicion:hover .cta .flecha { transform: translateX(5px); }
+
+  /* ── archivo ── */
+  .archivo-bloque { row-gap: var(--space-4); }
+  .archivo-bloque > h2.mono { grid-column: 1 / span 3; padding-top: var(--space-5); margin-bottom: 0; }
+  .archivo { grid-column: 4 / -1; list-style: none; border-top: 1px solid var(--tinta); }
+  .archivo li { border-bottom: 1px solid var(--regla); }
+  .archivo a {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: var(--space-1);
+    align-items: baseline;
+    padding: var(--space-5) var(--space-1);
+    text-decoration: none;
+    transition: transform 0.18s ease, background 0.18s ease;
+  }
+  .archivo a:hover, .archivo a:focus-visible {
+    background: linear-gradient(to right, var(--amarillo) 0.35rem, transparent 0.35rem);
+    transform: translateX(0.35rem);
+  }
+  .archivo .periodo {
+    grid-column: 1 / span 2;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    color: var(--tinta);
+    font-variant-numeric: tabular-nums;
+  }
+  .archivo .nombre { grid-column: 3 / span 5; font-family: var(--sans); font-weight: 700; color: var(--tinta); }
+  .archivo .datos {
+    grid-column: 8 / -1;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--secundario);
+    text-align: right;
+  }
+
+  /* ── fuera de los cursos ── */
+  .fuera { row-gap: var(--gutter); }
+  .fuera a {
+    grid-column: span 6;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    border: 1px solid var(--tinta);
+    padding: var(--space-8);
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .fuera a:hover, .fuera a:focus-visible { transform: translateY(-3px); box-shadow: 6px 6px 0 var(--tinta); }
+  .fuera h3 { font-family: var(--sans); font-weight: 700; font-size: 1.2rem; color: var(--tinta); }
+  .fuera p { font-size: 0.95rem; }
+
+  @media (max-width: 899px) {
+    .hero-inicio h1, .hero-inicio p { grid-column: 1 / -1; }
+    .hero-inicio h1 { font-size: 1.25rem; }
+    .hero-inicio { padding-block: var(--space-11) var(--space-10); }
+    .poster-edicion { padding: var(--space-6); }
+    .poster-edicion .izq, .poster-edicion .der { grid-column: 1 / -1; }
+    .poster-edicion .der { border-left: 0; padding-left: 0; border-top: 1px solid var(--regla); padding-top: var(--space-4); }
+    .archivo-bloque > h2.mono, .archivo { grid-column: 1 / -1; padding-top: 0; }
+  }
+
+  @media (max-width: 759px) {
+    .archivo .periodo { grid-column: 1 / span 4; font-size: 1.15rem; }
+    .archivo .nombre, .archivo .datos { grid-column: 5 / -1; }
+    .archivo .datos { text-align: left; }
+    .fuera a { grid-column: 1 / -1; padding: var(--space-6); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .poster-edicion:hover, .archivo a:hover, .fuera a:hover { transform: none; }
+  }
 </style>
