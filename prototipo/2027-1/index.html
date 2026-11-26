@@ -754,8 +754,8 @@
   <section class="parte" id="auditoria" aria-labelledby="t-auditoria">
     <header>
       <span class="rotulo">1</span>
-      <h2 id="t-auditoria">Qué se usó en 2026-2 y qué no aplicó</h2>
-      <p>Cada fila sale del contenido y del código actuales. Marca una opción por fila; con «Copiar decisiones» queda un texto que puedes pegarme para aplicar solo lo que elegiste. Las marcas se guardan en este navegador nada más.</p>
+      <h2 id="t-auditoria">Qué se usó en 2026-2 y qué no</h2>
+      <p>Cada fila sale del contenido y del código actuales. Marca una opción por fila; con «Copiar decisiones» queda un texto que puedes pegar en la conversación para aplicar solo lo que elegiste. Las marcas se guardan solo en este navegador.</p>
     </header>
 
     <div class="hoja">
@@ -780,13 +780,13 @@
             <tr data-fila="bitacora-resultados">
               <th scope="row"><code>bitacora-resultados</code></th>
               <td>Es la única página de actividad que ninguna sesión ni deck enlaza.</td>
-              <td>Enlazarla desde s03, donde se proyectaron los resultados, o retirarla.</td>
+              <td>Enlazarla desde s03 (s02 dice: «La comparación se proyecta en la sesión siguiente») o retirarla.</td>
               <td class="decision"></td>
             </tr>
             <tr data-fila="estado">
               <th scope="row">Campo <code>estado</code></th>
-              <td>No se mantuvo: de s05 a s15 tienen deck y siguen marcadas «programada». El sitio ya calcula si una sesión está disponible a partir de su deck.</td>
-              <td>Derivarlo: con deck es «dictada», con memoria es «con memoria». Quitar el campo manual.</td>
+              <td>No se mantuvo: de s05 a s16 todas siguen marcadas «programada», incluidas las 9 que tienen deck. El sitio ya calcula si una sesión está disponible a partir de su deck.</td>
+              <td>Derivarlo: con deck es «con presentación», con memoria es «con memoria» y sin ninguno es «sin presentación». Quitar el campo manual.</td>
               <td class="decision"></td>
             </tr>
             <tr data-fila="memoria">
@@ -797,13 +797,13 @@
             </tr>
             <tr data-fila="tensiones">
               <th scope="row">Tensiones como navegación</th>
-              <td>Hay 14 y 6 nunca se usaron. Dos de ellas cubren 8 sesiones. La página <code>/tensiones</code> nunca se construyó.</td>
+              <td>Hay 14 y 6 nunca se usaron. Dos de ellas cubren 9 sesiones. La página <code>/tensiones</code> nunca se construyó.</td>
               <td>Dejarlas como etiqueta de cada sesión, sin página propia. Borrar las 6 sin uso.</td>
               <td class="decision"></td>
             </tr>
             <tr data-fila="referentes">
               <th scope="row">Colección <code>referentes</code></th>
-              <td>5 entradas; solo s10 las enlaza y ninguna página las muestra. Los referentes viajaron como materiales.</td>
+              <td>5 entradas; solo s10 las enlaza y ninguna página las muestra. Las demás sesiones pusieron sus lecturas y obras de referencia en materiales.</td>
               <td>Pasarlas a <code>materiales</code> y retirar la colección y el campo <code>sesiones.referentes</code>.</td>
               <td class="decision"></td>
             </tr>
@@ -873,7 +873,7 @@
       </div>
       <div class="hoja">
         <h3>Retícula de 12 columnas</h3>
-        <p>Hasta 1296px, con margen de 80px que baja a 48 y luego a 20. Hoy todo vive en una columna de 62rem. La lectura sigue en 56–60ch; lo que se ensancha son los índices.</p>
+        <p>Hasta 1296px, con margen de 80px que baja a 48 y luego a 20. Hoy todo vive en una columna de 62rem. La lectura sigue en 56–60ch; lo que se ensancha son el índice y el riel.</p>
         <div class="reticula-muestra" aria-hidden="true">
           <span class="ocupa"></span><span class="ocupa"></span><span class="ocupa"></span>
           <span></span>
@@ -887,7 +887,7 @@
       </div>
       <div class="hoja">
         <h3>Ritmo de secciones</h3>
-        <p>Espacio entre secciones de 112px en escritorio y 80px en teléfono, un alias semántico como <code>--space-section</code>. Hoy cada bloque decide su propio aire.</p>
+        <p>Espacio entre secciones de 112px en escritorio y 80px en teléfono, un alias semántico como <code>--space-section</code>. Hoy cada bloque decide su propio espacio.</p>
       </div>
     </div>
   </section>
@@ -990,7 +990,7 @@
       </div>
       <ul class="notas">
         <li><strong>Vigente y archivo, separados</strong>El póster queda para la edición en curso. Una segunda edición del mismo curso no compite con ella: baja a una fila con sus números.</li>
-        <li><strong>Ficha a la derecha</strong>Lo que hoy van como etiquetas sueltas (sesiones, modalidad, programa) pasa a una ficha con rótulo y valor, como los metadatos de los casos del portafolio.</li>
+        <li><strong>Ficha a la derecha</strong>Lo que hoy son etiquetas sueltas (sesiones, modalidad, programa) pasa a una ficha con rótulo y valor, como los metadatos de los casos del portafolio.</li>
         <li><strong>El hero se acorta</strong>Se va la segunda frase sobre «dos veces»: con la memoria en 1 de 16 sesiones, la promesa no se cumplió.</li>
       </ul>
     </div>
@@ -1068,7 +1068,7 @@
 
                 <section class="seccion-curso">
                   <h2>El arco</h2>
-                  <p>Cinco momentos. Cada uno prepara el siguiente.</p>
+                  <p>Cinco fases. Cada una prepara la siguiente.</p>
                   <div class="arco">
                     <div class="fase"><span class="rango">S01–S05</span><strong>Aprender a leer</strong><p>Interfaces, pistas, personas, modelos, convenciones.</p></div>
                     <div class="fase bisagra"><span class="rango">S06</span><strong>Territorio y pregunta</strong><p>Bisagra con Taller: identidad, para quién, pregunta de interacción.</p></div>
@@ -1187,7 +1187,7 @@
         <li><strong>El arco reemplaza la barra</strong>La barra «Sesión 15 / 16» se vuelve las cinco fases con 16 marcas debajo. El estado se lee en la marca y también va escrito en cada fila.</li>
         <li><strong>Sesiones por fase</strong>La lista de 16 se parte en cinco grupos con su rango. La fecha y el estado van a la derecha, siempre en el mismo lugar.</li>
         <li><strong>Evaluación visible</strong>Las 5 evaluaciones y la escala ya estaban escritas en el repo. Las escalas de valoración se resumen aquí; el texto completo puede ir en un desplegable.</li>
-        <li><strong>Índice fijo</strong>En escritorio, el índice queda a la izquierda mientras se baja. En teléfono se vuelve una fila de enlaces arriba.</li>
+        <li><strong>Índice fijo</strong>En escritorio, el índice queda a la izquierda mientras se baja. Bajo 900px se vuelve una fila de enlaces arriba.</li>
       </ul>
     </div>
   </section>
@@ -1339,7 +1339,7 @@
     <header>
       <span class="rotulo">7</span>
       <h2 id="t-decisiones">Decisiones abiertas antes de tocar código</h2>
-      <p>Estas cambian el schema o las rutas. Según AGENTS.md §4 son trabajo del modelo alto y van en una pasada propia.</p>
+      <p>D1 a D3 cambian el schema o las rutas; D4, el CSS base. Según AGENTS.md §4 son trabajo del modelo alto y van en una pasada propia.</p>
     </header>
     <ol class="decisiones">
       <li><div><strong>Rutas de edición</strong>Hoy cada curso tiene una sola ruta, así que no caben dos ediciones. Propuesta: la vigente en <code>/pensamiento-sensorial</code> y el archivo en <code>/pensamiento-sensorial/2026-2</code>, con sus sesiones debajo. Los enlaces viejos a <code>/pensamiento-sensorial/s02</code> necesitan redirección.</div></li>
@@ -1426,7 +1426,7 @@
       var texto = lineas.join('\n');
       area.value = texto;
       function mostrarArea() { area.hidden = false; rotulo.hidden = false; area.select(); }
-      var resto = pendientes ? ' Quedan ' + pendientes + ' filas sin decidir.' : '';
+      var resto = pendientes ? (pendientes === 1 ? ' Queda 1 fila sin decidir.' : ' Quedan ' + pendientes + ' filas sin decidir.') : '';
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(texto).then(function () {
           aviso.textContent = 'Copiado.' + resto;
